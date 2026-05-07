@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eldoria 2.0 — DM Command Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0a06;
+  --parch: #f2e8d0;
+  --parch2: #e8d9b8;
+  --parch3: #d4c49a;
+  --parch4: #c0aa7a;
+  --gold: #9a7a1a;
+  --gold2: #c9a84c;
+  --gold3: #e8c96a;
+  --red: #7a1a1a;
+  --red2: #a02020;
+  --teal: #0d3d30;
+  --teal2: #1a6050;
+  --purple: #2d1a4a;
+  --purple2: #4a2d7a;
+  --border: #a08040;
+  --muted: #5a4820;
+  --danger: #8b1a1a;
+  --warn: #7a5a10;
+  --safe: #0d4a2a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0805;
+  color: var(--parch);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* AUTH SCREEN */
+#auth-screen {
+  position: fixed; inset: 0;
+  background: #0a0805;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  flex-direction: column;
+  gap: 2rem;
+}
+.auth-box {
+  background: linear-gradient(160deg, #1a1208, #0d0a06);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  padding: 3rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 60px rgba(201,168,76,0.15);
+}
+.auth-title {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold2);
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: .5rem;
+}
+.auth-sub {
+  color: var(--parch3);
+  font-style: italic;
+  font-size: 14px;
+  margin-bottom: 2rem;
+}
+.auth-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  color: var(--parch);
+  padding: .75rem 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-align: center;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  outline: none;
+}
+.auth-input:focus { border-color: var(--gold2); box-shadow: 0 0 10px rgba(201,168,76,0.2); }
+.auth-btn {
+  width: 100%;
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  padding: .75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-weight: 700;
+  transition: background .2s;
+}
+.auth-btn:hover { background: var(--gold2); }
+.auth-err { color: var(--red2); font-size: 13px; margin-top: .5rem; display: none; }
+
+/* MAIN LAYOUT */
+#app { display: none; }
+
+.site-header {
+  background: linear-gradient(180deg, #0d0a06 0%, #1a1208 100%);
+  border-bottom: 2px solid var(--gold);
+  padding: 1rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.site-title {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold2);
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+.site-meta { color: var(--parch3); font-size: 12px; font-style: italic; margin-top: 2px; }
+.header-actions { display: flex; gap: .75rem; align-items: center; }
+.btn-roll20 {
+  background: var(--red);
+  color: var(--parch);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  transition: background .2s;
+}
+.btn-roll20:hover { background: var(--red2); }
+.btn-players {
+  background: var(--teal);
+  color: var(--parch);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  transition: background .2s;
+  border: none; cursor: pointer;
+}
+.btn-players:hover { background: var(--teal2); }
+
+/* NAVIGATION */
+.main-nav {
+  background: #0d0a06;
+  border-bottom: 1px solid rgba(160,128,64,0.3);
+  display: flex; flex-wrap: wrap;
+  overflow-x: auto;
+}
+.nav-btn {
+  padding: .75rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--parch3);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: var(--gold2); border-bottom-color: rgba(201,168,76,0.3); }
+.nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+
+/* PANELS */
+.panel { display: none; padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* SECTION HEADERS */
+.sec-title {
+  font-family: 'Cinzel', serif;
+  color: var(--gold2);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(160,128,64,0.4);
+  padding-bottom: .5rem;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+.sec-title:first-child { margin-top: 0; }
+
+/* CARDS */
+.card {
+  background: linear-gradient(135deg, rgba(26,18,8,0.8), rgba(13,10,6,0.9));
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 3px;
+  padding: .875rem 1rem;
+  margin-bottom: .75rem;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: rgba(160,128,64,0.3);
+  border-radius: 3px 0 0 3px;
+}
+.card.red::before { background: var(--red); }
+.card.gold::before { background: var(--gold2); }
+.card.teal::before { background: var(--teal2); }
+.card.purple::before { background: var(--purple2); }
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  color: var(--parch);
+  font-weight: 600;
+  margin-bottom: .3rem;
+}
+.card-sub { font-size: 11.5px; color: var(--parch3); font-style: italic; margin-bottom: .4rem; }
+.card-body { font-size: 13.5px; line-height: 1.7; color: var(--parch2); }
+
+/* GRID LAYOUTS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: .75rem; }
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .5px;
+  margin: 2px 2px 2px 0;
+  font-weight: 700;
+}
+.b-red { background: rgba(122,26,26,0.8); color: #f4c4c4; border: 1px solid rgba(122,26,26,0.5); }
+.b-gold { background: rgba(122,96,26,0.8); color: #f4e4a0; border: 1px solid rgba(122,96,26,0.5); }
+.b-teal { background: rgba(13,61,48,0.8); color: #a0d4c4; border: 1px solid rgba(13,61,48,0.5); }
+.b-purple { background: rgba(45,26,74,0.8); color: #c4a0f4; border: 1px solid rgba(45,26,74,0.5); }
+.b-grey { background: rgba(40,30,15,0.8); color: var(--parch3); border: 1px solid rgba(80,60,30,0.5); }
+.b-orange { background: rgba(100,50,10,0.8); color: #f4c480; border: 1px solid rgba(100,50,10,0.5); }
+
+/* ALERTS */
+.alert {
+  border-radius: 3px;
+  padding: .6rem 1rem;
+  font-size: 13px;
+  font-style: italic;
+  margin-bottom: .75rem;
+}
+.alert-danger { background: rgba(122,26,26,0.2); border: 1px solid rgba(122,26,26,0.5); color: #f4c4c4; }
+.alert-warn { background: rgba(122,90,16,0.2); border: 1px solid rgba(122,90,16,0.5); color: #f4e4a0; }
+.alert-info { background: rgba(13,61,48,0.2); border: 1px solid rgba(13,61,48,0.5); color: #a0d4c4; }
+
+/* STAT ROWS */
+.stat-row {
+  display: flex; justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(160,128,64,0.15);
+  font-size: 13px;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-label { color: var(--parch3); font-style: italic; }
+.stat-val { font-weight: 600; color: var(--parch); }
+
+/* HP BARS */
+.hp-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 4px 0; overflow: hidden; }
+.hp-fill { height: 100%; border-radius: 3px; background: var(--red2); transition: width .3s; }
+.hp-fill.good { background: var(--teal2); }
+.hp-fill.warn { background: var(--warn); }
+
+/* QUEST STATUS DOTS */
+.qdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+.qdot-active { background: #2d9a5a; }
+.qdot-urgent { background: var(--red2); }
+.qdot-pending { background: var(--gold2); }
+.qdot-done { background: #444; }
+
+/* INSTABILITY CLOCK */
+.clock-container { display: flex; gap: 6px; flex-wrap: wrap; margin: .75rem 0; }
+.clock-seg {
+  width: 36px; height: 36px;
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  border: 1px solid rgba(160,128,64,0.3);
+}
+.clock-seg.empty { background: rgba(20,15,8,0.8); color: rgba(160,128,64,0.4); }
+.clock-seg.filled { background: var(--red); color: #f4c4c4; border-color: var(--red2); }
+.clock-seg.filled:hover { background: var(--red2); }
+.clock-seg.empty:hover { background: rgba(122,26,26,0.2); }
+.clock-threshold { font-size: 11px; color: var(--parch3); font-style: italic; margin-top: .25rem; }
+
+/* INITIATIVE TRACKER */
+.init-row {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .5rem .75rem;
+  border-radius: 3px;
+  margin-bottom: 3px;
+  background: rgba(20,15,8,0.6);
+  border: 1px solid rgba(160,128,64,0.2);
+  transition: all .2s;
+  cursor: pointer;
+}
+.init-row.active-turn { background: rgba(201,168,76,0.1); border-color: var(--gold2); }
+.init-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold2); width: 28px; text-align: center; }
+.init-name { flex: 1; font-size: 13.5px; }
+.init-hp { font-size: 12px; color: var(--red2); font-style: italic; }
+.init-row.active-turn .init-num,
+.init-row.active-turn .init-name { color: var(--parch); }
+
+/* ACTION BUTTONS */
+.action-btn {
+  background: var(--teal);
+  color: var(--parch);
+  border: none;
+  padding: 5px 12px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: .8px;
+  cursor: pointer;
+  margin-right: 6px;
+  margin-top: .3rem;
+  transition: background .2s;
+  font-weight: 700;
+}
+.action-btn:hover { background: var(--teal2); }
+.action-btn.red { background: var(--red); }
+.action-btn.red:hover { background: var(--red2); }
+.action-btn.gold { background: var(--gold); color: var(--ink); }
+.action-btn.gold:hover { background: var(--gold2); }
+.add-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed rgba(160,128,64,0.3);
+  color: var(--parch3);
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 13px;
+  padding: 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: .5rem;
+  transition: all .2s;
+}
+.add-btn:hover { background: rgba(160,128,64,0.1); border-color: var(--gold2); }
+
+/* NPC GRID */
+.npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .75rem; }
+.npc-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold2);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.npc-header { display: flex; align-items: center; gap: 10px; margin-bottom: .5rem; }
+
+/* STAT BLOCK */
+.stat-block {
+  background: rgba(240,228,200,0.05);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 3px;
+  padding: .875rem;
+  font-size: 12.5px;
+}
+.stat-block-header {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--red2);
+  border-bottom: 2px solid var(--red);
+  padding-bottom: .4rem;
+  margin-bottom: .6rem;
+}
+.stat-line { display: flex; gap: .5rem; flex-wrap: wrap; margin: .3rem 0; font-size: 12px; }
+.stat-label2 { color: var(--gold2); font-weight: 600; }
+
+/* DEITY GRID */
+.deity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .6rem; }
+.deity-card {
+  background: rgba(20,15,8,0.6);
+  border: 1px solid rgba(160,128,64,0.2);
+  border-radius: 3px;
+  padding: .65rem .8rem;
+}
+.deity-name { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; margin-bottom: .15rem; }
+.deity-align { font-size: 10.5px; color: var(--parch3); font-style: italic; margin-bottom: .3rem; }
+.deity-body { font-size: 12px; line-height: 1.5; color: var(--parch2); }
+
+/* NAME GENERATOR */
+.gen-output {
+  background: rgba(20,15,8,0.6);
+  border: 1px solid rgba(160,128,64,0.2);
+  border-radius: 3px;
+  padding: .6rem .875rem;
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  min-height: 36px;
+  margin: .4rem 0;
+  line-height: 1.6;
+  color: var(--gold3);
+}
+
+/* SPELL TABLE */
+.spell-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.spell-table th {
+  background: rgba(122,26,26,0.3);
+  color: var(--gold2);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: .5px;
+  padding: 5px 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(160,128,64,0.3);
+}
+.spell-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(160,128,64,0.1);
+  color: var(--parch2);
+  vertical-align: top;
+}
+.spell-table tr:hover td { background: rgba(201,168,76,0.05); }
+.spell-domain { color: var(--gold2); font-weight: 600; }
+
+/* TAB INNER */
+.tab-inner { display: flex; gap: 4px; margin-bottom: .75rem; flex-wrap: wrap; }
+.tab-btn {
+  background: none;
+  border: 1px solid rgba(160,128,64,0.3);
+  color: var(--parch3);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: .5px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.tab-btn.active { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
+
+/* ROLL20 LINKS */
+.r20-block {
+  background: rgba(10,8,5,0.8);
+  border: 1px solid rgba(122,26,26,0.3);
+  border-radius: 3px;
+  padding: .75rem 1rem;
+  margin-bottom: .6rem;
+}
+.r20-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold2); letter-spacing: 1px; margin-bottom: .4rem; font-weight: 700; }
+.r20-link { color: var(--gold2); font-size: 13px; text-decoration: none; display: block; padding: 2px 0; transition: color .15s; }
+.r20-link:hover { color: var(--parch); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0805; }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid rgba(160,128,64,0.2); margin: 1rem 0; }
+
+/* EDITABLE AREAS */
+.editable-area {
+  background: rgba(20,15,8,0.4);
+  border: 1px solid rgba(160,128,64,0.2);
+  border-radius: 3px;
+  padding: .6rem .875rem;
+  font-family: 'Crimson Pro', serif;
+  font-size: 13.5px;
+  color: var(--parch2);
+  min-height: 80px;
+  width: 100%;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+.editable-area:focus { border-color: var(--gold2); box-shadow: 0 0 8px rgba(201,168,76,0.1); }
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .panel { padding: 1rem; }
+  .npc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-title">Eldoria 2.0</div>
+    <div class="auth-sub">DM Command Centre — Authorised Access Only</div>
+    <input type="password" class="auth-input" id="pw-input" placeholder="ENTER PASSPHRASE" autocomplete="off">
+    <button class="auth-btn" onclick="checkAuth()">Enter</button>
+    <div class="auth-err" id="auth-err">Incorrect passphrase. Try again.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+<header class="site-header">
+  <div>
+    <div class="site-title">Eldoria 2.0</div>
+    <div class="site-meta">DM Command Centre &nbsp;·&nbsp; Bradley Todd &nbsp;·&nbsp; Level 5 &nbsp;·&nbsp; Aeloria Crossroads</div>
+  </div>
+  <div class="header-actions">
+    <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-roll20">Roll20 ↗</a>
+    <a href="players.html" target="_blank" class="btn-players">Player View ↗</a>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-btn active" onclick="showPanel('now',this)">⚔ Now</button>
+  <button class="nav-btn" onclick="showPanel('sessions',this)">📜 Sessions</button>
+  <button class="nav-btn" onclick="showPanel('players',this)">⚡ Players</button>
+  <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
+  <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
+  <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
+  <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
+  <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
+  <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
+  <button class="nav-btn" onclick="showPanel('kaelith',this)">☠ Kaelith</button>
+  <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
+</nav>
+
+<!-- ============ NOW ============ -->
+<div id="panel-now" class="panel active">
+  <div class="alert alert-danger">⚠ URGENT — Lyssandra Vale is in Vaeloran's custody. Her memory has been wiped. She now serves him willingly. Every session that passes without the party finding her worsens her fate.</div>
+  <div class="alert alert-warn">Current position: Kolt's Depot. Caravan escort to Ironhold available. The Naturus network spreads rot through the territories unchecked.</div>
+
+  <div class="sec-title">Threads in Play</div>
+  <div class="grid-2">
+    <div class="card red">
+      <div class="card-title"><span class="qdot qdot-urgent"></span>Lyssandra — memory wiped, in Vaeloran's service</div>
+      <div class="card-body">She is back as his loyal assistant. Vaeloran has always kept apprentices under subtle magical control — the shard disrupted this. Now restored. She genuinely believes she serves him willingly. She is the only witness who can expose everything.</div>
+      <div style="margin-top:.5rem"><span class="badge b-red">ticking clock</span><span class="badge b-grey">unknown to party</span></div>
+    </div>
+    <div class="card red">
+      <div class="card-title"><span class="qdot qdot-urgent"></span>Naturus network — rot spreading</div>
+      <div class="card-body">Sister Kaelith is operating freely. Gnoll den shrine confirmed. Writings point to Pig's Head Inn as meeting point. "K" note confirmed as Kaelith — connecting the Naturus cult and the Guilded Veil. Instability Clock at 2/8.</div>
+      <div style="margin-top:.5rem"><span class="badge b-red">active</span><span class="badge b-orange">Kaelith</span></div>
+    </div>
+    <div class="card gold">
+      <div class="card-title"><span class="qdot qdot-active"></span>Merric — Orin knows the truth</div>
+      <div class="card-body">Orin knows Rulden Marr is Merric Underbough — his adoptive father, former Luminar of Luminos, now Veilmaster of the Guilded Veil. Merric sent a cold warning letter but signed off "Keep to the light, Orin." He still cares. Seraphine told Orin: don't stop. Merric does NOT know Vaeloran is using him through the Aurek alias.</div>
+      <div style="margin-top:.5rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos</span></div>
+    </div>
+    <div class="card purple">
+      <div class="card-title"><span class="qdot qdot-active"></span>Sylas — Path of the Lich</div>
+      <div class="card-body">Sylas has taken Lich Initiate. He has a spirit jar. Soul Siphon is active — consuming souls permanently when he reduces Humanoids to 0 HP. Vaeloran has noticed. Their "spell study sessions" are not what Sylas thinks. Orin does not yet know what Sylas is doing. This will fracture the party when revealed.</div>
+      <div style="margin-top:.5rem"><span class="badge b-purple">Sylas personal</span><span class="badge b-red">soul consumption</span><span class="badge b-grey">party unaware</span></div>
+    </div>
+    <div class="card gold">
+      <div class="card-title"><span class="qdot qdot-pending"></span>Matilda — runaway horse</div>
+      <div class="card-body">Escaped from party's cart after being spooked by foxes. No sinister faction involved. Tracks lead north. Stablehands hired to search for 5gp. Light-hearted hook for Torren that could develop into Aurora Peaks connection.</div>
+      <div style="margin-top:.5rem"><span class="badge b-gold">Torren personal</span></div>
+    </div>
+    <div class="card gold">
+      <div class="card-title"><span class="qdot qdot-pending"></span>Kolt's Depot — caravan to Ironhold</div>
+      <div class="card-body">Escort job available. Ironhold is south — renowned blacksmiths, currently pressured by Aurum Dominion seeking exclusive weapon contracts. Guildmaster Bryndis Ashveil refuses; younger smith Corvan Drake wants the deal. Road encounter opportunity.</div>
+      <div style="margin-top:.5rem"><span class="badge b-gold">next session</span><span class="badge b-orange">Ironhold political tension</span></div>
+    </div>
+  </div>
+
+  <div class="sec-title">Quick Session Tools</div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="action-btn" onclick="sendPrompt('Design the Kolt\'s Depot caravan escort job for Eldoria 2.0 — level 5 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos), road to Ironhold, include a road encounter tied to the Naturus network and an NPC on the caravan with a secret')">Design Caravan Job ↗</button>
+    <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the Eldoria 2.0 party is at Kolt\'s Depot? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 5) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in Eldoria 2.0 — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Advance the Eldoria 2.0 Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the Eldoria 2.0 party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
+  </div>
+</div>
+
+<!-- ============ SESSIONS ============ -->
+<div id="panel-sessions" class="panel">
+  <div class="sec-title">Campaign Arc</div>
+  <div class="alert alert-info">Current arc: <strong>The Shard and the Letters</strong> — The party has returned Lyssandra to Vaeloran and cleared the gnoll den. They now stand at Kolt's Depot with threads pulling in every direction.</div>
+
+  <div class="sec-title">Session Log</div>
+  <div class="card gold">
+    <div class="card-sub">Sessions 1–2 &nbsp;·&nbsp; Oct 2025</div>
+    <div class="card-title">The Shard and the Letters</div>
+    <div class="card-body">Party hired by Vaeloran to find his missing apprentice Lyssandra and deliver sealed council letters (doctored to sow factional discord — party unknowingly delivered Vaeloran's chaos). Encountered Vexa (Maelis's apprentice) on the road. At Frostwood Marsh meteor site: fought corruption-warped spiders, found Lyssandra hiding in a barn. She warned the party before trying to flee — wounded by Torren and captured after a five-day chase. Returned to Vaeloran, who claimed the shard had corrupted her mind and promised to restore her.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">combat</span><span class="badge b-gold">revelation</span><span class="badge b-grey">Lyssandra handed over — critical mistake</span></div>
+  </div>
+  <div class="card gold">
+    <div class="card-sub">Sessions 3–4 &nbsp;·&nbsp; Most recent</div>
+    <div class="card-title">The Gnoll Den and the Rot Beneath</div>
+    <div class="card-body">Hired by Oskar (Goliath Townmaster) to deal with gnolls threatening southeastern farmlands. Party hunted them to their den and destroyed the pack. Discovery: a shrine to Naturus, a charmed and marked pack leader (Sister Kaelith's work), writings about rot spreading through the Aelorian territories guided by unseen hands. A note pointed to the Pig's Head Inn. Back in Aeloria: Torren found Matilda missing (runaway, tracks north). Orin pressed patrons about Merric. Torren gained Guilded Veil access — Rulden is Merric. Merric sent Orin a cold warning signed "R" but ending "Keep to the light, Orin." Seraphine at the Temple of Luminos guided Orin not to stop. Party now at Kolt's Depot.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">cult shrine</span><span class="badge b-red">Naturus confirmed</span><span class="badge b-gold">Merric revealed</span><span class="badge b-teal">milestone</span></div>
+  </div>
+
+  <div class="sec-title">Session Notes (DM Only)</div>
+  <textarea class="editable-area" id="session-notes" placeholder="Add notes for your next session here..." onchange="saveNote('session-notes',this.value)" style="height:120px"></textarea>
+  <button class="action-btn" onclick="sendPrompt('Help me write the session recap for the next Eldoria 2.0 session — the party is level 5 at Kolt\'s Depot considering a caravan escort to Ironhold while the Naturus network spreads and Merric awaits a reckoning')">Write Next Recap ↗</button>
+
+  <hr class="divider">
+  <div class="sec-title">Roll20 Maps</div>
+  <div class="r20-block">
+    <div class="r20-label">Campaign Pages</div>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Eldoria Map (world overview)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Vaeloran Duskwhisper (tower scene)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Forest Map (Frostwood Marsh / meteor site)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Farmland (barn scene / gnoll territory)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Pig's Head Main (Aeloria — guild front)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Guilded Veil (Thieves' Guild HQ)</a>
+    <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Holding Page / New Page 1</a>
+  </div>
+</div>
+
+<!-- ============ PLAYERS ============ -->
+<div id="panel-players" class="panel">
+  <div class="sec-title">Party — Level 5</div>
+  <div class="alert alert-warn">Update HP and spell slots each session. Upload Player Information OneNote page to add full character sheets.</div>
+
+  <div class="grid-3">
+    <!-- TORREN -->
+    <div class="card gold">
+      <div class="card-title">Torren</div>
+      <div class="card-sub">Halfling &nbsp;·&nbsp; Assassin Rogue &nbsp;·&nbsp; Level 5</div>
+      <div class="hp-bar"><div class="hp-fill warn" style="width:75%"></div></div>
+      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Sneak Attack: 3d6</div>
+      <div class="stat-row"><span class="stat-label">Key action</span><span class="stat-val">Wounded Lyssandra</span></div>
+      <div class="stat-row"><span class="stat-label">Personal thread</span><span class="stat-val">Matilda — tracks north</span></div>
+      <div class="stat-row"><span class="stat-label">Assassinate</span><span class="stat-val">Surprise = auto crit</span></div>
+      <div class="stat-row"><span class="stat-label">Backstory</span><span class="stat-val">TBC from player</span></div>
+      <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in Eldoria 2.0 that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
+    </div>
+
+    <!-- SYLAS -->
+    <div class="card purple">
+      <div class="card-title">Sylas</div>
+      <div class="card-sub">Tiefling (Chthonic) &nbsp;·&nbsp; Illusionist Wizard &nbsp;·&nbsp; Level 5</div>
+      <div class="hp-bar"><div class="hp-fill good" style="width:85%"></div></div>
+      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Spell Attack: —</div>
+      <div class="stat-row"><span class="stat-label">Lineage</span><span class="stat-val">Generational lich pact</span></div>
+      <div class="stat-row"><span class="stat-label">Path</span><span class="stat-val">Lich Initiate ⚠</span></div>
+      <div class="stat-row"><span class="stat-label">Spirit jar</span><span class="stat-val">TBC from player</span></div>
+      <div class="stat-row"><span class="stat-label">Soul Siphon</span><span class="stat-val">Active — party unaware</span></div>
+      <div class="stat-row"><span class="stat-label">Vaeloran relationship</span><span class="stat-val">Spell study — being observed</span></div>
+      <div class="stat-row"><span class="stat-label">Born</span><span class="stat-val">Aurora Peaks (human parents)</span></div>
+      <div style="margin-top:.5rem">
+        <span class="badge b-purple">Lich Initiate</span>
+        <span class="badge b-red">Soul Siphon active</span>
+        <span class="badge b-grey">Vaeloran watching</span>
+      </div>
+      <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in Eldoria 2.0 — his lineage comes from a generational pact with a lich made by his ancestors in the Aurora Peaks. What is a compelling spirit jar object for him and what was the original lich pact about?')">Spirit Jar Ideas ↗</button>
+    </div>
+
+    <!-- ORIN -->
+    <div class="card teal">
+      <div class="card-title">Orin</div>
+      <div class="card-sub">Cleric of Luminos &nbsp;·&nbsp; Level 5</div>
+      <div class="hp-bar"><div class="hp-fill good" style="width:90%"></div></div>
+      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Channel Divinity: 2/rest</div>
+      <div class="stat-row"><span class="stat-label">Adoptive father</span><span class="stat-val">Merric / Veilmaster Rulden</span></div>
+      <div class="stat-row"><span class="stat-label">Knows</span><span class="stat-val">Rulden = Merric (Veilmaster)</span></div>
+      <div class="stat-row"><span class="stat-label">Guided by</span><span class="stat-val">Seraphine — do not stop</span></div>
+      <div class="stat-row"><span class="stat-label">Faith origin</span><span class="stat-val">Taught by Merric</span></div>
+      <div class="stat-row"><span class="stat-label">Found by Merric</span><span class="stat-val">Near Duskmere, alone</span></div>
+      <div class="stat-row"><span class="stat-label">Pre-Merric childhood</span><span class="stat-val">Unknown — TBC</span></div>
+      <div class="stat-row"><span class="stat-label">Does NOT know</span><span class="stat-val">Sylas is consuming souls</span></div>
+      <button class="action-btn" onclick="sendPrompt('Design the moment in Eldoria 2.0 when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NPCS ============ -->
+<div id="panel-npcs" class="panel">
+  <div class="sec-title">Key NPCs</div>
+  <div class="npc-grid">
+
+    <div class="card red">
+      <div class="npc-header">
+        <div class="npc-avatar">VD</div>
+        <div><div class="card-title" style="margin:0">Vaeloran Duskwhisper</div><div class="card-sub" style="margin:0">Archmage · Patron · Secret Villain</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Alias: <strong>Aurek Voln Drowhiss</strong> (anagram). True goal: control all of Eldoria — starting with Aeloria through engineered instability. Pursuing lichdom. Has noticed Sylas's Lich Initiate — their "spell study sessions" are observation. Wants Sylas's family necklace (connected to original lich pact) as an arcane component. Keeps apprentices under subtle magical control — Lyssandra's shard exposure disrupted this. Believes he is the only one willing to do what must be done. Genuinely sees himself as the hero.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">main villain</span><span class="badge b-purple">aspiring lich</span><span class="badge b-gold">patron</span><span class="badge b-grey">Astronar-aligned</span></div>
+    </div>
+
+    <div class="card teal">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:var(--teal)">LV</div>
+        <div><div class="card-title" style="margin:0">Lyssandra Vale</div><div class="card-sub" style="margin:0">Half-elf · Ex-apprentice · Memory wiped</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Copper hair, scorch-marked robes. Was always under Vaeloran's subtle control. The meteor shard's wild energy disrupted this, allowing her to briefly break free and flee. Now restored — memory wiped, genuinely believes she serves him willingly. She IS the key witness who can expose Vaeloran, but she no longer knows it. The party handed her back.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">in danger</span><span class="badge b-grey">memory wiped</span><span class="badge b-teal">key witness</span></div>
+    </div>
+
+    <div class="card red">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:var(--purple)">MM</div>
+        <div><div class="card-title" style="margin:0">Merric Underbough</div><div class="card-sub" style="margin:0">Halfling · "Rulden Marr" · Veilmaster</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Orin's adoptive father. Former Luminar of Luminos who smuggled holy goods into the Aurum Dominion (where Luminos is suppressed). The Guilded Veil helped him — then owned him. Now Veilmaster. Sent Orin a cold warning but signed off "Keep to the light." He still cares. Does NOT know Vaeloran is using him through the Aurek alias. CR 5 skirmisher — throws smoke bombs and flees if confronted.</div>
+      <div style="margin-top:.4rem"><span class="badge b-orange">Veilmaster</span><span class="badge b-gold">Orin's father</span><span class="badge b-grey">conflicted</span><span class="badge b-grey">doesn't know Aurek = Vaeloran</span></div>
+    </div>
+
+    <div class="card red">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a3a">SK</div>
+        <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Charmed the gnoll pack leader. "K" on the note that grants Pig's Head back room access. Cleric of Naturus (Pestilence Domain). Believes she serves a greater demon — actually being manipulated through whispers. AC 19, HP 83, Spell Save DC 17. Plague Blessing, Virulent Burst, Cloak of Displacement. See Kaelith tab for full stat block.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">active threat</span><span class="badge b-grey">Naturus cultist</span><span class="badge b-red">CR ~10</span></div>
+      <button class="action-btn" onclick="showPanel('kaelith',document.querySelector('[onclick*=kaelith]'))">Full Stats ↗</button>
+    </div>
+
+    <div class="card gold">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a2010">MR</div>
+        <div><div class="card-title" style="margin:0">Maelis Raventhorn</div><div class="card-sub" style="margin:0">Mage · Vaeloran's Rival · Red Herring</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">The other major mage in Aeloria. Vaeloran plans to frame her. Sylas will receive a letter from the Aurum Dominion pointing toward her as the one undermining Aeloria's political structure — a deliberate red herring. Her apprentice Vexa was at the meteor site.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">being framed</span><span class="badge b-grey">party hasn't met</span></div>
+    </div>
+
+    <div class="card gold">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a2010">GR</div>
+        <div><div class="card-title" style="margin:0">Gerald</div><div class="card-sub" style="margin:0">Human · Pig's Head Owner · Guild Fixer</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Greying, sharp eyes behind a friendly smile. Senior fixer for the Guilded Veil. Screens newcomers, assigns low-risk jobs, moves information upward. "Sarah doesn't send fools." Offered missing guild member job — untouched. Back room connects to old tunnels. The "K" note bypasses his screening.</div>
+      <div style="margin-top:.4rem"><span class="badge b-orange">Guilded Veil</span><span class="badge b-grey">met by party</span></div>
+    </div>
+
+    <div class="card teal">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:var(--teal)">SR</div>
+        <div><div class="card-title" style="margin:0">Sarah</div><div class="card-sub" style="margin:0">Half-Orc · Wayfarer's Rest Manager</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Broad-shouldered, tidy braid, dry humour. Keeps secrets, no violence tolerated. Directed party to Pig's Head and Gerald. Orin used her as a Merric contact. Morally contrasts with Gerald. Knows the city's undercurrents but is not criminal. "The Wayfarer's Rest isn't the place for certain questions."</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">ally-adjacent</span><span class="badge b-grey">met by party</span></div>
+    </div>
+
+    <div class="card teal">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a3a2a">OS</div>
+        <div><div class="card-title" style="margin:0">Oskar</div><div class="card-sub" style="margin:0">Goliath · Townmaster of Aeloria</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Battle axe across his back. Hired the party for the gnoll job. Civic authority in Aeloria. Represents the independent council — exactly the kind of institution Vaeloran is trying to undermine. Could be a significant ally later when the truth about Vaeloran begins to surface.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">civic ally</span><span class="badge b-grey">met by party</span></div>
+    </div>
+
+    <div class="card teal">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a2a3a">AD</div>
+        <div><div class="card-title" style="margin:0">High Priest Alric Dawnveil</div><div class="card-sub" style="margin:0">Human · Temple of Luminos · Lightbearer</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Silver hair, calm authority, late 60s. "Light does not blind… it reveals." Senses something wrong in the city but does not know about Vaeloran. Seraphine (Dawnwarden) has already guided Orin. Dawnwarden Kaelen Brightmere (scholar/historian) notices inconsistencies — most likely to piece things together first. Mira Solwen (confession keeper) knows many secrets.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">major potential ally</span><span class="badge b-gold">Luminos faith</span></div>
+    </div>
+
+    <div class="card gold">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a2010">TM</div>
+        <div><div class="card-title" style="margin:0">Taren Myles</div><div class="card-sub" style="margin:0">Human · Vaeloran's Researcher</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Older human, white-streaked chestnut hair, perpetually ink-stained hands. Found in Vaeloran's library poring over runic charts. Role unclear — loyalist or potential informant? His conscience may be a crack in Vaeloran's inner circle. Could be the one who finally breaks and helps the party.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">ambiguous</span><span class="badge b-gold">Vaeloran's tower</span></div>
+    </div>
+
+    <div class="card gold">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a2020">VX</div>
+        <div><div class="card-title" style="margin:0">Vexa</div><div class="card-sub" style="margin:0">Maelis's Apprentice</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Encountered on the road to the meteor site with escorts. Party evaded her via clever use of tarps. Loyal to Maelis Raventhorn. Could be an ally if the party ever investigates Maelis as an alternative to Vaeloran.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">encountered</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a3a20">+</div>
+        <div><div class="card-title" style="margin:0">Generate NPC</div><div class="card-sub" style="margin:0">New character for the campaign</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Need a council member, guard captain, merchant, or street contact? Generate a fully fleshed NPC tied to the campaign.</div>
+      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC for Aeloria Crossroads in Eldoria 2.0 — include name, race, appearance, personality, secret, which deity from the Eldoria pantheon they worship, and how they connect to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Generate NPC ↗</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ QUESTS ============ -->
+<div id="panel-quests" class="panel">
+  <div class="sec-title">Active Quests</div>
+  <div class="card red"><div class="card-title"><span class="qdot qdot-urgent"></span>Rescue Lyssandra before it's too late</div><div class="card-sub">Urgent · Party does not know this is urgent</div><div class="card-body">Lyssandra is in Vaeloran's custody with her memory wiped. She is the only witness who can expose Vaeloran's true plans. Every session she remains there her fate worsens. The party handed her over willingly — they don't yet know what they did.</div><div style="margin-top:.4rem"><span class="badge b-red">ticking clock</span><span class="badge b-grey">party unaware</span></div></div>
+  <div class="card red"><div class="card-title"><span class="qdot qdot-urgent"></span>The Naturus network — rot spreading through the territories</div><div class="card-sub">Main threat · Ongoing</div><div class="card-body">Sister Kaelith is operating freely. Gnoll den writings point to a larger coordinated plan. The Pig's Head Inn is a confirmed meeting point. "K" note (Kaelith) connects Naturus cult to the Guilded Veil. Instability Clock: 2/8. Gerald's missing guild member job likely connected.</div><div style="margin-top:.4rem"><span class="badge b-red">active</span><span class="badge b-orange">Kaelith</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Bring Merric back to the light</div><div class="card-sub">Personal · Orin · Ongoing</div><div class="card-body">Orin knows Rulden is Merric. Merric's care slipped through his cold warning letter. Seraphine: don't stop. Merric doesn't know Vaeloran is using him — that truth could be what breaks him free. The anagram reveal (Aurek Voln Drowhiss) could be the key weapon.</div><div style="margin-top:.4rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos faith</span></div></div>
+  <div class="card purple"><div class="card-title"><span class="qdot qdot-active"></span>Sylas's lich path — where does it lead?</div><div class="card-sub">Personal · Sylas · Ongoing · Party unaware</div><div class="card-body">Sylas has taken Lich Initiate. Soul Siphon is active. Vaeloran knows. The original lich pact in Sylas's lineage is unexplored. His spirit jar is undefined. At level 12, Lich Ascension is possible. The party will eventually confront what he's becoming — or won't.</div><div style="margin-top:.4rem"><span class="badge b-purple">Sylas personal</span><span class="badge b-red">soul consumption</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Kolt's Depot — caravan escort to Ironhold</div><div class="card-sub">Immediate · Decision point</div><div class="card-body">Escort job south to Ironhold. Aurum Dominion pressuring Ironhold's smiths for exclusive weapon contracts — Guildmaster Bryndis Ashveil refuses but is losing to Corvan Drake's ambition. Road encounter opportunity, political intrigue, and potential Dominion contact.</div><div style="margin-top:.4rem"><span class="badge b-gold">next session</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Matilda — tracks leading north</div><div class="card-sub">Personal · Torren · Simmering</div><div class="card-body">Horse escaped after being spooked by foxes. No sinister faction involved. Tracks head north toward Aurora Peaks. Could develop into an Aurora Peaks connection — or just a fun recovery sidequest. Stablehands searching for 5gp.</div><div style="margin-top:.4rem"><span class="badge b-gold">Torren personal</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Sylas's Dominion letter — the red herring</div><div class="card-sub">Personal · Sylas · Pending</div><div class="card-body">Sylas needs to receive a letter from the Aurum Dominion warning about a powerful mage undermining Aeloria's political structure. The letter subtly points to Maelis Raventhorn — but the true culprit is Vaeloran. Planned by Vaeloran to discredit Maelis and keep the party off his trail.</div><div style="margin-top:.4rem"><span class="badge b-gold">Sylas personal</span><span class="badge b-red">Vaeloran's manipulation</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Gerald's job — missing guild member</div><div class="card-sub">Available · Guilded Veil</div><div class="card-body">Offered at the Pig's Head, left untouched. Still available. Could pull the party deeper into the Guilded Veil hierarchy and toward Merric/Rulden from a different angle. Likely connected to the Naturus network.</div><div style="margin-top:.4rem"><span class="badge b-grey">available</span><span class="badge b-orange">Guilded Veil</span></div></div>
+  <hr class="divider">
+  <div class="sec-title">Completed</div>
+  <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>The gnoll threat</div><div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar. Shrine to Naturus discovered — opened new threads.</div></div>
+  <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Find Lyssandra Vale</div><div class="card-body">Found, captured, returned to Vaeloran. At a cost the party doesn't yet understand.</div></div>
+  <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for Eldoria 2.0 appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
+</div>
+
+<!-- ============ CLOCK ============ -->
+<div id="panel-clock" class="panel">
+  <div class="sec-title">Instability Clock</div>
+  <div class="alert alert-warn">When the clock reaches 8, emergency powers are declared and Vaeloran positions himself as the only stabilising force. He benefits either way — filled or unfilled.</div>
+
+  <div class="card">
+    <div class="card-title">Current: <span id="clock-count">2</span> / 8 segments</div>
+    <div class="clock-container" id="clock-display"></div>
+    <div class="clock-threshold">At 4: Curfews declared &nbsp;·&nbsp; At 6: Emergency powers discussed &nbsp;·&nbsp; At 8: Power consolidation vote</div>
+  </div>
+
+  <div class="sec-title">Trigger Events</div>
+  <div class="grid-2">
+    <div class="card teal">
+      <div class="card-title">Completed Triggers</div>
+      <div class="card-body">Gnoll attack on southeastern farmlands (+1) &nbsp;·&nbsp; Naturus shrine discovered in gnoll den (+1)</div>
+    </div>
+    <div class="card red">
+      <div class="card-title">Upcoming Triggers</div>
+      <div class="card-body">Trade sabotage · Watch overreach · Council scandal · Public riot · Cult rumour spread · Violent unrest in Aeloria · Guild conflict · Merchant disappearances</div>
+    </div>
+  </div>
+
+  <div class="sec-title">The 3-Session Escalation Arc</div>
+  <div class="grid-3">
+    <div class="card gold">
+      <div class="card-title">Session 1 — The Data Point</div>
+      <div class="card-body">Gnoll incident investigated. Enchantment residue discovered. Track to Kaelith. She mentions "strategic destabilisation." Clock +2.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">complete</span></div>
+    </div>
+    <div class="card gold">
+      <div class="card-title">Session 2 — The Broker</div>
+      <div class="card-body">Follow funding trail. Discover Rulden Marr. Orin recognises Merric. Emotional confrontation. He reveals Aurek. Clock +2.</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">in progress</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Session 3 — The Ghost Name</div>
+      <div class="card-body">Decode correspondence. Compare writing patterns. Discover the anagram. Political confrontation begins. Clock +2. If clock fills: emergency powers declared.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">upcoming</span></div>
+    </div>
+  </div>
+
+  <div class="sec-title">The Anagram Reveal</div>
+  <div class="card red">
+    <div class="card-title">Aurek Voln Drowhiss = Vaeloran Duskwhisper</div>
+    <div class="card-body">Location: arcane archive. A player rearranges letters idly. No roll required if they physically rearrange it. Skill-based: Investigation DC 20. When they confront Merric with this name, he freezes. That is the confirmation.<br><br>Merric eventually notices the anagram himself and panics. Options: tries to blackmail Vaeloran, tries to flee the city, confesses to Orin, or is assassinated — leaving an encoded note revealing the truth.</div>
+  </div>
+
+  <button class="action-btn" onclick="sendPrompt('Advance the Eldoria 2.0 Instability Clock by one segment — describe the specific event that just happened in Aeloria, the city\'s immediate reaction, and how Vaeloran Duskwhisper quietly exploits it to position himself as the solution')">Advance Clock ↗</button>
+</div>
+
+<!-- ============ COMBAT ============ -->
+<div id="panel-combat" class="panel">
+  <div class="sec-title">Initiative Tracker</div>
+  <div id="init-list">
+    <div class="init-row active-turn"><div class="init-num">—</div><div class="init-name">Torren (Halfling Assassin Rogue)</div><div class="init-hp">HP —</div></div>
+    <div class="init-row"><div class="init-num">—</div><div class="init-name">Sylas (Tiefling Illusionist Wizard)</div><div class="init-hp">HP —</div></div>
+    <div class="init-row"><div class="init-num">—</div><div class="init-name">Orin (Cleric of Luminos)</div><div class="init-hp">HP —</div></div>
+  </div>
+  <button class="add-btn" onclick="addCombatant()">+ Add combatant</button>
+
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem">
+    <button class="action-btn" onclick="nextTurn()">Next Turn ↗</button>
+    <button class="action-btn red" onclick="clearCombat()">Clear Combat</button>
+  </div>
+
+  <hr class="divider">
+  <div class="sec-title">Level 5 Encounter Builder</div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the Eldoria 2.0 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) — theme it around Sister Kaelith\'s Naturus cult operatives ambushing them on the road to Ironhold. Include full stat blocks.')">Cult Ambush ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for Eldoria 2.0 in the Frostwood Marsh — corrupted creatures touched by Naturus, using monsters from the official monster manual, for a party of 3')">Marsh Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a social/stealth encounter in the Pig\'s Head Inn back room in Aeloria for the Eldoria 2.0 party — they need to find evidence connecting the Naturus cult to the Guilded Veil without being discovered')">Guild Infiltration ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a level 5 D&D 5e chase encounter through the streets of Aeloria Crossroads — the party is pursuing a Guilded Veil courier who has information about the Aurek Voln Drowhiss identity')">City Chase ↗</button>
+  </div>
+</div>
+
+<!-- ============ WORLD ============ -->
+<div id="panel-world" class="panel">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('aeloria',this)">Aeloria</button>
+    <button class="tab-btn" onclick="showTab('regions',this)">Regions</button>
+    <button class="tab-btn" onclick="showTab('factions',this)">Factions</button>
+    <button class="tab-btn" onclick="showTab('feywild',this)">Feywild</button>
+  </div>
+
+  <div id="tab-aeloria">
+    <div class="sec-title">Aeloria Crossroads — Key Locations</div>
+    <div class="grid-2">
+      <div class="card red"><div class="card-title">Spire of the Silver Eclipse</div><div class="card-sub">Vaeloran's Tower · City centre · Roll20 map</div><div class="card-body">Interior larger than exterior. Swirling light orbs, mechanical quills, self-sliding shelves. Shimmering-dust hourglass. Ancient yet alive. Lyssandra is here. Taren Myles works here. Vaeloran's lab for the lich ritual is somewhere within.</div></div>
+      <div class="card red"><div class="card-title">The Pig's Head Inn</div><div class="card-sub">Outer trade ring · Roll20 map · Guild front</div><div class="card-body">Owner: Gerald (Guilded Veil senior fixer). Loud, cheap ale, crowded. Back room for guild meetings. Basement connects to old tunnels. Gnoll den writings pointed here. "K" note grants back room access without Gerald's screening. Missing guild member job still available.</div></div>
+      <div class="card gold"><div class="card-title">The Guilded Veil</div><div class="card-sub">Thieves' Guild name · Roll20 map</div><div class="card-body">Veilmaster: Rulden Marr (Merric). Six Captains: Groodmet (finance), Ambimar (espionage), Kargan Voss (enforcement), Selra Quickfingers (theft), Varro Kain (smuggling), Edrin Vale (forgery — also runs The Gilded Quill in the Grand Bazaar).</div></div>
+      <div class="card teal"><div class="card-title">Wayfarer's Rest</div><div class="card-sub">Inner trade ward · Respectable</div><div class="card-body">Manager: Sarah (half-orc, early 40s). Polished dark wood, private booths with sound-dampening curtains. Upper-middle clientele. Sarah directed party to the Pig's Head. Morally contrasts with Gerald. "The Wayfarer's Rest isn't the place for certain questions."</div></div>
+      <div class="card teal"><div class="card-title">Temple of Luminos</div><div class="card-sub">White stone · City centre</div><div class="card-body">High Priest Alric Dawnveil (Lightbearer). Dawnwarden Seraphine Vale (strict). Dawnwarden Halven Tor (warm, trusted by common folk). Luminars: Liora Sunfall (healer), Tomas Eldrin (idealistic preacher), Kaelen Brightmere (scholar — notices inconsistencies), Mira Solwen (confession keeper — knows secrets). Acolyte Eryn Feld.</div></div>
+      <div class="card gold"><div class="card-title">Grand Bazaar</div><div class="card-sub">Central district · 12 shops</div><div class="card-body">Ironwell Forge (Durnan Ironwell, dwarf), Astral Relicarium (Velisra Thorne, elf), Bubblemint & Brass (Fizzwick, gnome), Silken Veil Outfitters (Marielle Voss), The Gilded Quill (Edrin Vale — guild captain cover), Second Bite Armory (Krag, half-orc), Spicewind Traders (Suri al'Kesh), Tack & Trot (Berrin Holt, halfling), Ember & Ash Curios (Nalia Duskryn, tiefling), Golden Crust Bakery (Tomas Feld), The Silver Strand (Liora Fen, half-elf), Cog & Cask (Harkin Bale).</div></div>
+      <div class="card gold"><div class="card-title">O'Leary's Horseshoe Stables</div><div class="card-sub">Northwestern gate</div><div class="card-body">Owner: Steve O'Leary. Sons: Jacob (stable boy), Harry (head trainer). Matilda was stabled here before escaping. Stablehands searching for 5gp.</div></div>
+      <div class="card gold"><div class="card-title">Notice Board</div><div class="card-sub">City centre · Public</div><div class="card-body">Gnoll infestation (complete) · Danger in Frostwood Marsh · Join the City Watch · Missing Halfling Merric — speak to Sarah (posted by Orin) · Mercenaries needed for caravan delivery.</div></div>
+    </div>
+    <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for Eldoria 2.0 — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
+  </div>
+
+  <div id="tab-regions" style="display:none">
+    <div class="sec-title">Regions of Eldoria</div>
+    <div class="grid-2">
+      <div class="card gold"><div class="card-title">Aurora Peaks — Aurum Dominion</div><div class="card-sub">Monarchy · Expansionist · Crystal magic</div><div class="card-body">Emperor Valerius Kaelthorn. Luminos worship suppressed — why Merric started smuggling there. Cities: Auranova (capital), Crystalholm, Eclipsia, Stellara, Starryhaven, Aurora's Rest, Lunara Monastery. Venerate Thalasia and Aetherius. Matilda's tracks head this direction. Sylas was born here.</div></div>
+      <div class="card teal"><div class="card-title">Verdant Expanse — Sylvarian Enclaves</div><div class="card-sub">Druidic · Multicultural · Tree cities</div><div class="card-body">Originally elf-only, now multicultural. Tree cities: Eldralor (Aelarion Tree), Celestia Glade (floating island, levitation crystals), Silentwood (assassins), Aurelia Haven (arts hub). Revere Yggdris and Veridania. Border with Frostwood Marsh.</div></div>
+      <div class="card red"><div class="card-title">Serpent Isles — Reptilian Tribes & Pirates</div><div class="card-sub">11 Lizardfolk clans · Pirate Confederacy</div><div class="card-body">11 clans including Scaleheart Brood (Nalara Scaleheart, matriarch) and Blacktail Clan (Matriarch Vessara Blacktail — largest clan). Pirate Confederacy: Council of Captains, free ports (Port Blackfin, Skullport, Coral Cove, Serpent's Lair). All revere Sirenna (Neutral — Nature, Water, Protection).</div></div>
+      <div class="card"><div class="card-title">Frostwood Marsh</div><div class="card-sub">Meteor crash site · Ancient ruins · Current</div><div class="card-body">Ancient Lethraliri civilization ruins (ice/water magic, Second Age). Frozen Spire, Bioluminescent Grove. Meteor impact site — shard energies linger, corruption source. The lonely barn is here. Creatures: Black Dragon Wyrmling, Bog Hag, Will-o'-Wisps, Specter, Water Weird.</div></div>
+      <div class="card"><div class="card-title">Celestial Plateau — Celestium Clans</div><div class="card-sub">Dwarven · Theocratic · Cosmic</div><div class="card-body">Dwarves migrated ~2000 years ago during the Usurpation. Cities: Astronhold (capital, Council of Sages), Stellargrove. Guardians of cosmic equilibrium. Blend dwarven craft with celestial magic. Revere Korvain.</div></div>
+      <div class="card"><div class="card-title">Ember Wastes / Crimson Desert</div><div class="card-sub">Nomadic tribes · Desert</div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Camps: Emberhold (central hub), Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana (wind/travel) and Solara (sun). Crimson Desert: tombs of Mor'nyx. Ancient ruined cities in the dunes.</div></div>
+    </div>
+  </div>
+
+  <div id="tab-factions" style="display:none">
+    <div class="sec-title">Major Factions</div>
+    <div class="grid-2">
+      <div class="card red"><div class="card-title">Aurum Dominion</div><div class="card-sub">Aurora Peaks · Expansionist Monarchy</div><div class="card-body">Emperor Valerius Kaelthorn (52). Crown Prince Aurek Kaelthorn (26, bold warrior). Princess Selene (22, cunning, interested in espionage). Prince Darius (17, adventurous). Aurum Sentinels (protection force). Suppresses Luminos worship. Pressuring Ironhold for weapon contracts. Tensions with Aelorian Territories.</div></div>
+      <div class="card gold"><div class="card-title">Order of the Silver Crescent</div><div class="card-sub">Aurora Peaks · Monk Order · Lunara devotees</div><div class="card-body">Devoted to Lunara (Moonwalker). Gemstone meditation. Silver Crescent Dance martial art. Hierarchy: Initiates → Novices (Duskwalkers) → Instructors (Sensei) → Enlightened Guardians (Dawnbringers) → Gemstone Keepers → Lunar Elders. Based at Lunara Monastery.</div></div>
+      <div class="card orange"><div class="card-title" style="color:var(--gold3)">The Guilded Veil</div><div class="card-sub">Aeloria · Thieves' Guild</div><div class="card-body">Veilmaster: Rulden Marr (Merric). Front: Pig's Head Inn. Six Captains: Groodmet (finance), Ambimar (espionage), Kargan Voss (enforcement), Selra Quickfingers (theft), Varro Kain (smuggling), Edrin Vale (forgery). Being manipulated by Vaeloran through Aurek alias.</div></div>
+      <div class="card red"><div class="card-title">Naturus Cult</div><div class="card-sub">Underground · Spreading through territories</div><div class="card-body">Leader: Sister Kaelith (believes she serves a demon, actually manipulated by Naturus whispers). Goal: spread rot and decay as a path to renewal. Connected to the Guilded Veil through the "K" note. Gnoll den shrine was one of many operations. Secondary goal possibly: weakening the Divine Gate.</div></div>
+      <div class="card teal"><div class="card-title">Pirate Confederacy</div><div class="card-sub">Serpent Isles · Council of Captains</div><div class="card-body">Code of conduct: fair spoils, mutual aid, respect for tradition. Free ports: Port Blackfin (bustling haven), Skullport (inside dormant volcano — powerful pirate lord), Coral Cove (hidden harbour), Serpent's Lair (ancient caves). Revere Sirenna.</div></div>
+      <div class="card teal"><div class="card-title">Temple of Luminos</div><div class="card-sub">Aeloria · Suppressed in Aurum Dominion</div><div class="card-body">Lightbearer Alric Dawnveil at the top. Why Merric started smuggling: Luminos worship suppressed in Aurum Dominion territory. Could become a major political player if Vaeloran's manipulation of the council is exposed. Kaelen Brightmere (scholar) most likely to piece together early clues.</div></div>
+    </div>
+  </div>
+
+  <div id="tab-feywild" style="display:none">
+    <div class="sec-title">The Feywild — Thalindel</div>
+    <div class="alert alert-info">Thalindel is not on the material plane Eldoria map. It exists in the Feywild — accessible through fey crossings, seasonal gates, or invitation from the Queen herself.</div>
+    <div class="card purple">
+      <div class="card-title">Queen Thessavaine</div>
+      <div class="card-sub">Summer Court Eladrin · Ruler of Thalindel</div>
+      <div class="card-body">A Summer Court eladrin of shifting moods and razor-sharp wit. Rules Thalindel through charisma, whim, and the occasional dramatic decree nobody quite understands but everyone follows. Finds mortals endlessly amusing. Political stance toward Aeloria: deeply interested, occasionally meddlesome, entirely unpredictable. Neither ally nor enemy — she does whatever delights her most. May send emissaries to Aeloria for reasons that seem trivial but carry hidden weight.</div>
+      <div style="margin-top:.4rem"><span class="badge b-purple">Summer Court</span><span class="badge b-grey">unpredictable</span><span class="badge b-gold">Feywild</span></div>
+    </div>
+    <div class="card purple">
+      <div class="card-title">Thalindel</div>
+      <div class="card-sub">City of constant change · Feywild</div>
+      <div class="card-body">A city of constant change and artistic expression. Layout and architecture morph and shift as if guided by the city's own whims. Bridges of living vines connect treehouse-like structures. Enchanting lights dance like fireflies. Hub of creativity where Changelings and fey creatures celebrate art, music, and magic. Vibrant festivals blend reality and illusion. Residents take on multiple personas daily.</div>
+    </div>
+    <button class="action-btn" onclick="sendPrompt('Design a Feywild encounter in or near Thalindel for the Eldoria 2.0 campaign involving Queen Thessavaine — she wants something from the party that seems trivial but has significant political implications. Include her personality, her court, and a bargain she offers')">Design Feywild Encounter ↗</button>
+  </div>
+</div>
+
+<!-- ============ PANTHEON ============ -->
+<div id="panel-pantheon" class="panel">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('p-creator',this)">Creator Gods</button>
+    <button class="tab-btn" onclick="showTab('p-children',this)">The Children</button>
+    <button class="tab-btn" onclick="showTab('p-betrayer',this)">Betrayer Gods</button>
+    <button class="tab-btn" onclick="showTab('p-history',this)">History</button>
+  </div>
+
+  <div id="tab-p-creator">
+    <div class="deity-grid">
+      <div class="deity-card" style="border-left:3px solid var(--gold2)"><div class="deity-name" style="color:var(--gold3)">Luminos</div><div class="deity-align">Neutral Good · Creator</div><div class="deity-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, enlighteners. <strong>Suppressed in the Aurum Dominion</strong> — why Merric smuggled holy goods there. Symbol: radiant orb with light patterns.</div></div>
+      <div class="deity-card" style="border-left:3px solid var(--teal2)"><div class="deity-name" style="color:#a0d4c4">Veridania</div><div class="deity-align">Neutral · Creator</div><div class="deity-body">Nature's balance and interconnectedness. Druids, healers, naturalists. Sylvarian Enclaves revere her alongside Yggdris. Symbol: blooming flower with intertwining roots.</div></div>
+    </div>
+  </div>
+
+  <div id="tab-p-children" style="display:none">
+    <div class="deity-grid">
+      <div class="deity-card"><div class="deity-name">Mizura</div><div class="deity-align">Chaotic Neutral</div><div class="deity-body">Secrets, illusions, trickery. Rogues and spies. Secretive cults. Two-faced mask symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Sylvana</div><div class="deity-align">Chaotic Good</div><div class="deity-body">Travel, air, communication. Nomads of the Ember Wastes. Wind-carried feather symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Aetherius</div><div class="deity-align">Lawful Good</div><div class="deity-body">Wisdom, prophecy, stars. Aurum Dominion state deity. Starburst symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Solara</div><div class="deity-align">Lawful Good</div><div class="deity-body">Light, sun, rebirth. Paladins, healers. Ember Wastes nomads. Gold sunburst symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Lunara</div><div class="deity-align">Neutral</div><div class="deity-body">Moon, dreams, mystery. Order of the Silver Crescent devoted to her. Crescent moon symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Yggdris</div><div class="deity-align">Neutral Good</div><div class="deity-body">Nature, balance, life cycle. Sylvarian Enclaves, druids, rangers. Intertwined tree symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Korvain</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Craftsmanship, invention, dwarvenkind. Celestium Clans. Anvil and hammer symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Sirenna</div><div class="deity-align">Neutral</div><div class="deity-body">Sea, protection, nature. Reptilian Tribes and Pirate Confederacy. Coiled sea serpent symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Thalasia</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Arcane magic, elemental forces. Aurum Dominion. Crystal with elemental motifs symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Mor'nyx</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Death, afterlife, protection. Crimson Desert tombs. Ankh with winged scarab symbol.</div></div>
+    </div>
+  </div>
+
+  <div id="tab-p-betrayer" style="display:none">
+    <div class="alert alert-danger">Both Betrayer Gods are sealed behind the Divine Gate after the Great Reclamation. They cannot act directly — only through whispers, corruption, and followers who may not even know they serve them.</div>
+    <div class="deity-grid">
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly Vaeloran's true patron — though Vaeloran may not consciously know it. Eclipse shrouding a sun symbol. His influence: slow, patient, through institutions and individuals who believe they're acting freely.</div></div>
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. Withered tree symbol. May be trying to crack the Divine Gate.</div></div>
+    </div>
+  </div>
+
+  <div id="tab-p-history" style="display:none">
+    <div class="sec-title">History of Eldoria</div>
+    <div class="card gold"><div class="card-title">1st Age — Creation and Harmony (1000 years)</div><div class="card-body">Luminos and Veridania collaborated to shape Eldoria. Luminos: celestial energies, light, order, structure. Veridania: nature, life, balance. Their combined work created the world's landscapes, magic, and sentient beings. Astronar and Naturus grew discontented and began subtly sowing discord among the other deities.</div></div>
+    <div class="card red"><div class="card-title">The Usurpation — End of the 1st Age</div><div class="card-body">Astronar and Naturus confronted Luminos and Veridania directly. Through deceit, manipulation, and force, they overcame the Creator Gods and sealed them behind a Divine Gateway. During this upheaval, the Aurum Dominion infiltrated and displaced the Dwarven Clans of the Underpeak — forcing their exodus to the Celestial Plateau (~2000 years ago).</div></div>
+    <div class="card red"><div class="card-title">2nd Age — Dark Reign (750 years)</div><div class="card-body">Darkness crept over Eldoria. Ecosystems twisted. Astronar diminished the sun; Naturus corrupted nature. Cults of darkness flourished. Hidden resistance grew — the Lethraliri civilization in Frostwood Marsh thrived during this period using ice/water magic. Heroes emerged under the banner of light.</div></div>
+    <div class="card teal"><div class="card-title">The Great Reclamation — End of the 2nd Age</div><div class="card-body">United faithful defeated Astronar and Naturus. Yggdris healed the land, Korvain crafted artifacts of light, Sirenna disrupted the usurpers' dominion, Thalasia's rituals counteracted dark magic, Mor'nyx guided fallen heroes. The usurpers were cast down and sealed in separate planes of darkness.</div></div>
+    <div class="card teal"><div class="card-title">3rd Age — Restoration and Renewal (300 years · Current)</div><div class="card-body">Luminos and Veridania emerged from hiding to help mend the damage. All deities then made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. They sealed themselves behind the Divine Gate — keeping gods out of the material plane. Faith now operates without direct divine presence.</div></div>
+    <div class="alert alert-warn" style="margin-top:.75rem">DM NOTE: The Divine Gate may be something another faction is trying to open or weaken. The Naturus cult under Kaelith may have this as a secondary goal — cracking the gate enough for Naturus to whisper more directly into the world. This would explain why the corruption feels organised rather than random.</div>
+  </div>
+</div>
+
+<!-- ============ KAELITH ============ -->
+<div id="panel-kaelith" class="panel">
+  <div class="sec-title">Sister Kaelith — Full Stat Block</div>
+  <div class="alert alert-danger">⚠ CR ~10 encounter. The level 5 party faces this at a severe disadvantage. Do NOT run this as a straight fight — she should be an encounter they survive through cleverness, not combat. She will open with Silence on Orin, Spirit Guardians on herself, and let Plague Blessing do the work.</div>
+
+  <div class="grid-2">
+    <div class="stat-block">
+      <div class="stat-block-header">Sister Kaelith — Tiefling Cleric 10 (Pestilence Domain)</div>
+      <div class="stat-line"><span class="stat-label2">Alignment:</span> Neutral Evil &nbsp;·&nbsp; <span class="stat-label2">Age:</span> 30 &nbsp;·&nbsp; <span class="stat-label2">Size:</span> Medium</div>
+      <div class="stat-line"><span class="stat-label2">Height:</span> 5ft &nbsp;·&nbsp; <span class="stat-label2">Weight:</span> 95lb &nbsp;·&nbsp; <span class="stat-label2">Skin:</span> Ashen &nbsp;·&nbsp; <span class="stat-label2">Eyes:</span> Green &nbsp;·&nbsp; <span class="stat-label2">Hair:</span> Black</div>
+      <div class="stat-line"><span class="stat-label2">Faith:</span> Naturus &nbsp;·&nbsp; <span class="stat-label2">Languages:</span> Common, Draconic, Elvish, Modron</div>
+      <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+      <div class="stat-line"><span class="stat-label2">AC:</span> 19 (Mithral Half Plate + Shield)</div>
+      <div class="stat-line"><span class="stat-label2">HP:</span> 83 &nbsp;·&nbsp; <span class="stat-label2">Hit Dice:</span> 10d8</div>
+      <div class="stat-line"><span class="stat-label2">Speed:</span> 30ft &nbsp;·&nbsp; <span class="stat-label2">Initiative:</span> +2</div>
+      <div class="stat-line"><span class="stat-label2">Proficiency Bonus:</span> +4 &nbsp;·&nbsp; <span class="stat-label2">Spell Save DC:</span> 17 &nbsp;·&nbsp; <span class="stat-label2">Spell Attack:</span> +9</div>
+      <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+      <div class="stat-line"><span class="stat-label2">STR</span> 14 (+2) &nbsp;&nbsp; <span class="stat-label2">DEX</span> 14 (+2) &nbsp;&nbsp; <span class="stat-label2">CON</span> 14 (+2)</div>
+      <div class="stat-line"><span class="stat-label2">INT</span> 12 (+1) &nbsp;&nbsp; <span class="stat-label2">WIS</span> 20 (+5) &nbsp;&nbsp; <span class="stat-label2">CHA</span> 8 (-1)</div>
+      <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+      <div class="stat-line"><span class="stat-label2">Saving Throws:</span> Wisdom +9, Charisma +3</div>
+      <div class="stat-line"><span class="stat-label2">Resistances:</span> Necrotic, Poison</div>
+      <div class="stat-line"><span class="stat-label2">Darkvision:</span> 60ft</div>
+      <div class="stat-line"><span class="stat-label2">Attuned:</span> Cloak of Displacement</div>
+      <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+      <div class="stat-line"><span class="stat-label2">Personality:</span> Blunt. No filter. Believes in rot and decay bringing new life.</div>
+      <div class="stat-line"><span class="stat-label2">Bond:</span> Devoted to Naturus.</div>
+      <div class="stat-line"><span class="stat-label2">Flaw:</span> Has no filter — very blunt with her words.</div>
+    </div>
+
+    <div>
+      <div class="stat-block" style="margin-bottom:.75rem">
+        <div class="stat-block-header">Weapons & Attacks</div>
+        <div class="stat-line"><span class="stat-label2">Mace +3:</span> +9 to hit · 1d6+5 bludgeoning · Simple, Sap</div>
+        <div class="stat-line"><span class="stat-label2">Chill Touch:</span> +9 to hit · 2d10 necrotic · V/S</div>
+        <div class="stat-line"><span class="stat-label2">Light Crossbow:</span> +6 to hit · 1d8+2 piercing · Range 80/320</div>
+        <div class="stat-line"><span class="stat-label2">Mace (basic):</span> +6 to hit · 1d6+2 bludgeoning</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-header">Key Features</div>
+        <div class="stat-line"><span class="stat-label2">Blight Weaver:</span> Resistance to Necrotic and Poison. Can swap between types. Damage ignores resistance.</div>
+        <div class="stat-line"><span class="stat-label2">Plague Blessing:</span> 5ft Emanation. CON save DC 17 or gain 1 Exhaustion level per turn (max = WIS mod = 5). 3/Long Rest.</div>
+        <div class="stat-line"><span class="stat-label2">Virulent Burst (Reaction):</span> When enemy within 60ft drops to 0HP: 10ft Emanation burst (20ft if enemy had exhaustion). CON save or Putrid Shock (Incapacitated) or Toxic Infection (3d6 Necrotic/Poison). Uses = WIS mod (5).</div>
+        <div class="stat-line"><span class="stat-label2">Cloak of Displacement:</span> Attackers have disadvantage until she takes damage each round.</div>
+        <div class="stat-line"><span class="stat-label2">Potent Spellcasting:</span> +5 damage to Cleric cantrips.</div>
+        <div class="stat-line"><span class="stat-label2">Channel Divinity:</span> 3/Long Rest — Divine Spark, Turn Undead, Sear Undead (5d8 Radiant when Turn Undead succeeds).</div>
+        <div class="stat-line"><span class="stat-label2">Divine Intervention:</span> Once/Long Rest — cast any Cleric spell level 5 or lower for free.</div>
+        <div class="stat-line"><span class="stat-label2">Thaumaturge:</span> +5 to Arcana and Religion checks.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Spell List</div>
+  <table class="spell-table">
+    <tr><th>Level</th><th>Slots</th><th>Spells</th></tr>
+    <tr><td>Cantrips</td><td>At will</td><td>Light, Mending, Resistance, Sacred Flame (DEX 17), Spare the Dying, Chill Touch (+9, 2d10 necrotic), Thaumaturgy, Guidance</td></tr>
+    <tr><td>1st</td><td>4</td><td>Bless, Cure Wounds, Guiding Bolt (+9), Healing Word, Bane (CHA 17), Protection from Evil and Good, Command (WIS 17), Shield of Faith, <span class="spell-domain">Detect Poison and Disease, Protection from Poison, Ray of Sickness (+9), Inflict Wounds (CON 17)</span></td></tr>
+    <tr><td>2nd</td><td>3</td><td>Spiritual Weapon (+9), Hold Person (WIS 17), Prayer of Healing, Aid, Silence, Calm Emotions (CHA 17), Lesser Restoration, Warding Bond, Zone of Truth, <span class="spell-domain">Ray of Enfeeblement (CON 17)</span></td></tr>
+    <tr><td>3rd</td><td>3</td><td>Beacon of Hope, Mass Healing Word, Spirit Guardians (WIS 17), Dispel Magic, Animate Dead, Bestow Curse (WIS 17), Glyph of Warding (DEX 17), Sending, <span class="spell-domain">Stinking Cloud (CON 17), Vampiric Touch (+9)</span></td></tr>
+    <tr><td>4th</td><td>3</td><td>Banishment (CHA 17), Death Ward, Aura of Life, Freedom of Movement, Guardian of Faith (DEX 17), Divination, <span class="spell-domain">Blight (CON 17), Giant Insect</span></td></tr>
+    <tr><td>5th</td><td>2</td><td>Flame Strike (DEX 17), Raise Dead, Geas (WIS 17), Greater Restoration, Commune, Scrying (WIS 17), <span class="spell-domain">Contagion (CON 17), Insect Plague (CON 17)</span></td></tr>
+  </table>
+  <div style="margin-top:.5rem;font-size:11.5px;color:var(--parch3);font-style:italic"><span class="spell-domain">■</span> = Pestilence Domain (always prepared)</div>
+
+  <div class="sec-title">Combat Strategy</div>
+  <div class="card red">
+    <div class="card-title">How to Run Kaelith at the Table</div>
+    <div class="card-body">
+      <strong>Round 1:</strong> Cast Silence (120ft range) centred on Orin — removes his spellcasting entirely. Use Channel Divinity: Plague Blessing, choosing herself or a minion as the vector.<br><br>
+      <strong>Round 2:</strong> Spirit Guardians on herself (WIS 17 save, 3d8 radiant/necrotic per turn to nearby enemies). Move into melee range — Cloak of Displacement gives attackers disadvantage until she takes damage.<br><br>
+      <strong>Round 3+:</strong> Mace +3 attacks. Let Plague Blessing (exhaustion) and Spirit Guardians do the work. Use Virulent Burst as a Reaction whenever an enemy drops to 0HP — chains the damage.<br><br>
+      <strong>Escape condition:</strong> Below 40HP she casts Misty Step / Gaseous Form and withdraws, leaving minions behind. She does not die unnecessarily.<br><br>
+      <strong>Weakness:</strong> CHA -1, INT +1. Low social skills. If players can get Dispel Magic on Spirit Guardians and break Silence, she becomes much more manageable. Concentration on Spirit Guardians is her most important resource to protect.
+    </div>
+  </div>
+  <button class="action-btn" onclick="sendPrompt('Write a dramatic encounter scene where the Eldoria 2.0 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos, all level 5) first meets Sister Kaelith in a tense location — not a straight fight but a confrontation where she reveals partial truths about the Naturus network before escaping')">Design Kaelith Encounter ↗</button>
+</div>
+
+<!-- ============ NAMES ============ -->
+<div id="panel-names" class="panel">
+  <div class="sec-title">Name Generator</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Random Names</div>
+      <div class="card-sub">Fitting the Eldoria world</div>
+      <div class="gen-output" id="name-out">Click a button to generate names...</div>
+      <button class="action-btn" onclick="genNames('human')">Human</button>
+      <button class="action-btn" onclick="genNames('elf')">Elf / Half-elf</button>
+      <button class="action-btn" onclick="genNames('dwarf')">Dwarf</button>
+      <button class="action-btn" onclick="genNames('tiefling')">Tiefling</button>
+      <button class="action-btn" onclick="genNames('halfling')">Halfling</button>
+      <button class="action-btn" onclick="genNames('exotic')">Exotic</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Aeloria Street Encounters</div>
+      <div class="card-sub">Random scenes — all tied to your plot threads</div>
+      <div class="gen-output" id="enc-out">Click to generate a scene...</div>
+      <button class="action-btn" onclick="genEncounter()">Roll Scene</button>
+      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC encounter in Aeloria Crossroads for the Eldoria 2.0 party — include name, race, appearance, what they want, a secret they are hiding, which Eldoria deity they worship, and a connection to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Full NPC ↗</button>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:.75rem">
+    <div class="card">
+      <div class="card-title">Location Names</div>
+      <div class="card-sub">Taverns, shops, districts</div>
+      <div class="gen-output" id="loc-out">Click to generate...</div>
+      <button class="action-btn" onclick="genLocation()">Roll Names</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Plague Symptom (Kaelith)</div>
+      <div class="card-sub">Roll for Plague Blessing manifestation</div>
+      <div class="gen-output" id="plague-out">Click to roll...</div>
+      <button class="action-btn red" onclick="genPlague()">Roll Symptom</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end #app -->
+
+<script>
+// AUTH
+const PW = 'eldoria2dm';
+function checkAuth() {
+  const v = document.getElementById('pw-input').value.toLowerCase().trim();
+  if (v === PW) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initClock(); loadNotes();
+  } else {
+    document.getElementById('auth-err').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+document.getElementById('pw-input').addEventListener('keypress', e => { if(e.key === 'Enter') checkAuth(); });
+
+// NAVIGATION
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelector(`[onclick*="'${id}'"]`)?.classList.add('active');
+}
+
+// TABS (world subtabs and pantheon)
+function showTab(id, btn) {
+  const parent = btn.closest('.panel') || document.body;
+  parent.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('tab-' + id) || document.getElementById(id);
+  if(el) el.style.display = 'block';
+  btn.classList.add('active');
+}
+
+// INSTABILITY CLOCK
+let clockFilled = 2;
+function initClock() {
+  const saved = localStorage.getItem('eldoria-clock');
+  if(saved) clockFilled = parseInt(saved);
+  renderClock();
+}
+function renderClock() {
+  const d = document.getElementById('clock-display');
+  const c = document.getElementById('clock-count');
+  if(!d) return;
+  d.innerHTML = '';
+  for(let i = 0; i < 8; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'clock-seg ' + (i < clockFilled ? 'filled' : 'empty');
+    seg.textContent = i < clockFilled ? '!' : (i + 1);
+    seg.title = i < clockFilled ? 'Click to unfill' : 'Click to fill';
+    const idx = i;
+    seg.onclick = () => { clockFilled = idx < clockFilled ? idx : idx + 1; localStorage.setItem('eldoria-clock', clockFilled); renderClock(); };
+    d.appendChild(seg);
+  }
+  if(c) c.textContent = clockFilled;
+}
+
+// INITIATIVE TRACKER
+let currentTurn = 0;
+function addCombatant() {
+  const name = prompt('Combatant name:'); if(!name) return;
+  const init = prompt('Initiative roll:');
+  const hp = prompt('Max HP:');
+  const row = document.createElement('div');
+  row.className = 'init-row';
+  row.innerHTML = `<div class="init-num">${init||'?'}</div><div class="init-name">${name}</div><div class="init-hp">HP ${hp||'—'}</div>`;
+  row.onclick = function() {
+    document.querySelectorAll('.init-row').forEach(r => r.classList.remove('active-turn'));
+    this.classList.add('active-turn');
+  };
+  document.getElementById('init-list').appendChild(row);
+}
+function nextTurn() {
+  const rows = document.querySelectorAll('.init-row');
+  rows.forEach(r => r.classList.remove('active-turn'));
+  currentTurn = (currentTurn + 1) % rows.length;
+  rows[currentTurn].classList.add('active-turn');
+}
+function clearCombat() {
+  if(confirm('Clear all combatants?')) {
+    document.getElementById('init-list').innerHTML = '';
+    currentTurn = 0;
+  }
+}
+
+// NOTES
+function saveNote(key, val) { localStorage.setItem('eldoria-note-' + key, val); }
+function loadNotes() {
+  document.querySelectorAll('.editable-area').forEach(el => {
+    const saved = localStorage.getItem('eldoria-note-' + el.id);
+    if(saved) el.value = saved;
+  });
+}
+
+// NAME GENERATORS
+const names = {
+  human: { f: ['Aldric','Brennan','Cassia','Daven','Elara','Fynn','Greta','Hadwin','Isolt','Jareth','Kira','Lorne','Maren','Nolan','Petra','Rowena','Savan','Theda','Ulric','Wren'], l: ['Ashbrook','Blackthorn','Carver','Duskfield','Emberly','Farrow','Greaves','Harwick','Ironside','Kessler','Morrow','Northgate','Payne','Ravenwood','Stone','Thatch','Underhill','Weston'] },
+  elf: { f: ['Aelindra','Caladwen','Eiravel','Faeriel','Galadrel','Iorel','Lirien','Miriel','Naevys','Sariel','Thalion','Vaelor','Xyriel','Zylvara'], l: ['Dawnwhisper','Evenstar','Feathermoon','Goldleaf','Moonshadow','Nightbloom','Rivercrest','Silverwind','Stormveil','Thornmere'] },
+  dwarf: { f: ['Aldun','Bofri','Dagni','Dolgrin','Ebba','Gunnar','Hilda','Ingvar','Lodur','Marta','Nori','Ragnar','Sigrid','Thorva','Ulfar'], l: ['Anvilheart','Bronzebeard','Copperhelm','Deepforge','Emberstoke','Flintshard','Goldvein','Ironmantle','Stonebrow','Thunderrock'] },
+  tiefling: { f: ['Azreal','Carrion','Despair','Ember','Fear','Grief','Hex','Infamy','Jinx','Lilith','Malice','Nihil','Omen','Ruin','Sorrow'], l: ['Ashscale','Bloodmoor','Darkwhisper','Emberveil','Flameheart','Graveborn','Hexbane','Ironveil','Jadeclaw','Kindleash'] },
+  halfling: { f: ['Alton','Beau','Cade','Corrin','Eldon','Garret','Lyle','Milo','Osborn','Perrin','Reed','Shardon','Tobias','Wenzel','Yesber'], l: ['Brushgather','Goodbarrel','Greenbottle','High-hill','Hilltopple','Leagallow','Tealeaf','Thorngage','Tosscobble','Underbough'] },
+  exotic: { f: ['Azrael','Bexari','Cryx','Drevan','Ezrath','Fyxen','Hessix','Ixara','Kreveth','Lyxara','Myrex','Nyxara','Ozzin','Vexara'], l: ['of the Void','Duskshard','Emberveil','Flickersoul','Gravewhisper','Hexbane','Jadeclaw','Kindleash','Lorebreak','Shadowmeld'] }
+};
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function genNames(type) {
+  const n = names[type];
+  const result = Array.from({length: 6}, () => pick(n.f) + ' ' + pick(n.l));
+  document.getElementById('name-out').textContent = result.join(' · ');
+}
+
+// ENCOUNTERS
+const encounters = [
+  'A hooded figure slides a sealed letter across the bar to one party member without a word, then leaves.',
+  'A nervous merchant whispers that his entire shipment was replaced with worthless goods overnight.',
+  'Two off-duty city watch guards argue loudly — one insists the gnoll attack was too organised to be random.',
+  'An older woman grabs Orin\'s arm: "You\'re the cleric asking about Merric. He helped my family once. Be careful."',
+  'A child runs in holding a crumpled note: "The man with the grey vest said give this to the tall one."',
+  'A travelling merchant mentions that three Aurum Dominion scouts were seen on the north road three days ago.',
+  'Someone has carved "ROT GROWS" into the wooden table in the corner of the Pig\'s Head.',
+  'A drunk man keeps muttering "the Veilmaster knows" before passing out face-first into his ale.',
+  'A messenger bursts in asking for the party by name — Vaeloran requests their presence at the tower immediately.',
+  'A city watch captain quietly asks if the party has heard anything about missing persons near the marsh.',
+  'A Guilded Veil courier drops a small package — inside is a note with the letter "K" and an address.',
+  'A temple acolyte from Luminos approaches Orin urgently — Brother Tomas has gone missing investigating something.',
+  'A tiefling woman watches Sylas across the tavern with unsettling recognition, then slips out a side door.',
+  'Graffiti has appeared overnight on the temple of Luminos walls: crude drawings of a withered tree.',
+  'A merchant collapses in the bazaar, covered in strange fungal growth — and no healer can explain it.',
+];
+function genEncounter() { document.getElementById('enc-out').textContent = pick(encounters); }
+
+// LOCATIONS
+const taverns = ['The Cracked Flagon','Ember & Ash','The Silver Rooster','Crossroads Rest','The Gilded Goblin','Thornwood Inn','The Wanderer\'s Cup','Blackstone Tap','The Tipped Scales','Lantern & Lore'];
+const shops = ['Halverson\'s Relics','The Scrollwright','Irongate Supplies','Dusk & Ember Alchemicals','The Cartographer\'s Hand','Redstone Provisions'];
+const districts = ['The Guildreach Quarter','Tanner\'s Row','The Coppergate Market','The Ashfield Warrens','The Spire District','Dockside Commons','The Lamplit Steps'];
+function genLocation() { document.getElementById('loc-out').textContent = `Tavern: ${pick(taverns)}  ·  Shop: ${pick(shops)}  ·  District: ${pick(districts)}`; }
+
+// PLAGUE SYMPTOMS
+const plagues = ['Drained of all colour — appears in monochromatic grays.','Sheds metallic rust-hued flakes and creaks while moving.','Secretes foul-smelling mucus.','Surrounded by a cloud of buzzing insects.','Sprouts fungi or foliage from their flesh.','Covered in glowing pustules.'];
+function genPlague() { document.getElementById('plague-out').textContent = '1d6 → ' + pick(plagues); }
+
+// SEND TO CLAUDE (opens chat)
+function sendPrompt(text) {
+  const encoded = encodeURIComponent(text);
+  window.open(`https://claude.ai/new?q=${encoded}`, '_blank');
+}
+</script>
+
+</body>
+</html>

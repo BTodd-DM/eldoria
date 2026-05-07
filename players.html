@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eldoria 2.0 — Adventurer's Compendium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5edd5;
+  --bg2: #ece0c0;
+  --bg3: #e0d0a8;
+  --ink: #1a1208;
+  --ink2: #3a2a10;
+  --ink3: #5a4020;
+  --gold: #8a6a10;
+  --gold2: #c09030;
+  --red: #7a1818;
+  --teal: #0d3d30;
+  --border: #b09050;
+  --border2: #d0b070;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(200,160,80,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(160,100,40,0.06) 0%, transparent 50%);
+}
+
+/* HEADER */
+.site-header {
+  background: linear-gradient(180deg, var(--ink) 0%, #2a1a08 100%);
+  border-bottom: 3px solid var(--gold2);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 3px;
+  background: var(--gold2);
+  border-radius: 2px;
+}
+.header-ornament { color: var(--gold2); font-size: 20px; letter-spacing: 8px; margin-bottom: .5rem; }
+.site-title {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold2);
+  font-size: clamp(20px, 5vw, 32px);
+  letter-spacing: 3px;
+  margin-bottom: .4rem;
+}
+.site-sub {
+  color: #c0a870;
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+.header-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--red);
+  color: #f4edd8;
+  text-decoration: none;
+  padding: 7px 18px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  transition: all .2s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-primary:hover { background: #9a2020; }
+.btn-secondary {
+  background: transparent;
+  color: var(--gold2);
+  text-decoration: none;
+  padding: 7px 18px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  border: 1px solid var(--gold2);
+  transition: all .2s;
+}
+.btn-secondary:hover { background: rgba(192,144,48,0.1); }
+
+/* NAVIGATION */
+.main-nav {
+  background: var(--ink2);
+  border-bottom: 2px solid var(--border);
+  display: flex; justify-content: center; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-btn {
+  padding: .75rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #c0a870;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: var(--gold2); }
+.nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+
+/* PANELS */
+.panel { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* SECTION TITLES */
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: .4rem;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+.sec-title:first-child { margin-top: 0; }
+
+/* CARDS */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  margin-bottom: .875rem;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--border);
+  border-radius: 3px 0 0 3px;
+}
+.card.red::before { background: var(--red); }
+.card.gold::before { background: var(--gold2); }
+.card.teal::before { background: var(--teal); }
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: .3rem;
+}
+.card-sub { font-size: 12px; color: var(--ink3); font-style: italic; margin-bottom: .4rem; }
+.card-body { font-size: 14px; line-height: 1.8; color: var(--ink2); }
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .4px;
+  margin: 2px 2px 2px 0;
+  font-weight: 700;
+}
+.b-red { background: rgba(122,24,24,0.15); color: var(--red); border: 1px solid rgba(122,24,24,0.3); }
+.b-gold { background: rgba(138,106,16,0.15); color: var(--gold); border: 1px solid rgba(138,106,16,0.3); }
+.b-teal { background: rgba(13,61,48,0.15); color: var(--teal); border: 1px solid rgba(13,61,48,0.3); }
+.b-grey { background: rgba(90,64,32,0.15); color: var(--ink3); border: 1px solid rgba(90,64,32,0.3); }
+
+/* QUEST DOTS */
+.qdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+.qa { background: #2d9a5a; }
+.qp { background: var(--gold2); }
+.qd { background: #888; }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border2);
+  margin: 1.25rem 0;
+  position: relative;
+}
+.divider::after {
+  content: '✦';
+  position: absolute;
+  top: -9px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 8px;
+  color: var(--border);
+  font-size: 12px;
+}
+
+/* NPC CARDS */
+.npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; }
+.npc-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--ink2);
+  border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold2);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.npc-header { display: flex; align-items: center; gap: 10px; margin-bottom: .5rem; }
+
+/* NOTES AREA */
+.notes-area {
+  background: #fff8e8;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: .875rem;
+  width: 100%;
+  min-height: 200px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  line-height: 1.8;
+  background-image: repeating-linear-gradient(transparent, transparent 28px, rgba(176,144,80,0.15) 28px, rgba(176,144,80,0.15) 29px);
+}
+.notes-area:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(138,106,16,0.1); }
+.note-saved { font-size: 12px; color: var(--teal); font-style: italic; margin-top: .25rem; display: none; }
+
+/* WORLD MAP REGIONS */
+.region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
+.region {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: .875rem;
+  text-align: center;
+}
+.region-name { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; margin-bottom: .25rem; }
+.region-tag { font-size: 11px; color: var(--ink3); font-style: italic; margin-bottom: .5rem; }
+.region-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .5px;
+  font-weight: 700;
+}
+.status-visited { background: rgba(13,61,48,0.15); color: var(--teal); border: 1px solid rgba(13,61,48,0.3); }
+.status-known { background: rgba(138,106,16,0.15); color: var(--gold); border: 1px solid rgba(138,106,16,0.3); }
+.status-unknown { background: rgba(90,64,32,0.1); color: var(--ink3); border: 1px solid rgba(90,64,32,0.2); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* DECORATIVE */
+.ornament { text-align: center; color: var(--border); font-size: 16px; letter-spacing: 8px; margin: 1.5rem 0; }
+.quote {
+  font-style: italic;
+  color: var(--ink3);
+  font-size: 15px;
+  line-height: 1.7;
+  border-left: 3px solid var(--border2);
+  padding: .5rem 1rem;
+  margin: .75rem 0;
+}
+.quote cite { font-size: 12px; font-style: normal; color: var(--ink3); display: block; margin-top: .25rem; }
+
+@media (max-width: 600px) {
+  .panel { padding: 1rem; }
+  .npc-grid, .region-grid { grid-template-columns: 1fr; }
+  .site-title { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-ornament">⸻ ✦ ⸻</div>
+  <div class="site-title">Eldoria 2.0</div>
+  <div class="site-sub">Adventurer's Compendium &nbsp;·&nbsp; Aeloria Crossroads &nbsp;·&nbsp; Level 5</div>
+  <div class="header-actions">
+    <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-primary">Open Roll20 ↗</a>
+    <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-secondary">Campaign Map ↗</a>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-btn active" onclick="show('recaps',this)">Session Recaps</button>
+  <button class="nav-btn" onclick="show('quests',this)">Quests</button>
+  <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
+  <button class="nav-btn" onclick="show('world',this)">The World</button>
+  <button class="nav-btn" onclick="show('notes',this)">Your Notes</button>
+</nav>
+
+<!-- ===== RECAPS ===== -->
+<div id="panel-recaps" class="panel active">
+  <div class="ornament">✦ ✦ ✦</div>
+  <div class="sec-title">The Story So Far</div>
+
+  <div class="card gold">
+    <div class="card-sub">Sessions 1–2 &nbsp;·&nbsp; Oct 2025</div>
+    <div class="card-title">The Shard and the Letters</div>
+    <div class="card-body">You were brought together by Vaeloran Duskwhisper, the archmage of Aeloria — a respected scholar-mage known for his charitable works and civic dedication. He set you two tasks: recover his missing apprentice, Lyssandra Vale, and deliver a set of sealed letters to members of Aeloria's ruling council on his behalf.<br><br>You pursued Lyssandra to the Frostwood Marsh, where a meteor had recently struck. The area felt wrong — strange energies in the air, wildlife behaving oddly. You fought through corruption-warped spiders to reach a lonely barn where Lyssandra had been hiding.<br><br>She was afraid. She tried to burn the barn and flee rather than be brought back. Before disappearing into the night, she warned you:<br><br><em>"He'll twist your good intentions… like he did mine."</em><br><em>"That shard… it's not just a rock. He's been studying fragments like it for years."</em><br><br>After a five-day chase through the wilds, you caught her. She was brought back to Vaeloran, who thanked you warmly and said the shard had corrupted her mind — and that he would see to her recovery. The letters were delivered separately in the chaos.</div>
+    <div style="margin-top:.6rem"><span class="badge b-red">combat</span><span class="badge b-gold">mystery</span><span class="badge b-grey">lyssandra returned</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-sub">Sessions 3–4 &nbsp;·&nbsp; Most recent</div>
+    <div class="card-title">The Gnoll Den and What Lay Beneath</div>
+    <div class="card-body">Hired by Oskar, the Goliath Townmaster of Aeloria, you were sent to deal with gnolls threatening the southeastern farmlands. You tracked them to their den and put an end to the pack.<br><br>But what you found inside changed everything.<br><br>A shrine — not to a gnoll deity, but to Naturus, the Betrayer God of rot and decay. The pack leader had been charmed and marked by an outside hand. And writings on the walls spoke of a larger plan: rot spreading through the Aelorian territories, guided by unseen hands. One note pointed to a location you already knew well: <strong>The Pig's Head Inn</strong>.<br><br>Back in Aeloria, the party split. Torren returned to O'Leary's Stables to check on Matilda — only to find her gone, spooked and escaped. Only tracks remained, heading north.<br><br>At the Pig's Head, Orin pressed patrons for information about a name: Merric. A missing friend. A past not yet buried. Through connections to a figure called Rulden, Torren gained access to a private meeting — and the truth turned out to be deeply personal. Rulden is Merric.<br><br>The next morning, a message arrived for Orin. Cold. Careful. Signed only "R." It ended:<br><br><em>"Keep to the light, Orin. It suits you better."</em><br><br>Orin sought guidance at the Temple of Luminos. Dawnwarden Seraphine listened — and gave her counsel: if Merric once walked in the light, and if you feel called to him still, then you should not stop.<br><br>The party now stands at Kolt's Depot. A caravan to Ironhold awaits. But behind you, threads remain unresolved — and a hidden network continues to spread rot through the land.</div>
+    <div style="margin-top:.6rem"><span class="badge b-red">naturus cult</span><span class="badge b-red">gnolls cleared</span><span class="badge b-gold">merric revealed</span><span class="badge b-teal">milestone</span></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="ornament">⸻ ✦ ⸻</div>
+</div>
+
+<!-- ===== QUESTS ===== -->
+<div id="panel-quests" class="panel">
+  <div class="sec-title">Active Quests</div>
+
+  <div class="card red">
+    <div class="card-title"><span class="qdot qa"></span>The Rot Beneath — Naturus cult investigation</div>
+    <div class="card-sub">Main threat · Ongoing</div>
+    <div class="card-body">The gnoll den revealed a larger coordinated operation — a shrine to Naturus, a charmed pack leader, and writings about rot spreading through the Aelorian territories guided by unseen hands. The Pig's Head Inn was named as a meeting point. Someone signed "K" appears to be behind it. This is bigger than one den.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">active</span><span class="badge b-grey">Pig's Head leads</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qa"></span>Merric — a reckoning deferred</div>
+    <div class="card-sub">Personal · Orin · Ongoing</div>
+    <div class="card-body">Orin's adoptive father, thought lost, has been found — but not as the man Orin remembers. He sent a warning. He signed it with warmth he clearly tried to suppress. Seraphine's guidance was clear: don't stop. Whatever Merric has become, the light has not entirely left him.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos faith</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qa"></span>Kolt's Depot — caravan escort to Ironhold</div>
+    <div class="card-sub">Immediate · Decision point</div>
+    <div class="card-body">An escort job is available heading south to Ironhold, a city renowned for its master blacksmiths. Coin, distance, and a direction. The road offers its own dangers.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">next session</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qp"></span>Matilda — a horse on the loose</div>
+    <div class="card-sub">Personal · Torren · Simmering</div>
+    <div class="card-body">Matilda escaped from O'Leary's Stables — spooked and wandered off. Tracks heading north. The stablehands are searching. She can't have gone far. Probably.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">Torren personal</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qp"></span>Gerald's offer — a missing guild member</div>
+    <div class="card-sub">Available · Pig's Head</div>
+    <div class="card-body">Gerald at the Pig's Head offered work — someone's gone missing who shouldn't have. The party left it untouched. It's still there if you want it.</div>
+    <div style="margin-top:.5rem"><span class="badge b-grey">available</span></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-title">Completed</div>
+
+  <div class="card">
+    <div class="card-title"><span class="qdot qd"></span>The gnoll threat</div>
+    <div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar the Townmaster. What was found inside opened new questions.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="qdot qd"></span>Find Lyssandra Vale</div>
+    <div class="card-body">Found and returned to Vaeloran at the meteor site in Frostwood Marsh after a five-day chase. Her warning still echoes.</div>
+  </div>
+</div>
+
+<!-- ===== NPCS ===== -->
+<div id="panel-npcs" class="panel">
+  <div class="sec-title">People You Have Met</div>
+  <div class="npc-grid">
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar">VD</div>
+        <div><div class="card-title" style="margin:0">Vaeloran Duskwhisper</div><div class="card-sub" style="margin:0">Archmage · Your Patron</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">A respected and eccentric scholar-mage who claims to serve the greater good of Aeloria. Known for funding libraries, sponsoring apprentices, and protecting the city from magical threats. He employed you and sent you to find Lyssandra. Calm, measured, and always seems to know more than he says.</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">patron</span><span class="badge b-grey">Spire of the Silver Eclipse</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a3a2a">LV</div>
+        <div><div class="card-title" style="margin:0">Lyssandra Vale</div><div class="card-sub" style="margin:0">Half-elf · Vaeloran's Apprentice</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">Copper-haired, robes marked with faint scorch marks. She was sent to observe the meteor shard and never came back. When you found her, she tried to flee rather than return. She warned you before disappearing into the night. She is now back with Vaeloran and seems… well.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">returned to Vaeloran</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a08">OS</div>
+        <div><div class="card-title" style="margin:0">Oskar</div><div class="card-sub" style="margin:0">Goliath · Townmaster of Aeloria</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">A massive Goliath who carries a battle axe across his back. He hired you to deal with the gnoll threat to the southeastern farmlands. Direct, fair, and clearly protective of Aeloria and its people. Paid on delivery.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">civic authority</span><span class="badge b-grey">paid the party</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1808">SR</div>
+        <div><div class="card-title" style="margin:0">Sarah</div><div class="card-sub" style="margin:0">Half-Orc · Wayfarer's Rest</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">Broad-shouldered, tidy braid, dry sense of humour. Manages the Wayfarer's Rest — a calm, respectable inn in the inner trade ward. She pointed Orin toward the Pig's Head when he was asking questions that weren't quite the Wayfarer's type. Trustworthy, discreet, observant.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">ally-adjacent</span><span class="badge b-grey">Wayfarer's Rest</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a0a08">GR</div>
+        <div><div class="card-title" style="margin:0">Gerald</div><div class="card-sub" style="margin:0">Human · Pig's Head Inn</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">Greying hair, stained vest, friendly smile, very sharp eyes. Owns the Pig's Head. Knows things. Observes carefully. Said "Sarah doesn't send fools" when you arrived. Offered you a job — finding a missing person. You haven't taken it yet. "Careful. Walls here listen."</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">Pig's Head</span><span class="badge b-gold">has work available</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a2010">RM</div>
+        <div><div class="card-title" style="margin:0">Rulden Marr</div><div class="card-sub" style="margin:0">Halfling · Man of influence</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">A calm, calculating figure with a reputation for competence and a network of contacts throughout Aeloria. Torren gained access to meet him through the right channels. He sent Orin a warning letter — signed only "R." Orin knows something more about who Rulden really is.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">warned Orin off</span><span class="badge b-grey">Guilded Veil connections</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a2a1a">AD</div>
+        <div><div class="card-title" style="margin:0">Dawnwarden Seraphine</div><div class="card-sub" style="margin:0">Human · Temple of Luminos</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">Stern, disciplined, unwavering. Senior clergy at the Temple of Luminos. When Orin came seeking guidance about Merric, she listened. Her counsel: <em>"Faith is not comfort. It is commitment."</em> She told Orin not to stop searching.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">Temple of Luminos</span><span class="badge b-gold">guided Orin</span></div>
+    </div>
+
+    <div class="card">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#1a2010">VX</div>
+        <div><div class="card-title" style="margin:0">Vexa</div><div class="card-sub" style="margin:0">Apprentice mage · Road encounter</div></div>
+      </div>
+      <div class="card-body" style="font-size:13px">Met on the road to the Frostwood Marsh, heading to the same meteor site with a group of escorts. You avoided confrontation through quick thinking and creative use of tarps. She works for another mage in the city.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">briefly encountered</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== WORLD ===== -->
+<div id="panel-world" class="panel">
+  <div class="sec-title">Known Regions of Eldoria</div>
+  <div class="region-grid">
+    <div class="region">
+      <div class="region-name">Aeloria Crossroads</div>
+      <div class="region-tag">Free city-state · Your home base</div>
+      <div class="region-status status-visited">Visited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Independent city-state at the crossroads of Eldoria. Governed by a council of guilds and representatives. Trade hub, cultural melting pot, politically complex.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Frostwood Marsh</div>
+      <div class="region-tag">Northern wilderness · Meteor site</div>
+      <div class="region-status status-visited">Visited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Fog-shrouded, desolate. Site of the meteor crash. Strange energies linger. Corrupted wildlife. Ancient ruins beneath the surface.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Aurora Peaks</div>
+      <div class="region-tag">Mountain range · Aurum Dominion</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Majestic mountain range. Home of the Aurum Dominion — a powerful empire known for crystal magic. Famous for the aurora borealis that lights the night sky.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Verdant Expanse</div>
+      <div class="region-tag">Forest region · Sylvarian Enclaves</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Ancient forests home to the Sylvarian Enclaves — elven tree cities. Druidic and multicultural. Deep nature magic. Connected to the Frostwood Marsh at its border.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Serpent Isles</div>
+      <div class="region-tag">Island chain · Lizardfolk & Pirates</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Home to lizardfolk tribes and the Pirate Confederacy. Free ports where law is personal and alliances shift daily. The seas surrounding it are treacherous.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Ember Wastes</div>
+      <div class="region-tag">Desert region · Nomadic tribes</div>
+      <div class="region-status status-unknown">Unvisited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">A vast, harsh desert of red dunes and ancient ruins. Home to nomadic tribes who travel in great sandship caravans. Said to hold forgotten civilisations beneath the sands.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Celestial Plateau</div>
+      <div class="region-tag">Elevated realm · Celestium Clans</div>
+      <div class="region-status status-unknown">Unvisited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">A high plateau with cosmic phenomena in its skies. Home to the Celestium Clans — dwarves who blend their craft with celestial magic. Deeply spiritual.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-title">Key Locations in Aeloria</div>
+
+  <div class="card teal">
+    <div class="card-title">Spire of the Silver Eclipse</div>
+    <div class="card-sub">Vaeloran's tower · City centre</div>
+    <div class="card-body">An iconic tower in the heart of Aeloria. Its interior feels larger than it looks from outside. Swirling orbs of light, mechanical quills that write on their own, shelves that slide to make way as you pass. A faint scent of old paper and candlewax.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">The Wayfarer's Rest</div>
+    <div class="card-sub">Inner trade ward · Respectable inn</div>
+    <div class="card-body">Polished dark wood, soft lighting, private booths. The kind of place where merchants close deals and scholars draft letters. Sarah runs it with firm, quiet efficiency. A safe place to think.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">The Pig's Head Inn</div>
+    <div class="card-sub">Outer trade ring · Working-class</div>
+    <div class="card-body">Loud, crowded, cheap ale, good gossip. The kind of place where caravan guards, off-duty watchmen, and people with questions no one else will answer tend to end up. Gerald knows everyone and everything — at a price.</div>
+  </div>
+  <div class="card teal">
+    <div class="card-title">Temple of Luminos</div>
+    <div class="card-sub">White stone · City centre</div>
+    <div class="card-body">White stone with veins of faint gold. Tall windows catch the light. The air smells of incense and clean linen. Peaceful, orderly, and quietly watchful. Seraphine and the Lightbearer serve here.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Grand Bazaar</div>
+    <div class="card-sub">Central district · Market</div>
+    <div class="card-body">Canvas awnings, shouting merchants, the smell of spice, metal, and baked bread. If it exists in Eldoria, someone here is selling it. Twelve established shops and stalls spread across the central district.</div>
+  </div>
+</div>
+
+<!-- ===== NOTES ===== -->
+<div id="panel-notes" class="panel">
+  <div class="sec-title">Your Notes</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">Use this space to keep track of anything you want to remember — clues, names, theories, questions for the DM. Your notes are saved automatically to this browser.</div>
+
+  <textarea class="notes-area" id="player-notes" placeholder="Write your notes here...&#10;&#10;Things we know...&#10;Things we suspect...&#10;People to talk to...&#10;Questions to ask next session..." onkeyup="savePlayerNotes()"></textarea>
+  <div class="note-saved" id="note-saved">✓ Saved</div>
+
+  <div class="divider"></div>
+  <div class="sec-title">Quick Reference — Lyssandra's Warning</div>
+  <blockquote class="quote">
+    "He'll twist your good intentions… like he did mine."
+    <cite>— Lyssandra Vale, before fleeing into the night</cite>
+  </blockquote>
+  <blockquote class="quote">
+    "That shard… it's not just a rock. He's been studying fragments like it for years."
+    <cite>— Lyssandra Vale</cite>
+  </blockquote>
+  <blockquote class="quote">
+    "Keep to the light, Orin. It suits you better."
+    <cite>— R (the warning letter)</cite>
+  </blockquote>
+
+  <div class="divider"></div>
+  <div class="sec-title">Notice Board — Aeloria</div>
+  <div class="card">
+    <div class="card-body" style="font-size:13.5px">
+      ✦ <strong>Danger in Frostwood Marsh</strong> — travellers warned to avoid the northern marsh roads<br>
+      ✦ <strong>Join the City Watch</strong> — Aeloria's guard is recruiting<br>
+      ✦ <strong>Missing Halfling — Merric</strong> — if you have information, speak to Sarah at the Wayfarer's Rest <em>(posted by Orin)</em><br>
+      ✦ <strong>Mercenaries needed — Caravan delivery</strong> — enquire at Kolt's Depot
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// Player Notes — saved to localStorage
+function savePlayerNotes() {
+  const val = document.getElementById('player-notes').value;
+  localStorage.setItem('eldoria-player-notes', val);
+  const saved = document.getElementById('note-saved');
+  saved.style.display = 'block';
+  clearTimeout(window.noteSaveTimer);
+  window.noteSaveTimer = setTimeout(() => { saved.style.display = 'none'; }, 2000);
+}
+
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('eldoria-player-notes');
+  if(saved) document.getElementById('player-notes').value = saved;
+});
+</script>
+
+</body>
+</html>
