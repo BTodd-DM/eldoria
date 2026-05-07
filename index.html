@@ -533,8 +533,10 @@ body {
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
+  <button class="nav-btn" onclick="showPanel('prep',this)">📋 Prep</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
   <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
+  <button class="nav-btn" onclick="showPanel('vaeloran',this)">👁 Vaeloran</button>
   <button class="nav-btn" onclick="showPanel('kaelith',this)">☠ Kaelith</button>
   <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
 </nav>
@@ -642,6 +644,7 @@ body {
       <div class="stat-row"><span class="stat-label">Assassinate</span><span class="stat-val">Surprise = auto crit</span></div>
       <div class="stat-row"><span class="stat-label">Backstory</span><span class="stat-val">TBC from player</span></div>
       <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in Eldoria 2.0 that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none">D&amp;D Beyond ↗</a>
     </div>
 
     <!-- SYLAS -->
@@ -662,7 +665,8 @@ body {
         <span class="badge b-red">Soul Siphon active</span>
         <span class="badge b-grey">Vaeloran watching</span>
       </div>
-      <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in Eldoria 2.0 — his lineage comes from a generational pact with a lich made by his ancestors in the Aurora Peaks. What is a compelling spirit jar object for him and what was the original lich pact about?')">Spirit Jar Ideas ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in Eldoria 2.0 — his lineage comes from a generational pact with Valdris the Pale Archivist. What complications arise now that his spirit jar (the necklace) is the same vessel Valdris designed for reconstitution?')">Spirit Jar Complications ↗</button>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none">D&amp;D Beyond ↗</a>
     </div>
 
     <!-- ORIN -->
@@ -681,6 +685,7 @@ body {
       <div class="stat-row"><span class="stat-label">True reading</span><span class="stat-val">Mercy was Luminos's calling, not weakness</span></div>
       <div class="stat-row"><span class="stat-label">Tribe status</span><span class="stat-val">Still exists — NE of Duskmere. Future encounter.</span></div>
       <div class="stat-row"><span class="stat-label">Does NOT know</span><span class="stat-val">Sylas is consuming souls</span></div>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none;margin-top:.5rem">D&amp;D Beyond Sheet ↗</a>
       <button class="action-btn" onclick="sendPrompt('Design the moment in Eldoria 2.0 when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
     </div>
   </div>
@@ -874,39 +879,459 @@ body {
 
 <!-- ============ COMBAT ============ -->
 <div id="panel-combat" class="panel">
-  <div class="sec-title">Initiative Tracker</div>
-  <div id="init-list">
-    <div class="init-row active-turn"><div class="init-num">—</div><div class="init-name">Torren (Halfling Assassin Rogue)</div><div class="init-hp">HP —</div></div>
-    <div class="init-row"><div class="init-num">—</div><div class="init-name">Sylas (Tiefling Illusionist Wizard)</div><div class="init-hp">HP —</div></div>
-    <div class="init-row"><div class="init-num">—</div><div class="init-name">Orin (Cleric of Luminos)</div><div class="init-hp">HP —</div></div>
-  </div>
-  <button class="add-btn" onclick="addCombatant()">+ Add combatant</button>
+  <div class="grid-2" style="align-items:start;gap:1.25rem">
 
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem">
-    <button class="action-btn" onclick="nextTurn()">Next Turn ↗</button>
-    <button class="action-btn red" onclick="clearCombat()">Clear Combat</button>
-  </div>
+    <!-- LEFT: Initiative Tracker -->
+    <div>
+      <div class="sec-title">Initiative Tracker &nbsp;<span id="round-label" style="color:var(--parch3);font-size:11px;font-style:italic;font-family:'Crimson Pro',serif;font-weight:normal">Round <span id="round-num">1</span></span></div>
+      <div id="init-list"></div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem">
+        <button class="action-btn gold" onclick="showMonsterPicker()">+ Monster</button>
+        <button class="action-btn" onclick="addPC()">+ PC</button>
+        <button class="action-btn" onclick="nextTurn()">Next Turn ▶</button>
+        <button class="action-btn" onclick="document.getElementById('round-num').textContent=parseInt(document.getElementById('round-num').textContent)+1">+Round</button>
+        <button class="action-btn red" onclick="clearCombat()">Clear</button>
+      </div>
 
-  <hr class="divider">
-  <div class="sec-title">Level 5 Encounter Builder</div>
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-    <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the Eldoria 2.0 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) — theme it around Sister Kaelith\'s Naturus cult operatives ambushing them on the road to Ironhold. Include full stat blocks.')">Cult Ambush ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for Eldoria 2.0 in the Frostwood Marsh — corrupted creatures touched by Naturus, using monsters from the official monster manual, for a party of 3')">Marsh Encounter ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Design a social/stealth encounter in the Pig\'s Head Inn back room in Aeloria for the Eldoria 2.0 party — they need to find evidence connecting the Naturus cult to the Guilded Veil without being discovered')">Guild Infiltration ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Design a level 5 D&D 5e chase encounter through the streets of Aeloria Crossroads — the party is pursuing a Guilded Veil courier who has information about the Aurek Voln Drowhiss identity')">City Chase ↗</button>
+      <hr class="divider">
+      <div class="sec-title">Monster Picker</div>
+      <div id="monster-picker" style="display:none">
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.5rem">
+          <button class="action-btn" onclick="addMonster('kaelith')">Sister Kaelith</button>
+          <button class="action-btn" onclick="addMonster('gnoll')">Gnoll</button>
+          <button class="action-btn" onclick="addMonster('gnoll_alpha')">Gnoll Alpha</button>
+          <button class="action-btn" onclick="addMonster('spider')">Corruption Spider</button>
+          <button class="action-btn" onclick="addMonster('cult_fanatic')">Cult Fanatic</button>
+          <button class="action-btn" onclick="addMonster('guild_enforcer')">Guild Enforcer</button>
+          <button class="action-btn" onclick="addMonster('vaeloran')">Vaeloran</button>
+        </div>
+      </div>
+
+      <div class="sec-title">Conditions</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px">
+        <span class="badge b-red" style="cursor:pointer" title="Can't see. Attacks vs = adv. Attacks from = disadv.">Blinded</span>
+        <span class="badge b-red" style="cursor:pointer" title="Can't attack charmer. Charmer has social adv.">Charmed</span>
+        <span class="badge b-red" style="cursor:pointer" title="Speed 0. Incapacitated. Auto-fail STR/DEX saves. Attacks vs = adv + auto-crit within 5ft.">Paralyzed</span>
+        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks + ability checks while source visible.">Frightened</span>
+        <span class="badge b-red" style="cursor:pointer" title="Can't take actions or reactions.">Incapacitated</span>
+        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks and ability checks.">Poisoned</span>
+        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks. Attacks vs = adv if within 5ft, disadv if farther.">Prone</span>
+        <span class="badge b-red" style="cursor:pointer" title="Speed 0. Disadv attacks. Attacks vs = adv. Disadv DEX saves.">Restrained</span>
+        <span class="badge b-gold" style="cursor:pointer" title="Incapacitated + can't move/speak. Auto-fail STR/DEX. Attacks vs = adv + auto-crit.">Stunned</span>
+        <span class="badge b-purple" style="cursor:pointer" title="Exhaustion level — accumulate up to 6. Each level stacks penalties.">Exhausted</span>
+        <span class="badge b-teal" style="cursor:pointer" title="Concentrating on a spell — takes damage = CON save DC 10 or half damage, or lose spell.">Concentrating</span>
+      </div>
+
+      <hr class="divider">
+      <div class="sec-title">Encounter Builder</div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the Eldoria 2.0 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) on the road to Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for Eldoria 2.0 in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter in the Pig\'s Head Inn back room for the Eldoria 2.0 party — finding evidence connecting Kaelith\'s Naturus cult to the Guilded Veil without being caught')">Guild Infiltration ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Design a level 5 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Active Stat Block Viewer -->
+    <div>
+      <div class="sec-title">Stat Block Viewer</div>
+      <div id="stat-block-viewer">
+        <div style="color:var(--parch3);font-style:italic;font-size:13px;padding:.5rem">Click a monster button to load its stat block here, or select a combatant row.</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- ============ WORLD ============ -->
+<!-- ============ PREP ============ -->
+<div id="panel-prep" class="panel">
+  <div class="grid-2" style="gap:1rem;align-items:start">
+    <!-- Session Overview -->
+    <div>
+      <div class="sec-title">Session Overview</div>
+      <div class="card red">
+        <div class="card-title">Next Session — Active Threads</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>Party position:</strong> Kolt's Depot. Caravan escort to Ironhold available.<br>
+          <strong>Urgent (DM only):</strong> Lyssandra memory-wiped, Vaeloran's shard attunement in progress (Stage 3).<br>
+          <strong>Live threads:</strong> Naturus cult, Merric/Orin, Kaelith's operations, Instability Clock at 2/8.
+        </div>
+      </div>
+      <div class="sec-title">Vaeloran — Off-Screen Actions</div>
+      <div class="card red">
+        <div class="card-title">What Vaeloran is doing RIGHT NOW</div>
+        <div class="card-body" style="font-size:12.5px">
+          Stage 3: Attuning the meteor shard — 30-day continuous ritual in the Spire's deepest chamber. Lyssandra assists unwittingly as ritual witness.<br><br>
+          Running Aurek Voln Drowhiss correspondence — directing Kaelith's operations to feed the soul count for Stage 6.<br><br>
+          Monitoring Sylas through their study sessions — studying the necklace/spirit jar. Patient. Not yet ready to act.
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-overview" placeholder="Session overview notes..." onchange="saveNote('prep-overview',this.value)" style="height:80px;margin-top:.5rem"></textarea>
+    </div>
+    <!-- NPC Action Queue -->
+    <div>
+      <div class="sec-title">NPC Action Queue — Between Sessions</div>
+      <div class="card gold"><div class="card-title">Vaeloran Duskwhisper</div><div class="card-body" style="font-size:12.5px">Shard attunement continues. Monitors Sylas. Directs Aurek network. Maintains public persona of civic benefactor.</div></div>
+      <div class="card red"><div class="card-title">Sister Kaelith</div><div class="card-body" style="font-size:12.5px">Moving operations deeper into Verdant Expanse border. Establishing new shrine. Expanding corruption spread. Will not return to Aeloria until party forces the issue.</div></div>
+      <div class="card gold"><div class="card-title">Merric / Rulden Marr</div><div class="card-body" style="font-size:12.5px">Lying low. Knows Orin is aware. Watching for whether the party pulls on the Guilded Veil thread. Has not told the Veil captains about Orin. That omission is itself significant.</div></div>
+      <div class="card"><div class="card-title">Lyssandra Vale</div><div class="card-body" style="font-size:12.5px">Serving Vaeloran willingly, memory wiped. Present in the Spire. Performing research tasks. Smiling. This should disturb the party when they eventually see it.</div></div>
+      <div class="card"><div class="card-title">Valdris the Pale Archivist</div><div class="card-body" style="font-size:12.5px">Watching Sylas through the pact connection. Dormant in his Aurora Peaks sanctum. Aware of Vaeloran's pursuit of lichdom and quietly amused. Not yet acting.</div></div>
+      <textarea class="editable-area" id="prep-npc-queue" placeholder="Add NPC actions here..." onchange="saveNote('prep-npc-queue',this.value)" style="height:60px;margin-top:.5rem"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sec-title">Active Storylines — Session Prep Cards</div>
+  <div id="prep-storylines">
+
+    <!-- MAIN PLOT -->
+    <div class="card red" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🔴 THE VAELORAN CONSPIRACY — Main Plot</div>
+        <span class="badge b-red">URGENT</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Opening hook:</strong> Lyssandra is in the tower, memory wiped. The party doesn't know yet.<br>
+            <strong>Beat 1:</strong> Caravan to Ironhold — something on the road connects to Vaeloran's network<br>
+            <strong>Beat 2:</strong> Return to Aeloria — shard attunement nearing completion (Stage 3 ends)<br>
+            <strong>Beat 3:</strong> Anagram discovery — Aurek Voln Drowhiss = Vaeloran Duskwhisper<br>
+            <strong>Possible endings:</strong> Party confronts Vaeloran early (he pivots), party doesn't notice until Stage 6+, or Merric breaks and reveals the truth first
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT PARTY NEEDS TO DISCOVER NEXT</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">① The sealed letters they delivered were doctored<br>② Lyssandra's memory was deliberately wiped<br>③ The "K" note connects Kaelith to the Guilded Veil<br>④ Aurek Voln Drowhiss is an anagram</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">CLUE TRAIL</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Gnoll writings → Pig's Head → K note → Guilded Veil back room → Aurek correspondence → Anagram</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-main" placeholder="DM notes for main plot..." onchange="saveNote('prep-main',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- NATURUS CULT -->
+    <div class="card red" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🔴 THE NATURUS CULT — Sister Kaelith</div>
+        <span class="badge b-red">ACTIVE</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Opening hook:</strong> Pig's Head named in gnoll den writings. The "K" note.<br>
+            <strong>Beat 1:</strong> Party investigates Pig's Head back room — find evidence of cult operations<br>
+            <strong>Beat 2:</strong> Trail leads to Kaelith — she has moved deeper into the Verdant Expanse<br>
+            <strong>Beat 3:</strong> First encounter with Kaelith — not a fight, a confrontation. She escapes.<br>
+            <strong>Possible endings:</strong> Party disrupts operations (Clock slows), party ignores it (corruption spreads to Verdant Expanse fully)
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">NPC KNOWLEDGE TRACKER</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Kaelith knows:</strong> The party destroyed the gnoll shrine. She is moving.<br>
+            <strong>Gerald knows:</strong> "K" sends people to his back room. Doesn't know what for.<br>
+            <strong>Merric knows:</strong> Kaelith is using Guilded Veil infrastructure. Has not told captains why.<br>
+            <strong>Vaeloran knows:</strong> Everything. He set this up.
+          </div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">COUNTDOWN</div>
+          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 3 sessions: Verdant Expanse border fully corrupted. Sylvarian Enclaves send emissary to Aeloria.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-cult" placeholder="DM notes for Naturus cult thread..." onchange="saveNote('prep-cult',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- MERRIC / ORIN -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 MERRIC AND ORIN — Personal Arc</div>
+        <span class="badge b-gold">ACTIVE</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Current state:</strong> Orin knows. Merric has warned him off. Seraphine says keep going.<br>
+            <strong>Next beat:</strong> Second confrontation — Orin brings something Merric can't deflect<br>
+            <strong>The crack:</strong> Merric doesn't know Aurek = Vaeloran. That revelation breaks him.<br>
+            <strong>Possible endings:</strong> Merric turns informant, Merric tries to flee, Merric is killed by Vaeloran to silence him, Merric sacrifices himself to protect Orin
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">EMOTIONAL BEATS TO HIT</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            ① Merric still calls Orin by a childhood name or phrase<br>
+            ② He pushes Orin away but physically steps between him and danger<br>
+            ③ The moment he realises Aurek = Vaeloran — he goes very quiet<br>
+            ④ "I thought I was choosing the city. I was choosing him."
+          </div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">FAITH CRISIS TRIGGER</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Orin's faith was built on Merric's example. If Merric is corrupt, what is Orin's faith built on? This should be a genuine question, not a crisis with a fast resolution.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-merric" placeholder="DM notes for Merric/Orin arc..." onchange="saveNote('prep-merric',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- SYLAS LICH PATH -->
+    <div class="card purple" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟣 SYLAS — Path of the Lich</div>
+        <span class="badge b-purple">SIMMERING</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Current state:</strong> Lich Initiate taken. Spirit jar = the necklace. Soul Siphon active.<br>
+            <strong>Next beat:</strong> Dominion letter arrives pointing toward Maelis (red herring)<br>
+            <strong>The reveal:</strong> Orin discovers Soul Siphon — when and how?<br>
+            <strong>Valdris thread:</strong> Something in the Aurora Peaks will call to Sylas — the pact pulling him north<br>
+            <strong>Vaeloran's play:</strong> He may try to become Sylas's mentor on the path — to keep him close
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN DOES ORIN FIND OUT?</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Options:<br>① Combat — he sees Soul Siphon trigger and recognises it<br>② Vaeloran tells him deliberately to divide the party<br>③ Temple of Luminos detects the soul consumption in Sylas's presence<br>④ Sylas tells him himself — the most interesting version</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">THE ENDGAME QUESTION</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Sylas must eventually choose: his own independent lichdom, or becoming Valdris's vessel. This choice defines what kind of lich — and what kind of person — he becomes.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-sylas" placeholder="DM notes for Sylas lich path..." onchange="saveNote('prep-sylas',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- TORREN -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 TORREN — Personal Arc</div>
+        <span class="badge b-grey">PENDING BACKSTORY</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT WE KNOW</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Halfling Assassin Rogue, level 5. Wounded Lyssandra. Matilda (horse) escaped north. Backstory TBC from player.</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">HOOKS READY TO DEPLOY</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Matilda's tracks lead north — toward Aurora Peaks. Could connect to Aurum Dominion or Valdris story. Awaiting backstory to build personal arc.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-torren" placeholder="Add Torren's backstory notes here when received..." onchange="saveNote('prep-torren',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- ORIN'S TRIBE -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 THE STONEMARKED — Orin's Tribe</div>
+        <span class="badge b-gold">SIMMERING</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">CURRENT SITUATION</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Mountains NE of Duskmere. Naturus corruption pushing up from the marsh below. A rival clan pressing from the north. They are too proud to ask for help. Orin doesn't know any of this yet.</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN THIS BECOMES ACTIVE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">A Stonemarked warrior arrives in Aeloria — possibly injured, possibly searching for Orin. They don't ask. They state: "Your tribe is dying." Then they leave. Orin decides whether to respond.</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.4rem 0 .25rem">COUNTDOWN</div>
+          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 5 sessions: the Stonemarked are broken by the rival clan. Corruption claims the mountains. A new Naturus shrine is established there.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-stonemarked" placeholder="DM notes for Stonemarked arc..." onchange="saveNote('prep-stonemarked',this.value)" style="height:60px;margin-top:.5rem"></textarea>
+    </div>
+
+  </div>
+
+  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of Eldoria 2.0 — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
+</div>
+
+<!-- ============ VAELORAN STAT BLOCK ============ -->
+<div id="panel-vaeloran" class="panel">
+  <div class="sec-title">Vaeloran Duskwhisper — Full Stat Block</div>
+  <div class="alert alert-danger">⚠ NOT YET A LICH. Vaeloran is currently a mortal Wizard of terrifying power. The lich transformation is a campaign milestone. Running this encounter before the party is level 15+ is not recommended.</div>
+
+  <div class="grid-2" style="gap:1rem;align-items:start">
+    <div>
+      <div class="stat-block">
+        <div class="stat-block-header">Vaeloran Duskwhisper — Human Wizard 20 (Divination)</div>
+        <div class="stat-line"><span class="stat-label2">Alignment:</span> Lawful Evil (believes Lawful Neutral) &nbsp;·&nbsp; <span class="stat-label2">Age:</span> 67 &nbsp;·&nbsp; <span class="stat-label2">Size:</span> Medium</div>
+        <div class="stat-line"><span class="stat-label2">Appearance:</span> Silver-threaded robes, calm eyes that carry warmth he has not yet abandoned, hands that are never still</div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div class="stat-line"><span class="stat-label2">AC:</span> 17 (Robe of the Archmagi + Mage Armour)</div>
+        <div class="stat-line"><span class="stat-label2">HP:</span> 144 (32d8)</div>
+        <div class="stat-line"><span class="stat-label2">Speed:</span> 30ft &nbsp;·&nbsp; <span class="stat-label2">Initiative:</span> +4</div>
+        <div class="stat-line"><span class="stat-label2">Proficiency Bonus:</span> +6 &nbsp;·&nbsp; <span class="stat-label2">Spell Save DC:</span> 21 &nbsp;·&nbsp; <span class="stat-label2">Spell Attack:</span> +13</div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div class="stat-line"><span class="stat-label2">STR</span> 10 (+0) &nbsp;&nbsp; <span class="stat-label2">DEX</span> 14 (+2) &nbsp;&nbsp; <span class="stat-label2">CON</span> 16 (+3)</div>
+        <div class="stat-line"><span class="stat-label2">INT</span> 26 (+8) &nbsp;&nbsp; <span class="stat-label2">WIS</span> 18 (+4) &nbsp;&nbsp; <span class="stat-label2">CHA</span> 16 (+3)</div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div class="stat-line"><span class="stat-label2">Saving Throws:</span> INT +14, WIS +10 (proficient)</div>
+        <div class="stat-line"><span class="stat-label2">Skills:</span> Arcana +20, History +14, Insight +10, Deception +9, Perception +10</div>
+        <div class="stat-line"><span class="stat-label2">Resistances:</span> Damage from spells (Robe)</div>
+        <div class="stat-line"><span class="stat-label2">Condition Immunity:</span> None — he's still mortal</div>
+        <div class="stat-line"><span class="stat-label2">Senses:</span> Truesight 10ft (Gem of Seeing), passive Perception 20</div>
+        <div class="stat-line"><span class="stat-label2">Languages:</span> Common, Elvish, Draconic, Infernal, Deep Speech, Celestial</div>
+      </div>
+
+      <div class="stat-block" style="margin-top:.75rem">
+        <div class="stat-block-header">Key Features</div>
+        <div class="stat-line"><span class="stat-label2">Portent (Divination signature):</span> Rolls 2d20 at dawn each day. Can replace ANY roll (his or another creature's) with one of these dice. He always has two stored. This is his most dangerous ability — he can guarantee a Counterspell succeeds, an enemy fails a save, or he survives a critical hit. He has prepared for this encounter.</div>
+        <div class="stat-line"><span class="stat-label2">Architect of Inevitability:</span> At the start of combat, Vaeloran has already prepared one free Counterspell or Shield (his choice). He does not need to expend a spell slot for the first use.</div>
+        <div class="stat-line"><span class="stat-label2">Expert Divination:</span> When he casts a divination spell of 2nd level or higher, he regains one expended spell slot (max 5th level).</div>
+        <div class="stat-line"><span class="stat-label2">The Third Eye:</span> Darkvision 60ft OR read any language OR see the Ethereal Plane 60ft (bonus action, resets on short rest).</div>
+        <div class="stat-line"><span class="stat-label2">Signature Spells:</span> Foresight and Mind Blank — cast once per day without a spell slot.</div>
+        <div class="stat-line"><span class="stat-label2">Spell Mastery:</span> Misty Step (2nd) and Counterspell (3rd) can be cast at their lowest level without expending a slot (1/short rest each).</div>
+        <div class="stat-line"><span class="stat-label2">Legendary Resistance 3/day:</span> When he fails a saving throw, he can choose to succeed instead.</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="stat-block">
+        <div class="stat-block-header">Spell Slots & Key Spells</div>
+        <div class="stat-line"><span class="stat-label2">1st:</span> 4 &nbsp;·&nbsp; <span class="stat-label2">2nd:</span> 3 &nbsp;·&nbsp; <span class="stat-label2">3rd:</span> 3 &nbsp;·&nbsp; <span class="stat-label2">4th:</span> 3 &nbsp;·&nbsp; <span class="stat-label2">5th:</span> 3</div>
+        <div class="stat-line"><span class="stat-label2">6th:</span> 2 &nbsp;·&nbsp; <span class="stat-label2">7th:</span> 2 &nbsp;·&nbsp; <span class="stat-label2">8th:</span> 1 &nbsp;·&nbsp; <span class="stat-label2">9th:</span> 1</div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div style="font-size:11px;color:var(--gold2);margin-bottom:.3rem;font-family:'Cinzel',serif;letter-spacing:.5px">CONTROL & MANIPULATION</div>
+        <div class="stat-line"><span class="stat-label2">Modify Memory</span> <span style="color:var(--parch2);font-size:12px">WIS DC 21 · He has done this to Lyssandra. He will do it to party members if needed.</span></div>
+        <div class="stat-line"><span class="stat-label2">Feeblemind</span> <span style="color:var(--parch2);font-size:12px">INT/CHA DC 21 · On fail: INT and CHA become 1. Can't cast spells.</span></div>
+        <div class="stat-line"><span class="stat-label2">Dominate Person</span> <span style="color:var(--parch2);font-size:12px">WIS DC 21 · Full control. His preference for first encounters.</span></div>
+        <div class="stat-line"><span class="stat-label2">Suggestion / Mass Suggestion</span> <span style="color:var(--parch2);font-size:12px">WIS DC 21 · He prefers this to violence. Why destroy what you can redirect?</span></div>
+        <div class="stat-line"><span class="stat-label2">Hold Person / Hold Monster</span> <span style="color:var(--parch2);font-size:12px">WIS DC 21 · Paralyzed. Melee = auto-crit.</span></div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div style="font-size:11px;color:var(--gold2);margin-bottom:.3rem;font-family:'Cinzel',serif;letter-spacing:.5px">DEFENCE</div>
+        <div class="stat-line"><span class="stat-label2">Counterspell +13</span> <span style="color:var(--parch2);font-size:12px">He will use a Portent die to guarantee this succeeds on critical casts.</span></div>
+        <div class="stat-line"><span class="stat-label2">Shield (reaction)</span> <span style="color:var(--parch2);font-size:12px">+5 AC until next turn. Free first use per encounter.</span></div>
+        <div class="stat-line"><span class="stat-label2">Globe of Invulnerability</span> <span style="color:var(--parch2);font-size:12px">Immune to spells of 5th level and below within radius.</span></div>
+        <div class="stat-line"><span class="stat-label2">Mind Blank (Signature)</span> <span style="color:var(--parch2);font-size:12px">Immune to psychic damage and all mind-affecting magic for 24h. He casts this every morning.</span></div>
+        <div class="stat-line"><span class="stat-label2">Foresight (Signature)</span> <span style="color:var(--parch2);font-size:12px">Can't be surprised. Adv on attacks/saves/checks. Attacks vs = disadv. For 8 hours.</span></div>
+        <hr style="border-color:rgba(160,128,64,0.2);margin:.5rem 0">
+        <div style="font-size:11px;color:var(--gold2);margin-bottom:.3rem;font-family:'Cinzel',serif;letter-spacing:.5px">DAMAGE &amp; ARTILLERY (if forced)</div>
+        <div class="stat-line"><span class="stat-label2">Meteor Swarm (9th)</span> <span style="color:var(--parch2);font-size:12px">40d6 fire+bludgeoning in 40ft spheres. His last resort — he dislikes destruction.</span></div>
+        <div class="stat-line"><span class="stat-label2">Disintegrate</span> <span style="color:var(--parch2);font-size:12px">CON DC 21 · 10d6+40 force. On 0 HP: dust. No resurrection except Wish.</span></div>
+        <div class="stat-line"><span class="stat-label2">Maze</span> <span style="color:var(--parch2);font-size:12px">Banishes target to extradimensional maze. INT DC 20 to escape, check each turn.</span></div>
+      </div>
+
+      <div class="stat-block" style="margin-top:.75rem">
+        <div class="stat-block-header">Combat Behaviour & Tactics</div>
+        <div class="card-body" style="font-size:12.5px;padding:0">
+          <strong>Vaeloran does not want to fight the party.</strong> He wants to redirect them. Combat means something went wrong in his planning.<br><br>
+          <strong>Round 1:</strong> Foresight is already active (cast this morning). Mind Blank is active. He has two Portent dice ready. He opens with Dominate Person on the most physically dangerous party member — if that's Torren, Torren is now his weapon.<br><br>
+          <strong>Round 2:</strong> If Counterspell was needed, he uses Spell Mastery to recover it for free. Suggestion on Orin: "You know I'm trying to help this city. Stand down and let me explain." WIS DC 21.<br><br>
+          <strong>Round 3+:</strong> He starts talking while the dominated party member fights their friends. "I didn't want this. You forced this." He is genuinely disappointed, not angry.<br><br>
+          <strong>Escape condition:</strong> Below 60HP he casts Misty Step (free, Spell Mastery) and teleports to the Ethereal Plane via Third Eye. He does not die in this tower. He has contingencies for everything.<br><br>
+          <strong>He will NOT use Modify Memory mid-combat</strong> — too slow. But if the party surrenders? That's a different conversation.<br><br>
+          <strong>Weakness:</strong> His CON is 16 but his HP is high. Concentration spells are his priority — Globe of Invulnerability requires concentration. If you break it, his lower-level protection collapses. Force effects bypass spell resistance. The party's best chance is overwhelming action economy before he can establish control.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sec-title">Vaeloran's Lich Progress — 10 Stages</div>
+  <div class="alert alert-warn">Stages 1 and 2 are already complete. The party inadvertently helped with both. Click segments to update progress.</div>
+  <div id="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.75rem 0"></div>
+  <div class="grid-2" style="gap:.6rem;margin-top:.75rem">
+    <div class="card red"><div class="card-title">✅ Stage 1 — Arcane Self-Severance</div><div class="card-sub">Auto-complete · Cannot be interrupted</div><div class="card-body" style="font-size:12px">Ritual that begins separating soul from mortality. Performed years ago in secret. Complete before the campaign began.</div></div>
+    <div class="card red"><div class="card-title">✅ Stage 2 — Phylactery Vessel Acquired</div><div class="card-sub">Auto-complete · Party delivered it</div><div class="card-body" style="font-size:12px">The meteor shard. Lyssandra was sent to retrieve it. The party found her and brought it back. They unknowingly retrieved his phylactery component.</div></div>
+    <div class="card gold"><div class="card-title">🔄 Stage 3 — Shard Attunement</div><div class="card-sub">IN PROGRESS · Interruptible · 30-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely.</div></div>
+    <div class="card"><div class="card-title">⏳ Stage 4 — Lyssandra's Memories Extracted</div><div class="card-sub">Pending · Auto-completes if party doesn't rescue her</div><div class="card-body" style="font-size:12px">Her full memories of Vaeloran's plans are extracted and sealed into a spellbook — his record of intent. If rescued before Stage 4, Lyssandra can remember fragments. After Stage 4, they're gone permanently.</div></div>
+    <div class="card"><div class="card-title">⏳ Stage 5 — Corrupt a Divine Gate Node</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">One of three hidden nodes that anchor the Divine Gate near Aeloria must be corrupted. This weakens divine interference during the final ritual. The party can find and protect these nodes.</div></div>
+    <div class="card"><div class="card-title">⏳ Stage 6 — 100 Souls Consumed</div><div class="card-sub">Pending · Partially interruptible via Instability Clock</div><div class="card-body" style="font-size:12px">The Aurek network's operations — guild violence, cult operations, engineered unrest — feed this count. Slowing the Instability Clock slows this. The party can never fully stop it without dismantling the entire network.</div></div>
+    <div class="card"><div class="card-title">⏳ Stage 7 — Valdris's Formula</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">Vaeloran needs the specific incantation Valdris used for his own transformation. He is trying to steal or trade for it. The Aurora Peaks sanctum is the only source. The party may reach it first.</div></div>
+    <div class="card red"><div class="card-title">⏳ Stage 8 — The Dark Rite</div><div class="card-sub">Pending · Interruptible · CLIMACTIC MOMENT</div><div class="card-body" style="font-size:12px">Performed at the Spire of the Silver Eclipse at a specific celestial conjunction. This is the party's last chance to stop him. If they arrive during this ritual, they face Vaeloran at full power with Foresight active and Globe of Invulnerability established.</div></div>
+    <div class="card red"><div class="card-title">⏳ Stage 9 — Willing Death</div><div class="card-sub">Auto-completes if Stage 8 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran destroys his mortal body willingly. The moment the party has failed if they haven't stopped him by Stage 8.</div></div>
+    <div class="card red"><div class="card-title">⏳ Stage 10 — Lich Ascension</div><div class="card-sub">Auto-completes if Stage 9 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran Duskwhisper becomes a lich. His phylactery (the meteor shard) is hidden. He is now immortal. The campaign has fundamentally changed.</div></div>
+  </div>
+  <div style="margin-top:.75rem;font-size:11.5px;color:var(--parch3);font-style:italic">Lich progress: <span id="lich-count">2</span> / 10 stages complete</div>
+</div>
+
+<!-- ============ WORLD STATE ============ -->
 <div id="panel-world" class="panel">
   <div class="tab-inner">
     <button class="tab-btn active" onclick="showTab('aeloria',this)">Aeloria</button>
+    <button class="tab-btn" onclick="showTab('worldstate',this)">🌍 World State</button>
     <button class="tab-btn" onclick="showTab('regions',this)">Regions</button>
     <button class="tab-btn" onclick="showTab('factions',this)">Factions</button>
     <button class="tab-btn" onclick="showTab('feywild',this)">Feywild</button>
   </div>
 
-  <div id="tab-aeloria">
+  <div id="tab-worldstate" style="display:none">
+    <div class="sec-title">Living World — What's Happening Right Now</div>
+    <div class="alert alert-warn">These events are unfolding whether or not the party pays attention. Some have countdowns. Some will change the world permanently if ignored.</div>
+    <div class="grid-2">
+      <div class="card red">
+        <div class="card-title">🔴 Aurum Dominion — Aurora Peaks</div>
+        <div class="card-sub">All three agendas simultaneously · Most organised external threat</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>Trade pressure:</strong> Dominion envoys in Aeloria pushing exclusive contracts with Ironhold's smiths. Guildmaster Bryndis Ashveil refuses; Corvan Drake wants the deal.<br><br>
+          <strong>Valdris search:</strong> Aurum Sentinels quietly excavating beneath the Aurora Peaks looking for his sanctum. They believe they hold his deal. They don't know Valdris may have already chosen a new path through Sylas.<br><br>
+          <strong>Military build-up:</strong> Crown Prince Aurek leading exercises near the Aelorian border. Framed as "defensive readiness." Princess Selene is the more dangerous actor — she is gathering intelligence through espionage. Lady Selendra Kaelthorn runs her network.<br><br>
+          <strong>How this affects the party:</strong> The Dominion letter for Sylas is coming. Matilda's tracks lead north toward their territory. Ironhold will force a choice between Dominion money and Aelorian independence.
+        </div>
+      </div>
+      <div class="card red">
+        <div class="card-title">🔴 Verdant Expanse — Sylvarian Enclaves</div>
+        <div class="card-sub">Naturus corruption spreading · Connected to Kaelith</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> Kaelith has established secondary shrines along the Frostwood Marsh border with the Verdant Expanse. Sacred groves near Silentwood are beginning to darken. Bioluminescent plants are dying.<br><br>
+          <strong>Elven response:</strong> The Sylvarian Enclaves are in denial — they believe it's a natural fluctuation. The old elf puritan faction sees it as punishment for allowing non-elves into the Enclaves. The multicultural faction is desperately looking for an external cause.<br><br>
+          <strong>Countdown:</strong> 3 sessions ignored → Enclaves send an emissary to Aeloria seeking help. This introduces the Sylvarian Enclaves as active players.<br><br>
+          <strong>How this affects the party:</strong> Kaelith is easier to find from this angle than through the Guilded Veil. The Enclaves may offer powerful druidic support in exchange for help.
+        </div>
+      </div>
+      <div class="card gold">
+        <div class="card-title">🟡 Serpent Isles — Pirate Confederacy</div>
+        <div class="card-sub">New pirate lord rising · Council destabilising</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> A charismatic and brutal pirate lord calling himself <strong>The Scarlet Wake</strong> has seized three ships from rival captains and is demanding a seat on the Council. His real agenda: consolidate the Confederacy under his flag and tax the Azure Sea trade routes — including Aeloria's.<br><br>
+          <strong>Council response:</strong> Fractured. Two captains want to negotiate. Two want to fight. One has already defected to The Scarlet Wake.<br><br>
+          <strong>Countdown:</strong> 5 sessions ignored → The Scarlet Wake controls the Council. Azure Sea trade routes to Aeloria are taxed or blockaded. Trade disruption feeds Vaeloran's Instability Clock.<br><br>
+          <strong>How this affects the party:</strong> A Duskmere coastal contact may bring word of disrupted supply routes. The Scaleheart or Blacktail clan may seek outside help.
+        </div>
+      </div>
+      <div class="card gold">
+        <div class="card-title">🟡 Mountains near Duskmere — The Stonemarked</div>
+        <div class="card-sub">Orin's tribe · Squeezed from two sides</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> Naturus corruption is pushing up into the mountain passes from the Frostwood Marsh below — creatures behaving strangely, plants rotting at the roots, a low dread in the air. Simultaneously, a rival clan called <strong>The Ashbound</strong> is pressing from the north, having been displaced from their own territory by an unrelated conflict.<br><br>
+          <strong>Stonemarked response:</strong> Pride prevents them from asking for help. They are fighting on two fronts and losing ground on both.<br><br>
+          <strong>How this becomes active:</strong> A Stonemarked warrior arrives injured in Aeloria. States to Orin: "Your tribe is dying." Leaves. Orin decides.<br><br>
+          <strong>Countdown:</strong> 5 sessions ignored → Stonemarked broken. Corruption claims the passes. New Naturus shrine established in the mountains.
+        </div>
+      </div>
+      <div class="card gold">
+        <div class="card-title">🟡 Celestial Plateau — Celestium Clans</div>
+        <div class="card-sub">Ancient discovery beneath the plateau</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> Tunnelling beneath Astronhold broke into a chamber that predates the Celestium Clans' arrival — predates, in fact, anything in recorded history. The chamber contains structures of unknown material, writing in no living language, and a faint resonance that feels like the cosmos breathing.<br><br>
+          <strong>Celestium response:</strong> Council of Sages has sealed the discovery and gone very quiet. They have sent no word to the Aurum Dominion — which is itself suspicious given their usual relationship.<br><br>
+          <strong>The connection:</strong> Valdris knew this chamber existed. It is why he chose the Celestial Plateau. It may be connected to the Divine Gate, the original creation of Eldoria, or something that predates the gods.<br><br>
+          <strong>How this affects the party:</strong> Mid-to-late campaign. Could become the most significant discovery in the world.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚫ Verdant Expanse Border — Fey Crossing</div>
+        <div class="card-sub">Unstable · Fey creatures bleeding through</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> The Naturus corruption warping the natural magic of the Verdant Expanse is destabilising a fey crossing near the border. Fey creatures — mostly minor, some dangerous — are bleeding into the material plane confused and disoriented.<br><br>
+          <strong>Queen Thessavaine:</strong> Aware. Mildly entertained. Has not acted. She may send an emissary if it gets worse — or if the party becomes interesting enough to warrant her attention.<br><br>
+          <strong>How this affects the party:</strong> Strange fey encounters near the Verdant Expanse border. Could be the party's introduction to Thessavaine and the Feywild at mid-campaign.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚫ Ember Wastes / Crimson Desert</div>
+        <div class="card-sub">Quiet · Mid-campaign alliance hook</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>What's happening:</strong> Nothing dramatic yet. The Nomads of the Ember Wastes and the Mor'nyx tomb-keepers of the Crimson Desert are living their lives undisturbed.<br><br>
+          <strong>When this activates:</strong> Around levels 10-12, when the party needs an unlikely alliance against the Aurum Dominion or Vaeloran. The Nomads have knowledge of ancient routes and hidden places. The Mor'nyx tomb-keepers have knowledge of death, undeath, and how to destroy a lich's phylactery.<br><br>
+          <strong>The hook:</strong> Someone has to go to them. They don't come to anyone.
+        </div>
+      </div>
+    </div>
+    <button class="action-btn" onclick="sendPrompt('Based on the Eldoria 2.0 world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
+  </div>
+
     <div class="sec-title">Aeloria Crossroads — Key Locations</div>
     <div class="grid-2">
       <div class="card red"><div class="card-title">Spire of the Silver Eclipse</div><div class="card-sub">Vaeloran's Tower · City centre · Roll20 map</div><div class="card-body">Interior larger than exterior. Swirling light orbs, mechanical quills, self-sliding shelves. Shimmering-dust hourglass. Ancient yet alive. Lyssandra is here. Taren Myles works here. Vaeloran's lab for the lich ritual is somewhere within.</div></div>
@@ -1151,7 +1576,7 @@ function checkAuth() {
   if (v === PW) {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    initClock(); loadNotes();
+    initClock(); initLichClock(); loadNotes(); initCombat();
   } else {
     document.getElementById('auth-err').style.display = 'block';
     document.getElementById('pw-input').value = '';
@@ -1169,12 +1594,12 @@ function showPanel(id, btn) {
   else document.querySelector(`[onclick*="'${id}'"]`)?.classList.add('active');
 }
 
-// TABS (world subtabs and pantheon)
+// TABS
 function showTab(id, btn) {
-  const parent = btn.closest('.panel') || document.body;
-  parent.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
-  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const el = document.getElementById('tab-' + id) || document.getElementById(id);
+  const panel = btn.closest('.panel') || document.body;
+  panel.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('tab-' + id);
   if(el) el.style.display = 'block';
   btn.classList.add('active');
 }
@@ -1203,31 +1628,235 @@ function renderClock() {
   if(c) c.textContent = clockFilled;
 }
 
-// INITIATIVE TRACKER
+// LICH PROGRESS CLOCK
+let lichFilled = 2;
+function initLichClock() {
+  const saved = localStorage.getItem('eldoria-lich');
+  if(saved) lichFilled = parseInt(saved);
+  renderLichClock();
+}
+function renderLichClock() {
+  const d = document.getElementById('lich-clock-display');
+  const c = document.getElementById('lich-count');
+  if(!d) return;
+  d.innerHTML = '';
+  const labels = ['Self-Severance','Shard Acquired','Shard Attunement','Memories Extracted','Gate Node Corrupted','100 Souls','Valdris Formula','The Dark Rite','Willing Death','Lich Ascension'];
+  const colors = ['#2d6a30','#2d6a30','#8a6010','#555','#555','#555','#555','#7a1a1a','#7a1a1a','#7a1a1a'];
+  for(let i = 0; i < 10; i++) {
+    const seg = document.createElement('div');
+    seg.style.cssText = `min-width:80px;padding:6px 8px;border-radius:3px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3px;cursor:pointer;transition:all .2s;border:1px solid rgba(160,128,64,0.3);text-align:center;line-height:1.3;`;
+    if(i < lichFilled) {
+      seg.style.background = colors[i];
+      seg.style.color = '#f4edd8';
+      seg.style.borderColor = colors[i];
+    } else {
+      seg.style.background = 'rgba(20,15,8,0.6)';
+      seg.style.color = 'rgba(160,128,64,0.4)';
+    }
+    seg.innerHTML = `<div style="font-size:11px;margin-bottom:2px">${i < lichFilled ? '✓' : (i+1)}</div>${labels[i]}`;
+    const idx = i;
+    seg.onclick = () => { lichFilled = idx < lichFilled ? idx : idx + 1; localStorage.setItem('eldoria-lich', lichFilled); renderLichClock(); };
+    d.appendChild(seg);
+  }
+  if(c) c.textContent = lichFilled;
+}
+
+// MONSTER LIBRARY
+const monsters = {
+  kaelith: {
+    name: 'Sister Kaelith', ac: 19, hp: 83, maxHp: 83, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Sister Kaelith — Cleric 10 (Pestilence Domain)</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 19 (Mithral Half Plate + Shield) &nbsp;·&nbsp; <span class="stat-label2">HP</span> 83 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft</div>
+<div class="stat-line"><span class="stat-label2">Spell Save DC</span> 17 &nbsp;·&nbsp; <span class="stat-label2">Spell Attack</span> +9 &nbsp;·&nbsp; <span class="stat-label2">Init</span> +2</div>
+<div class="stat-line"><span class="stat-label2">STR</span> 14 <span class="stat-label2">DEX</span> 14 <span class="stat-label2">CON</span> 14 <span class="stat-label2">INT</span> 12 <span class="stat-label2">WIS</span> 20 <span class="stat-label2">CHA</span> 8</div>
+<div class="stat-line"><span class="stat-label2">Resistances</span> Necrotic, Poison &nbsp;·&nbsp; <span class="stat-label2">Attuned</span> Cloak of Displacement</div>
+<div class="stat-line"><span class="stat-label2">Plague Blessing</span> 5ft Emanation · CON DC 17 or gain 1 Exhaustion/turn (max 5)</div>
+<div class="stat-line"><span class="stat-label2">Virulent Burst (Reaction)</span> Enemy drops to 0HP within 60ft → 10ft burst (20ft if exhausted) · CON DC 17 or Incapacitated/3d6 necrotic</div>
+<div class="stat-line"><span class="stat-label2">Cloak of Displacement</span> Attacks vs her = disadv until she takes damage each round</div>
+<div class="stat-line"><span class="stat-label2">Key Spells</span> Spirit Guardians (WIS 17) · Hold Person · Silence · Banishment · Contagion · Insect Plague</div>
+<div class="stat-line"><span class="stat-label2">Tactic</span> Round 1: Silence on Orin. Plague Blessing. Round 2: Spirit Guardians. Round 3+: Mace +9 while plague works. Escapes below 40HP.</div></div>`
+  },
+  gnoll: {
+    name: 'Gnoll', ac: 15, hp: 22, maxHp: 22, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header">Gnoll — CR 1/2</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 15 (hide + shield) &nbsp;·&nbsp; <span class="stat-label2">HP</span> 22 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft</div>
+<div class="stat-line"><span class="stat-label2">STR</span> 14 <span class="stat-label2">DEX</span> 12 <span class="stat-label2">CON</span> 11 <span class="stat-label2">INT</span> 6 <span class="stat-label2">WIS</span> 10 <span class="stat-label2">CHA</span> 7</div>
+<div class="stat-line"><span class="stat-label2">Rampage</span> When it reduces creature to 0HP, bonus action to move up to half speed and bite another</div>
+<div class="stat-line"><span class="stat-label2">Bite</span> +4 · 2d4+2 piercing</div>
+<div class="stat-line"><span class="stat-label2">Spear</span> +4 · 1d6+2 piercing</div></div>`
+  },
+  gnoll_alpha: {
+    name: 'Gnoll Pack Lord (Charmed)', ac: 15, hp: 49, maxHp: 49, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Gnoll Pack Lord — Charmed (CR 2) — Kaelith's mark still lingers</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 15 &nbsp;·&nbsp; <span class="stat-label2">HP</span> 49 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft</div>
+<div class="stat-line"><span class="stat-label2">STR</span> 16 <span class="stat-label2">DEX</span> 14 <span class="stat-label2">CON</span> 13 <span class="stat-label2">INT</span> 8 <span class="stat-label2">WIS</span> 11 <span class="stat-label2">CHA</span> 9</div>
+<div class="stat-line"><span class="stat-label2">Detect Magic</span> Arcana DC 18 reveals fading enchantment threads · DC 22: matches structured dominance casting</div>
+<div class="stat-line"><span class="stat-label2">Multiattack</span> 2 attacks</div>
+<div class="stat-line"><span class="stat-label2">Glaive</span> +5 · 2d10+3 slashing</div>
+<div class="stat-line"><span class="stat-label2">Incite Rampage</span> Ally can make bite attack as bonus action</div></div>`
+  },
+  spider: {
+    name: 'Corruption Spider', ac: 13, hp: 18, maxHp: 18, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Corruption-Warped Spider — CR 1</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 13 &nbsp;·&nbsp; <span class="stat-label2">HP</span> 18 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft, climb 30ft</div>
+<div class="stat-line"><span class="stat-label2">Special</span> Glowing blue eyes · Shard-maddened · Ignores web difficult terrain</div>
+<div class="stat-line"><span class="stat-label2">Corrupting Bite</span> +4 · 1d8+2 piercing + 1d4 necrotic</div>
+<div class="stat-line"><span class="stat-label2">Web (Recharge 5-6)</span> DEX DC 12 or Restrained. Escape DC 12 STR.</div></div>`
+  },
+  cult_fanatic: {
+    name: 'Cult Fanatic (Naturus)', ac: 13, hp: 33, maxHp: 33, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Naturus Cult Fanatic — CR 2</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 13 (leather) &nbsp;·&nbsp; <span class="stat-label2">HP</span> 33 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft</div>
+<div class="stat-line"><span class="stat-label2">Spell Save DC</span> 11 &nbsp;·&nbsp; <span class="stat-label2">Spells</span> Command · Hold Person · Inflict Wounds · Spiritual Weapon</div>
+<div class="stat-line"><span class="stat-label2">Spore Touch</span> Melee +4 · 1d6+2 bludgeoning + DC 11 CON or Poisoned 1 minute</div>
+<div class="stat-line"><span class="stat-label2">Dark Devotion</span> Adv on saving throws vs. being charmed or frightened</div></div>`
+  },
+  guild_enforcer: {
+    name: 'Guild Enforcer', ac: 14, hp: 32, maxHp: 32, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header">Guilded Veil Enforcer — CR 2</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 14 (studded leather) &nbsp;·&nbsp; <span class="stat-label2">HP</span> 32 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft</div>
+<div class="stat-line"><span class="stat-label2">Skills</span> Stealth +5 · Deception +4 · Athletics +4</div>
+<div class="stat-line"><span class="stat-label2">Multiattack</span> 2 shortsword attacks</div>
+<div class="stat-line"><span class="stat-label2">Shortsword</span> +5 · 1d6+3 piercing</div>
+<div class="stat-line"><span class="stat-label2">Smoke Bomb (1/encounter)</span> Creates 10ft radius heavily obscured cloud for 1 minute</div>
+<div class="stat-line"><span class="stat-label2">Cunning Action</span> Bonus action: Dash, Disengage, or Hide</div></div>`
+  },
+  vaeloran: {
+    name: 'Vaeloran Duskwhisper', ac: 17, hp: 144, maxHp: 144, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Vaeloran Duskwhisper — Wizard 20 (Divination) ⚠ HIGH LEVEL</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 17 &nbsp;·&nbsp; <span class="stat-label2">HP</span> 144 &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 30ft &nbsp;·&nbsp; <span class="stat-label2">DC</span> 21 &nbsp;·&nbsp; <span class="stat-label2">Atk</span> +13</div>
+<div class="stat-line"><span class="stat-label2">INT</span> 26 <span class="stat-label2">WIS</span> 18 <span class="stat-label2">CHA</span> 16 &nbsp;·&nbsp; <span class="stat-label2">Legendary Resistance</span> 3/day</div>
+<div class="stat-line"><span class="stat-label2">Portent</span> 2 stored d20 results. Replace any roll with one of these — guaranteed outcome.</div>
+<div class="stat-line"><span class="stat-label2">Architect of Inevitability</span> Free Counterspell or Shield once per encounter</div>
+<div class="stat-line"><span class="stat-label2">Foresight (active)</span> Can't be surprised. Adv attacks/saves/checks. Attacks vs = disadv.</div>
+<div class="stat-line"><span class="stat-label2">Mind Blank (active)</span> Immune to psychic + all mind-affecting magic</div>
+<div class="stat-line"><span class="stat-label2">Signature Spells</span> Foresight · Mind Blank (1/day free each)</div>
+<div class="stat-line"><span class="stat-label2">Key Spells</span> Dominate Person · Modify Memory · Feeblemind · Hold Person · Counterspell · Globe of Invulnerability · Disintegrate · Maze · Meteor Swarm</div>
+<div class="stat-line" style="color:#f4c4c4"><span class="stat-label2">Tactic</span> Round 1: Dominate Person (Torren). Round 2: Suggestion on Orin. Talking throughout. Escapes below 60HP via Misty Step to Ethereal.</div></div>`
+  }
+};
+
+// COMBAT SYSTEM
+let combatants = [];
 let currentTurn = 0;
-function addCombatant() {
-  const name = prompt('Combatant name:'); if(!name) return;
-  const init = prompt('Initiative roll:');
-  const hp = prompt('Max HP:');
-  const row = document.createElement('div');
-  row.className = 'init-row';
-  row.innerHTML = `<div class="init-num">${init||'?'}</div><div class="init-name">${name}</div><div class="init-hp">HP ${hp||'—'}</div>`;
-  row.onclick = function() {
-    document.querySelectorAll('.init-row').forEach(r => r.classList.remove('active-turn'));
-    this.classList.add('active-turn');
-  };
-  document.getElementById('init-list').appendChild(row);
+let pickerVisible = false;
+
+function initCombat() {
+  combatants = [
+    { name: 'Torren (Assassin Rogue)', init: 0, hp: 38, maxHp: 38, isPC: true, statKey: null },
+    { name: 'Sylas (Illusionist Wizard)', init: 0, hp: 28, maxHp: 28, isPC: true, statKey: null },
+    { name: 'Orin (Cleric of Luminos)', init: 0, hp: 35, maxHp: 35, isPC: true, statKey: null }
+  ];
+  renderCombat();
 }
+
+function renderCombat() {
+  const list = document.getElementById('init-list');
+  if(!list) return;
+  list.innerHTML = '';
+  combatants.forEach((c, i) => {
+    const pct = Math.max(0, Math.min(100, (c.hp / c.maxHp) * 100));
+    const hpColor = pct > 60 ? '#1a6050' : pct > 25 ? '#7a5a10' : '#7a1a1a';
+    const row = document.createElement('div');
+    row.className = 'init-row' + (i === currentTurn ? ' active-turn' : '');
+    row.innerHTML = `
+      <div class="init-num" style="cursor:pointer" onclick="promptInit(${i})">${c.init||'?'}</div>
+      <div class="init-name" style="flex:1">
+        ${c.name}
+        ${c.dead ? '<span style="color:#7a1a1a;margin-left:4px">☠</span>' : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button onclick="changeHP(${i},-1)" style="background:rgba(122,26,26,0.4);border:none;color:#f4c4c4;width:20px;height:20px;border-radius:2px;cursor:pointer;font-size:12px">-</button>
+        <span class="init-hp" style="min-width:70px;text-align:center">${c.hp}/${c.maxHp}</span>
+        <button onclick="changeHP(${i},1)" style="background:rgba(13,61,48,0.4);border:none;color:#a0d4c4;width:20px;height:20px;border-radius:2px;cursor:pointer;font-size:12px">+</button>
+      </div>
+      <div style="width:60px;height:5px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin-left:6px">
+        <div style="height:100%;width:${pct}%;background:${hpColor};transition:width .3s"></div>
+      </div>
+      ${c.statKey ? `<button onclick="loadStatBlock('${c.statKey}')" style="background:rgba(160,128,64,0.2);border:none;color:var(--gold2);padding:2px 6px;border-radius:2px;cursor:pointer;font-size:10px;margin-left:4px">Stats</button>` : ''}
+      <button onclick="removeCombatant(${i})" style="background:none;border:none;color:rgba(160,128,64,0.3);cursor:pointer;font-size:12px;margin-left:2px;padding:2px 4px">×</button>
+    `;
+    row.addEventListener('click', (e) => {
+      if(e.target.tagName === 'BUTTON') return;
+      document.querySelectorAll('.init-row').forEach(r => r.classList.remove('active-turn'));
+      row.classList.add('active-turn');
+      currentTurn = i;
+      if(c.statKey) loadStatBlock(c.statKey);
+    });
+    list.appendChild(row);
+  });
+}
+
+function changeHP(idx, delta) {
+  const amount = parseInt(prompt(delta > 0 ? 'Heal by:' : 'Damage by:', '')) || 0;
+  combatants[idx].hp = Math.max(0, Math.min(combatants[idx].maxHp, combatants[idx].hp + (delta > 0 ? amount : -amount)));
+  if(combatants[idx].hp === 0) combatants[idx].dead = true;
+  renderCombat();
+}
+
+function promptInit(idx) {
+  const v = prompt(`Initiative for ${combatants[idx].name}:`);
+  if(v !== null) { combatants[idx].init = parseInt(v)||0; }
+  combatants.sort((a,b) => b.init - a.init);
+  currentTurn = 0;
+  renderCombat();
+}
+
+function removeCombatant(idx) { combatants.splice(idx, 1); renderCombat(); }
+
+function addPC() {
+  const name = prompt('PC name:'); if(!name) return;
+  const hp = parseInt(prompt('Max HP:'))||0;
+  combatants.push({ name, init: 0, hp, maxHp: hp, isPC: true, statKey: null });
+  renderCombat();
+}
+
+function showMonsterPicker() {
+  pickerVisible = !pickerVisible;
+  document.getElementById('monster-picker').style.display = pickerVisible ? 'block' : 'none';
+}
+
+function addMonster(key) {
+  const m = monsters[key];
+  if(!m) return;
+  const count = combatants.filter(c => c.statKey === key).length;
+  combatants.push({ name: m.name + (count > 0 ? ` ${count+1}` : ''), init: 0, hp: m.maxHp, maxHp: m.maxHp, isPC: false, statKey: key });
+  renderCombat();
+  loadStatBlock(key);
+}
+
+function addCustomCombatant() {
+  const name = prompt('Name:'); if(!name) return;
+  const ac = prompt('AC:');
+  const hp = parseInt(prompt('Max HP:'))||0;
+  combatants.push({ name: `${name} (AC${ac})`, init: 0, hp, maxHp: hp, isPC: false, statKey: null });
+  renderCombat();
+}
+
+function loadStatBlock(key) {
+  const m = monsters[key];
+  if(!m) return;
+  document.getElementById('stat-block-viewer').innerHTML = m.block;
+}
+
 function nextTurn() {
-  const rows = document.querySelectorAll('.init-row');
-  rows.forEach(r => r.classList.remove('active-turn'));
-  currentTurn = (currentTurn + 1) % rows.length;
-  rows[currentTurn].classList.add('active-turn');
+  if(combatants.length === 0) return;
+  currentTurn = (currentTurn + 1) % combatants.length;
+  if(currentTurn === 0) {
+    const rn = document.getElementById('round-num');
+    if(rn) rn.textContent = parseInt(rn.textContent) + 1;
+  }
+  renderCombat();
 }
+
 function clearCombat() {
-  if(confirm('Clear all combatants?')) {
-    document.getElementById('init-list').innerHTML = '';
+  if(confirm('Clear all combatants and reset round counter?')) {
+    combatants = [];
     currentTurn = 0;
+    const rn = document.getElementById('round-num');
+    if(rn) rn.textContent = '1';
+    renderCombat();
+    document.getElementById('stat-block-viewer').innerHTML = '<div style="color:var(--parch3);font-style:italic;font-size:13px;padding:.5rem">Select a combatant or add a monster to view its stat block.</div>';
   }
 }
 
@@ -1256,7 +1885,6 @@ function genNames(type) {
   document.getElementById('name-out').textContent = result.join(' · ');
 }
 
-// ENCOUNTERS
 const encounters = [
   'A hooded figure slides a sealed letter across the bar to one party member without a word, then leaves.',
   'A nervous merchant whispers that his entire shipment was replaced with worthless goods overnight.',
@@ -1276,17 +1904,14 @@ const encounters = [
 ];
 function genEncounter() { document.getElementById('enc-out').textContent = pick(encounters); }
 
-// LOCATIONS
 const taverns = ['The Cracked Flagon','Ember & Ash','The Silver Rooster','Crossroads Rest','The Gilded Goblin','Thornwood Inn','The Wanderer\'s Cup','Blackstone Tap','The Tipped Scales','Lantern & Lore'];
 const shops = ['Halverson\'s Relics','The Scrollwright','Irongate Supplies','Dusk & Ember Alchemicals','The Cartographer\'s Hand','Redstone Provisions'];
 const districts = ['The Guildreach Quarter','Tanner\'s Row','The Coppergate Market','The Ashfield Warrens','The Spire District','Dockside Commons','The Lamplit Steps'];
 function genLocation() { document.getElementById('loc-out').textContent = `Tavern: ${pick(taverns)}  ·  Shop: ${pick(shops)}  ·  District: ${pick(districts)}`; }
 
-// PLAGUE SYMPTOMS
 const plagues = ['Drained of all colour — appears in monochromatic grays.','Sheds metallic rust-hued flakes and creaks while moving.','Secretes foul-smelling mucus.','Surrounded by a cloud of buzzing insects.','Sprouts fungi or foliage from their flesh.','Covered in glowing pustules.'];
 function genPlague() { document.getElementById('plague-out').textContent = '1d6 → ' + pick(plagues); }
 
-// SEND TO CLAUDE (opens chat)
 function sendPrompt(text) {
   const encoded = encodeURIComponent(text);
   window.open(`https://claude.ai/new?q=${encoded}`, '_blank');
