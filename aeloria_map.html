@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aeloria Crossroads — Interactive Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0a06;--p1:#f4edd8;--p2:#ebe0c4;--p3:#d9ccaa;
+  --gold:#8a6a1a;--gold2:#c9a84c;--red:#7a1a1a;--teal:#0d3d30;
+  --bord:#b8a070;--mut:#5a4820;
+}
+body{background:#0a0805;font-family:'Crimson Pro',Georgia,serif;color:var(--p1);min-height:100vh;overflow-x:hidden}
+.page-header{background:linear-gradient(180deg,#0d0a06,#1a1208);border-bottom:2px solid var(--gold2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-family:'Cinzel Decorative',serif;color:var(--gold2);font-size:16px;letter-spacing:2px}
+.back-btn{color:var(--gold2);text-decoration:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;border:1px solid var(--gold2);padding:4px 12px;border-radius:2px;transition:all .2s}
+.back-btn:hover{background:var(--gold2);color:var(--ink)}
+.dm-badge{background:var(--red);color:#f4c4c4;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px}
+
+/* MAP CONTAINER */
+.map-wrapper{position:relative;display:block;max-width:1000px;margin:1rem auto;border:2px solid var(--bord);border-radius:4px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.6)}
+.map-img{width:100%;display:block;filter:brightness(0.92)}
+
+/* HOTSPOT ZONES */
+.hotspot{position:absolute;border-radius:4px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.hotspot:hover{border-color:var(--gold2);background:rgba(201,168,76,0.12)}
+.hotspot.dm-only:hover{border-color:#f4c4c4;background:rgba(122,26,26,0.15)}
+.hotspot-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,0.6);text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}
+
+/* INFO PANEL */
+.info-panel{max-width:1000px;margin:0 auto 2rem;padding:0 1rem}
+.panel-card{background:linear-gradient(135deg,rgba(26,18,8,0.95),rgba(13,10,6,0.98));border:1px solid var(--bord);border-radius:4px;padding:1.25rem 1.5rem;display:none}
+.panel-card.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:1px solid rgba(160,128,64,0.3);padding-bottom:.75rem}
+.panel-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold2);font-weight:700}
+.panel-sub{font-size:12px;color:var(--p3);font-style:italic;margin-top:2px}
+.close-btn{background:none;border:none;color:rgba(160,128,64,0.5);font-size:18px;cursor:pointer;padding:0 4px;transition:color .15s}
+.close-btn:hover{color:var(--gold2)}
+
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel-section{margin-bottom:.75rem}
+.section-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold2);text-transform:uppercase;margin-bottom:.4rem;opacity:.8}
+.section-body{font-size:13.5px;line-height:1.7;color:var(--p2)}
+.npc-row{display:flex;align-items:flex-start;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(160,128,64,0.1)}
+.npc-row:last-child{border-bottom:none}
+.npc-av{width:32px;height:32px;border-radius:50%;background:rgba(26,18,8,0.8);border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:10px;color:var(--gold2);font-weight:700;flex-shrink:0}
+.npc-name{font-family:'Cinzel',serif;font-size:12px;font-weight:600;margin-bottom:2px}
+.npc-body{font-size:12.5px;color:var(--p3)}
+.badge{display:inline-block;padding:2px 6px;border-radius:2px;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.3px;margin:2px 2px 2px 0;font-weight:700}
+.b-red{background:rgba(122,26,26,0.7);color:#f4c4c4;border:1px solid rgba(122,26,26,0.4)}
+.b-gold{background:rgba(122,96,26,0.7);color:#f4e4a0;border:1px solid rgba(122,96,26,0.4)}
+.b-teal{background:rgba(13,61,48,0.7);color:#a0d4c4;border:1px solid rgba(13,61,48,0.4)}
+.b-grey{background:rgba(40,30,15,0.7);color:var(--p3);border:1px solid rgba(80,60,30,0.4)}
+.b-purple{background:rgba(45,26,74,0.7);color:#c4a0f4;border:1px solid rgba(45,26,74,0.4)}
+.dm-note{background:rgba(122,26,26,0.1);border:1px solid rgba(122,26,26,0.3);border-radius:3px;padding:.5rem .75rem;font-size:12.5px;font-style:italic;color:#f4c4c4;margin-top:.5rem}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.shop-card{background:rgba(26,18,8,0.6);border:1px solid rgba(160,128,64,0.2);border-radius:3px;padding:.6rem .75rem}
+.shop-name{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--p1);margin-bottom:.2rem}
+.shop-keeper{font-size:11.5px;color:var(--p3);font-style:italic;margin-bottom:.3rem}
+.shop-flavour{font-size:11.5px;color:var(--p2);font-style:italic}
+.notes-area{background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.2);border-radius:3px;padding:.5rem .75rem;font-family:'Crimson Pro',serif;font-size:13px;color:var(--p2);min-height:60px;width:100%;resize:vertical;outline:none;line-height:1.6;margin-top:.5rem}
+.notes-area:focus{border-color:var(--gold2)}
+
+/* DISTRICT LEGEND */
+.legend{max-width:1000px;margin:0 auto;padding:.75rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--p3);cursor:pointer;padding:4px 10px;border-radius:2px;border:1px solid rgba(160,128,64,0.2);transition:all .2s}
+.legend-item:hover{border-color:var(--gold2);color:var(--p1)}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+@media(max-width:700px){.panel-grid{grid-template-columns:1fr}.shop-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Aeloria Crossroads</div>
+    <div style="color:var(--p3);font-size:11px;font-style:italic;margin-top:2px">Interactive City Map · Click any district or location</div>
+  </div>
+  <div style="display:flex;gap:.5rem;align-items:center">
+    <span class="dm-badge" id="mode-badge">DM VIEW</span>
+    <a href="index.html" class="back-btn">← DM Site</a>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item" onclick="showLocation('merchants_rise')"><div class="legend-dot" style="background:#8a6a1a"></div>Merchants Rise</div>
+  <div class="legend-item" onclick="showLocation('high_spires')"><div class="legend-dot" style="background:#2d5a8a"></div>High Spires District</div>
+  <div class="legend-item" onclick="showLocation('ashgate_slums')"><div class="legend-dot" style="background:#5a2a0a"></div>Ashgate Slums</div>
+  <div class="legend-item" onclick="showLocation('copper_light')"><div class="legend-dot" style="background:#4a6a2a"></div>Copper Light Ward</div>
+  <div class="legend-item" onclick="showLocation('city_hall')"><div class="legend-dot" style="background:#6a3a6a"></div>City Hall</div>
+  <div class="legend-item" onclick="showLocation('grand_bazaar')"><div class="legend-dot" style="background:#8a5a0a"></div>Grand Bazaar</div>
+  <div class="legend-item" onclick="showLocation('wayfarers_rest')"><div class="legend-dot" style="background:#0a4a3a"></div>Wayfarer's Rest</div>
+  <div class="legend-item" onclick="showLocation('pigs_head')"><div class="legend-dot" style="background:#6a1a1a"></div>Pig's Head Inn</div>
+  <div class="legend-item" onclick="showLocation('vaelorans_tower')"><div class="legend-dot" style="background:#3a1a5a"></div>Vaeloran's Tower</div>
+  <div class="legend-item" onclick="showLocation('temple_luminos')"><div class="legend-dot" style="background:#0a3a5a"></div>Temple of Luminos</div>
+  <div class="legend-item" onclick="showLocation('oleary_stables')"><div class="legend-dot" style="background:#3a4a1a"></div>O'Leary's Stables</div>
+</div>
+
+<!-- MAP WITH HOTSPOTS -->
+<div class="map-wrapper" id="map-wrapper">
+  <img class="map-img" src="aeloria_map.jpg" alt="Aeloria Crossroads city map" id="map-img">
+
+  <!-- DISTRICT ZONES (percentage-based for responsiveness) -->
+  <!-- NW: Merchants Rise -->
+  <div class="hotspot" style="left:3%;top:15%;width:32%;height:38%" onclick="showLocation('merchants_rise')" title="Merchants Rise">
+    <div class="hotspot-label">Merchants Rise</div>
+  </div>
+
+  <!-- NE: High Spires District -->
+  <div class="hotspot" style="left:52%;top:10%;width:46%;height:42%" onclick="showLocation('high_spires')" title="High Spires District">
+    <div class="hotspot-label">High Spires District</div>
+  </div>
+
+  <!-- SW: Ashgate Slums -->
+  <div class="hotspot" style="left:3%;top:55%;width:38%;height:40%" onclick="showLocation('ashgate_slums')" title="Ashgate Slums">
+    <div class="hotspot-label">Ashgate Slums</div>
+  </div>
+
+  <!-- SE: Copper Light Ward -->
+  <div class="hotspot" style="left:55%;top:55%;width:43%;height:40%" onclick="showLocation('copper_light')" title="Copper Light Ward">
+    <div class="hotspot-label">Copper Light Ward</div>
+  </div>
+
+  <!-- CENTRE: City Hall -->
+  <div class="hotspot" style="left:38%;top:35%;width:24%;height:28%" onclick="showLocation('city_hall')" title="City Hall">
+    <div class="hotspot-label">City Hall</div>
+  </div>
+
+  <!-- Grand Bazaar (inner NW) -->
+  <div class="hotspot" style="left:28%;top:18%;width:14%;height:16%" onclick="showLocation('grand_bazaar')" title="Grand Bazaar">
+    <div class="hotspot-label" style="font-size:8px">Grand Bazaar</div>
+  </div>
+
+  <!-- Wayfarer's Rest (inner E) -->
+  <div class="hotspot" style="left:64%;top:43%;width:14%;height:12%" onclick="showLocation('wayfarers_rest')" title="Wayfarer's Rest">
+    <div class="hotspot-label" style="font-size:8px">Wayfarer's Rest</div>
+  </div>
+
+  <!-- Pig's Head (SW, Ashgate) -->
+  <div class="hotspot" style="left:28%;top:57%;width:14%;height:12%" onclick="showLocation('pigs_head')" title="Pig's Head Inn">
+    <div class="hotspot-label" style="font-size:8px">Pig's Head</div>
+  </div>
+
+  <!-- Vaeloran's Tower (NE corner) -->
+  <div class="hotspot" style="left:82%;top:8%;width:14%;height:16%" onclick="showLocation('vaelorans_tower')" title="Vaeloran's Tower">
+    <div class="hotspot-label" style="font-size:8px">Vaeloran's Tower</div>
+  </div>
+
+  <!-- North Gate / O'Leary's -->
+  <div class="hotspot" style="left:40%;top:2%;width:20%;height:10%" onclick="showLocation('oleary_stables')" title="North Gate — O'Leary's Stables">
+    <div class="hotspot-label" style="font-size:8px">North Gate</div>
+  </div>
+
+  <!-- Ironwell Forge (Merchants Rise) -->
+  <div class="hotspot" style="left:22%;top:30%;width:12%;height:10%" onclick="showLocation('ironwell_forge')" title="Ironwell Forge">
+    <div class="hotspot-label" style="font-size:8px">Ironwell Forge</div>
+  </div>
+
+</div>
+
+<!-- INFO PANELS -->
+<div class="info-panel">
+
+  <!-- MERCHANTS RISE -->
+  <div class="panel-card" id="loc-merchants_rise">
+    <div class="panel-header">
+      <div><div class="panel-name">Merchants Rise</div><div class="panel-sub">Northwest District · Trade & Craft</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The commercial heart of Aeloria. Wide cobbled streets lined with workshops, storefronts, and trading houses. The smell of hot metal from the Ironwell Forge drifts through the quarter. Merchants from across Eldoria maintain offices here. During the day it is loud, bustling, and relentlessly mercantile.</div></div>
+        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Ironwell Forge · Various merchant houses · Caravan staging yards · The Guilds Row (artisan workshops)</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Energetic by day, quieter at night but never fully dark. The wealthy merchants here have private guards. Occasional guild disputes spill into the streets.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av">DI</div><div><div class="npc-name">Durnan Ironwell</div><div class="npc-body">Dwarf. Blacksmith. Ironwell Forge. Broad, soot-covered, calm but intense. "You want cheap? Go elsewhere."</div></div></div>
+        </div>
+        <div class="panel-section"><div class="section-label">Council Connection</div><div class="section-body">Councillor Dara Voss (Merchant Consortium) has her offices here. Her assistant is on the Guilded Veil's payroll.</div></div>
+        <div class="dm-note">DM: The Aurum Dominion has been quietly approaching senior merchants in this district about exclusive trade contracts. Vaeloran has leverage over Dara Voss through tax documents. Watch this district as a political flashpoint.</div>
+        <textarea class="notes-area" placeholder="DM notes for Merchants Rise..." onchange="saveNote('merchants_rise',this.value)" id="note-merchants_rise"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGH SPIRES DISTRICT -->
+  <div class="panel-card" id="loc-high_spires">
+    <div class="panel-header">
+      <div><div class="panel-name">High Spires District</div><div class="panel-sub">Northeast District · Wealth, Power & Arcana</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The most affluent quarter of Aeloria. Home to nobles, wealthy scholars, arcane practitioners, and the powerful. Streets are well-maintained and guarded. Towers of stone rise above the roofline — most notably the Spire of the Silver Eclipse, Vaeloran's iconic landmark. The air feels different here: cleaner, quieter, watched.</div></div>
+        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Spire of the Silver Eclipse (Vaeloran's Tower) · Noble manors · Private arcane libraries · The Scholars' Circle offices</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Polished and reserved. Guards are private, professional, and observant. Not hostile to visitors, but scrutinising. Residents value discretion above all.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a1a3a">VD</div><div><div class="npc-name">Vaeloran Duskwhisper</div><div class="npc-body">Archmage. Patron. Spire of the Silver Eclipse. Secret villain. See Vaeloran tab for full details.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a2010">TM</div><div><div class="npc-name">Taren Myles</div><div class="npc-body">Vaeloran's researcher. Ink-stained hands. Poring over runic charts. Role ambiguous — loyalist or potential informant?</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#0f4a3a">LV</div><div><div class="npc-name">Lyssandra Vale</div><div class="npc-body">In the Spire. Memory wiped. Serving Vaeloran willingly. Smiling. This should disturb the party.</div></div></div>
+        </div>
+        <div class="dm-note">DM: Stage 3 of the lich ritual is underway in the Spire's deepest chamber. Lyssandra assists as ritual witness. The tower is warded extensively — Arcana DC 18 to detect the ritual from outside.</div>
+        <textarea class="notes-area" placeholder="DM notes for High Spires..." onchange="saveNote('high_spires',this.value)" id="note-high_spires"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASHGATE SLUMS -->
+  <div class="panel-card" id="loc-ashgate_slums">
+    <div class="panel-header">
+      <div><div class="panel-name">Ashgate Slums</div><div class="panel-sub">Southwest District · The City's Underbelly</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The roughest district in Aeloria. Cramped buildings lean against each other for support. Alleys twist unpredictably. The smell of ash, old ale, and refuse. But there is a community here — people who know each other, who look out for their own, and who keep secrets as a matter of survival. Not dangerous if you know how to carry yourself. Very dangerous if you don't.</div></div>
+        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Pig's Head Inn (and Guild back rooms beneath it) · Various safehouse addresses known only to the Guilded Veil · The old tunnels beneath the district connecting to the city's drainage system</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Watchful. Residents notice newcomers immediately. The Guilded Veil's presence is felt but never stated. The city watch patrols here only in pairs.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a1a08">GR</div><div><div class="npc-name">Gerald</div><div class="npc-body">Pig's Head owner. Guilded Veil senior fixer. "Sarah doesn't send fools." Has work available. Screens newcomers carefully.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a2010">RM</div><div><div class="npc-name">Rulden Marr (Merric)</div><div class="npc-body">Veilmaster. Accessible through the Pig's Head back rooms. Orin knows he is Merric. Lying low. Watching.</div></div></div>
+        </div>
+        <div class="dm-note">DM: The basement of the Pig's Head connects via old tunnels to at least two other buildings in the Slums. The "K" note (Sister Kaelith) grants access to the back rooms without Gerald's screening. The Naturus cult has been using these tunnels for meetings.</div>
+        <textarea class="notes-area" placeholder="DM notes for Ashgate Slums..." onchange="saveNote('ashgate_slums',this.value)" id="note-ashgate_slums"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- COPPER LIGHT WARD -->
+  <div class="panel-card" id="loc-copper_light">
+    <div class="panel-header">
+      <div><div class="panel-name">Copper Light Ward</div><div class="panel-sub">Southeast District · Faith, Healing & Residence</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A quieter, more residential quarter. Moderate wealth — craftspeople, healers, clergy, and ordinary citizens. The Temple of Luminos is the district's most prominent landmark. Copper lanterns light the streets at night, giving the ward its name. There is a sense of genuine community here — neighbours who know each other, shared gardens between buildings.</div></div>
+        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Temple of Luminos · Residential streets · Healers' quarter · Local market (smaller than the Bazaar) · Several small shrines to various deities</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Calm, warm, approachable. Children play in the streets. The temple bell rings at dawn and dusk. The most "normal" district in Aeloria — and therefore the one Vaeloran most fears becoming organised against him.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2a3a">AD</div><div><div class="npc-name">High Priest Alric Dawnveil</div><div class="npc-body">Lightbearer of Aeloria. Silver hair, calm authority. "Light does not blind… it reveals." Senses something wrong in the city but cannot name it yet.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a3a2a">SV</div><div><div class="npc-name">Dawnwarden Seraphine Vale</div><div class="npc-body">Stern, disciplined. Guided Orin not to stop searching for Merric. Faith is commitment, not comfort.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2a2a">KB</div><div><div class="npc-name">Kaelen Brightmere</div><div class="npc-body">Scholar-historian clergy. Notices inconsistencies. Most likely temple member to piece things together first.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a1a3a">MS</div><div><div class="npc-name">Mira Solwen</div><div class="npc-body">Confession keeper. Knows many secrets. Has heard things in confession that trouble her deeply.</div></div></div>
+        </div>
+        <div class="dm-note">DM: Graffiti of a withered tree (Naturus symbol) appeared on the temple walls overnight. Kaelen has noticed. He has not yet told the High Priest. One acolyte (Eryn Feld) has been asking questions about the symbols around the city and may be in danger if the Naturus cult notices.</div>
+        <textarea class="notes-area" placeholder="DM notes for Copper Light Ward..." onchange="saveNote('copper_light',this.value)" id="note-copper_light"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- CITY HALL -->
+  <div class="panel-card" id="loc-city_hall">
+    <div class="panel-header">
+      <div><div class="panel-name">City Hall</div><div class="panel-sub">City Centre · The Seat of Aelorian Power</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The largest building in Aeloria, situated at the exact crossroads of the city's main thoroughfares. A grand stone structure with a tall central spire. Home to the Council of Five, administrative offices, public records, and the offices of the Townmaster. All roads in Aeloria lead here — literally and politically.</div></div>
+        <div class="panel-section"><div class="section-label">Key Locations within</div><div class="section-body">Council Chamber (upper floor) · Oskar's Townmaster office · Public records archive · Council member private offices · Great Hall (public hearings)</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Busy, bureaucratic, and carefully neutral. Everyone here represents something. Conversations are diplomatic by default. The building is impressive — designed to remind visitors of Aeloria's independence.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">The Council of Five</div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a2010">DV</div><div><div class="npc-name">Councillor Dara Voss</div><div class="npc-body">Merchant Consortium. Pragmatic. Vaeloran has leverage through her tax irregularities. Her assistant is Guilded Veil.</div><div style="margin-top:3px"><span class="badge b-gold">Seat 1</span><span class="badge b-red">compromised</span></div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a2010">BT</div><div><div class="npc-name">Councillor Bram Thatch</div><div class="npc-body">Artisans & Guilds. Stubborn dwarf. Dislikes Vaeloran instinctively. Most likely to resist. Will be targeted first.</div><div style="margin-top:3px"><span class="badge b-gold">Seat 2</span><span class="badge b-teal">potential ally</span></div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a3a2a">MA</div><div><div class="npc-name">Councillor Mira Ashford</div><div class="npc-body">Citizens' Assembly. Half-elf. Idealistic. Last honest voice. Vaeloran likes her — reluctant to corrupt her.</div><div style="margin-top:3px"><span class="badge b-gold">Seat 3</span><span class="badge b-teal">last honest voice</span></div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a1a1a">HT</div><div><div class="npc-name">Councillor Halverin Thorne</div><div class="npc-body">Scholars & Arcane. Entirely managed by Vaeloran. Believes himself a trusted confidant.</div><div style="margin-top:3px"><span class="badge b-gold">Seat 4</span><span class="badge b-red">Vaeloran's puppet</span></div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2a3a">MD</div><div><div class="npc-name">Captain Merrow Dane</div><div class="npc-body">City Watch & Defence. Not corrupt — convinced. Would support emergency powers because he believes it.</div><div style="margin-top:3px"><span class="badge b-gold">Seat 5</span><span class="badge b-red">true believer</span></div></div></div>
+        </div>
+        <div class="npc-row" style="margin-top:.5rem"><div class="npc-av" style="background:#1a3a2a">OS</div><div><div class="npc-name">Oskar — Townmaster</div><div class="npc-body">Goliath. Battle axe. Hired the party for the gnoll job. Civic authority. Vaeloran finds him useful but unpredictable.</div></div></div>
+        <div class="dm-note">DM: The sealed letters the party delivered in Session 1 were doctored by Vaeloran — driving wedges between guild leaders and council members. Their effects are already being felt in council tensions. Bram Thatch and Mira Ashford are the natural allies the party should cultivate. Halverin Thorne can be flipped if the party exposes Vaeloran — he will be horrified by what he's been part of.</div>
+        <textarea class="notes-area" placeholder="DM notes for City Hall..." onchange="saveNote('city_hall',this.value)" id="note-city_hall"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAND BAZAAR -->
+  <div class="panel-card" id="loc-grand_bazaar">
+    <div class="panel-header">
+      <div><div class="panel-name">Grand Bazaar</div><div class="panel-sub">Central District · If it exists, it's here</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section" style="padding:0 0 .75rem"><div class="section-label">Read Aloud</div><div class="section-body" style="font-style:italic">"The Grand Bazaar sprawls across the central district in a riot of colour and sound. Canvas awnings stretch overhead, filtering sunlight into shifting patterns across cobbled streets. Merchants shout over one another, coins clink, fabrics ripple in the breeze, and the scent of spices, metal, and incense fills the air. If it can be bought, bartered, or stolen… it's here."</div></div>
+    <div class="shop-grid">
+      <div class="shop-card" style="border-left:3px solid var(--gold2)">
+        <div class="shop-name">🔨 Ironwell Forge</div>
+        <div class="shop-keeper">Durnan Ironwell — Dwarf male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Weapons, armour, shields, custom work. Quality over speed.</div>
+        <div class="shop-flavour">"You want cheap? Go elsewhere. You want it to last? Stay."</div>
+      </div>
+      <div class="shop-card" style="border-left:3px solid #6a3a8a">
+        <div class="shop-name">🔮 The Astral Relicarium</div>
+        <div class="shop-keeper">Velisra Thorne — Elf female · <span style="color:#f4c4c4;font-size:10px">Party has visited</span></div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Spell scrolls, arcane focuses, minor enchanted items, magical trinkets.</div>
+        <div class="shop-flavour">"Magic chooses its wielder… not the other way around."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧪 Bubblemint & Brass</div>
+        <div class="shop-keeper">Fizzwick Tumblegear — Gnome male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Healing potions, experimental brews, alchemical items (acid, fire vials).</div>
+        <div class="shop-flavour">"Safe? No. Effective? Absolutely!"</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧵 Silken Veil Outfitters</div>
+        <div class="shop-keeper">Marielle Voss — Human female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Fine clothing, cloaks with concealing pockets, noble attire, subtle disguises.</div>
+        <div class="shop-flavour">"Clothing is the first lie people believe."</div>
+      </div>
+      <div class="shop-card" style="border-left:3px solid var(--red)">
+        <div class="shop-name">🪶 The Gilded Quill</div>
+        <div class="shop-keeper">Edrin Vale — <span style="color:#f4c4c4;font-size:10px">Guild Captain "The Quill"</span></div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Maps, books, contracts. Forged documents if approached correctly.</div>
+        <div class="shop-flavour">"Ink can change the world… if used carefully."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🗡 Second Bite Armory</div>
+        <div class="shop-keeper">Krag — Half-Orc male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Used weapons, questionable-origin gear, hidden "off-menu" items.</div>
+        <div class="shop-flavour">"Everything here's got a story. Some better not told."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧂 Spicewind Traders</div>
+        <div class="shop-keeper">Suri al'Kesh — Human female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Rare spices, exotic food, trade curiosities from across Eldoria.</div>
+        <div class="shop-flavour">"Taste the world, my friend."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🐎 Tack & Trot Supplies</div>
+        <div class="shop-keeper">Berrin Holt — Halfling male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Saddles, travel packs, rope, torches, rations, animal equipment.</div>
+        <div class="shop-flavour">"If you're leavin' the city, you'll want this."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🕯 Ember & Ash Curios</div>
+        <div class="shop-keeper">Nalia Duskryn — Tiefling female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Bone charms, old relic fragments, "possibly magical" items.</div>
+        <div class="shop-flavour">"Everything here has a past… some still whisper."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🍞 Golden Crust Bakery</div>
+        <div class="shop-keeper">Tomas Feld — Human male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Fresh bread, meat pies, sweet pastries. Social hub and rumour exchange.</div>
+        <div class="shop-flavour">"Best bread in Aeloria — or your coin back!"</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">💍 The Silver Strand</div>
+        <div class="shop-keeper">Liora Fen — Half-elf female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Jewellery, rings (some enchanted), decorative items.</div>
+        <div class="shop-flavour">"Beauty has power. Choose wisely."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧰 Cog & Cask</div>
+        <div class="shop-keeper">Harkin Bale — Human male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Tools, lockpicks (quietly sold), thieves' kits, healer's kits.</div>
+        <div class="shop-flavour">"If it breaks, I've got what fixes it."</div>
+      </div>
+    </div>
+    <div class="dm-note" style="margin-top:.75rem">DM: Edrin Vale (The Gilded Quill) is simultaneously a Guilded Veil captain. He will notice if the party asks too many questions about forged documents — he reports to Merric. Nalia Duskryn (Ember & Ash) has heard whispers of the Naturus cult from clients. She is not involved but knows something is wrong. She may become an information source.</div>
+    <textarea class="notes-area" placeholder="DM notes for Grand Bazaar..." onchange="saveNote('grand_bazaar',this.value)" id="note-grand_bazaar"></textarea>
+  </div>
+
+  <!-- WAYFARER'S REST -->
+  <div class="panel-card" id="loc-wayfarers_rest">
+    <div class="panel-header">
+      <div><div class="panel-name">Wayfarer's Rest</div><div class="panel-sub">Inner Trade Ward · Respectable · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Polished dark wood interior. Soft lighting, clean linens, private booths with sound-dampening curtains. Stable is guarded and well-run. Staff are professional, observant, and loyal. Upper-middle clientele — merchants, minor nobles, guild officials, scholars, well-paid adventurers. This is where people talk business without wanting trouble.</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Calm, refined, comfortable. Not flashy but quality throughout. The kind of place where conversations stay quiet and deals get made. Violence here is unthinkable — Sarah ensures that absolutely.</div></div>
+        <div class="panel-section"><div class="section-label">Sample Dialogue — Sarah</div><div class="section-body" style="font-style:italic">"The Wayfarer's Rest isn't the place for certain questions."<br>"If you need… flexible answers, the Pig's Head serves a different crowd."<br>"Ask for Gerald. He'll decide if you're worth his time."</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPC</div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a3a2a">SR</div><div><div class="npc-name">Sarah</div><div class="npc-body">Half-Orc. Early 40s. Broad-shouldered, tidy braid, dry humour. Trustworthy, no-nonsense, remembers every face. Keeps secrets. Never profits from crime. Morally contrasts with Gerald. Directed Orin toward the Pig's Head when he needed more flexible answers.</div><div style="margin-top:4px"><span class="badge b-teal">ally-adjacent</span><span class="badge b-grey">information node</span></div></div></div>
+        </div>
+        <div class="dm-note">DM: Sarah is aware that the city's undercurrents are getting worse. She has noticed Aurum Dominion agents staying at the Rest — more than usual. She hasn't pieced it together yet but she is watching. If the party treats her with respect and brings her information, she will eventually become a genuine ally.</div>
+        <textarea class="notes-area" placeholder="DM notes for Wayfarer's Rest..." onchange="saveNote('wayfarers_rest',this.value)" id="note-wayfarers_rest"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIG'S HEAD INN -->
+  <div class="panel-card" id="loc-pigs_head">
+    <div class="panel-header">
+      <div><div class="panel-name">The Pig's Head Inn</div><div class="panel-sub">Ashgate Slums · Guild Front · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Outer trade ring, working-class district. Loud, crowded, cheap ale, good gossip. Clientele: caravan guards, labourers, messengers, off-duty city watch. The kind of place where nobody looks too closely at anyone else — which is exactly why the Guilded Veil chose it.</div></div>
+        <div class="panel-section"><div class="section-label">Layout</div><div class="section-body"><strong>Ground floor:</strong> Main taproom — loud, smoky, 20+ regulars at any given time.<br><strong>Back room:</strong> Private meeting space. Accessible via Gerald's introduction or the "K" note from Kaelith.<br><strong>Basement:</strong> Connects to old drainage tunnels running beneath the Slums. Guilded Veil uses these for discreet movement.</div></div>
+        <div class="panel-section"><div class="section-label">The "K" Note</div><div class="section-body">A note signed "K" (Sister Kaelith) grants back-room access without Gerald's screening. The party found reference to this in the gnoll den writings. Using it immediately flags the holder to Merric.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a1808">GR</div><div><div class="npc-name">Gerald</div><div class="npc-body">Human. ~50. Greying, sharp eyes behind a friendly smile. Senior fixer for the Guilded Veil. Screens newcomers. Assigns low-risk jobs. Moves information upward. "Careful. Walls here listen."<br><strong>Available job:</strong> Missing guild member — still untouched by the party.</div><div style="margin-top:4px"><span class="badge b-red">Guilded Veil fixer</span></div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a2010">RM</div><div><div class="npc-name">Rulden Marr (Merric Underbough)</div><div class="npc-body">Accessible via back rooms. Veilmaster. Orin's adoptive father. Sent a warning letter. Knows Orin is searching. Has not told the Veil captains. That omission is itself significant.</div><div style="margin-top:4px"><span class="badge b-red">Veilmaster</span><span class="badge b-gold">Orin's father</span></div></div></div>
+        </div>
+        <div class="dm-note">DM: The gnoll den writings pointed here. The Naturus cult has been using the basement tunnels for meetings. Gerald doesn't know about the cult specifically — he just knows "K" sends people. Merric knows and has not shut it down because he doesn't know "K" = Kaelith = Vaeloran's network. Revealing this connection could be the thing that finally breaks Merric toward the party.</div>
+        <textarea class="notes-area" placeholder="DM notes for Pig's Head Inn..." onchange="saveNote('pigs_head',this.value)" id="note-pigs_head"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- VAELORAN'S TOWER -->
+  <div class="panel-card" id="loc-vaelorans_tower">
+    <div class="panel-header">
+      <div><div class="panel-name">Spire of the Silver Eclipse</div><div class="panel-sub">High Spires District · Vaeloran's Tower · DM Eyes Only</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description (Player-Facing)</div><div class="section-body">One of Aeloria's most recognisable landmarks. A spire of pale grey stone that catches moonlight in a way that makes it seem almost to glow. The interior feels larger than the exterior. Swirling orbs of light float between rows of stacked tomes. Mechanical quills jot notes on parchment without hands. Shelves slide quietly to make way as you pass. A faint scent of old paper and candlewax. In one corner, an hourglass drips not sand but shimmering dust that flows upward instead of down.</div></div>
+        <div class="panel-section"><div class="section-label">Known Layout</div><div class="section-body"><strong>Ground floor:</strong> Reception, waiting area, Taren Myles's workspace<br><strong>Upper floors:</strong> Vaeloran's library and study (party has been here)<br><strong>Lower levels:</strong> Unknown to the party — heavily warded<br><strong>Deepest chamber:</strong> The ritual room — Stage 3 shard attunement in progress</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">DM — What's Really Here</div>
+          <div class="dm-note">Stage 3 ritual is active. The meteor shard sits in a specially prepared chamber surrounded by arcane anchors. Lyssandra assists as witness — she cannot enter this room of her own will but believes she chose to help. Taren Myles is increasingly uncomfortable but has not yet acted on it. The tower is warded with: Alarm (all entry points), Arcane Lock (lower levels), two Glyphs of Warding (dispelling and force), and Vaeloran's own Foresight if he is present.</div>
+        </div>
+        <div class="panel-section"><div class="section-label">Breaking In</div><div class="section-body">Arcana DC 18: detect ritual energy from street level. Stealth DC 20: avoid Alarm wards on entry. Lower levels: Arcane Lock DC 25 (Dispel Magic DC 18 to bypass). The ritual room: additional ward triggers if shard is touched without Vaeloran's amulet.</div></div>
+        <div class="panel-section"><div class="section-label">What Can Be Found</div><div class="section-body">Taren Myles's research notes — fragments of Vaeloran's plan in coded form (Investigation DC 16 to understand). The Aurek correspondence — letters signed with the alias. The shard (Stage 3 phylactery component). Lyssandra — who does not know she needs saving.</div></div>
+        <textarea class="notes-area" placeholder="DM notes for Vaeloran's Tower..." onchange="saveNote('vaelorans_tower',this.value)" id="note-vaelorans_tower"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPLE OF LUMINOS -->
+  <div class="panel-card" id="loc-temple_luminos">
+    <div class="panel-header">
+      <div><div class="panel-name">Temple of Luminos</div><div class="panel-sub">Copper Light Ward · Faith & Truth</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description (Read Aloud)</div><div class="section-body" style="font-style:italic">"White stone rises above the surrounding streets, polished smooth and veined with faint gold. Tall, narrow windows catch the sunlight, casting warm beams across the interior. The air smells faintly of incense and clean linen. It is quiet here — not empty, but peaceful. A place where the noise of the city feels… distant."</div></div>
+        <div class="panel-section"><div class="section-label">Hierarchy</div><div class="section-body">Lightbearer (Alric Dawnveil) → Dawnwardens (Seraphine Vale, Halven Tor) → Luminars (Liora Sunfall, Tomas Eldrin, Kaelen Brightmere, Mira Solwen) → Acolytes (Eryn Feld)</div></div>
+        <div class="panel-section"><div class="section-label">Divine Gate Note</div><div class="section-body">Because of the Divine Gate, clergy do NOT have overwhelming divine presence. Faith here is about belief and guidance, not miracles. This makes the Naturus corruption more dangerous — there is no divine intervention to call on.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key Clergy</div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2a3a">AD</div><div><div class="npc-name">High Priest Alric Dawnveil</div><div class="npc-body">Late 60s. Silver hair. "Light does not blind… it reveals." Senses corruption in the city. Potential major ally. Does not know about Vaeloran yet.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a1a2a">SE</div><div><div class="npc-name">Seraphine Vale</div><div class="npc-body">Stern, unwavering. Told Orin not to stop. "Faith is not comfort. It is commitment."</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2a2a">KB</div><div><div class="npc-name">Kaelen Brightmere</div><div class="npc-body">Scholar. "Truth leaves patterns… if you know where to look." Has noticed the Naturus graffiti and other signs. Most likely to act first.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a2a1a">MS</div><div><div class="npc-name">Mira Solwen</div><div class="npc-body">Confession keeper. Knows secrets she cannot reveal. Has heard things. Is choosing silence — but not for much longer.</div></div></div>
+        </div>
+        <div class="dm-note">DM: Naturus graffiti (withered tree) on the temple's outer wall. Kaelen has noticed and is quietly investigating. Eryn Feld (acolyte) has been asking questions about the symbols around the city — she may be in danger. The temple could become the party's most important base of operations in mid-campaign.</div>
+        <textarea class="notes-area" placeholder="DM notes for Temple of Luminos..." onchange="saveNote('temple_luminos',this.value)" id="note-temple_luminos"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- O'LEARY'S STABLES -->
+  <div class="panel-card" id="loc-oleary_stables">
+    <div class="panel-header">
+      <div><div class="panel-name">O'Leary's Horseshoe Stables</div><div class="panel-sub">North Gate · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Located at the northern gate of Aeloria — the main entry and exit point for caravans and travellers heading north toward the Aurora Peaks. Busy, practical, smells of hay and horses. A good place to hear road news.</div></div>
+        <div class="panel-section"><div class="section-label">Current Status</div><div class="section-body">Matilda (Torren's horse) went missing from here. Tracks led north. Stablehands are searching — Torren paid 5gp. No sign yet. The north road leads toward Aurora Peaks and Aurum Dominion territory.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a3010">SO</div><div><div class="npc-name">Steve O'Leary</div><div class="npc-body">Owner. Practical, reliable. Knows everyone who passes through the north gate. Good source of road intelligence.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2010">JO</div><div><div class="npc-name">Jacob O'Leary</div><div class="npc-body">Steve's son. Stable boy. Eager, observant. Saw which direction Matilda went.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2010">HO</div><div><div class="npc-name">Harry O'Leary</div><div class="npc-body">Steve's son. Head trainer. Suspicious that Matilda's disappearance was not entirely natural — something spooked all the horses that night.</div></div></div>
+        </div>
+        <div class="dm-note">DM: Harry O'Leary noticed that ALL the horses were spooked that night, not just Matilda. Something passed through the north gate that evening that disturbed the animals. This was the night three Aurum Dominion scouts were seen on the north road. Coincidence or connection — your call.</div>
+        <textarea class="notes-area" placeholder="DM notes for O'Leary's Stables..." onchange="saveNote('oleary_stables',this.value)" id="note-oleary_stables"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- IRONWELL FORGE -->
+  <div class="panel-card" id="loc-ironwell_forge">
+    <div class="panel-header">
+      <div><div class="panel-name">Ironwell Forge</div><div class="panel-sub">Merchants Rise · Anchor Location · Grand Bazaar</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The finest smithy in Aeloria. The sound and heat of the forge is apparent half a street away. Durnan's work is known across the Aelorian Territories — merchants travel specifically to commission from him. The shop floor is clean and well-organised; a dwarf who takes pride in craft cannot tolerate disorder.</div></div>
+        <div class="panel-section"><div class="section-label">Wares</div><div class="section-body">Weapons (martial + simple) · Armour (chain, scale, shields) · Custom work (higher price, better quality, 1-week lead time) · Weapon sharpening and armour repair</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPC</div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a2010">DI</div><div><div class="npc-name">Durnan Ironwell</div><div class="npc-body">Dwarf. Broad, soot-covered, calm but intense. Takes pride in quality over speed. Has no patience for haggling or rushed work. Absolutely trustworthy — he does not deal in stolen goods or guild politics.</div><div style="margin-top:4px"><span class="badge b-teal">honest dealer</span></div></div></div>
+        </div>
+        <div class="panel-section"><div class="section-label">Pricing Guide</div><div class="section-body">Standard PHB prices for off-the-shelf items. Custom work: +50% premium, 1-week minimum. Exceptional custom work (masterwork equivalent): +150%, 2-3 weeks, personal consultation required.</div></div>
+        <div class="dm-note">DM: The Aurum Dominion has approached Durnan about exclusive supply contracts for Dominion military equipment. He refused — "I sell to Aeloria, not to armies." He hasn't told anyone. He will if asked directly. This is a small but real piece of the Dominion infiltration puzzle.</div>
+        <textarea class="notes-area" placeholder="DM notes for Ironwell Forge..." onchange="saveNote('ironwell_forge',this.value)" id="note-ironwell_forge"></textarea>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end info-panel -->
+
+<script>
+// Track DM mode (could be toggled via URL param)
+const isDM = !window.location.search.includes('player');
+if(!isDM) {
+  document.getElementById('mode-badge').textContent = 'PLAYER VIEW';
+  document.getElementById('mode-badge').style.background = '#0d3d30';
+  document.querySelectorAll('.dm-note').forEach(n => n.style.display='none');
+  document.querySelectorAll('.notes-area').forEach(n => n.style.display='none');
+  // Hide DM-only locations from legend
+  document.querySelectorAll('[onclick*="vaelorans_tower"]').forEach(el => el.style.display='none');
+}
+
+function showLocation(id) {
+  document.querySelectorAll('.panel-card').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('loc-' + id);
+  if(panel) {
+    panel.classList.add('active');
+    setTimeout(() => panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 50);
+  }
+}
+
+function closePanel() {
+  document.querySelectorAll('.panel-card').forEach(p => p.classList.remove('active'));
+}
+
+// Notes persistence
+function saveNote(key, val) { localStorage.setItem('eldoria-map-' + key, val); }
+window.addEventListener('load', () => {
+  document.querySelectorAll('.notes-area').forEach(el => {
+    const saved = localStorage.getItem('eldoria-map-' + el.id.replace('note-',''));
+    if(saved) el.value = saved;
+  });
+});
+</script>
+</body>
+</html>
