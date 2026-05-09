@@ -786,6 +786,23 @@ body {
 </div>
 
 <script>
+// =====================================================================
+// CHARACTER SHEET URLs — edit these when each player provides a URL
+// (D&D Beyond: open the character → "..." menu → "Share" → copy link).
+// The DM dashboard (index.html) has the SAME block — keep them in sync.
+// =====================================================================
+const CHARACTER_URLS = {
+  torren: 'https://www.dndbeyond.com/characters', // TODO: replace with Torren's share URL
+  sylas:  'https://www.dndbeyond.com/characters', // TODO: replace with Sylas's share URL
+  orin:   'https://www.dndbeyond.com/characters'  // TODO: replace with Orin's share URL
+};
+function applyCharacterUrls() {
+  document.querySelectorAll('[data-dndb]').forEach(el => {
+    const key = el.getAttribute('data-dndb');
+    if (CHARACTER_URLS[key]) el.setAttribute('href', CHARACTER_URLS[key]);
+  });
+}
+
 function show(id, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -805,6 +822,7 @@ function savePlayerNotes() {
 }
 
 window.addEventListener('load', () => {
+  applyCharacterUrls();
   const saved = localStorage.getItem('eldoria-player-notes');
   if(saved) document.getElementById('player-notes').value = saved;
   ['torren','sylas','orin'].forEach(updateSheetUI);

@@ -645,7 +645,7 @@ body {
       <div class="stat-row"><span class="stat-label">Assassinate</span><span class="stat-val">Surprise = auto crit</span></div>
       <div class="stat-row"><span class="stat-label">Backstory</span><span class="stat-val">TBC from player</span></div>
       <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in Eldoria 2.0 that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
-      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none">D&amp;D Beyond ↗</a>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="torren" class="action-btn" style="display:inline-block;text-decoration:none">📜 D&amp;D Beyond Sheet ↗</a>
     </div>
 
     <!-- SYLAS -->
@@ -667,7 +667,7 @@ body {
         <span class="badge b-grey">Vaeloran watching</span>
       </div>
       <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in Eldoria 2.0 — his lineage comes from a generational pact with Valdris the Pale Archivist. What complications arise now that his spirit jar (the necklace) is the same vessel Valdris designed for reconstitution?')">Spirit Jar Complications ↗</button>
-      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none">D&amp;D Beyond ↗</a>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="sylas" class="action-btn" style="display:inline-block;text-decoration:none">📜 D&amp;D Beyond Sheet ↗</a>
     </div>
 
     <!-- ORIN -->
@@ -686,7 +686,7 @@ body {
       <div class="stat-row"><span class="stat-label">True reading</span><span class="stat-val">Mercy was Luminos's calling, not weakness</span></div>
       <div class="stat-row"><span class="stat-label">Tribe status</span><span class="stat-val">Still exists — NE of Duskmere. Future encounter.</span></div>
       <div class="stat-row"><span class="stat-label">Does NOT know</span><span class="stat-val">Sylas is consuming souls</span></div>
-      <a href="https://www.dndbeyond.com/characters" target="_blank" class="action-btn" style="display:inline-block;text-decoration:none;margin-top:.5rem">D&amp;D Beyond Sheet ↗</a>
+      <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="orin" class="action-btn" style="display:inline-block;text-decoration:none;margin-top:.5rem">📜 D&amp;D Beyond Sheet ↗</a>
       <button class="action-btn" onclick="sendPrompt('Design the moment in Eldoria 2.0 when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
     </div>
   </div>
@@ -1250,7 +1250,7 @@ body {
 <!-- ============ WORLD STATE ============ -->
 <div id="panel-world" class="panel">
   <div class="tab-inner">
-    <button class="tab-btn active" onclick="showTab('aeloria',this)">Aeloria</button>
+    <button class="tab-btn active" onclick="showTab('aeloria',this)">🗺 Locations</button>
     <button class="tab-btn" onclick="showTab('worldstate',this)">🌍 World State</button>
     <button class="tab-btn" onclick="showTab('regions',this)">Regions</button>
     <button class="tab-btn" onclick="showTab('factions',this)">Factions</button>
@@ -1333,28 +1333,52 @@ body {
     <button class="action-btn" onclick="sendPrompt('Based on the Eldoria 2.0 world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
   </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
-      <div class="sec-title" style="margin:0">Aeloria Crossroads — City Districts</div>
-      <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px">🗺 Open Interactive Map ↗</a>
+    <div class="sec-title">Locations of Eldoria</div>
+    <div class="alert alert-info" style="margin-bottom:.75rem">The interactive city map has full DM notes for every district and building. Click "Open Interactive City Map" on the Aeloria card below.</div>
+
+    <!-- REGION GRID — same layout as player view, with Aeloria featured -->
+    <div class="grid-2">
+      <div class="card gold" style="border:2px solid var(--gold2);box-shadow:0 0 18px rgba(201,168,76,0.18)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;flex-wrap:wrap">
+          <div>
+            <div class="card-title">Aeloria Crossroads</div>
+            <div class="card-sub">Free city-state · Primary setting · <span style="color:#a0d4c4">Visited</span></div>
+          </div>
+          <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:10px;margin:0">🗺 Open Interactive City Map ↗</a>
+        </div>
+        <div class="card-body">Independent city-state at the crossroads of Eldoria. Council of Five plus Townmaster Oskar. Vaeloran's primary target — his entire plan begins here. Four districts, central hub, the Spire of the Silver Eclipse dominates the High Spires skyline.</div>
+      </div>
+      <div class="card"><div class="card-title">Frostwood Marsh</div><div class="card-sub">Northern wilderness · Meteor site · <span style="color:#a0d4c4">Visited</span></div><div class="card-body">Fog-shrouded, desolate. Ancient Lethraliri civilization ruins (ice/water magic, Second Age). Frozen Spire, Bioluminescent Grove. Meteor impact site — shard energies linger, corruption source. The lonely barn is here.</div></div>
+      <div class="card gold"><div class="card-title">Aurora Peaks — Aurum Dominion</div><div class="card-sub">Mountain range · Crystal magic · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Emperor Valerius Kaelthorn. Luminos worship suppressed — why Merric started smuggling there. Cities: Auranova, Crystalholm, Eclipsia, Stellara, Lunara Monastery. Matilda's tracks lead this direction. Sylas was born here. Valdris's sanctum hidden somewhere beneath.</div></div>
+      <div class="card teal"><div class="card-title">Verdant Expanse — Sylvarian Enclaves</div><div class="card-sub">Forest region · Druidic · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Originally elf-only, now multicultural. Tree cities: Eldralor (Aelarion Tree), Celestia Glade, Silentwood, Aurelia Haven. Revere Yggdris and Veridania. Naturus corruption spreading from Frostwood Marsh border — countdown 3 sessions.</div></div>
+      <div class="card red"><div class="card-title">Serpent Isles</div><div class="card-sub">11 Lizardfolk clans · Pirate Confederacy · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Scaleheart Brood (Nalara), Blacktail Clan (Vessara), nine others. Pirate Confederacy: Port Blackfin, Skullport, Coral Cove, Serpent's Lair. The Scarlet Wake destabilising — countdown 5 sessions.</div></div>
+      <div class="card"><div class="card-title">Stonemarked Mountains</div><div class="card-sub">Orin's tribe · NE of Duskmere · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Goliath warrior clan. Squeezed by Naturus corruption from below and the Ashbound from the north. Countdown 5 sessions. Will activate when a wounded warrior arrives in Aeloria: "Your tribe is dying."</div></div>
+      <div class="card"><div class="card-title">Celestial Plateau — Celestium Clans</div><div class="card-sub">Dwarven · Theocratic · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Dwarves migrated ~2000 years ago during the Usurpation. Astronhold (capital), Stellargrove. Revere Korvain. Pre-historical chamber recently uncovered — Valdris knew it was there.</div></div>
+      <div class="card"><div class="card-title">Ember Wastes / Crimson Desert</div><div class="card-sub">Nomadic tribes · Desert · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Emberhold, Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana and Solara. Crimson Desert: Mor'nyx tomb-keepers know how to destroy a phylactery.</div></div>
+      <div class="card"><div class="card-title">Thalindel — The Feywild</div><div class="card-sub">Summer Court · Queen Thessavaine · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Not on the material plane. Accessible via fey crossings near the Verdant Expanse. Queen Thessavaine — Summer Court eladrin, unpredictable. Fey crossing currently destabilised by Naturus corruption.</div></div>
     </div>
-    <div class="alert alert-info" style="margin-bottom:.75rem">The interactive map has full DM notes, NPC details, shop listings, and location info for every district. Click any district or building on the map to open its panel.</div>
+
+    <div class="divider" style="margin:1.5rem 0;border-top:1px solid var(--bord)"></div>
+
+    <!-- AELORIA CITY DISTRICTS -->
+    <div class="sec-title">Aeloria Crossroads — City Districts</div>
     <div class="grid-2">
       <div class="card gold"><div class="card-title">Merchants Rise — NW District</div><div class="card-sub">Trade & Craft · Ironwell Forge</div><div class="card-body">Commercial heart. Wide cobbled streets, workshops, trading houses. Home to Councillor Dara Voss (Merchant Consortium). Durnan Ironwell refused Aurum Dominion exclusive contracts — hasn't told anyone. Dara Voss's assistant is on the Guilded Veil's payroll.</div></div>
-      <div class="card red"><div class="card-title">High Spires District — NE District</div><div class="card-sub">Wealth, Power & Arcana · Vaeloran's Tower</div><div class="card-body">Most affluent quarter. Vaeloran's Spire of the Silver Eclipse dominates the skyline. Stage 3 lich ritual active in deepest chamber. Lyssandra is here, memory wiped. Taren Myles works here and grows increasingly uncomfortable.</div></div>
+      <div class="card red"><div class="card-title">High Spires District — NE District</div><div class="card-sub">Wealth, Power & Arcana · Spire of the Silver Eclipse</div><div class="card-body">Most affluent quarter. The Spire of the Silver Eclipse dominates the skyline. Stage 3 lich ritual active in deepest chamber. Lyssandra is here, memory wiped. Taren Myles works here and grows increasingly uncomfortable.</div></div>
       <div class="card red"><div class="card-title">Ashgate Slums — SW District</div><div class="card-sub">City's Underbelly · Pig's Head Inn · Guild Front</div><div class="card-body">Roughest district. The Pig's Head Inn here — Gerald's Guilded Veil front. Back rooms accessible via Gerald's intro or "K" note. Basement tunnels connect the Slums. Naturus cult using these tunnels for meetings.</div></div>
       <div class="card teal"><div class="card-title">Copper Light Ward — SE District</div><div class="card-sub">Faith, Healing & Residence · Temple of Luminos</div><div class="card-body">Quieter, residential. Temple of Luminos is here — Alric Dawnveil, Seraphine, Kaelen Brightmere. Naturus graffiti appeared on temple walls. Kaelen has noticed. Acolyte Eryn Feld is asking questions and may be in danger.</div></div>
     </div>
-    <div class="grid-2" style="margin-top:.65rem">
+
+    <div class="sec-title" style="margin-top:1.25rem">Key Locations in Aeloria</div>
+    <div class="grid-2">
       <div class="card"><div class="card-title">City Hall — Centre</div><div class="card-sub">Council of Five · Oskar's office</div><div class="card-body">The seat of Aelorian power. Five councillors: Dara Voss (compromised), Bram Thatch (resist — target for framing), Mira Ashford (last honest voice), Halverin Thorne (Vaeloran's puppet), Merrow Dane (true believer — most dangerous).</div></div>
       <div class="card gold"><div class="card-title">Grand Bazaar — Inner NW</div><div class="card-sub">12 shops · If it exists, it's here</div><div class="card-body">Ironwell Forge, Astral Relicarium (party visited), Bubblemint & Brass, Silken Veil Outfitters, The Gilded Quill (Edrin Vale — Guild Captain cover), Second Bite Armory, Spicewind Traders, Tack & Trot, Ember & Ash Curios, Golden Crust Bakery, The Silver Strand, Cog & Cask.</div></div>
       <div class="card teal"><div class="card-title">Wayfarer's Rest — Inner East</div><div class="card-sub">Respectable · Sarah · Party visited</div><div class="card-body">Sarah (half-orc manager) directed party to the Pig's Head. Noticing more Aurum Dominion agents staying here than usual. Potential ally if treated with respect.</div></div>
       <div class="card gold"><div class="card-title">O'Leary's Stables — North Gate</div><div class="card-sub">Party visited · Matilda missing</div><div class="card-body">Steve, Jacob, Harry O'Leary. Matilda gone — tracks north. Harry noticed ALL horses were spooked that night, not just Matilda. Three Aurum Dominion scouts were on the north road that same evening.</div></div>
-    </div>
-      <div class="card gold"><div class="card-title">Grand Bazaar</div><div class="card-sub">Central district · 12 shops</div><div class="card-body">Ironwell Forge (Durnan Ironwell, dwarf), Astral Relicarium (Velisra Thorne, elf), Bubblemint & Brass (Fizzwick, gnome), Silken Veil Outfitters (Marielle Voss), The Gilded Quill (Edrin Vale — guild captain cover), Second Bite Armory (Krag, half-orc), Spicewind Traders (Suri al'Kesh), Tack & Trot (Berrin Holt, halfling), Ember & Ash Curios (Nalia Duskryn, tiefling), Golden Crust Bakery (Tomas Feld), The Silver Strand (Liora Fen, half-elf), Cog & Cask (Harkin Bale).</div></div>
-      <div class="card gold"><div class="card-title">O'Leary's Horseshoe Stables</div><div class="card-sub">Northwestern gate</div><div class="card-body">Owner: Steve O'Leary. Sons: Jacob (stable boy), Harry (head trainer). Matilda was stabled here before escaping. Stablehands searching for 5gp.</div></div>
       <div class="card gold"><div class="card-title">Notice Board</div><div class="card-sub">City centre · Public</div><div class="card-body">Gnoll infestation (complete) · Danger in Frostwood Marsh · Join the City Watch · Missing Halfling Merric — speak to Sarah (posted by Orin) · Mercenaries needed for caravan delivery.</div></div>
     </div>
-    <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for Eldoria 2.0 — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
+
+    <button class="action-btn" style="margin-top:.75rem" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for Eldoria 2.0 — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
   </div>
 
   <div id="tab-regions" style="display:none">
@@ -1580,6 +1604,24 @@ body {
 </div><!-- end #app -->
 
 <script>
+// =====================================================================
+// CHARACTER SHEET URLs — edit these when each player provides a URL
+// (D&D Beyond: open the character → "..." menu → "Share" → copy link).
+// Both this DM dashboard and the players site read from the same names,
+// so update them here AND in players.html so both sites stay in sync.
+// =====================================================================
+const CHARACTER_URLS = {
+  torren: 'https://www.dndbeyond.com/characters', // TODO: replace with Torren's share URL
+  sylas:  'https://www.dndbeyond.com/characters', // TODO: replace with Sylas's share URL
+  orin:   'https://www.dndbeyond.com/characters'  // TODO: replace with Orin's share URL
+};
+function applyCharacterUrls() {
+  document.querySelectorAll('[data-dndb]').forEach(el => {
+    const key = el.getAttribute('data-dndb');
+    if (CHARACTER_URLS[key]) el.setAttribute('href', CHARACTER_URLS[key]);
+  });
+}
+
 // AUTH
 const PW = 'eldoria2dm';
 function checkAuth() {
@@ -1587,7 +1629,7 @@ function checkAuth() {
   if (v === PW) {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    initClock(); initLichClock(); loadNotes(); initCombat();
+    initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls();
   } else {
     document.getElementById('auth-err').style.display = 'block';
     document.getElementById('pw-input').value = '';
