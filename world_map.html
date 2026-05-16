@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eldoria — Interactive World Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0a06;--p1:#f4edd8;--p2:#ebe0c4;--p3:#d9ccaa;
+  --gold:#8a6a1a;--gold2:#c9a84c;--red:#7a1a1a;--teal:#0d3d30;
+  --bord:#b8a070;--mut:#5a4820;
+}
+body{background:#0a0805;font-family:'Crimson Pro',Georgia,serif;color:var(--p1);min-height:100vh;overflow-x:hidden}
+.page-header{background:linear-gradient(180deg,#0d0a06,#1a1208);border-bottom:2px solid var(--gold2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.page-title{font-family:'Cinzel Decorative',serif;color:var(--gold2);font-size:16px;letter-spacing:2px}
+.back-btn{color:var(--gold2);text-decoration:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;border:1px solid var(--gold2);padding:4px 12px;border-radius:2px;transition:all .2s}
+.back-btn:hover{background:var(--gold2);color:var(--ink)}
+.dm-badge{background:var(--red);color:#f4c4c4;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px}
+
+/* MAP CONTAINER */
+.map-wrapper{position:relative;display:block;max-width:1200px;margin:1rem auto;border:2px solid var(--bord);border-radius:4px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.6)}
+.map-img{width:100%;display:block;filter:brightness(0.95)}
+.no-image-fallback{display:none;padding:2rem;text-align:center;background:rgba(122,26,26,0.15);color:#f4c4c4;font-style:italic;font-size:13px;border:1px dashed var(--red)}
+
+/* HOTSPOT ZONES */
+.hotspot{position:absolute;border-radius:6px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.hotspot:hover{border-color:var(--gold2);background:rgba(201,168,76,0.15)}
+.hotspot.region{border-radius:10px}
+.hotspot.city{border-radius:50%}
+.hotspot-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,0);text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap;transition:color .2s}
+.hotspot:hover .hotspot-label{color:rgba(255,255,255,0.9)}
+
+/* INFO PANEL */
+.info-panel{max-width:1200px;margin:0 auto 2rem;padding:0 1rem}
+.panel-card{background:linear-gradient(135deg,rgba(26,18,8,0.95),rgba(13,10,6,0.98));border:1px solid var(--bord);border-radius:4px;padding:1.25rem 1.5rem;display:none}
+.panel-card.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:1px solid rgba(160,128,64,0.3);padding-bottom:.75rem;gap:.5rem;flex-wrap:wrap}
+.panel-name{font-family:'Cinzel',serif;font-size:18px;color:var(--gold2);font-weight:700}
+.panel-sub{font-size:12px;color:var(--p3);font-style:italic;margin-top:2px}
+.close-btn{background:none;border:none;color:rgba(160,128,64,0.5);font-size:20px;cursor:pointer;padding:0 4px;transition:color .15s}
+.close-btn:hover{color:var(--gold2)}
+
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel-section{margin-bottom:.75rem}
+.section-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold2);text-transform:uppercase;margin-bottom:.4rem;opacity:.8}
+.section-body{font-size:13.5px;line-height:1.7;color:var(--p2)}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.5px;margin:2px 2px 2px 0;font-weight:700}
+.b-red{background:rgba(122,26,26,0.7);color:#f4c4c4;border:1px solid rgba(122,26,26,0.4)}
+.b-gold{background:rgba(122,96,26,0.7);color:#f4e4a0;border:1px solid rgba(122,96,26,0.4)}
+.b-teal{background:rgba(13,61,48,0.7);color:#a0d4c4;border:1px solid rgba(13,61,48,0.4)}
+.b-grey{background:rgba(40,30,15,0.7);color:var(--p3);border:1px solid rgba(80,60,30,0.4)}
+.dm-note{background:rgba(122,26,26,0.1);border:1px solid rgba(122,26,26,0.3);border-radius:3px;padding:.6rem .8rem;font-size:12.5px;font-style:italic;color:#f4c4c4;margin-top:.5rem;line-height:1.55}
+.action-btn{display:inline-block;background:var(--ink);color:var(--gold2);text-decoration:none;padding:8px 14px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.2px;font-weight:700;border:1px solid var(--gold2);transition:all .2s;margin-top:.5rem}
+.action-btn:hover{background:var(--gold2);color:var(--ink)}
+
+/* LEGEND */
+.legend{max-width:1200px;margin:0 auto;padding:.75rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--p3);cursor:pointer;padding:4px 10px;border-radius:2px;border:1px solid rgba(160,128,64,0.25);transition:all .2s}
+.legend-item:hover{border-color:var(--gold2);color:var(--p1)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+.intro-card{max-width:1200px;margin:.75rem auto 0;padding:.75rem 1.5rem;background:rgba(26,18,8,0.6);border:1px solid rgba(160,128,64,0.2);border-radius:3px;font-size:13px;color:var(--p3);font-style:italic}
+
+/* PLAYER / DM MODE TOGGLES */
+.player-only{display:none}
+body.player-mode .dm-only{display:none !important}
+body.player-mode .player-only{display:block}
+body.player-mode .player-only.inline{display:inline}
+
+@media(max-width:700px){.panel-grid{grid-template-columns:1fr}.hotspot-label{font-size:8px}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Eldoria — Interactive World Map</div>
+    <div style="color:var(--p3);font-size:11px;font-style:italic;margin-top:2px">Click any region or settlement to learn more</div>
+  </div>
+  <div style="display:flex;gap:.5rem;align-items:center">
+    <span class="dm-badge" id="mode-badge">DM VIEW</span>
+    <a href="index.html" class="back-btn" id="back-btn">← DM Site</a>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item" onclick="showLocation('aeloria_region')"><div class="legend-dot" style="background:#c9a84c"></div>Aelorian Territories</div>
+  <div class="legend-item" onclick="showLocation('aurora_peaks')"><div class="legend-dot" style="background:#8a8aa8"></div>Aurora Peaks</div>
+  <div class="legend-item" onclick="showLocation('verdant_expanse')"><div class="legend-dot" style="background:#3a6a2a"></div>Verdant Expanse</div>
+  <div class="legend-item" onclick="showLocation('frostwood_marsh')"><div class="legend-dot" style="background:#5a4a2a"></div>Frostwood Marsh</div>
+  <div class="legend-item" onclick="showLocation('celestial_plateau')"><div class="legend-dot" style="background:#3a6a8a"></div>Celestial Plateau</div>
+  <div class="legend-item" onclick="showLocation('crimson_desert')"><div class="legend-dot" style="background:#a0501a"></div>Crimson Desert</div>
+  <div class="legend-item" onclick="showLocation('serpent_isles')"><div class="legend-dot" style="background:#6a8a5a"></div>Serpent Isles</div>
+  <div class="legend-item" onclick="showLocation('stonemarked')"><div class="legend-dot" style="background:#6a5a4a"></div>Stonemarked Mountains</div>
+</div>
+
+<!-- MAP WITH HOTSPOTS -->
+<div class="map-wrapper" id="map-wrapper">
+  <img class="map-img" src="world_map.jpg" alt="Eldoria world map" id="map-img" onerror="document.getElementById('no-image').style.display='block';this.style.display='none'">
+  <div class="no-image-fallback" id="no-image">⚠ <code>world_map.jpg</code> not found in the repository yet. Save the world map image as <code>world_map.jpg</code> in the same folder as this file and push it to GitHub. The hotspots below are positioned for the campaign map.</div>
+
+  <!-- REGION HOTSPOTS (percentage-based for responsiveness) -->
+  <!-- Serpent Isles (top-left) -->
+  <div class="hotspot region" style="left:1%;top:3%;width:30%;height:32%" onclick="showLocation('serpent_isles')" title="Serpent Isles">
+    <div class="hotspot-label">Serpent Isles</div>
+  </div>
+
+  <!-- Aurora Peaks (top-right) -->
+  <div class="hotspot region" style="left:58%;top:0%;width:42%;height:42%" onclick="showLocation('aurora_peaks')" title="Aurora Peaks (Aurum Dominion)">
+    <div class="hotspot-label">Aurora Peaks</div>
+  </div>
+
+  <!-- Stonemarked Mountains (the mountain ridge NE of Duskmere) -->
+  <div class="hotspot region" style="left:34%;top:25%;width:25%;height:18%" onclick="showLocation('stonemarked')" title="Stonemarked Mountains">
+    <div class="hotspot-label">Stonemarked Mtns</div>
+  </div>
+
+  <!-- Aelorian Territories (centre) -->
+  <div class="hotspot region" style="left:42%;top:42%;width:30%;height:24%" onclick="showLocation('aeloria_region')" title="Aelorian Territories">
+    <div class="hotspot-label">Aelorian Territories</div>
+  </div>
+
+  <!-- Frostwood Marsh -->
+  <div class="hotspot region" style="left:22%;top:45%;width:22%;height:22%" onclick="showLocation('frostwood_marsh')" title="Frostwood Marsh">
+    <div class="hotspot-label">Frostwood Marsh</div>
+  </div>
+
+  <!-- Verdant Expanse (bottom-left) -->
+  <div class="hotspot region" style="left:0%;top:60%;width:32%;height:40%" onclick="showLocation('verdant_expanse')" title="Verdant Expanse">
+    <div class="hotspot-label">Verdant Expanse</div>
+  </div>
+
+  <!-- Celestial Plateau -->
+  <div class="hotspot region" style="left:46%;top:66%;width:22%;height:30%" onclick="showLocation('celestial_plateau')" title="Celestial Plateau">
+    <div class="hotspot-label">Celestial Plateau</div>
+  </div>
+
+  <!-- Crimson Desert -->
+  <div class="hotspot region" style="left:68%;top:50%;width:32%;height:50%" onclick="showLocation('crimson_desert')" title="Crimson Desert">
+    <div class="hotspot-label">Crimson Desert</div>
+  </div>
+
+  <!-- CITY HOTSPOTS — Aelorian Territories -->
+  <div class="hotspot city" style="left:64%;top:44%;width:6%;height:6%" onclick="showLocation('aeloria_city')" title="Aeloria Crossroads">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Aeloria</div>
+  </div>
+  <div class="hotspot city" style="left:35%;top:34%;width:6%;height:6%" onclick="showLocation('duskmere')" title="Duskmere">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Duskmere</div>
+  </div>
+  <div class="hotspot city" style="left:67%;top:29%;width:6%;height:6%" onclick="showLocation('stonegate')" title="Stonegate">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Stonegate</div>
+  </div>
+  <div class="hotspot city" style="left:54%;top:26%;width:6%;height:6%" onclick="showLocation('silverbrook')" title="Silverbrook">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Silverbrook</div>
+  </div>
+  <div class="hotspot city" style="left:54%;top:58%;width:6%;height:6%" onclick="showLocation('ironhold')" title="Ironhold">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Ironhold</div>
+  </div>
+  <div class="hotspot city" style="left:81%;top:49%;width:6%;height:6%" onclick="showLocation('crimson_outpost')" title="Crimson Outpost">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Crimson Outpost</div>
+  </div>
+
+  <!-- CITY HOTSPOTS — Aurora Peaks -->
+  <div class="hotspot city" style="left:73%;top:18%;width:5%;height:5%" onclick="showLocation('auranova')" title="Auranova">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Auranova</div>
+  </div>
+  <div class="hotspot city" style="left:74%;top:7%;width:5%;height:5%" onclick="showLocation('eclipsia')" title="Eclipsia">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Eclipsia</div>
+  </div>
+  <div class="hotspot city" style="left:80%;top:15%;width:5%;height:5%" onclick="showLocation('crystalholm')" title="Crystalholm">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Crystalholm</div>
+  </div>
+  <div class="hotspot city" style="left:90%;top:2%;width:5%;height:5%" onclick="showLocation('auroras_rest')" title="Aurora's Rest">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Aurora's Rest</div>
+  </div>
+  <div class="hotspot city" style="left:90%;top:9%;width:5%;height:5%" onclick="showLocation('lunara_monastery')" title="Lunara Monastery">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Lunara Monastery</div>
+  </div>
+  <div class="hotspot city" style="left:91%;top:19%;width:5%;height:5%" onclick="showLocation('stellara')" title="Stellara">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Stellara</div>
+  </div>
+  <div class="hotspot city" style="left:60%;top:10%;width:5%;height:5%" onclick="showLocation('starryhaven')" title="Starryhaven">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Starryhaven</div>
+  </div>
+
+  <!-- CITY HOTSPOTS — Verdant Expanse -->
+  <div class="hotspot city" style="left:10%;top:65%;width:5%;height:5%" onclick="showLocation('eldralor')" title="Eldralor">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Eldralor</div>
+  </div>
+  <div class="hotspot city" style="left:23%;top:69%;width:5%;height:5%" onclick="showLocation('aurelia_haven')" title="Aurelia Haven">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Aurelia Haven</div>
+  </div>
+  <div class="hotspot city" style="left:7%;top:85%;width:5%;height:5%" onclick="showLocation('silentwood')" title="Silentwood">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Silentwood</div>
+  </div>
+  <div class="hotspot city" style="left:27%;top:93%;width:5%;height:5%" onclick="showLocation('celestia_glade')" title="Celestia Glade">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Celestia Glade</div>
+  </div>
+
+  <!-- CITY HOTSPOTS — Celestial Plateau -->
+  <div class="hotspot city" style="left:52%;top:78%;width:5%;height:5%" onclick="showLocation('stellargrove')" title="Stellargrove">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Stellargrove</div>
+  </div>
+  <div class="hotspot city" style="left:54%;top:88%;width:5%;height:5%" onclick="showLocation('astronhold')" title="Astronhold">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Astronhold</div>
+  </div>
+
+  <!-- CITY HOTSPOTS — Serpent Isles -->
+  <div class="hotspot city" style="left:7%;top:6%;width:5%;height:5%" onclick="showLocation('skullport')" title="Skullport">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Skullport</div>
+  </div>
+  <div class="hotspot city" style="left:15%;top:15%;width:5%;height:5%" onclick="showLocation('coral_cove')" title="Coral Cove">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Coral Cove</div>
+  </div>
+  <div class="hotspot city" style="left:27%;top:9%;width:5%;height:5%" onclick="showLocation('port_blackfin')" title="Port Blackfin">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Port Blackfin</div>
+  </div>
+  <div class="hotspot city" style="left:19%;top:26%;width:5%;height:5%" onclick="showLocation('scaleheart')" title="Scaleheart Brood">
+    <div class="hotspot-label" style="font-size:8px;top:115%">Scaleheart</div>
+  </div>
+
+</div>
+
+<div class="intro-card">
+  Click any region or settlement on the map above for details. The Aelorian Territories surround the city of Aeloria Crossroads — your home base. Thalindel (the Feywild city) is not on this map; it exists on another plane, reached only through fey crossings.
+</div>
+
+<!-- INFO PANELS -->
+<div class="info-panel">
+
+  <!-- ============ REGIONS ============ -->
+
+  <!-- AELORIAN TERRITORIES -->
+  <div class="panel-card" id="loc-aeloria_region">
+    <div class="panel-header">
+      <div><div class="panel-name">Aelorian Territories</div><div class="panel-sub">The sphere of Aeloria's influence · Your home territory</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The wider region surrounding the free city-state of Aeloria Crossroads. A patchwork of independent towns and outposts loosely aligned with Aeloria but not under any centralised rule. Rolling grasslands, river valleys, and the foothills of the Aurora Peaks form the heart of it.</div></div>
+        <div class="panel-section"><div class="section-label">Settlements</div><div class="section-body"><strong>Aeloria Crossroads</strong> (capital city) · <strong>Duskmere</strong> (coastal, fishing) · <strong>Stonegate</strong> (fortified, training) · <strong>Silverbrook</strong> (agriculture, vineyards) · <strong>Ironhold</strong> (smithing) · <strong>Crimson Outpost</strong> (desert border) · <strong>Kolt's Depot</strong> (caravan stop, party currently here)</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-teal">Visited</span> The party is presently at Kolt's Depot, heading toward Ironhold.</div></div>
+        <div class="panel-section player-only"><div class="section-label">What You Know</div><div class="section-body">Independent. The Aurum Dominion has been pressing for trade contracts with Ironhold. Trouble at the southeastern farmlands recently — gnoll attacks, Naturus shrine.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Vaeloran's destabilisation is centred here. The Aurum Dominion is pressuring Ironhold. Naturus cult operations spilling out of the Frostwood Marsh into farmland. Stonemarked countdown ticking. The Aelorian Territories are where the campaign's web is being woven.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AURORA PEAKS / AURUM DOMINION -->
+  <div class="panel-card" id="loc-aurora_peaks">
+    <div class="panel-header">
+      <div><div class="panel-name">Aurora Peaks</div><div class="panel-sub">Aurum Dominion · Centralised monarchy · Crystal magic</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Majestic mountain range named for the aurora borealis that frequently graces its night skies. Home of the Aurum Dominion — a powerful, expansionist empire. Highly disciplined, hierarchical, emphasis on law, order, and military readiness. Rich with mystical energies and ancient monasteries.</div></div>
+        <div class="panel-section"><div class="section-label">Cities</div><div class="section-body"><strong>Auranova</strong> (capital) · <strong>Crystalholm</strong> (trade hub, enchanted crystal markets) · <strong>Eclipsia</strong> (astronomers and mystics) · <strong>Stellara</strong> (herbalists, alchemists) · <strong>Starryhaven</strong> (coastal port) · <strong>Aurora's Rest</strong> (pilgrim village) · <strong>Lunara Monastery</strong> (Order of the Silver Crescent)</div></div>
+        <div class="panel-section"><div class="section-label">Religion</div><div class="section-body">State deities: <strong>Thalasia</strong> (arcane/elemental) and <strong>Aetherius</strong> (wisdom/stars). Luminos worship is suppressed.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-gold">Known</span> Not yet visited. The party has heard of the Dominion but not entered.</div></div>
+        <div class="panel-section player-only"><div class="section-label">Why You Care</div><div class="section-body">Matilda's tracks led north toward Aurum Dominion territory. Aurum Dominion envoys are in Aeloria pushing exclusive trade deals with Ironhold. Sylas was born in the Aurora Peaks.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Emperor Valerius Kaelthorn; Crown Prince Aurek (military exercises); Princess Selene (intelligence network active in Aeloria). Three Aurum Sentinel scouts on the north road the night Matilda disappeared. <strong>Valdris's sanctum hidden somewhere beneath the peaks</strong> — the Dominion has protected his phylactery for 300 years. Now they're quietly excavating, looking for it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERDANT EXPANSE -->
+  <div class="panel-card" id="loc-verdant_expanse">
+    <div class="panel-header">
+      <div><div class="panel-name">Verdant Expanse</div><div class="panel-sub">Sylvarian Enclaves · Druidic · Multicultural tree-cities</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A vast, ancient forest. Tree-cities built within, atop, or carved into the largest trees. Bridges of woven vines and natural pathways. Deep nature magic. Originally elf-only; now multicultural, though some hold to the old ways.</div></div>
+        <div class="panel-section"><div class="section-label">Cities</div><div class="section-body"><strong>Eldralor</strong> (built on the Aelarion Tree, cultural heart) · <strong>Celestia Glade</strong> (floating island, levitation crystals) · <strong>Silentwood</strong> (secretive, shadow guardians) · <strong>Aurelia Haven</strong> (river hub, arts)</div></div>
+        <div class="panel-section"><div class="section-label">Religion</div><div class="section-body">Revere <strong>Yggdris</strong> and <strong>Veridania</strong>.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-gold">Known</span> Not yet visited.</div></div>
+        <div class="panel-section player-only"><div class="section-label">Rumours</div><div class="section-body">Reports filtering out of strange corruption darkening the sacred groves near Silentwood. Plants dying. The Enclaves haven't reached out for help yet.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Sister Kaelith has moved operations to the Verdant Expanse border. Naturus corruption spreading from the Frostwood Marsh. Bioluminescent plants dying. The Old Elf puritan faction blames non-elves; the multicultural faction is desperate. <strong>Countdown 3 sessions</strong> — then Enclaves send an emissary to Aeloria.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FROSTWOOD MARSH -->
+  <div class="panel-card" id="loc-frostwood_marsh">
+    <div class="panel-header">
+      <div><div class="panel-name">Frostwood Marsh</div><div class="panel-sub">Ancient ruins · Meteor crash site · Corruption</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Fog-shrouded, desolate marshland. Once home to the Lethraliri civilisation (Second Age) — skilled in ice and water magic. Built settlements on stilts; their cities renowned for translucent ice sculptures and bioluminescent flora. Now ruins.</div></div>
+        <div class="panel-section"><div class="section-label">Notable Sites</div><div class="section-body"><strong>The Frozen Spire</strong> (Lethraliri magical research centre, interior frozen in time) · <strong>The Bioluminescent Grove</strong> (overgrown, eerie, beautiful) · <strong>The Meteor Crash Site</strong> (the lonely barn nearby) · Submerged Lethraliri ruins</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-teal">Visited</span> The party tracked Lyssandra Vale here. Found corruption-warped creatures around the meteor site.</div></div>
+        <div class="panel-section"><div class="section-label">Threats</div><div class="section-body">Black Dragon Wyrmling, Bog Hag, Will-o'-Wisp, Specter, Water Weird, corruption-warped wildlife with glowing blue eyes.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Source of the shard corruption. Vaeloran's meteor shard came from here. Sister Kaelith uses the marsh as a base for spreading rot into the Verdant Expanse and the Stonemarked Mountains. The Frozen Spire likely contains First Age fragments Vaeloran has not found.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CELESTIAL PLATEAU -->
+  <div class="panel-card" id="loc-celestial_plateau">
+    <div class="panel-header">
+      <div><div class="panel-name">Celestial Plateau</div><div class="panel-sub">Celestium Clans · Dwarven · Cosmic magic</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">An elevated plateau with cosmic phenomena in its skies — soft iridescent lights, subtle star pattern shifts. A focal point for celestial energy. Home to the <strong>Celestium Clans</strong> — dwarves displaced from the Underpeak by the Aurum Dominion ~2,000 years ago, who blended their craft with celestial magic.</div></div>
+        <div class="panel-section"><div class="section-label">Cities</div><div class="section-body"><strong>Astronhold</strong> (capital, Council of Sages) · <strong>Stellargrove</strong> (forested enclave, druidic + celestial harmony)</div></div>
+        <div class="panel-section"><div class="section-label">Religion</div><div class="section-body">Revere <strong>Korvain</strong> (craftsmanship, dwarvenkind).</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-grey">Unvisited</span></div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Tunnelling beneath Astronhold broke into a pre-historical chamber — predates the Celestium Clans, predates recorded history. Unknown material, no living language, cosmic resonance. Council of Sages has sealed it and gone silent. <strong>Valdris knew this chamber existed</strong> — may be why he chose the plateau. May connect to the Divine Gate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRIMSON DESERT / EMBER WASTES -->
+  <div class="panel-card" id="loc-crimson_desert">
+    <div class="panel-header">
+      <div><div class="panel-name">Crimson Desert / Ember Wastes</div><div class="panel-sub">Nomadic confederacies · Sandship caravans</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Harsh red sands and shifting dunes. Towering mesas and rugged canyons. Ancient ruins of long-collapsed civilisations buried beneath. The desert is unforgiving; the Nomads of the Ember Wastes have adapted — they travel in great sandship caravans across the dunes.</div></div>
+        <div class="panel-section"><div class="section-label">Major Camps</div><div class="section-body"><strong>Emberhold</strong> (largest central camp, trade and storytelling) · <strong>Duneclaw Oasis</strong> (water festival) · <strong>Sandshroud Outpost</strong> (border lookout)</div></div>
+        <div class="panel-section"><div class="section-label">Religion</div><div class="section-body">Revere <strong>Sylvana</strong> (wind, travel) and <strong>Solara</strong> (sun, life). The deeper Crimson Desert holds tombs of <strong>Mor'nyx</strong> — the death-god's keepers maintain them.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-grey">Unvisited</span></div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> Quiet for now. Will become relevant around levels 10–12 when the party needs an unlikely alliance. The Nomads know ancient routes. <strong>The Mor'nyx tomb-keepers know how to destroy a phylactery</strong> — critical for stopping Vaeloran.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERPENT ISLES -->
+  <div class="panel-card" id="loc-serpent_isles">
+    <div class="panel-header">
+      <div><div class="panel-name">Serpent Isles</div><div class="panel-sub">11 Lizardfolk clans · Pirate Confederacy · Personal law</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A chain of islands across the Azure Sea. Home to lizardfolk clans (descendants of an ancient Yuan-ti tribe that lived on the back of a titan sea serpent — its body became the islands) and the Pirate Confederacy. Free ports where law is personal and trade and conflict intertwine.</div></div>
+        <div class="panel-section"><div class="section-label">Lizardfolk Clans</div><div class="section-body">11 in total. Notable: <strong>Scaleheart Brood</strong> (Matriarch Nalara — harmonious, sea-connected) · <strong>Blacktail Clan</strong> (Matriarch Vessara — largest, militant) · Plus 9 others (Fangscale, Venomclaw, Scaleshadow, Scalecrest, Thornhide, Swiftscale, Silentfang, Bloodscale, Stoneskin).</div></div>
+        <div class="panel-section"><div class="section-label">Free Ports</div><div class="section-body"><strong>Port Blackfin</strong> (bustling) · <strong>Skullport</strong> (inside a dormant volcano) · <strong>Coral Cove</strong> (hidden harbour) · <strong>Serpent's Lair</strong> (mythical, ancient caves)</div></div>
+        <div class="panel-section"><div class="section-label">Religion</div><div class="section-body">All revere <strong>Sirenna</strong> (Neutral — Nature, Water, Protection).</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-gold">Known</span> Not yet visited.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> <strong>The Scarlet Wake</strong> — a new pirate lord — has seized three ships and demands a Council seat. Real goal: consolidate the Confederacy and tax Azure Sea trade routes including Aeloria's. <strong>Countdown 5 sessions</strong> — then the Wake controls the Council. Feeds the Instability Clock.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STONEMARKED MOUNTAINS -->
+  <div class="panel-card" id="loc-stonemarked">
+    <div class="panel-header">
+      <div><div class="panel-name">Stonemarked Mountains</div><div class="panel-sub">Goliath warrior clan · Orin's tribe</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The mountain range northeast of Duskmere. Home to <strong>The Stonemarked</strong> — a goliath warrior clan that values physical strength, endurance, and martial prowess above all else. A coming-of-age trial determines who stays in the tribe and who is exiled.</div></div>
+        <div class="panel-section"><div class="section-label">Beliefs</div><div class="section-body">Weakness must be cut from the tribe for its survival. Mercy in battle is read as weakness of spirit. Those who fail the trial are exiled, not killed.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-gold">Known</span> Orin's tribe. He was exiled as a child after showing mercy in his trial.</div></div>
+        <div class="panel-section player-only"><div class="section-label">Why You Care</div><div class="section-body">This is Orin's pre-Merric origin. He has not been back since his exile.</div></div>
+        <div class="dm-note dm-only"><strong>DM:</strong> The Stonemarked are being squeezed from two sides: Naturus corruption rising from the Frostwood Marsh below, and <strong>The Ashbound</strong> rival clan pressing from the north. Pride prevents them asking for help. <strong>Countdown 5 sessions</strong> — then they are broken, the passes claimed, a new Naturus shrine in the mountains. Activates when a wounded warrior arrives in Aeloria and tells Orin: <em>"Your tribe is dying."</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ AELORIAN CITIES ============ -->
+
+  <!-- AELORIA CROSSROADS (city) -->
+  <div class="panel-card" id="loc-aeloria_city">
+    <div class="panel-header">
+      <div><div class="panel-name">Aeloria Crossroads</div><div class="panel-sub">Free city-state · Your home base · Visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The free, independent city-state at the geographic centre of Eldoria. Governed by a Council of Five and Townmaster Oskar. Four districts: Merchants Rise (NW), High Spires (NE), Ashgate Slums (SW), Copper Light Ward (SE). Trade hub, melting pot, politically complex.</div></div>
+    <a href="aeloria_map.html?player" target="_blank" class="action-btn player-only">🗺 Open Interactive City Map ↗</a>
+    <a href="aeloria_map.html" target="_blank" class="action-btn dm-only">🗺 Open Interactive City Map ↗</a>
+    <div class="dm-note dm-only" style="margin-top:1rem"><strong>DM:</strong> Vaeloran's primary target. Stage 3 of his lich ritual is in progress in the deepest chamber of the Spire of the Silver Eclipse. The Council is being slowly consolidated. The Guilded Veil operates from the Pig's Head basement. The full DM map of the city is one click away.</div>
+  </div>
+
+  <!-- DUSKMERE -->
+  <div class="panel-card" id="loc-duskmere">
+    <div class="panel-header">
+      <div><div class="panel-name">Duskmere</div><div class="panel-sub">Coastal · Fishing industry · Where Merric found Orin</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Coastal town. Fishing industry, vibrant harbour, seafood trade. A long pier runs into the sea from the centre of the docks.</div></div>
+    <div class="panel-section"><div class="section-label">Notable</div><div class="section-body">Mayor: Elara Stormrider · High Priestess of Sirenna: Lorelai</div></div>
+    <div class="dm-note dm-only"><strong>DM:</strong> Where Merric Underbough (then a Luminar of Luminos) found young Orin south of town after his exile from the Stonemarked. The town doesn't know who Merric became.</div>
+  </div>
+
+  <!-- STONEGATE -->
+  <div class="panel-card" id="loc-stonegate">
+    <div class="panel-header">
+      <div><div class="panel-name">Stonegate</div><div class="panel-sub">Fortified town · Hilly northern region</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Sturdy walls, military presence, defensive point and soldier training ground. A first line of defence between the Aelorian Territories and the southern slopes of the Aurora Peaks.</div></div>
+  </div>
+
+  <!-- SILVERBROOK -->
+  <div class="panel-card" id="loc-silverbrook">
+    <div class="panel-header">
+      <div><div class="panel-name">Silverbrook</div><div class="panel-sub">Agriculture · Vineyards</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Picturesque settlement. Some of the finest wines and food in the region. Rolling fields, small streams, prosperous farms.</div></div>
+  </div>
+
+  <!-- IRONHOLD -->
+  <div class="panel-card" id="loc-ironhold">
+    <div class="panel-header">
+      <div><div class="panel-name">Ironhold</div><div class="panel-sub">Master smiths · Forge Council · Aurum Dominion tension</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Southern Aelorian Territories. Renowned for masterful blacksmiths and skilled artisans. Run by a Forge Council of master smiths.</div></div>
+    <div class="panel-section"><div class="section-label">Current Situation</div><div class="section-body">The Aurum Dominion is pressuring Ironhold for exclusive weapon contracts. <strong>Guildmaster Bryndis Ashveil</strong> refuses; <strong>Corvan Drake</strong> (younger, ambitious) wants the deal. <span class="badge b-gold">Caravan from Kolt's Depot heading here</span></div></div>
+    <div class="dm-note dm-only"><strong>DM:</strong> If Drake wins the political battle, the Dominion gains military production leverage over the southern Aelorian Territories. Party will likely arrive mid-crisis.</div>
+  </div>
+
+  <!-- CRIMSON OUTPOST -->
+  <div class="panel-card" id="loc-crimson_outpost">
+    <div class="panel-header">
+      <div><div class="panel-name">Crimson Outpost</div><div class="panel-sub">Trade caravan point · Desert border</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Along the border with the Crimson Desert. A vital trade caravan stop and a buffer against desert threats. Sandships occasionally dock here from the Ember Wastes.</div></div>
+  </div>
+
+  <!-- ============ AURORA PEAKS CITIES ============ -->
+
+  <div class="panel-card" id="loc-auranova">
+    <div class="panel-header"><div><div class="panel-name">Auranova</div><div class="panel-sub">Capital of the Aurum Dominion · Mystic seat</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Mystic capital at the Aurora Peaks foothills. Bustling hub of scholars, artisans, and magicians. Imperial Court resides here.</div></div>
+    <div class="panel-section"><div class="section-label">Imperial Court</div><div class="section-body">Emperor Valerius Kaelthorn (52). Empress Liora. Crown Prince Aurek (military). Princess Selene (intelligence, most dangerous). Prince Darius (young, arcane).</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-eclipsia">
+    <div class="panel-header"><div><div class="panel-name">Eclipsia</div><div class="panel-sub">Remote city high in the peaks</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Astronomers and mystics. Observatories carved into the mountainside. Long studies of celestial movement and prophecy.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-crystalholm">
+    <div class="panel-header"><div><div class="panel-name">Crystalholm</div><div class="panel-sub">Crossroads trade hub · Enchanted crystal markets</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The Dominion's main trade crossroads in the peaks. Famous for enchanted crystal markets — the source of much of the Dominion's crystal-based magic and military equipment.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-auroras_rest">
+    <div class="panel-header"><div><div class="panel-name">Aurora's Rest</div><div class="panel-sub">Pilgrim village · Spiritual retreat</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A small village at the highest accessible elevation. Pilgrims and spiritual retreat. Said to be the best place in Eldoria to view the aurora borealis.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-lunara_monastery">
+    <div class="panel-header"><div><div class="panel-name">Lunara Monastery</div><div class="panel-sub">Order of the Silver Crescent · Lunara devotees</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">On a high plateau in the Aurora Peaks. Home of the Order of the Silver Crescent — a martial monastic order devoted to <strong>Lunara, the Moonwalker</strong>. Practitioners of the Silver Crescent Dance.</div></div>
+    <div class="panel-section"><div class="section-label">Hierarchy</div><div class="section-body">Initiates (Aspirants) → Novices (Duskwalkers) → Instructors (Sensei) → Enlightened Guardians (Dawnbringers) → Gemstone Keepers → Lunar Elders</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-stellara">
+    <div class="panel-header"><div><div class="panel-name">Stellara</div><div class="panel-sub">Foothill town · Herbalists and alchemists</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A foothill town of vibrant gardens. Herbalists and alchemists thrive here, drawing on rare plants that grow only on the Aurora Peaks' slopes.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-starryhaven">
+    <div class="panel-header"><div><div class="panel-name">Starryhaven</div><div class="panel-sub">Coastal city · Trade port · Cosmopolitan</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A coastal trade port. The Dominion's main connection to the Azure Sea. Cosmopolitan by Dominion standards — travellers from all over Eldoria pass through.</div></div>
+  </div>
+
+  <!-- ============ VERDANT EXPANSE CITIES ============ -->
+
+  <div class="panel-card" id="loc-eldralor">
+    <div class="panel-header"><div><div class="panel-name">Eldralor</div><div class="panel-sub">Built upon the Aelarion Tree · Sylvarian cultural heart</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Built upon and within the Aelarion Tree — the largest tree in the Verdant Expanse. Stunning architecture, magical fountains, the Council of Elders meets here. The cultural and political heart of the Sylvarian Enclaves.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-aurelia_haven">
+    <div class="panel-header"><div><div class="panel-name">Aurelia Haven</div><div class="panel-sub">River settlement · Arts and trade hub</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Near a tranquil river. Hub of art and creativity, bustling markets. The most welcoming of the Sylvarian settlements to outsiders.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-silentwood">
+    <div class="panel-header"><div><div class="panel-name">Silentwood</div><div class="panel-sub">Secretive · Shadow guardians · Assassins</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Secretive enclave of skilled assassins and shadow guardians. Outsiders are not welcome.</div></div>
+    <div class="dm-note dm-only"><strong>DM:</strong> Sacred groves near Silentwood are darkening first. Kaelith's Naturus corruption is creeping in from the marsh border.</div>
+  </div>
+
+  <div class="panel-card" id="loc-celestia_glade">
+    <div class="panel-header"><div><div class="panel-name">Celestia Glade</div><div class="panel-sub">Floating island · Levitation crystals</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">An enchanting enclave on a floating island within the forest canopy. Levitation crystals are hidden within the stone. Rises higher during celestial events.</div></div>
+  </div>
+
+  <!-- ============ CELESTIAL PLATEAU CITIES ============ -->
+
+  <div class="panel-card" id="loc-stellargrove">
+    <div class="panel-header"><div><div class="panel-name">Stellargrove</div><div class="panel-sub">Forested enclave · Druidic + celestial harmony</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Forested enclave where druidic magic and celestial energy meet in harmony. The Celestium Clans tend ancient groves that grow stronger under the plateau's cosmic light.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-astronhold">
+    <div class="panel-header"><div><div class="panel-name">Astronhold</div><div class="panel-sub">Capital of the Celestium Clans · Council of Sages</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The Celestium Clans' capital, atop the Celestial Plateau. Towering spires inscribed with celestial patterns. The Council of Sages governs from here.</div></div>
+    <div class="dm-note dm-only"><strong>DM:</strong> The pre-historical chamber was discovered beneath here. Council of Sages has sealed it and gone quiet. Valdris knew it was there.</div>
+  </div>
+
+  <!-- ============ SERPENT ISLES PORTS ============ -->
+
+  <div class="panel-card" id="loc-skullport">
+    <div class="panel-header"><div><div class="panel-name">Skullport</div><div class="panel-sub">Inside a dormant volcano · Powerful pirate lord</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Built inside a dormant volcano. Secretive. Run by one of the most feared pirate crews in the Confederacy. Outsiders enter at their own risk.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-coral_cove">
+    <div class="panel-header"><div><div class="panel-name">Coral Cove</div><div class="panel-sub">Hidden harbour · Treacherous reefs · Refuge</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A hidden harbour ringed with treacherous reefs. Only experienced pilots reach it safely. Refuge from storms and Confederacy infighting alike.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-port_blackfin">
+    <div class="panel-header"><div><div class="panel-name">Port Blackfin</div><div class="panel-sub">Bustling pirate haven · Trade and recruitment</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The Confederacy's most active free port. Taverns, markets, recruitment yards. If you want passage across the Azure Sea on a ship that doesn't ask questions, this is where you book it.</div></div>
+  </div>
+
+  <div class="panel-card" id="loc-scaleheart">
+    <div class="panel-header"><div><div class="panel-name">Scaleheart Brood</div><div class="panel-sub">Lizardfolk clan home · Harmonious · Sea-connected</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Home of the Scaleheart Brood — one of the eleven lizardfolk clans. Led by <strong>Matriarch Nalara Scaleheart</strong>; her mate <strong>Drogan</strong> is the brood's hunter and scout. Harmonious with nature, deeply connected to the sea.</div></div>
+  </div>
+
+</div><!-- end info-panel -->
+
+<script>
+// Detect mode early so we never flash DM content to a player view.
+(function setMode(){
+  var isPlayer = window.location.search.indexOf('player') !== -1;
+  if(isPlayer){
+    document.body.classList.add('player-mode');
+  }
+})();
+
+window.addEventListener('DOMContentLoaded', function(){
+  var isPlayer = document.body.classList.contains('player-mode');
+  var badge = document.getElementById('mode-badge');
+  var back = document.getElementById('back-btn');
+  if(isPlayer){
+    if(badge){ badge.textContent = 'PLAYER VIEW'; badge.style.background = '#0d3d30'; badge.style.color = '#a0d4c4'; }
+    if(back){ back.textContent = '← Players Site'; back.setAttribute('href', 'players.html'); }
+  }
+});
+
+function showLocation(id) {
+  document.querySelectorAll('.panel-card').forEach(function(p){ p.classList.remove('active'); });
+  var panel = document.getElementById('loc-' + id);
+  if(panel) {
+    panel.classList.add('active');
+    setTimeout(function(){ panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
+  }
+}
+
+function closePanel() {
+  document.querySelectorAll('.panel-card').forEach(function(p){ p.classList.remove('active'); });
+}
+</script>
+</body>
+</html>
