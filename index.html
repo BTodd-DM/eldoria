@@ -536,6 +536,7 @@ body {
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('prep',this)">📋 Prep</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
+  <button class="nav-btn" onclick="showPanel('maps',this)">🗺 Maps</button>
   <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
   <button class="nav-btn" onclick="showPanel('vaeloran',this)">👁 Vaeloran</button>
   <button class="nav-btn" onclick="showPanel('kaelith',this)">☠ Kaelith</button>
@@ -545,7 +546,7 @@ body {
 <!-- ============ NOW ============ -->
 <div id="panel-now" class="panel active">
   <div class="alert alert-danger">⚠ URGENT — Lyssandra Vale is in Vaeloran's custody. Her memory has been wiped. She now serves him willingly. Every session that passes without the party finding her worsens her fate.</div>
-  <div class="alert alert-warn">Current position: Kolt's Depot. Caravan escort to Ironhold available. The Naturus network spreads rot through the territories unchecked.</div>
+  <div class="alert alert-warn">Current position: Kolt's Depot. <strong>Session 5 next — caravan departing south to Ironhold.</strong> See the "Arc 02 — Caravan to Ironhold" card below for the three-session plan and the Combat tab for Vrass's stat block.</div>
 
   <div class="sec-title">Threads in Play</div>
   <div class="grid-2">
@@ -575,9 +576,14 @@ body {
       <div style="margin-top:.5rem"><span class="badge b-gold">Torren personal</span></div>
     </div>
     <div class="card gold">
-      <div class="card-title"><span class="qdot qdot-pending"></span>Kolt's Depot — caravan to Ironhold</div>
-      <div class="card-body">Escort job available. Ironhold is south — renowned blacksmiths, currently pressured by Aurum Dominion seeking exclusive weapon contracts. Guildmaster Bryndis Ashveil refuses; younger smith Corvan Drake wants the deal. Road encounter opportunity.</div>
-      <div style="margin-top:.5rem"><span class="badge b-gold">next session</span><span class="badge b-orange">Ironhold political tension</span></div>
+      <div class="card-title"><span class="qdot qdot-active"></span>🎲 Arc 02 — Caravan to Ironhold (Sessions 5–7)</div>
+      <div class="card-body" style="font-size:12.5px">
+        <strong>Session 5 (next, 3h):</strong> Kolt's Depot opener — players name the company. Torren spots the Coin Cipher seal on the chest (Wagon 2). Day 2 stop at Stillbrook (corrupted stream — Naturus foreshadowing). Sera Vey joins the caravan. Day 2 afternoon: <strong>Vrass the young black dragon attacks</strong> (CR 7, MM stats — Combat tab). Cliffhanger, level up to 6.<br><br>
+        <strong>Session 6:</strong> Optional Vrass lair detour (loot + Wizard scrolls — Hypnotic Pattern, Counterspell, Phantom Steed). Day 3: Aurum Dominion dignitary encounter (Veris Caelthorn + mixed Watch escort). Night watcher. Arrive Ironhold gates.<br><br>
+        <strong>Session 7:</strong> Bryndis vs Drake political crisis. Halvor moral grey resolution. Coin Cipher chest delivered to warehouse #14 — black carriage rides <em>north</em>. Sera's reckoning. Return-hook to Aeloria (Davos / Lis).<br><br>
+        <strong>Trackers this arc:</strong> Instability Clock 2 → 3 (one off-screen Aeloria trade incident). Lich Progress: Stage 3 advances ~70%. Countdowns tick: Verdant Expanse 3→2, Stonemarked 5→4, Scarlet Wake 5→4. Eryn Feld goes missing in Aeloria off-screen.
+      </div>
+      <div style="margin-top:.5rem"><span class="badge b-gold">current arc</span><span class="badge b-orange">Session 5 next</span><span class="badge b-red">Vrass — CR 7</span><span class="badge b-grey">level up after S5</span></div>
     </div>
   </div>
 
@@ -772,6 +778,24 @@ body {
 
     <div class="card teal">
       <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a2010">BH</div>
+        <div><div class="card-title" style="margin:0">Brenna Hartwell</div><div class="card-sub" style="margin:0">Human · Caravan Master · Ex-Watch sergeant</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Early 40s, ash-blonde hair, leather armour she's maintained for years. Dry, direct, ex-soldier cadence. Twenty years in Aeloria City Watch under Captain Dane, retired at sergeant. Now runs caravans between Aeloria and the Aelorian Territories. Knows every league of the southern road. Doesn't ask about sealed crates. Carries one Potion of Superior Healing and one Smoke Brick — declared at start of any combat; use only when the worst happens. Will not engage Vrass directly.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">caravan master</span><span class="badge b-grey">Session 5</span><span class="badge b-gold">recurring contact</span></div>
+    </div>
+
+    <div class="card gold">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a1a08">SV</div>
+        <div><div class="card-title" style="margin:0">Sera Vey</div><div class="card-sub" style="margin:0">Human · Farm wife from Stillbrook · Wounded</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Late 20s. Bandaged shoulder, fresh wound. Approaches the caravan at the Stillbrook stop (Day 2). Husband Marcus owes 30 gp to Halvor; drought wiped their crop; couldn't pay. Halvor came to Stillbrook in person with a hired thug (Cor Brackin), took Mira (her sister-in-law) and the children, knocked Sera down when she tried to intervene. She doesn't know about Halvor's daughter Lis (held in Aeloria by Davos Hark). She doesn't know about the Aurum-Dominion creditor chain that's broken Halvor. <strong>Moral grey at Ironhold:</strong> pay the 30 gp, force release, negotiate full solution (best — opens Davos return-arc), or walk away (Stillbrook remembers).</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">moral grey</span><span class="badge b-grey">Session 5–7</span></div>
+    </div>
+
+    <div class="card teal">
+      <div class="npc-header">
         <div class="npc-avatar" style="background:#1a2a3a">AD</div>
         <div><div class="card-title" style="margin:0">High Priest Alric Dawnveil</div><div class="card-sub" style="margin:0">Human · Temple of Luminos · Lightbearer</div></div>
       </div>
@@ -898,6 +922,7 @@ body {
       <div class="sec-title">Monster Picker</div>
       <div id="monster-picker" style="display:none">
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.5rem">
+          <button class="action-btn gold" onclick="addMonster('vrass')">Vrass — Young Black Dragon</button>
           <button class="action-btn" onclick="addMonster('kaelith')">Sister Kaelith</button>
           <button class="action-btn" onclick="addMonster('gnoll')">Gnoll</button>
           <button class="action-btn" onclick="addMonster('gnoll_alpha')">Gnoll Alpha</button>
@@ -1438,6 +1463,38 @@ body {
   </div>
 </div>
 
+<!-- ============ MAPS ============ -->
+<div id="panel-maps" class="panel">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('m-world',this)">🌍 World Map</button>
+    <button class="tab-btn" onclick="showTab('m-city',this)">🗺 City Map (Aeloria)</button>
+  </div>
+
+  <div id="tab-m-world">
+    <div class="sec-title">Eldoria — Interactive World Map</div>
+    <div class="alert alert-info" style="margin-bottom:.5rem">Click any region or city in the map below. Full DM notes embedded — you stay on this dashboard, no new tab, no re-auth on return.</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <a href="world_map.html" target="_blank" class="action-btn">Open in new tab ↗</a>
+      <button class="action-btn" onclick="document.getElementById('iframe-world-map').src=document.getElementById('iframe-world-map').src">Reload</button>
+    </div>
+    <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
+      <iframe id="iframe-world-map" src="world_map.html" style="border:0;width:100%;height:100%;display:block" title="Eldoria World Map"></iframe>
+    </div>
+  </div>
+
+  <div id="tab-m-city" style="display:none">
+    <div class="sec-title">Aeloria Crossroads — Interactive City Map</div>
+    <div class="alert alert-info" style="margin-bottom:.5rem">DM mode — full district notes, NPC details, shop listings.</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <a href="aeloria_map.html" target="_blank" class="action-btn">Open in new tab ↗</a>
+      <button class="action-btn" onclick="document.getElementById('iframe-city-map').src=document.getElementById('iframe-city-map').src">Reload</button>
+    </div>
+    <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
+      <iframe id="iframe-city-map" src="aeloria_map.html" style="border:0;width:100%;height:100%;display:block" title="Aeloria City Map"></iframe>
+    </div>
+  </div>
+</div>
+
 <!-- ============ PANTHEON ============ -->
 <div id="panel-pantheon" class="panel">
   <div class="tab-inner">
@@ -1628,12 +1685,24 @@ function applyCharacterUrls() {
 
 // AUTH
 const PW = 'eldoria2dm';
+const AUTH_KEY = 'eldoria-dm-auth';
+const AUTH_DAYS = 30;
+
+function unlockApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls();
+}
+
 function checkAuth() {
   const v = document.getElementById('pw-input').value.toLowerCase().trim();
   if (v === PW) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls();
+    // persist for AUTH_DAYS so we don't re-prompt on every return
+    try {
+      const expiry = Date.now() + AUTH_DAYS * 24 * 60 * 60 * 1000;
+      localStorage.setItem(AUTH_KEY, String(expiry));
+    } catch (e) { /* localStorage unavailable; will re-prompt next time */ }
+    unlockApp();
   } else {
     document.getElementById('auth-err').style.display = 'block';
     document.getElementById('pw-input').value = '';
@@ -1641,6 +1710,23 @@ function checkAuth() {
   }
 }
 document.getElementById('pw-input').addEventListener('keypress', e => { if(e.key === 'Enter') checkAuth(); });
+
+// Auto-unlock if we authenticated within the last AUTH_DAYS days
+(function tryAutoUnlock() {
+  try {
+    const stored = localStorage.getItem(AUTH_KEY);
+    if (stored && Date.now() < parseInt(stored, 10)) {
+      unlockApp();
+    }
+  } catch (e) { /* localStorage unavailable; nothing to do */ }
+})();
+function lockApp() {
+  try { localStorage.removeItem(AUTH_KEY); } catch (e) {}
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-input').focus();
+}
 
 // NAVIGATION
 function showPanel(id, btn) {
@@ -1720,6 +1806,21 @@ function renderLichClock() {
 
 // MONSTER LIBRARY
 const monsters = {
+  vrass: {
+    name: 'Vrass — Young Black Dragon', ac: 18, hp: 127, maxHp: 127, init: '',
+    block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Vrass — Young Black Dragon (CR 7) — driven south by Frostwood Marsh corruption, allied loosely with Kaelith</div>
+<div class="stat-line"><span class="stat-label2">AC</span> 18 (natural) &nbsp;·&nbsp; <span class="stat-label2">HP</span> 127 (15d10+45) &nbsp;·&nbsp; <span class="stat-label2">Speed</span> 40ft · fly 80ft · swim 40ft</div>
+<div class="stat-line"><span class="stat-label2">STR</span> 19 (+4) <span class="stat-label2">DEX</span> 14 (+2) <span class="stat-label2">CON</span> 17 (+3) <span class="stat-label2">INT</span> 12 (+1) <span class="stat-label2">WIS</span> 11 (+0) <span class="stat-label2">CHA</span> 15 (+2)</div>
+<div class="stat-line"><span class="stat-label2">Saves</span> DEX +5, CON +7, WIS +4, CHA +6 &nbsp;·&nbsp; <span class="stat-label2">Skills</span> Perception +7, Stealth +5 &nbsp;·&nbsp; <span class="stat-label2">PP</span> 17</div>
+<div class="stat-line"><span class="stat-label2">Damage Immunity</span> Acid &nbsp;·&nbsp; <span class="stat-label2">Senses</span> Blindsight 30ft, Darkvision 120ft &nbsp;·&nbsp; <span class="stat-label2">Languages</span> Common, Draconic</div>
+<div class="stat-line"><span class="stat-label2">Multiattack</span> 1 bite + 2 claws</div>
+<div class="stat-line"><span class="stat-label2">Bite</span> +7 · 2d10+4 piercing + 1d8 acid · reach 10ft</div>
+<div class="stat-line"><span class="stat-label2">Claw</span> +7 · 2d6+4 slashing · reach 5ft</div>
+<div class="stat-line"><span class="stat-label2">Acid Breath (Recharge 5–6)</span> 30ft line, 5ft wide · DEX DC 14 · 14d8 acid (half on save)</div>
+<div class="stat-line"><span class="stat-label2">Tactic</span> R1: strafing flyby breath on lead wagon. R2: land ahead, parley or attack. R3+: bite/claws, recharge breath ASAP. <strong>Flees at 30 HP</strong> — wings south-east into rocky scrub.</div>
+<div class="stat-line"><span class="stat-label2">Speech</span> Sibilant hiss, drawn-out vowels. Arrogant, cunning, values his life over the meal. Will trade information for safety if cornered.</div>
+<div class="stat-line"><span class="stat-label2">Brenna's emergency kit</span> 1× Potion of Superior Healing (8d4+8) · 1× Smoke Brick (20ft heavy obscurement, 1 min). Declared at start of combat. Save for the worst.</div></div>`
+  },
   kaelith: {
     name: 'Sister Kaelith', ac: 19, hp: 83, maxHp: 83, init: '',
     block: `<div class="stat-block"><div class="stat-block-header" style="color:#a02020">Sister Kaelith — Cleric 10 (Pestilence Domain)</div>
