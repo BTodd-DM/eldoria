@@ -429,7 +429,7 @@ body {
   <button class="nav-btn" onclick="show('quests',this)">Quests</button>
   <button class="nav-btn" onclick="show('characters',this)">Characters</button>
   <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
-  <button class="nav-btn" onclick="show('locations',this)">🌍 World Map</button>
+  <button class="nav-btn" onclick="show('locations',this)">Locations</button>
   <button class="nav-btn" onclick="show('notes',this)">Your Notes</button>
 </nav>
 
@@ -670,21 +670,11 @@ body {
 
 <!-- ===== LOCATIONS ===== -->
 <div id="panel-locations" class="panel">
-  <div class="sec-title">World Map</div>
-  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
-    Click any region or settlement below to learn about it. The Aeloria card includes a link to the city map.
+  <div class="sec-title">Locations of Eldoria</div>
+  <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Open the interactive world map below to explore Eldoria's regions and major cities, or use the city map button on the Aeloria card for a closer look at the capital.
   </div>
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
-    <a href="world_map.html?player" target="_blank" class="region-action" style="margin:0">Open world map in new tab ↗</a>
-    <a href="aeloria_map.html?player" target="_blank" class="region-action" style="margin:0">Open city map in new tab ↗</a>
-  </div>
-  <div style="position:relative;width:100%;height:75vh;min-height:550px;border:2px solid var(--border);border-radius:4px;overflow:hidden;background:#0a0805">
-    <iframe id="iframe-player-world-map" src="world_map.html?player" style="border:0;width:100%;height:100%;display:block" title="Eldoria World Map"></iframe>
-  </div>
-  <div style="height:1.5rem"></div>
-  <details style="margin-bottom:1rem;background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:.5rem .75rem">
-    <summary style="cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase">Region cards (quick reference)</summary>
-    <div style="margin-top:.75rem">
+  <a href="world_map.html?player" target="_blank" class="region-action" style="display:block;text-align:center;margin-bottom:1.2rem">🌍 Open Interactive World Map ↗</a>
   <div class="region-grid">
     <div class="region featured">
       <div class="region-name">Aeloria Crossroads</div>
@@ -759,8 +749,6 @@ body {
     <div class="card-sub">Central district · Market</div>
     <div class="card-body">Canvas awnings, shouting merchants, the smell of spice, metal, and baked bread. If it exists in Eldoria, someone here is selling it. Twelve established shops and stalls spread across the central district.</div>
   </div>
-    </div><!-- end details body -->
-  </details>
 </div>
 
 <!-- ===== NOTES ===== -->

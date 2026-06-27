@@ -150,56 +150,6 @@ body {
 }
 .btn-players:hover { background: var(--teal2); }
 
-/* PERSISTENT STATUS BAR */
-.status-bar {
-  background: linear-gradient(180deg, #1a1208 0%, #100b05 100%);
-  border-bottom: 1px solid rgba(160,128,64,0.3);
-  padding: 8px 1rem;
-  display: flex;
-  gap: 1.25rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  font-family: 'Cinzel', serif;
-  font-size: 10.5px;
-  letter-spacing: .5px;
-}
-.status-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 2px 8px;
-  border-radius: 3px;
-  transition: background .15s;
-}
-.status-item:hover { background: rgba(201,168,76,0.10); }
-.status-label {
-  color: var(--gold2, #c9a84c);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  font-size: 10px;
-  white-space: nowrap;
-}
-.status-value {
-  color: #ebe0c4;
-  white-space: nowrap;
-}
-.status-small {
-  color: #8a7050;
-  font-size: 10px;
-}
-.status-dots {
-  color: var(--red, #7a1a1a);
-  letter-spacing: 1.5px;
-  font-size: 12px;
-  font-family: 'Cinzel', serif;
-}
-@media (max-width: 700px) {
-  .status-bar { gap: .5rem; padding: 6px .5rem; font-size: 10px; }
-  .status-item { padding: 2px 4px; gap: 4px; }
-  .status-label { font-size: 9px; letter-spacing: 1px; }
-}
-
 /* NAVIGATION */
 .main-nav {
   background: #0d0a06;
@@ -571,30 +521,10 @@ body {
   </div>
   <div class="header-actions">
     <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-roll20">Roll20 ↗</a>
+    <a href="aeloria_map.html" target="_blank" class="btn-players" style="background:#8a6a1a;color:#f4edd8">🗺 City Map ↗</a>
     <a href="players.html" target="_blank" class="btn-players">Player View ↗</a>
   </div>
 </header>
-
-<!-- LIVE STATUS BAR — persistent across tabs -->
-<div class="status-bar" id="status-bar">
-  <div class="status-item" onclick="showPanel('sessions', document.querySelector('.nav-btn'))" title="Jump to Sessions">
-    <span class="status-label">🎲 Session</span>
-    <span class="status-value" id="status-session">5 — next at the table</span>
-  </div>
-  <div class="status-item" onclick="showPanelById('clock')" title="Jump to Instability Clock">
-    <span class="status-label">⏳ Instability</span>
-    <span class="status-dots" id="status-instability">●●○○○○○○</span>
-    <span class="status-small" id="status-instability-fraction">2/8</span>
-  </div>
-  <div class="status-item" onclick="showPanelById('clock')" title="Jump to Lich Progress">
-    <span class="status-label">💀 Lich</span>
-    <span class="status-value" id="status-lich">Stage 3 (in progress)</span>
-  </div>
-  <div class="status-item" title="Active arc countdowns (Verdant Expanse · Stonemarked · Scarlet Wake)">
-    <span class="status-label">⌛ Countdowns</span>
-    <span class="status-value">VE 3 · SM 5 · SW 5</span>
-  </div>
-</div>
 
 <nav class="main-nav">
   <button class="nav-btn active" onclick="showPanel('now',this)">⚔ Now</button>
@@ -606,6 +536,7 @@ body {
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('prep',this)">📋 Prep</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
+  <button class="nav-btn" onclick="showPanel('maps',this)">🗺 Maps</button>
   <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
   <button class="nav-btn" onclick="showPanel('vaeloran',this)">👁 Vaeloran</button>
   <button class="nav-btn" onclick="showPanel('kaelith',this)">☠ Kaelith</button>
@@ -1344,26 +1275,11 @@ body {
 <!-- ============ WORLD STATE ============ -->
 <div id="panel-world" class="panel">
   <div class="tab-inner">
-    <button class="tab-btn active" onclick="showTab('worldmap',this)">🗺 Interactive Map</button>
-    <button class="tab-btn" onclick="showTab('aeloria',this)">🏛 Aeloria</button>
+    <button class="tab-btn active" onclick="showTab('aeloria',this)">🗺 Locations</button>
     <button class="tab-btn" onclick="showTab('worldstate',this)">🌍 World State</button>
-    <button class="tab-btn" onclick="showTab('regions',this)">📍 Regions</button>
-    <button class="tab-btn" onclick="showTab('factions',this)">🤝 Factions</button>
-    <button class="tab-btn" onclick="showTab('feywild',this)">✨ Feywild</button>
-  </div>
-
-  <!-- INTERACTIVE WORLD MAP — default sub-tab -->
-  <div id="tab-worldmap">
-    <div class="sec-title">Eldoria — Interactive World Map</div>
-    <div class="alert alert-info" style="margin-bottom:.5rem">Click any region or city. Info panels appear below the map. The Aeloria region card includes a link to the interactive city map. You stay on this dashboard the whole time — no new tab, no re-auth.</div>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
-      <a href="world_map.html" target="_blank" class="action-btn">Open world map in new tab ↗</a>
-      <a href="aeloria_map.html" target="_blank" class="action-btn">Open city map in new tab ↗</a>
-      <button class="action-btn" onclick="document.getElementById('iframe-world-map').src=document.getElementById('iframe-world-map').src">Reload world map</button>
-    </div>
-    <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
-      <iframe id="iframe-world-map" src="world_map.html" style="border:0;width:100%;height:100%;display:block" title="Eldoria World Map"></iframe>
-    </div>
+    <button class="tab-btn" onclick="showTab('regions',this)">Regions</button>
+    <button class="tab-btn" onclick="showTab('factions',this)">Factions</button>
+    <button class="tab-btn" onclick="showTab('feywild',this)">Feywild</button>
   </div>
 
   <div id="tab-worldstate" style="display:none">
@@ -1442,9 +1358,8 @@ body {
     <button class="action-btn" onclick="sendPrompt('Based on the Eldoria 2.0 world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
   </div>
 
-  <div id="tab-aeloria" style="display:none">
     <div class="sec-title">Locations of Eldoria</div>
-    <div class="alert alert-info" style="margin-bottom:.75rem">The interactive world map (first sub-tab) is the primary navigator. This page keeps the at-a-glance card grid for quick scanning.</div>
+    <div class="alert alert-info" style="margin-bottom:.75rem">The interactive world map shows every region and major settlement. The city map covers Aeloria in detail.</div>
     <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
       <a href="world_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px;margin:0">🌍 Open Interactive World Map ↗</a>
       <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px;margin:0">🗺 Open Interactive City Map ↗</a>
@@ -1493,7 +1408,7 @@ body {
     </div>
 
     <button class="action-btn" style="margin-top:.75rem" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for Eldoria 2.0 — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
-  </div><!-- end tab-aeloria -->
+  </div>
 
   <div id="tab-regions" style="display:none">
     <div class="sec-title">Regions of Eldoria</div>
@@ -1548,7 +1463,37 @@ body {
   </div>
 </div>
 
-<!-- (Maps panel removed — content merged into the World tab's "🗺 Interactive Map" sub-tab.) -->
+<!-- ============ MAPS ============ -->
+<div id="panel-maps" class="panel">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('m-world',this)">🌍 World Map</button>
+    <button class="tab-btn" onclick="showTab('m-city',this)">🗺 City Map (Aeloria)</button>
+  </div>
+
+  <div id="tab-m-world">
+    <div class="sec-title">Eldoria — Interactive World Map</div>
+    <div class="alert alert-info" style="margin-bottom:.5rem">Click any region or city in the map below. Full DM notes embedded — you stay on this dashboard, no new tab, no re-auth on return.</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <a href="world_map.html" target="_blank" class="action-btn">Open in new tab ↗</a>
+      <button class="action-btn" onclick="document.getElementById('iframe-world-map').src=document.getElementById('iframe-world-map').src">Reload</button>
+    </div>
+    <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
+      <iframe id="iframe-world-map" src="world_map.html" style="border:0;width:100%;height:100%;display:block" title="Eldoria World Map"></iframe>
+    </div>
+  </div>
+
+  <div id="tab-m-city" style="display:none">
+    <div class="sec-title">Aeloria Crossroads — Interactive City Map</div>
+    <div class="alert alert-info" style="margin-bottom:.5rem">DM mode — full district notes, NPC details, shop listings.</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <a href="aeloria_map.html" target="_blank" class="action-btn">Open in new tab ↗</a>
+      <button class="action-btn" onclick="document.getElementById('iframe-city-map').src=document.getElementById('iframe-city-map').src">Reload</button>
+    </div>
+    <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
+      <iframe id="iframe-city-map" src="aeloria_map.html" style="border:0;width:100%;height:100%;display:block" title="Aeloria City Map"></iframe>
+    </div>
+  </div>
+</div>
 
 <!-- ============ PANTHEON ============ -->
 <div id="panel-pantheon" class="panel">
@@ -1746,7 +1691,7 @@ const AUTH_DAYS = 30;
 function unlockApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); updateStatusBar();
+  initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls();
 }
 
 function checkAuth() {
@@ -1791,28 +1736,6 @@ function showPanel(id, btn) {
   if(btn) btn.classList.add('active');
   else document.querySelector(`[onclick*="'${id}'"]`)?.classList.add('active');
 }
-// Helper for status-bar items: jump to a panel by id without needing the button reference
-function showPanelById(id) {
-  const btn = document.querySelector(`.nav-btn[onclick*="'${id}'"]`);
-  if(btn) showPanel(id, btn);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Live update of the persistent status bar based on current clock values
-function updateStatusBar() {
-  const cf = parseInt(localStorage.getItem('eldoria-clock') || '2');
-  const lf = parseInt(localStorage.getItem('eldoria-lich') || '2');
-  const dots = '●'.repeat(cf) + '○'.repeat(Math.max(0, 8 - cf));
-  const ie = document.getElementById('status-instability');
-  const ife = document.getElementById('status-instability-fraction');
-  const le = document.getElementById('status-lich');
-  if(ie) ie.textContent = dots;
-  if(ife) ife.textContent = cf + '/8';
-  if(le) {
-    const stageLabels = ['Pre-Stage 1','Stage 1','Stage 2','Stage 3 (in progress)','Stage 4','Stage 5','Stage 6','Stage 7','Stage 8 (rite)','Stage 9 (death)','Stage 10 (LICH)'];
-    le.textContent = stageLabels[Math.min(lf, 10)];
-  }
-}
 
 // TABS
 function showTab(id, btn) {
@@ -1834,7 +1757,7 @@ function initClock() {
 function renderClock() {
   const d = document.getElementById('clock-display');
   const c = document.getElementById('clock-count');
-  if(!d) { updateStatusBar(); return; }
+  if(!d) return;
   d.innerHTML = '';
   for(let i = 0; i < 8; i++) {
     const seg = document.createElement('div');
@@ -1846,7 +1769,6 @@ function renderClock() {
     d.appendChild(seg);
   }
   if(c) c.textContent = clockFilled;
-  updateStatusBar();
 }
 
 // LICH PROGRESS CLOCK
@@ -1880,7 +1802,6 @@ function renderLichClock() {
     d.appendChild(seg);
   }
   if(c) c.textContent = lichFilled;
-  updateStatusBar();
 }
 
 // MONSTER LIBRARY
