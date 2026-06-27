@@ -1775,6 +1775,21 @@ document.getElementById('pw-input').addEventListener('keypress', e => { if(e.key
     }
   } catch (e) { /* localStorage unavailable; nothing to do */ }
 })();
+
+// Belt-and-braces: after the full DOM is parsed and the app is unlocked,
+// re-run clock initialisation if their containers are still empty. Guards
+// against any race condition between auto-unlock and DOM completion.
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const appVisible = document.getElementById('app')?.style.display !== 'none';
+    if (!appVisible) return;
+    const cd = document.getElementById('clock-display');
+    const ld = document.getElementById('lich-clock-display');
+    if (cd && cd.children.length === 0) { initClock(); }
+    if (ld && ld.children.length === 0) { initLichClock(); }
+    updateStatusBar();
+  } catch (e) { /* silent — don't break the app */ }
+});
 function lockApp() {
   try { localStorage.removeItem(AUTH_KEY); } catch (e) {}
   document.getElementById('auth-screen').style.display = 'flex';
@@ -1790,6 +1805,12 @@ function showPanel(id, btn) {
   document.getElementById('panel-' + id).classList.add('active');
   if(btn) btn.classList.add('active');
   else document.querySelector(`[onclick*="'${id}'"]`)?.classList.add('active');
+  // Defensive re-render for panels whose contents are built by JS — guarantees
+  // segments/cards are present even if first-load init was interrupted.
+  try {
+    if(id === 'clock') { renderClock(); renderLichClock(); }
+    if(id === 'combat' && typeof renderCombat === 'function') renderCombat();
+  } catch(e) { /* don't let a re-render error break navigation */ }
 }
 // Helper for status-bar items: jump to a panel by id without needing the button reference
 function showPanelById(id) {
