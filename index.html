@@ -961,18 +961,18 @@ body {
   <div class="sec-title">Campaign Arc</div>
   <div class="alert alert-info">Current arc: <strong>The Shard and the Letters</strong> — The party has returned Lyssandra to Vaeloran and cleared the gnoll den. They now stand at Kolt's Depot with threads pulling in every direction.</div>
 
-  <div class="sec-title">Session Log</div>
-  <div class="card gold">
-    <div class="card-sub">Sessions 1–2 &nbsp;·&nbsp; Oct 2025</div>
-    <div class="card-title">The Shard and the Letters</div>
-    <div class="card-body">Party hired by Vaeloran to find his missing apprentice Lyssandra and deliver sealed council letters (doctored to sow factional discord — party unknowingly delivered Vaeloran's chaos). Travelled north from Aeloria, ~1 day, to the wooded crash site in the Aelorian Territories. Encountered Vexa (Maelis's apprentice) on the road. At the crash site: fought corruption-warped spiders, found Lyssandra hiding in a lonely barn nearby. She warned the party before trying to flee — wounded by Torren and pursued north for five days through the wilds, caught before she reached Stonegate. Returned to Vaeloran, who claimed the shard had corrupted her mind and promised to restore her.</div>
-    <div style="margin-top:.5rem"><span class="badge b-red">combat</span><span class="badge b-gold">revelation</span><span class="badge b-grey">Lyssandra handed over — critical mistake</span></div>
-  </div>
+  <div class="sec-title">Session Log <span style="font-size:11px;color:var(--parch3);font-weight:400">— most recent first</span></div>
   <div class="card gold">
     <div class="card-sub">Sessions 3–4 &nbsp;·&nbsp; Most recent</div>
     <div class="card-title">The Gnoll Den and the Rot Beneath</div>
     <div class="card-body">Hired by Oskar (Goliath Townmaster) to deal with gnolls threatening southeastern farmlands. Party hunted them to their den and destroyed the pack. Discovery: a shrine to Naturus, a charmed and marked pack leader (Sister Kaelith's work), writings about rot spreading through the Aelorian territories guided by unseen hands. A note pointed to the Pig's Head Inn. Back in Aeloria: Torren found Matilda missing (runaway, tracks north). Orin pressed patrons about Merric. Torren gained Guilded Veil access — Rulden is Merric. Merric sent Orin a cold warning signed "R" but ending "Keep to the light, Orin." Seraphine at the Temple of Luminos guided Orin not to stop. Party now at Kolt's Depot.</div>
     <div style="margin-top:.5rem"><span class="badge b-red">cult shrine</span><span class="badge b-red">Naturus confirmed</span><span class="badge b-gold">Merric revealed</span><span class="badge b-teal">milestone</span></div>
+  </div>
+  <div class="card gold">
+    <div class="card-sub">Sessions 1–2 &nbsp;·&nbsp; Oct 2025</div>
+    <div class="card-title">The Shard and the Letters</div>
+    <div class="card-body">Party hired by Vaeloran to find his missing apprentice Lyssandra and deliver sealed council letters (doctored to sow factional discord — party unknowingly delivered Vaeloran's chaos). Travelled north from Aeloria, ~1 day, to the wooded crash site in the Aelorian Territories. Encountered Vexa (Maelis's apprentice) on the road. At the crash site: fought corruption-warped spiders, found Lyssandra hiding in a lonely barn nearby. She warned the party before trying to flee — wounded by Torren and pursued north for five days through the wilds, caught before she reached Stonegate. Returned to Vaeloran, who claimed the shard had corrupted her mind and promised to restore her.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">combat</span><span class="badge b-gold">revelation</span><span class="badge b-grey">Lyssandra handed over — critical mistake</span></div>
   </div>
 
   <div class="sec-title">Session Notes (DM Only)</div>
@@ -1444,10 +1444,10 @@ body {
   <!-- INTERACTIVE WORLD MAP — default sub-tab -->
   <div id="tab-worldmap">
     <div class="sec-title">Eldoria — Interactive World Map</div>
-    <div class="alert alert-info" style="margin-bottom:.5rem">Click any region or city. Info panels appear below the map. The Aeloria region card includes a link to the interactive city map. You stay on this dashboard the whole time — no new tab, no re-auth.</div>
+    <div class="alert alert-info" style="margin-bottom:.5rem">Click any region or city. Info panels appear below the map. The Aeloria region card includes a link to the interactive Aeloria city map. You stay on this dashboard the whole time — no new tab, no re-auth.</div>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
       <a href="world_map.html" target="_blank" class="action-btn">Open world map in new tab ↗</a>
-      <a href="aeloria_map.html" target="_blank" class="action-btn">Open city map in new tab ↗</a>
+      <a href="aeloria_map.html" target="_blank" class="action-btn">Open Aeloria city map in new tab ↗</a>
       <button class="action-btn" onclick="document.getElementById('iframe-world-map').src=document.getElementById('iframe-world-map').src">Reload world map</button>
     </div>
     <div style="position:relative;width:100%;height:80vh;min-height:600px;border:1px solid var(--bord);border-radius:4px;overflow:hidden;background:#0a0805">
@@ -1536,7 +1536,7 @@ body {
     <div class="alert alert-info" style="margin-bottom:.75rem">The interactive world map (first sub-tab) is the primary navigator. This page keeps the at-a-glance card grid for quick scanning.</div>
     <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
       <a href="world_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px;margin:0">🌍 Open Interactive World Map ↗</a>
-      <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px;margin:0">🗺 Open Interactive City Map ↗</a>
+      <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:11px;margin:0">🗺 Open Aeloria City Map ↗</a>
     </div>
 
     <!-- REGION GRID — same layout as player view, with Aeloria featured -->
@@ -1547,7 +1547,7 @@ body {
             <div class="card-title">Aeloria Crossroads</div>
             <div class="card-sub">Free city-state · Primary setting · <span style="color:#a0d4c4">Visited</span></div>
           </div>
-          <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:10px;margin:0">🗺 Open Interactive City Map ↗</a>
+          <a href="aeloria_map.html" target="_blank" class="action-btn gold" style="text-decoration:none;font-size:10px;margin:0">🗺 Open Aeloria City Map ↗</a>
         </div>
         <div class="card-body">Independent city-state at the crossroads of Eldoria. Council of Five plus Townmaster Oskar. Vaeloran's primary target — his entire plan begins here. Four districts, central hub, the Spire of the Silver Eclipse dominates the High Spires skyline.</div>
       </div>
@@ -1866,8 +1866,9 @@ document.getElementById('pw-input').addEventListener('keypress', e => { if(e.key
 })();
 
 // Belt-and-braces: after the full DOM is parsed and the app is unlocked,
-// re-run clock initialisation if their containers are still empty. Guards
-// against any race condition between auto-unlock and DOM completion.
+// re-run clock + calendar initialisation if they're still empty/null.
+// Auto-unlock above can fire before module-level `let` declarations have
+// reached the temporal-dead-zone exit, so this is the reliable init point.
 window.addEventListener('DOMContentLoaded', () => {
   try {
     const appVisible = document.getElementById('app')?.style.display !== 'none';
@@ -1876,6 +1877,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const ld = document.getElementById('lich-clock-display');
     if (cd && cd.children.length === 0) { initClock(); }
     if (ld && ld.children.length === 0) { initLichClock(); }
+    // Calendar — always (re-)init from here so cal_save/advance buttons have
+    // a populated CAL state to work against
+    if (typeof cal_init === 'function') cal_init();
     updateStatusBar();
   } catch (e) { /* silent — don't break the app */ }
 });
