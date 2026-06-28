@@ -1009,7 +1009,13 @@ body {
       <div class="stat-row"><span class="stat-label">Key action</span><span class="stat-val">Wounded Lyssandra</span></div>
       <div class="stat-row"><span class="stat-label">Personal thread</span><span class="stat-val">Matilda — tracks north</span></div>
       <div class="stat-row"><span class="stat-label">Assassinate</span><span class="stat-val">Surprise = auto crit</span></div>
-      <div class="stat-row"><span class="stat-label">Backstory</span><span class="stat-val">TBC from player</span></div>
+
+      <div class="backstory-card" style="background:rgba(20,15,8,0.55);border:1px solid rgba(160,128,64,0.3);border-left:3px solid var(--gold2);border-radius:3px;padding:.6rem .75rem;margin:.6rem 0">
+        <div style="font-size:10px;color:var(--gold2);letter-spacing:1.2px;font-family:'Cinzel',serif;margin-bottom:.35rem">📖 BACKSTORY REFRESHER</div>
+        <div style="font-size:12px;color:var(--parch3);font-style:italic;margin-bottom:.4rem">Backstory pending — record what the player provides below. Saves automatically.</div>
+        <textarea class="editable-area" id="pc-backstory-torren" placeholder="Add Torren's backstory here when the player provides it..." onchange="saveNote('pc-backstory-torren',this.value)" style="height:80px;font-size:12px"></textarea>
+      </div>
+
       <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in Eldoria 2.0 that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
       <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="torren" class="action-btn" style="display:inline-block;text-decoration:none">📜 D&amp;D Beyond Sheet ↗</a>
     </div>
@@ -1020,6 +1026,17 @@ body {
       <div class="card-sub">Tiefling (Chthonic) &nbsp;·&nbsp; Illusionist Wizard &nbsp;·&nbsp; Level 5</div>
       <div class="hp-bar"><div class="hp-fill good" style="width:85%"></div></div>
       <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Spell Attack: —</div>
+
+      <div class="backstory-card" style="background:rgba(20,15,8,0.55);border:1px solid rgba(160,128,64,0.3);border-left:3px solid var(--purple,#8a4fa0);border-radius:3px;padding:.6rem .75rem;margin:.4rem 0 .75rem">
+        <div style="font-size:10px;color:var(--gold2);letter-spacing:1.2px;font-family:'Cinzel',serif;margin-bottom:.35rem">📖 BACKSTORY REFRESHER</div>
+        <div style="font-size:12px;color:var(--parch2);line-height:1.6">
+          Born in the Aurora Peaks to human parents, Sylas was marked from birth by a generational pact his family struck centuries ago with <strong>Valdris the Pale Archivist</strong> — the cost of that pact gave the line its tiefling features. He left the mountains for Aeloria's Scholars' Circle to study illusion magic, where Vaeloran took an interest in him. He wears a silver necklace constantly. He has recently taken his first step on the <strong>Path of the Lich</strong> — the necklace is his spirit jar, though he does not yet appreciate what that means.
+        </div>
+        <div style="font-size:11px;color:#f4c4c4;font-style:italic;margin-top:.4rem;padding-top:.35rem;border-top:1px dashed rgba(122,26,26,0.4)">
+          <strong>DM:</strong> Vaeloran is OBSERVING him through their "spell study sessions" — Sylas thinks they're partners; he's being studied. Soul Siphon is active. The party doesn't know.
+        </div>
+      </div>
+
       <div class="stat-row"><span class="stat-label">Lineage</span><span class="stat-val">Generational pact — Valdris the Pale Archivist</span></div>
       <div class="stat-row"><span class="stat-label">Path</span><span class="stat-val">Lich Initiate ⚠</span></div>
       <div class="stat-row"><span class="stat-label">Spirit jar</span><span class="stat-val">The necklace he wears — his soul is in it</span></div>
@@ -1039,9 +1056,20 @@ body {
     <!-- ORIN -->
     <div class="card teal">
       <div class="card-title">Orin</div>
-      <div class="card-sub">Cleric of Luminos &nbsp;·&nbsp; Level 5</div>
+      <div class="card-sub">Goliath &nbsp;·&nbsp; Cleric of Luminos &nbsp;·&nbsp; Level 5</div>
       <div class="hp-bar"><div class="hp-fill good" style="width:90%"></div></div>
       <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Channel Divinity: 2/rest</div>
+
+      <div class="backstory-card" style="background:rgba(20,15,8,0.55);border:1px solid rgba(160,128,64,0.3);border-left:3px solid var(--teal2,#0d3d30);border-radius:3px;padding:.6rem .75rem;margin:.4rem 0 .75rem">
+        <div style="font-size:10px;color:var(--gold2);letter-spacing:1.2px;font-family:'Cinzel',serif;margin-bottom:.35rem">📖 BACKSTORY REFRESHER</div>
+        <div style="font-size:12px;color:var(--parch2);line-height:1.6">
+          Orin was born to <strong>the Stonemarked</strong>, a warrior clan of the mountains north-east of Duskmere. At his coming-of-age rite he showed mercy where the tribe demanded death — and was exiled for it. He was perhaps seven or eight when <strong>Merric Underbough</strong> found him alone near Duskmere and brought him home. Merric raised him in Aeloria and taught him faith in Luminos. The mercy that exiled him became, in Merric's hands, the foundation of his calling. He serves Luminos now as a cleric — and has just learned that his adoptive father has lived a hidden second life as Veilmaster Rulden of the Guilded Veil.
+        </div>
+        <div style="font-size:11px;color:#f4c4c4;font-style:italic;margin-top:.4rem;padding-top:.35rem;border-top:1px dashed rgba(122,26,26,0.4)">
+          <strong>DM:</strong> Seraphine has told Orin not to stop pulling on the Merric thread. His faith was built on Merric's example — if Merric is corrupt, what is his faith built on? Genuine crisis incoming.
+        </div>
+      </div>
+
       <div class="stat-row"><span class="stat-label">Adoptive father</span><span class="stat-val">Merric / Veilmaster Rulden</span></div>
       <div class="stat-row"><span class="stat-label">Knows</span><span class="stat-val">Rulden = Merric (Veilmaster)</span></div>
       <div class="stat-row"><span class="stat-label">Guided by</span><span class="stat-val">Seraphine — do not stop</span></div>
@@ -1061,7 +1089,14 @@ body {
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
   <div class="sec-title">Key NPCs</div>
-  <div class="npc-grid">
+
+  <div style="margin-bottom:1rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+    <input type="text" id="npc-search" placeholder="🔍 Search NPCs by name, role, or keyword…" oninput="filterNpcs(this.value)" style="flex:1;min-width:240px;padding:.55rem .75rem;background:rgba(20,15,8,0.7);border:1px solid rgba(160,128,64,0.4);border-radius:3px;color:var(--parch1);font-family:'Crimson Pro',serif;font-size:13px;outline:none">
+    <button class="action-btn" onclick="document.getElementById('npc-search').value='';filterNpcs('')" title="Clear">✕ Clear</button>
+    <span id="npc-search-count" style="font-size:11px;color:var(--parch3);font-style:italic">Showing all NPCs</span>
+  </div>
+
+  <div class="npc-grid" id="npc-grid-root">
 
     <div class="card red">
       <div class="npc-header">
@@ -1642,20 +1677,18 @@ body {
 <!-- ============ PANTHEON ============ -->
 <div id="panel-pantheon" class="panel">
   <div class="tab-inner">
-    <button class="tab-btn active" onclick="showTab('p-creator',this)">Creator Gods</button>
-    <button class="tab-btn" onclick="showTab('p-children',this)">The Children</button>
-    <button class="tab-btn" onclick="showTab('p-betrayer',this)">Betrayer Gods</button>
-    <button class="tab-btn" onclick="showTab('p-history',this)">History</button>
+    <button class="tab-btn active" onclick="showTab('p-gods',this)">✨ Pantheon</button>
+    <button class="tab-btn" onclick="showTab('p-history',this)">🏛 History</button>
   </div>
 
-  <div id="tab-p-creator">
+  <div id="tab-p-gods">
+    <div class="sec-title">Creator Gods</div>
     <div class="deity-grid">
       <div class="deity-card" style="border-left:3px solid var(--gold2)"><div class="deity-name" style="color:var(--gold3)">Luminos</div><div class="deity-align">Neutral Good · Creator</div><div class="deity-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, enlighteners. <strong>Suppressed in the Aurum Dominion</strong> — why Merric smuggled holy goods there. Symbol: radiant orb with light patterns.</div></div>
       <div class="deity-card" style="border-left:3px solid var(--teal2)"><div class="deity-name" style="color:#a0d4c4">Veridania</div><div class="deity-align">Neutral · Creator</div><div class="deity-body">Nature's balance and interconnectedness. Druids, healers, naturalists. Sylvarian Enclaves revere her alongside Yggdris. Symbol: blooming flower with intertwining roots.</div></div>
     </div>
-  </div>
 
-  <div id="tab-p-children" style="display:none">
+    <div class="sec-title">The Children</div>
     <div class="deity-grid">
       <div class="deity-card"><div class="deity-name">Mizura</div><div class="deity-align">Chaotic Neutral</div><div class="deity-body">Secrets, illusions, trickery. Rogues and spies. Secretive cults. Two-faced mask symbol.</div></div>
       <div class="deity-card"><div class="deity-name">Sylvana</div><div class="deity-align">Chaotic Good</div><div class="deity-body">Travel, air, communication. Nomads of the Ember Wastes. Wind-carried feather symbol.</div></div>
@@ -1668,24 +1701,30 @@ body {
       <div class="deity-card"><div class="deity-name">Thalasia</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Arcane magic, elemental forces. Aurum Dominion. Crystal with elemental motifs symbol.</div></div>
       <div class="deity-card"><div class="deity-name">Mor'nyx</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Death, afterlife, protection. Crimson Desert tombs. Ankh with winged scarab symbol.</div></div>
     </div>
-  </div>
 
-  <div id="tab-p-betrayer" style="display:none">
-    <div class="alert alert-danger">Both Betrayer Gods are sealed behind the Divine Gate after the Great Reclamation. They cannot act directly — only through whispers, corruption, and followers who may not even know they serve them.</div>
+    <div class="sec-title">Betrayer Gods</div>
+    <div class="alert alert-danger" style="line-height:1.65">
+      <strong>Both Astronar and Naturus sit above the Divine Gate alongside the other deities — but each is additionally bound within the <span style="color:#f4e4a0">Dawnoak</span></strong>, a divine tree grown by Luminos and Veridania at the end of the 2nd Age. The Dawnoak is rooted in places mortals cannot reach, and <strong>its true name has been lost to time</strong>. Speaking that name would unmake the binding and free the Betrayers — which is why the scholars of the First Age believed forgetting the name was the only safe path.<br><br>
+      The <strong>Aelarion Tree</strong> of the Sylvarian Enclaves is the Dawnoak's earthly sapling, tended for reasons even the Sylvarians no longer remember.<br><br>
+      The Betrayer Gods act only through whispers, dreams, and followers who often do not know whom they truly serve. Fragments of their essence occasionally bleed through the binding and fall to the material plane as <strong>meteor shards</strong> — every such shard is a piece of a god's prison.<br><br>
+      <span style="font-size:11px;color:#d8a8a8;font-style:italic">DM ONLY — common folk know nothing of any of this. Only deep First-Age scholars know the Dawnoak even exists.</span>
+    </div>
     <div class="deity-grid">
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly Vaeloran's true patron — though Vaeloran may not consciously know it. Eclipse shrouding a sun symbol. His influence: slow, patient, through institutions and individuals who believe they're acting freely.</div></div>
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. Withered tree symbol. May be trying to crack the Divine Gate.</div></div>
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly <strong>Vaeloran's true patron</strong> — though Vaeloran may not consciously know it. Eclipse shrouding a sun symbol. His influence: slow, patient, through institutions and individuals who believe they're acting freely. <strong>Vaeloran is unknowingly collecting Astronar's shards.</strong></div></div>
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. Withered tree symbol. <strong>His unfinished child — Mor-Vesh, "the Withering" — lies beneath the Frostwood Marsh,</strong> bound by the Lethraliri at the cost of their civilisation. See <em>Bestiary/Mor-Vesh - The Withering</em>.</div></div>
     </div>
   </div>
 
   <div id="tab-p-history" style="display:none">
     <div class="sec-title">History of Eldoria</div>
     <div class="card gold"><div class="card-title">1st Age — Creation and Harmony (1000 years)</div><div class="card-body">Luminos and Veridania collaborated to shape Eldoria. Luminos: celestial energies, light, order, structure. Veridania: nature, life, balance. Their combined work created the world's landscapes, magic, and sentient beings. Astronar and Naturus grew discontented and began subtly sowing discord among the other deities.</div></div>
-    <div class="card red"><div class="card-title">The Usurpation — End of the 1st Age</div><div class="card-body">Astronar and Naturus confronted Luminos and Veridania directly. Through deceit, manipulation, and force, they overcame the Creator Gods and sealed them behind a Divine Gateway. During this upheaval, the Aurum Dominion infiltrated and displaced the Dwarven Clans of the Underpeak — forcing their exodus to the Celestial Plateau (~2000 years ago).</div></div>
-    <div class="card red"><div class="card-title">2nd Age — Dark Reign (750 years)</div><div class="card-body">Darkness crept over Eldoria. Ecosystems twisted. Astronar diminished the sun; Naturus corrupted nature. Cults of darkness flourished. Hidden resistance grew — the Lethraliri civilization in Frostwood Marsh thrived during this period using ice/water magic. Heroes emerged under the banner of light.</div></div>
-    <div class="card teal"><div class="card-title">The Great Reclamation — End of the 2nd Age</div><div class="card-body">United faithful defeated Astronar and Naturus. Yggdris healed the land, Korvain crafted artifacts of light, Sirenna disrupted the usurpers' dominion, Thalasia's rituals counteracted dark magic, Mor'nyx guided fallen heroes. The usurpers were cast down and sealed in separate planes of darkness.</div></div>
-    <div class="card teal"><div class="card-title">3rd Age — Restoration and Renewal (300 years · Current)</div><div class="card-body">Luminos and Veridania emerged from hiding to help mend the damage. All deities then made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. They sealed themselves behind the Divine Gate — keeping gods out of the material plane. Faith now operates without direct divine presence.</div></div>
-    <div class="alert alert-warn" style="margin-top:.75rem">DM NOTE: The Divine Gate may be something another faction is trying to open or weaken. The Naturus cult under Kaelith may have this as a secondary goal — cracking the gate enough for Naturus to whisper more directly into the world. This would explain why the corruption feels organised rather than random.</div>
+    <div class="card red"><div class="card-title">The Usurpation — End of the 1st Age</div><div class="card-body">Astronar and Naturus confronted Luminos and Veridania directly. Through deceit, manipulation, and force, they overcame the Creator Gods and drove them into hiding. During this upheaval, the Aurum Dominion infiltrated and displaced the Dwarven Clans of the Underpeak — forcing their exodus to the Celestial Plateau (~2000 years ago).</div></div>
+    <div class="card red"><div class="card-title">2nd Age — Dark Reign (750 years)</div><div class="card-body">Darkness crept over Eldoria. Ecosystems twisted. Astronar diminished the sun; Naturus corrupted nature. Cults of darkness flourished. Hidden resistance grew — the <strong>Lethraliri</strong> civilisation in what would become the Frostwood Marsh thrived during this period using ice/water magic. Heroes emerged under the banner of light.</div></div>
+    <div class="card teal"><div class="card-title">The Great Reclamation — End of the 2nd Age</div><div class="card-body">United faithful defeated Astronar and Naturus. Yggdris healed the land, Korvain crafted artifacts of light, Sirenna disrupted the usurpers' dominion, Thalasia's rituals counteracted dark magic, Mor'nyx guided fallen heroes. <strong>Luminos and Veridania grew the Dawnoak</strong> — a divine tree of light and root — and bound the Betrayers within it, in places mortals cannot reach. As Naturus was being bound, his last act was to hurl one of his unfinished children — <strong>Mor-Vesh</strong> — through a tear in the planes into the material world. Mor-Vesh struck what would become the Frostwood Marsh. The <strong>Lethraliri</strong>, unable to destroy it, sealed it in unbreaking ice and froze themselves in place as living wardens. Their civilisation ended in that act.</div></div>
+    <div class="card teal"><div class="card-title">3rd Age — Restoration and Renewal (300 years · Current)</div><div class="card-body">Luminos and Veridania emerged to help mend the damage. All deities then made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. <strong>They sealed themselves behind the Divine Gate</strong> — a barrier that keeps gods out of the material plane. Faith now operates without direct divine presence. The Dawnoak's binding holds; its true name was deliberately forgotten by every scholar who knew it, so that no being might ever speak it.</div></div>
+    <div class="alert alert-warn" style="margin-top:.75rem">
+      <strong>DM NOTE — the campaign endgame.</strong> Vaeloran is collecting meteor shards to fuel his lichdom; he does not know they are fragments of Astronar's prison. Kaelith spreads Naturus's rot believing she's serving her god; she does not know her work weakens the Frostwood Marsh seal on Mor-Vesh. The true campaign-ending threat is anyone who discovers the Dawnoak's true name — or who frees Mor-Vesh, which would give Naturus a foothold in the material plane he has not had in 1,050 years.
+    </div>
   </div>
 </div>
 
@@ -2565,6 +2604,26 @@ function cal_init() {
     };
   }
   cal_render();
+}
+
+// NPC SEARCH — live filter NPC grid cards by name/keyword
+function filterNpcs(query) {
+  const grid = document.getElementById('npc-grid-root');
+  if (!grid) return;
+  const q = (query || '').trim().toLowerCase();
+  const cards = grid.querySelectorAll(':scope > .card');
+  let shown = 0;
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) shown += 1;
+  });
+  const counter = document.getElementById('npc-search-count');
+  if (counter) {
+    if (!q) counter.textContent = `Showing all ${cards.length} NPCs`;
+    else counter.textContent = `Showing ${shown} of ${cards.length} NPCs`;
+  }
 }
 
 // NOTES
