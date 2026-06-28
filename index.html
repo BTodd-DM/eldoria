@@ -577,9 +577,14 @@ body {
 
 <!-- LIVE STATUS BAR — persistent across tabs -->
 <div class="status-bar" id="status-bar">
-  <div class="status-item" onclick="showPanel('sessions', document.querySelector('.nav-btn'))" title="Jump to Sessions">
+  <div class="status-item" onclick="showPanelById('sessions','now')" title="Jump to Sessions › Now">
     <span class="status-label">🎲 Session</span>
     <span class="status-value" id="status-session">5 — next at the table</span>
+  </div>
+  <div class="status-item" onclick="showPanelById('sessions','calendar')" title="Jump to Sessions › Calendar">
+    <span class="status-label">📅 Date</span>
+    <span class="status-value" id="status-date">14 Frostfall · 3E 1247</span>
+    <span class="status-small" id="status-weather">⛅ Overcast (Kolt's Depot)</span>
   </div>
   <div class="status-item" onclick="showPanelById('clock')" title="Jump to Instability Clock">
     <span class="status-label">⏳ Instability</span>
@@ -597,14 +602,12 @@ body {
 </div>
 
 <nav class="main-nav">
-  <button class="nav-btn active" onclick="showPanel('now',this)">⚔ Now</button>
-  <button class="nav-btn" onclick="showPanel('sessions',this)">📜 Sessions</button>
+  <button class="nav-btn active" onclick="showPanel('sessions',this)">📜 Sessions</button>
   <button class="nav-btn" onclick="showPanel('players',this)">⚡ Players</button>
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
-  <button class="nav-btn" onclick="showPanel('prep',this)">📋 Prep</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
   <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
   <button class="nav-btn" onclick="showPanel('vaeloran',this)">👁 Vaeloran</button>
@@ -612,8 +615,16 @@ body {
   <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
 </nav>
 
-<!-- ============ NOW ============ -->
-<div id="panel-now" class="panel active">
+<!-- ============ SESSIONS (consolidated: Now · Prep · Calendar · Recaps) ============ -->
+<div id="panel-sessions" class="panel active">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('now',this)">⚔ Now</button>
+    <button class="tab-btn" onclick="showTab('prep',this)">📋 Prep</button>
+    <button class="tab-btn" onclick="showTab('calendar',this)">📅 Calendar</button>
+    <button class="tab-btn" onclick="showTab('recaps',this)">📜 Recaps &amp; Log</button>
+  </div>
+
+  <div id="tab-now">
   <div class="alert alert-danger">⚠ URGENT — Lyssandra Vale is in Vaeloran's custody. Her memory has been wiped. She now serves him willingly. Every session that passes without the party finding her worsens her fate.</div>
   <div class="alert alert-warn">Current position: Kolt's Depot. <strong>Session 5 next — caravan departing south to Ironhold.</strong> See the "Arc 02 — Caravan to Ironhold" card below for the three-session plan and the Combat tab for Vrass's stat block.</div>
 
@@ -664,10 +675,289 @@ body {
     <button class="action-btn" onclick="sendPrompt('Advance the Eldoria 2.0 Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
     <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the Eldoria 2.0 party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
   </div>
-</div>
+  </div>
 
-<!-- ============ SESSIONS ============ -->
-<div id="panel-sessions" class="panel">
+  <div id="tab-prep" style="display:none">
+  <div class="grid-2" style="gap:1rem;align-items:start">
+    <!-- Session Overview -->
+    <div>
+      <div class="sec-title">Session Overview</div>
+      <div class="card red">
+        <div class="card-title">Next Session — Active Threads</div>
+        <div class="card-body" style="font-size:12.5px">
+          <strong>Party position:</strong> Kolt's Depot. Caravan escort to Ironhold available.<br>
+          <strong>Urgent (DM only):</strong> Lyssandra memory-wiped, Vaeloran's shard attunement in progress (Stage 3).<br>
+          <strong>Live threads:</strong> Naturus cult, Merric/Orin, Kaelith's operations, Instability Clock at 2/8.
+        </div>
+      </div>
+      <div class="sec-title">Vaeloran — Off-Screen Actions</div>
+      <div class="card red">
+        <div class="card-title">What Vaeloran is doing RIGHT NOW</div>
+        <div class="card-body" style="font-size:12.5px">
+          Stage 3: Attuning the meteor shard — 30-day continuous ritual in the Spire's deepest chamber. Lyssandra assists unwittingly as ritual witness.<br><br>
+          Running Aurek Voln Drowhiss correspondence — directing Kaelith's operations to feed the soul count for Stage 6.<br><br>
+          Monitoring Sylas through their study sessions — studying the necklace/spirit jar. Patient. Not yet ready to act.
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-overview" placeholder="Session overview notes..." onchange="saveNote('prep-overview',this.value)" style="height:80px;margin-top:.5rem"></textarea>
+    </div>
+    <!-- NPC Action Queue -->
+    <div>
+      <div class="sec-title">NPC Action Queue — Between Sessions</div>
+      <div class="card gold"><div class="card-title">Vaeloran Duskwhisper</div><div class="card-body" style="font-size:12.5px">Shard attunement continues. Monitors Sylas. Directs Aurek network. Maintains public persona of civic benefactor.</div></div>
+      <div class="card red"><div class="card-title">Sister Kaelith</div><div class="card-body" style="font-size:12.5px">Moving operations deeper into Verdant Expanse border. Establishing new shrine. Expanding corruption spread. Will not return to Aeloria until party forces the issue.</div></div>
+      <div class="card gold"><div class="card-title">Merric / Rulden Marr</div><div class="card-body" style="font-size:12.5px">Lying low. Knows Orin is aware. Watching for whether the party pulls on the Guilded Veil thread. Has not told the Veil captains about Orin. That omission is itself significant.</div></div>
+      <div class="card"><div class="card-title">Lyssandra Vale</div><div class="card-body" style="font-size:12.5px">Serving Vaeloran willingly, memory wiped. Present in the Spire. Performing research tasks. Smiling. This should disturb the party when they eventually see it.</div></div>
+      <div class="card"><div class="card-title">Valdris the Pale Archivist</div><div class="card-body" style="font-size:12.5px">Watching Sylas through the pact connection. Dormant in his Aurora Peaks sanctum. Aware of Vaeloran's pursuit of lichdom and quietly amused. Not yet acting.</div></div>
+      <textarea class="editable-area" id="prep-npc-queue" placeholder="Add NPC actions here..." onchange="saveNote('prep-npc-queue',this.value)" style="height:60px;margin-top:.5rem"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sec-title">Active Storylines — Session Prep Cards</div>
+  <div id="prep-storylines">
+
+    <!-- MAIN PLOT -->
+    <div class="card red" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🔴 THE VAELORAN CONSPIRACY — Main Plot</div>
+        <span class="badge b-red">URGENT</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Opening hook:</strong> Lyssandra is in the tower, memory wiped. The party doesn't know yet.<br>
+            <strong>Beat 1:</strong> Caravan to Ironhold — something on the road connects to Vaeloran's network<br>
+            <strong>Beat 2:</strong> Return to Aeloria — shard attunement nearing completion (Stage 3 ends)<br>
+            <strong>Beat 3:</strong> Anagram discovery — Aurek Voln Drowhiss = Vaeloran Duskwhisper<br>
+            <strong>Possible endings:</strong> Party confronts Vaeloran early (he pivots), party doesn't notice until Stage 6+, or Merric breaks and reveals the truth first
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT PARTY NEEDS TO DISCOVER NEXT</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">① The sealed letters they delivered were doctored<br>② Lyssandra's memory was deliberately wiped<br>③ The "K" note connects Kaelith to the Guilded Veil<br>④ Aurek Voln Drowhiss is an anagram</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">CLUE TRAIL</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Gnoll writings → Pig's Head → K note → Guilded Veil back room → Aurek correspondence → Anagram</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-main" placeholder="DM notes for main plot..." onchange="saveNote('prep-main',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- NATURUS CULT -->
+    <div class="card red" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🔴 THE NATURUS CULT — Sister Kaelith</div>
+        <span class="badge b-red">ACTIVE</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Opening hook:</strong> Pig's Head named in gnoll den writings. The "K" note.<br>
+            <strong>Beat 1:</strong> Party investigates Pig's Head back room — find evidence of cult operations<br>
+            <strong>Beat 2:</strong> Trail leads to Kaelith — she has moved deeper into the Verdant Expanse<br>
+            <strong>Beat 3:</strong> First encounter with Kaelith — not a fight, a confrontation. She escapes.<br>
+            <strong>Possible endings:</strong> Party disrupts operations (Clock slows), party ignores it (corruption spreads to Verdant Expanse fully)
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">NPC KNOWLEDGE TRACKER</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Kaelith knows:</strong> The party destroyed the gnoll shrine. She is moving.<br>
+            <strong>Gerald knows:</strong> "K" sends people to his back room. Doesn't know what for.<br>
+            <strong>Merric knows:</strong> Kaelith is using Guilded Veil infrastructure. Has not told captains why.<br>
+            <strong>Vaeloran knows:</strong> Everything. He set this up.
+          </div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">COUNTDOWN</div>
+          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 3 sessions: Verdant Expanse border fully corrupted. Sylvarian Enclaves send emissary to Aeloria.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-cult" placeholder="DM notes for Naturus cult thread..." onchange="saveNote('prep-cult',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- MERRIC / ORIN -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 MERRIC AND ORIN — Personal Arc</div>
+        <span class="badge b-gold">ACTIVE</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Current state:</strong> Orin knows. Merric has warned him off. Seraphine says keep going.<br>
+            <strong>Next beat:</strong> Second confrontation — Orin brings something Merric can't deflect<br>
+            <strong>The crack:</strong> Merric doesn't know Aurek = Vaeloran. That revelation breaks him.<br>
+            <strong>Possible endings:</strong> Merric turns informant, Merric tries to flee, Merric is killed by Vaeloran to silence him, Merric sacrifices himself to protect Orin
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">EMOTIONAL BEATS TO HIT</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            ① Merric still calls Orin by a childhood name or phrase<br>
+            ② He pushes Orin away but physically steps between him and danger<br>
+            ③ The moment he realises Aurek = Vaeloran — he goes very quiet<br>
+            ④ "I thought I was choosing the city. I was choosing him."
+          </div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">FAITH CRISIS TRIGGER</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Orin's faith was built on Merric's example. If Merric is corrupt, what is Orin's faith built on? This should be a genuine question, not a crisis with a fast resolution.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-merric" placeholder="DM notes for Merric/Orin arc..." onchange="saveNote('prep-merric',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- SYLAS LICH PATH -->
+    <div class="card purple" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟣 SYLAS — Path of the Lich</div>
+        <span class="badge b-purple">SIMMERING</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
+            <strong>Current state:</strong> Lich Initiate taken. Spirit jar = the necklace. Soul Siphon active.<br>
+            <strong>Next beat:</strong> Dominion letter arrives pointing toward Maelis (red herring)<br>
+            <strong>The reveal:</strong> Orin discovers Soul Siphon — when and how?<br>
+            <strong>Valdris thread:</strong> Something in the Aurora Peaks will call to Sylas — the pact pulling him north<br>
+            <strong>Vaeloran's play:</strong> He may try to become Sylas's mentor on the path — to keep him close
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN DOES ORIN FIND OUT?</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Options:<br>① Combat — he sees Soul Siphon trigger and recognises it<br>② Vaeloran tells him deliberately to divide the party<br>③ Temple of Luminos detects the soul consumption in Sylas's presence<br>④ Sylas tells him himself — the most interesting version</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">THE ENDGAME QUESTION</div>
+          <div style="font-size:12.5px;color:var(--parch2)">Sylas must eventually choose: his own independent lichdom, or becoming Valdris's vessel. This choice defines what kind of lich — and what kind of person — he becomes.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-sylas" placeholder="DM notes for Sylas lich path..." onchange="saveNote('prep-sylas',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- TORREN -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 TORREN — Personal Arc</div>
+        <span class="badge b-grey">PENDING BACKSTORY</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT WE KNOW</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Halfling Assassin Rogue, level 5. Wounded Lyssandra. Matilda (horse) escaped north. Backstory TBC from player.</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">HOOKS READY TO DEPLOY</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Matilda's tracks lead north — toward Aurora Peaks. Could connect to Aurum Dominion or Valdris story. Awaiting backstory to build personal arc.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-torren" placeholder="Add Torren's backstory notes here when received..." onchange="saveNote('prep-torren',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+    </div>
+
+    <!-- ORIN'S TRIBE -->
+    <div class="card gold" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">🟡 THE STONEMARKED — Orin's Tribe</div>
+        <span class="badge b-gold">SIMMERING</span>
+      </div>
+      <div class="grid-2" style="gap:.75rem">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">CURRENT SITUATION</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Mountains NE of Duskmere. Naturus corruption pushing up from the marsh below. A rival clan pressing from the north. They are too proud to ask for help. Orin doesn't know any of this yet.</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN THIS BECOMES ACTIVE</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">A Stonemarked warrior arrives in Aeloria — possibly injured, possibly searching for Orin. They don't ask. They state: "Your tribe is dying." Then they leave. Orin decides whether to respond.</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.4rem 0 .25rem">COUNTDOWN</div>
+          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 5 sessions: the Stonemarked are broken by the rival clan. Corruption claims the mountains. A new Naturus shrine is established there.</div>
+        </div>
+      </div>
+      <textarea class="editable-area" id="prep-stonemarked" placeholder="DM notes for Stonemarked arc..." onchange="saveNote('prep-stonemarked',this.value)" style="height:60px;margin-top:.5rem"></textarea>
+    </div>
+
+  </div>
+
+  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of Eldoria 2.0 — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
+  </div>
+
+  <div id="tab-calendar" style="display:none">
+    <div class="sec-title">Calendar &amp; Weather — The Cycle of Lights</div>
+    <div class="alert alert-info"><strong>Today:</strong> <span id="cal-today-summary">14 Frostfall · 3E 1247 · Stonefast</span> &nbsp;·&nbsp; <span id="cal-today-weather">⛅ Overcast (Kolt's Depot)</span></div>
+    <datalist id="cal-locations-list"></datalist>
+
+    <div class="card gold" id="cal-today-card" style="margin-bottom:1rem">
+      <div class="card-title">Today</div>
+      <div class="grid-2" style="gap:.75rem;align-items:start">
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin-bottom:.35rem">DATE</div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+            <input type="number" id="cal-day" min="1" max="30" style="width:60px;padding:.3rem" value="14">
+            <select id="cal-month" style="padding:.3rem">
+              <option value="0">Greenwake (Spring)</option>
+              <option value="1">Lumineth</option>
+              <option value="2">Veridantide</option>
+              <option value="3">Goldfall (Summer)</option>
+              <option value="4">Sunheight</option>
+              <option value="5">Goldwane</option>
+              <option value="6">Frostfall (Autumn)</option>
+              <option value="7">Sablemourn</option>
+              <option value="8">Witherveil</option>
+              <option value="9">Hollowtide (Winter)</option>
+              <option value="10">Starwatch</option>
+              <option value="11">Iceflow</option>
+              <option value="sacred">— Sacred Days —</option>
+            </select>
+            <span style="color:var(--parch3)">·</span>
+            <span style="color:var(--gold2)">3E</span>
+            <input type="number" id="cal-year" min="1" style="width:80px;padding:.3rem" value="1247">
+            <select id="cal-sacred" style="display:none;padding:.3rem">
+              <option value="0">Day of Quiet</option>
+              <option value="1">Day of Lights</option>
+              <option value="2">Day of Roots</option>
+              <option value="3">Day of Coins</option>
+              <option value="4">Day of Stones</option>
+            </select>
+          </div>
+          <div id="cal-weekday-festival" style="font-size:11.5px;margin-top:.5rem;color:var(--parch3);line-height:1.5;min-height:1.2em"></div>
+
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin:.75rem 0 .35rem">PARTY POSITION</div>
+          <input type="text" id="cal-party" value="Kolt's Depot" style="width:100%;padding:.3rem" list="cal-locations-list">
+
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin:.75rem 0 .35rem">DAY LABEL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--parch3)">(optional context — e.g. "Caravan Day 2")</span></div>
+          <input type="text" id="cal-label" placeholder="e.g. Caravan Day 1" style="width:100%;padding:.3rem">
+
+          <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="action-btn" onclick="cal_save()">💾 Save Today</button>
+            <button class="action-btn gold" onclick="cal_advance()">Advance Day →</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin-bottom:.35rem">WEATHER BY LOCATION</div>
+          <div id="cal-weather-rows"></div>
+          <button class="action-btn" onclick="cal_addWeatherRow()" style="margin-top:.4rem">+ Add observation</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title">Day Log</div>
+    <div id="cal-day-log" style="font-size:13px"></div>
+
+    <div class="sec-title">Calendar Reference</div>
+    <div class="card">
+      <div class="card-body" style="font-size:12.5px;line-height:1.7">
+        <strong>The Cycle of Lights</strong> — 12 months × 30 days + 5 Sacred Days = 365 days/year.<br>
+        <strong>Months:</strong> Greenwake · Lumineth · Veridantide · Goldfall · Sunheight · Goldwane · Frostfall · Sablemourn · Witherveil · Hollowtide · Starwatch · Iceflow.<br>
+        <strong>Lightweek (7 days):</strong> Daystar · Moonwake · Stonefast · Greentide · Hearthen · Skywatch · Stillday.<br>
+        <strong>Sacred Days:</strong> Day of Quiet · Day of Lights · Day of Roots · Day of Coins · Day of Stones — sit between Iceflow and Greenwake, outside any month or week.<br><br>
+        <strong>Festival visibility:</strong>
+        🎉 = public (party would know) &nbsp;·&nbsp;
+        <span style="color:var(--gold2)">🔍 = scholarly / restricted</span> &nbsp;·&nbsp;
+        <span style="color:#f4c4c4">🔒 = DM ONLY — do not reveal</span><br>
+        See <em>Lore and Legends/Calendar of Eldoria.md</em> in the vault for cultural festivals and full lore.
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-recaps" style="display:none">
   <div class="sec-title">Campaign Arc</div>
   <div class="alert alert-info">Current arc: <strong>The Shard and the Letters</strong> — The party has returned Lyssandra to Vaeloran and cleared the gnoll den. They now stand at Kolt's Depot with threads pulling in every direction.</div>
 
@@ -700,6 +990,7 @@ body {
     <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Pig's Head Main (Aeloria — guild front)</a>
     <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Guilded Veil (Thieves' Guild HQ)</a>
     <a class="r20-link" href="https://app.roll20.net/editor/" target="_blank">→ Holding Page / New Page 1</a>
+  </div>
   </div>
 </div>
 
@@ -1038,208 +1329,6 @@ body {
   </div>
 </div>
 
-<!-- ============ PREP ============ -->
-<div id="panel-prep" class="panel">
-  <div class="grid-2" style="gap:1rem;align-items:start">
-    <!-- Session Overview -->
-    <div>
-      <div class="sec-title">Session Overview</div>
-      <div class="card red">
-        <div class="card-title">Next Session — Active Threads</div>
-        <div class="card-body" style="font-size:12.5px">
-          <strong>Party position:</strong> Kolt's Depot. Caravan escort to Ironhold available.<br>
-          <strong>Urgent (DM only):</strong> Lyssandra memory-wiped, Vaeloran's shard attunement in progress (Stage 3).<br>
-          <strong>Live threads:</strong> Naturus cult, Merric/Orin, Kaelith's operations, Instability Clock at 2/8.
-        </div>
-      </div>
-      <div class="sec-title">Vaeloran — Off-Screen Actions</div>
-      <div class="card red">
-        <div class="card-title">What Vaeloran is doing RIGHT NOW</div>
-        <div class="card-body" style="font-size:12.5px">
-          Stage 3: Attuning the meteor shard — 30-day continuous ritual in the Spire's deepest chamber. Lyssandra assists unwittingly as ritual witness.<br><br>
-          Running Aurek Voln Drowhiss correspondence — directing Kaelith's operations to feed the soul count for Stage 6.<br><br>
-          Monitoring Sylas through their study sessions — studying the necklace/spirit jar. Patient. Not yet ready to act.
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-overview" placeholder="Session overview notes..." onchange="saveNote('prep-overview',this.value)" style="height:80px;margin-top:.5rem"></textarea>
-    </div>
-    <!-- NPC Action Queue -->
-    <div>
-      <div class="sec-title">NPC Action Queue — Between Sessions</div>
-      <div class="card gold"><div class="card-title">Vaeloran Duskwhisper</div><div class="card-body" style="font-size:12.5px">Shard attunement continues. Monitors Sylas. Directs Aurek network. Maintains public persona of civic benefactor.</div></div>
-      <div class="card red"><div class="card-title">Sister Kaelith</div><div class="card-body" style="font-size:12.5px">Moving operations deeper into Verdant Expanse border. Establishing new shrine. Expanding corruption spread. Will not return to Aeloria until party forces the issue.</div></div>
-      <div class="card gold"><div class="card-title">Merric / Rulden Marr</div><div class="card-body" style="font-size:12.5px">Lying low. Knows Orin is aware. Watching for whether the party pulls on the Guilded Veil thread. Has not told the Veil captains about Orin. That omission is itself significant.</div></div>
-      <div class="card"><div class="card-title">Lyssandra Vale</div><div class="card-body" style="font-size:12.5px">Serving Vaeloran willingly, memory wiped. Present in the Spire. Performing research tasks. Smiling. This should disturb the party when they eventually see it.</div></div>
-      <div class="card"><div class="card-title">Valdris the Pale Archivist</div><div class="card-body" style="font-size:12.5px">Watching Sylas through the pact connection. Dormant in his Aurora Peaks sanctum. Aware of Vaeloran's pursuit of lichdom and quietly amused. Not yet acting.</div></div>
-      <textarea class="editable-area" id="prep-npc-queue" placeholder="Add NPC actions here..." onchange="saveNote('prep-npc-queue',this.value)" style="height:60px;margin-top:.5rem"></textarea>
-    </div>
-  </div>
-
-  <hr class="divider">
-  <div class="sec-title">Active Storylines — Session Prep Cards</div>
-  <div id="prep-storylines">
-
-    <!-- MAIN PLOT -->
-    <div class="card red" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🔴 THE VAELORAN CONSPIRACY — Main Plot</div>
-        <span class="badge b-red">URGENT</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            <strong>Opening hook:</strong> Lyssandra is in the tower, memory wiped. The party doesn't know yet.<br>
-            <strong>Beat 1:</strong> Caravan to Ironhold — something on the road connects to Vaeloran's network<br>
-            <strong>Beat 2:</strong> Return to Aeloria — shard attunement nearing completion (Stage 3 ends)<br>
-            <strong>Beat 3:</strong> Anagram discovery — Aurek Voln Drowhiss = Vaeloran Duskwhisper<br>
-            <strong>Possible endings:</strong> Party confronts Vaeloran early (he pivots), party doesn't notice until Stage 6+, or Merric breaks and reveals the truth first
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT PARTY NEEDS TO DISCOVER NEXT</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">① The sealed letters they delivered were doctored<br>② Lyssandra's memory was deliberately wiped<br>③ The "K" note connects Kaelith to the Guilded Veil<br>④ Aurek Voln Drowhiss is an anagram</div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">CLUE TRAIL</div>
-          <div style="font-size:12.5px;color:var(--parch2)">Gnoll writings → Pig's Head → K note → Guilded Veil back room → Aurek correspondence → Anagram</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-main" placeholder="DM notes for main plot..." onchange="saveNote('prep-main',this.value)" style="height:70px;margin-top:.5rem"></textarea>
-    </div>
-
-    <!-- NATURUS CULT -->
-    <div class="card red" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🔴 THE NATURUS CULT — Sister Kaelith</div>
-        <span class="badge b-red">ACTIVE</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            <strong>Opening hook:</strong> Pig's Head named in gnoll den writings. The "K" note.<br>
-            <strong>Beat 1:</strong> Party investigates Pig's Head back room — find evidence of cult operations<br>
-            <strong>Beat 2:</strong> Trail leads to Kaelith — she has moved deeper into the Verdant Expanse<br>
-            <strong>Beat 3:</strong> First encounter with Kaelith — not a fight, a confrontation. She escapes.<br>
-            <strong>Possible endings:</strong> Party disrupts operations (Clock slows), party ignores it (corruption spreads to Verdant Expanse fully)
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">NPC KNOWLEDGE TRACKER</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            <strong>Kaelith knows:</strong> The party destroyed the gnoll shrine. She is moving.<br>
-            <strong>Gerald knows:</strong> "K" sends people to his back room. Doesn't know what for.<br>
-            <strong>Merric knows:</strong> Kaelith is using Guilded Veil infrastructure. Has not told captains why.<br>
-            <strong>Vaeloran knows:</strong> Everything. He set this up.
-          </div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">COUNTDOWN</div>
-          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 3 sessions: Verdant Expanse border fully corrupted. Sylvarian Enclaves send emissary to Aeloria.</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-cult" placeholder="DM notes for Naturus cult thread..." onchange="saveNote('prep-cult',this.value)" style="height:70px;margin-top:.5rem"></textarea>
-    </div>
-
-    <!-- MERRIC / ORIN -->
-    <div class="card gold" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🟡 MERRIC AND ORIN — Personal Arc</div>
-        <span class="badge b-gold">ACTIVE</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            <strong>Current state:</strong> Orin knows. Merric has warned him off. Seraphine says keep going.<br>
-            <strong>Next beat:</strong> Second confrontation — Orin brings something Merric can't deflect<br>
-            <strong>The crack:</strong> Merric doesn't know Aurek = Vaeloran. That revelation breaks him.<br>
-            <strong>Possible endings:</strong> Merric turns informant, Merric tries to flee, Merric is killed by Vaeloran to silence him, Merric sacrifices himself to protect Orin
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">EMOTIONAL BEATS TO HIT</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            ① Merric still calls Orin by a childhood name or phrase<br>
-            ② He pushes Orin away but physically steps between him and danger<br>
-            ③ The moment he realises Aurek = Vaeloran — he goes very quiet<br>
-            ④ "I thought I was choosing the city. I was choosing him."
-          </div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">FAITH CRISIS TRIGGER</div>
-          <div style="font-size:12.5px;color:var(--parch2)">Orin's faith was built on Merric's example. If Merric is corrupt, what is Orin's faith built on? This should be a genuine question, not a crisis with a fast resolution.</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-merric" placeholder="DM notes for Merric/Orin arc..." onchange="saveNote('prep-merric',this.value)" style="height:70px;margin-top:.5rem"></textarea>
-    </div>
-
-    <!-- SYLAS LICH PATH -->
-    <div class="card purple" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🟣 SYLAS — Path of the Lich</div>
-        <span class="badge b-purple">SIMMERING</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">STRUCTURED OUTLINE</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">
-            <strong>Current state:</strong> Lich Initiate taken. Spirit jar = the necklace. Soul Siphon active.<br>
-            <strong>Next beat:</strong> Dominion letter arrives pointing toward Maelis (red herring)<br>
-            <strong>The reveal:</strong> Orin discovers Soul Siphon — when and how?<br>
-            <strong>Valdris thread:</strong> Something in the Aurora Peaks will call to Sylas — the pact pulling him north<br>
-            <strong>Vaeloran's play:</strong> He may try to become Sylas's mentor on the path — to keep him close
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN DOES ORIN FIND OUT?</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Options:<br>① Combat — he sees Soul Siphon trigger and recognises it<br>② Vaeloran tells him deliberately to divide the party<br>③ Temple of Luminos detects the soul consumption in Sylas's presence<br>④ Sylas tells him himself — the most interesting version</div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.5rem 0 .35rem">THE ENDGAME QUESTION</div>
-          <div style="font-size:12.5px;color:var(--parch2)">Sylas must eventually choose: his own independent lichdom, or becoming Valdris's vessel. This choice defines what kind of lich — and what kind of person — he becomes.</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-sylas" placeholder="DM notes for Sylas lich path..." onchange="saveNote('prep-sylas',this.value)" style="height:70px;margin-top:.5rem"></textarea>
-    </div>
-
-    <!-- TORREN -->
-    <div class="card gold" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🟡 TORREN — Personal Arc</div>
-        <span class="badge b-grey">PENDING BACKSTORY</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT WE KNOW</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Halfling Assassin Rogue, level 5. Wounded Lyssandra. Matilda (horse) escaped north. Backstory TBC from player.</div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">HOOKS READY TO DEPLOY</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Matilda's tracks lead north — toward Aurora Peaks. Could connect to Aurum Dominion or Valdris story. Awaiting backstory to build personal arc.</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-torren" placeholder="Add Torren's backstory notes here when received..." onchange="saveNote('prep-torren',this.value)" style="height:70px;margin-top:.5rem"></textarea>
-    </div>
-
-    <!-- ORIN'S TRIBE -->
-    <div class="card gold" style="margin-bottom:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">🟡 THE STONEMARKED — Orin's Tribe</div>
-        <span class="badge b-gold">SIMMERING</span>
-      </div>
-      <div class="grid-2" style="gap:.75rem">
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">CURRENT SITUATION</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Mountains NE of Duskmere. Naturus corruption pushing up from the marsh below. A rival clan pressing from the north. They are too proud to ask for help. Orin doesn't know any of this yet.</div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHEN THIS BECOMES ACTIVE</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">A Stonemarked warrior arrives in Aeloria — possibly injured, possibly searching for Orin. They don't ask. They state: "Your tribe is dying." Then they leave. Orin decides whether to respond.</div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin:.4rem 0 .25rem">COUNTDOWN</div>
-          <div style="font-size:12.5px;color:var(--parch2)">If ignored for 5 sessions: the Stonemarked are broken by the rival clan. Corruption claims the mountains. A new Naturus shrine is established there.</div>
-        </div>
-      </div>
-      <textarea class="editable-area" id="prep-stonemarked" placeholder="DM notes for Stonemarked arc..." onchange="saveNote('prep-stonemarked',this.value)" style="height:60px;margin-top:.5rem"></textarea>
-    </div>
-
-  </div>
-
-  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of Eldoria 2.0 — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
-</div>
 
 <!-- ============ VAELORAN STAT BLOCK ============ -->
 <div id="panel-vaeloran" class="panel">
@@ -1746,7 +1835,7 @@ const AUTH_DAYS = 30;
 function unlockApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); updateStatusBar();
+  initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); cal_init(); updateStatusBar();
 }
 
 function checkAuth() {
@@ -1810,16 +1899,22 @@ function showPanel(id, btn) {
   try {
     if(id === 'clock') { renderClock(); renderLichClock(); }
     if(id === 'combat' && typeof renderCombat === 'function') renderCombat();
+    if(id === 'sessions' && typeof cal_render === 'function') cal_render();
   } catch(e) { /* don't let a re-render error break navigation */ }
 }
-// Helper for status-bar items: jump to a panel by id without needing the button reference
-function showPanelById(id) {
+// Helper for status-bar items: jump to a panel by id without needing the button reference.
+// Optional subId activates a sub-tab within that panel (e.g. 'now' / 'prep' / 'calendar' / 'recaps').
+function showPanelById(id, subId) {
   const btn = document.querySelector(`.nav-btn[onclick*="'${id}'"]`);
   if(btn) showPanel(id, btn);
+  if(subId) {
+    const subBtn = document.querySelector(`#panel-${id} .tab-btn[onclick*="'${subId}'"]`);
+    if(subBtn) showTab(subId, subBtn);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Live update of the persistent status bar based on current clock values
+// Live update of the persistent status bar based on current clock values + calendar
 function updateStatusBar() {
   const cf = parseInt(localStorage.getItem('eldoria-clock') || '2');
   const lf = parseInt(localStorage.getItem('eldoria-lich') || '2');
@@ -1833,6 +1928,16 @@ function updateStatusBar() {
     const stageLabels = ['Pre-Stage 1','Stage 1','Stage 2','Stage 3 (in progress)','Stage 4','Stage 5','Stage 6','Stage 7','Stage 8 (rite)','Stage 9 (death)','Stage 10 (LICH)'];
     le.textContent = stageLabels[Math.min(lf, 10)];
   }
+  // Calendar (if loaded)
+  try {
+    if (typeof CAL !== 'undefined' && CAL && CAL.days && CAL.days[CAL.current]) {
+      const d = CAL.days[CAL.current];
+      const sd = document.getElementById('status-date');
+      const sw = document.getElementById('status-weather');
+      if (sd) sd.textContent = cal_dateToString(d);
+      if (sw) sw.textContent = cal_weatherSummary(d) || '—';
+    }
+  } catch (e) { /* calendar not ready yet */ }
 }
 
 // TABS
@@ -2116,6 +2221,346 @@ function clearCombat() {
     renderCombat();
     document.getElementById('stat-block-viewer').innerHTML = '<div style="color:var(--parch3);font-style:italic;font-size:13px;padding:.5rem">Select a combatant or add a monster to view its stat block.</div>';
   }
+}
+
+// ============================================================
+// CALENDAR — "Cycle of Lights" (Eldorian calendar)
+// 12 months × 30 days + 5 Sacred Days = 365 days/year
+// 7-day lightweek (anchor: 14 Frostfall 3E 1247 = Stonefast)
+// ============================================================
+const MONTHS = ['Greenwake','Lumineth','Veridantide','Goldfall','Sunheight','Goldwane','Frostfall','Sablemourn','Witherveil','Hollowtide','Starwatch','Iceflow'];
+const WEEKDAYS = ['Daystar','Moonwake','Stonefast','Greentide','Hearthen','Skywatch','Stillday'];
+const SACRED = ['Day of Quiet','Day of Lights','Day of Roots','Day of Coins','Day of Stones'];
+const WEATHER_OPTS = [
+  {v:'Clear', e:'☀'},
+  {v:'Overcast', e:'⛅'},
+  {v:'Light Rain', e:'🌦'},
+  {v:'Heavy Rain', e:'🌧'},
+  {v:'Thunderstorm', e:'⛈'},
+  {v:'Fog', e:'🌫'},
+  {v:'Snow', e:'❄'},
+  {v:'Heatwave', e:'🌡'},
+  {v:'Wind', e:'🌬'},
+  {v:'Other', e:'•'}
+];
+// visibility: 'public' = everyone knows · 'restricted' = scholarly fringe knowledge · 'hidden' = secret (DM only)
+const FESTIVALS = [
+  // Aelorian (human) — all public
+  {month:3, day:1, name:"Crown's Eve", culture:"Aelorian", type:'major', visibility:'public', note:"Aeloria Crossroads' founding day"},
+  {month:1, day:14, name:"Lumineth's Light", culture:"Aelorian", type:'major', visibility:'public', note:"Sun festival mid-spring"},
+  {month:5, day:25, name:"Harvest Reckoning", culture:"Aelorian", type:'minor', visibility:'public', note:"Late-summer harvest closes"},
+  {month:10, day:15, name:"The Long Watch", culture:"Aelorian", type:'minor', visibility:'public', note:"Vigil at the Temple of Luminos"},
+  // Sylvarian (Verdant Expanse) — known to exist, even if outsiders rarely attend
+  {month:2, day:1, name:"Yggdris's Bloom", culture:"Sylvarian", type:'major', visibility:'public', note:"Sacred Aelarion Tree ceremony"},
+  {month:8, day:15, name:"The Silent Tide", culture:"Sylvarian", type:'minor', visibility:'public', note:"Listening to the forest"},
+  // Aurum Dominion — internationally known
+  {month:4, day:7, name:"Imperial Ascension Day", culture:"Aurum Dominion", type:'major', visibility:'public', note:"Emperor's coronation anniversary"},
+  {month:5, day:14, name:"Triumph of the Eagle", culture:"Aurum Dominion", type:'minor', visibility:'public', note:"Heraldic festival"},
+  // Stonemarked (Orin's tribe) — public; Orin completed the rite himself
+  {month:11, day:28, name:"Stoneblood Rite", culture:"Stonemarked", type:'major', visibility:'public', note:"Coming-of-age"},
+  {month:0, day:3, name:"Mountain Wake", culture:"Stonemarked", type:'minor', visibility:'public', note:"Spring thaw celebration"},
+  // Celestial Plateau — major pilgrimage event
+  {month:10, day:15, name:"The Long Night", culture:"Celestial Plateau", type:'major', visibility:'public', note:"Winter solstice"},
+  // Naturus cult — HIDDEN, party doesn't know these exist
+  {month:7, day:1, name:"The Rotmoon", culture:"Naturus cult", type:'hidden', visibility:'hidden', note:"Peak corruption — cult observance"},
+  {month:8, day:27, name:"The Silent Hunger", culture:"Naturus cult", type:'hidden', visibility:'hidden', note:"Cult fasting"},
+  // Sacred Days — the days themselves are public knowledge; one carries restricted scholarly meaning
+  {sacred:0, name:"Day of Quiet", culture:"Universal", type:'sacred', visibility:'public', note:"A day of public stillness across Eldoria"},
+  {sacred:0, name:"Lethraliri Remembrance", culture:"Scholarly / Celestial", type:'sacred', visibility:'restricted', note:"Offerings of ink and salt at the frozen marsh ruins — known only to scholars of the First Age"},
+  {sacred:1, name:"Day of Lights", culture:"Aelorian", type:'sacred', visibility:'public', note:"Universal sacred day"},
+  {sacred:2, name:"Day of Roots", culture:"Sylvarian", type:'sacred', visibility:'public', note:"Sacred grove rites"},
+  {sacred:3, name:"Day of Coins", culture:"Mercantile", type:'sacred', visibility:'public', note:"Trade pact renewals"},
+  {sacred:4, name:"Day of Stones", culture:"Stonemarked", type:'sacred', visibility:'public', note:"Mountain blessing"}
+];
+const CAL_KEY = 'eldoria-calendar';
+const CAL_DEFAULT = {
+  current: 0,
+  knownLocations: ["Aeloria", "Kolt's Depot", "Stillbrook", "Caravan Road", "Ironhold", "Frostwood Marsh", "Verdant Expanse", "Stonemarked", "Aurora Peaks"],
+  days: [
+    {
+      era: 3, year: 1247, month: 6, day: 14, sacredIndex: null,
+      label: "Caravan Day 0 — at Kolt's Depot",
+      party: "Kolt's Depot",
+      weather: [
+        { location: "Kolt's Depot", weather: "Overcast", notes: "Wind picking up from the east" },
+        { location: "Aeloria", weather: "Clear", notes: "" }
+      ]
+    }
+  ]
+};
+let CAL = null;
+
+function cal_load() {
+  try {
+    const raw = localStorage.getItem(CAL_KEY);
+    if (raw) CAL = JSON.parse(raw);
+  } catch(e) {}
+  if (!CAL || !CAL.days || !CAL.days.length) CAL = JSON.parse(JSON.stringify(CAL_DEFAULT));
+  if (CAL.current >= CAL.days.length) CAL.current = CAL.days.length - 1;
+}
+function cal_persist() {
+  try { localStorage.setItem(CAL_KEY, JSON.stringify(CAL)); } catch(e) {}
+}
+function cal_dateToString(d) {
+  if (d.month === 'sacred') return SACRED[d.sacredIndex] + ' · ' + d.era + 'E ' + d.year;
+  return d.day + ' ' + MONTHS[d.month] + ' · ' + d.era + 'E ' + d.year;
+}
+function cal_weekday(d) {
+  // Anchor: 14 Frostfall 3E 1247 = Stonefast (index 2). Sacred days are outside the cycle.
+  if (d.month === 'sacred') return null;
+  const yearLen = 12*30 + 5;
+  const ord = d.year * yearLen + d.month * 30 + (d.day - 1);
+  const anchorOrd = 1247 * yearLen + 6 * 30 + 13;
+  const diff = ord - anchorOrd;
+  return WEEKDAYS[(((2 + diff) % 7) + 7) % 7];
+}
+function cal_festivalsForDate(d) {
+  return FESTIVALS.filter(f => {
+    if (f.sacred !== undefined) return d.month === 'sacred' && f.sacred === d.sacredIndex;
+    if (typeof d.month === 'number' && typeof f.month === 'number') return f.month === d.month && f.day === d.day;
+    return false;
+  });
+}
+function cal_weatherSummary(d) {
+  if (!d.weather || !d.weather.length) return '';
+  const partyW = d.weather.find(w => w.location === d.party) || d.weather[0];
+  const o = WEATHER_OPTS.find(x => x.v === partyW.weather) || { e: '' };
+  return o.e + ' ' + partyW.weather + (partyW.location ? ' (' + partyW.location + ')' : '');
+}
+function cal_save() {
+  if (!CAL) return;
+  const d = CAL.days[CAL.current];
+  const monthSel = document.getElementById('cal-month');
+  if (!monthSel) return;
+  if (monthSel.value === 'sacred') {
+    d.month = 'sacred';
+    d.sacredIndex = parseInt(document.getElementById('cal-sacred').value, 10) || 0;
+    d.day = null;
+  } else {
+    d.month = parseInt(monthSel.value, 10);
+    d.day = Math.max(1, Math.min(30, parseInt(document.getElementById('cal-day').value, 10) || 1));
+    d.sacredIndex = null;
+  }
+  d.year = parseInt(document.getElementById('cal-year').value, 10) || 1247;
+  d.era = 3;
+  d.party = document.getElementById('cal-party').value || '';
+  d.label = document.getElementById('cal-label').value || '';
+  cal_persist();
+  cal_renderTodaySummary();
+  cal_renderDayLog();
+  updateStatusBar();
+}
+function cal_advance() {
+  if (!CAL) return;
+  cal_save();
+  const cur = CAL.days[CAL.current];
+  const nx = {
+    era: cur.era, year: cur.year, month: cur.month, day: cur.day, sacredIndex: cur.sacredIndex,
+    label: '', party: cur.party,
+    weather: (cur.weather || []).map(w => ({ location: w.location, weather: w.weather, notes: '' }))
+  };
+  if (nx.month === 'sacred') {
+    if (nx.sacredIndex < 4) {
+      nx.sacredIndex += 1;
+    } else {
+      nx.month = 0; nx.day = 1; nx.sacredIndex = null; nx.year += 1;
+    }
+  } else {
+    if (nx.day < 30) nx.day += 1;
+    else if (nx.month < 11) { nx.month += 1; nx.day = 1; }
+    else { nx.month = 'sacred'; nx.sacredIndex = 0; nx.day = null; }
+  }
+  CAL.days.push(nx);
+  CAL.current = CAL.days.length - 1;
+  cal_persist();
+  cal_render();
+  updateStatusBar();
+}
+function cal_addWeatherRow() {
+  if (!CAL) return;
+  const d = CAL.days[CAL.current];
+  d.weather = d.weather || [];
+  d.weather.push({ location: d.party || '', weather: 'Clear', notes: '' });
+  cal_persist();
+  cal_renderWeatherRows();
+  updateStatusBar();
+}
+function cal_renderWeatherRows() {
+  const wrap = document.getElementById('cal-weather-rows');
+  if (!wrap || !CAL) return;
+  const d = CAL.days[CAL.current];
+  wrap.innerHTML = '';
+  (d.weather || []).forEach((w, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:.4rem;margin-bottom:.4rem;align-items:center';
+    const locInput = document.createElement('input');
+    locInput.type = 'text'; locInput.value = w.location || ''; locInput.placeholder = 'Location';
+    locInput.style.cssText = 'width:100%;padding:.25rem';
+    locInput.setAttribute('list', 'cal-locations-list');
+    locInput.oninput = () => { w.location = locInput.value; cal_persist(); updateStatusBar(); };
+    const wSel = document.createElement('select');
+    wSel.style.cssText = 'width:100%;padding:.25rem';
+    WEATHER_OPTS.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt.v; o.textContent = opt.e + ' ' + opt.v;
+      wSel.appendChild(o);
+    });
+    wSel.value = w.weather || 'Clear';
+    wSel.onchange = () => { w.weather = wSel.value; cal_persist(); updateStatusBar(); cal_renderTodaySummary(); };
+    const notes = document.createElement('input');
+    notes.type = 'text'; notes.value = w.notes || ''; notes.placeholder = 'Notes (optional)';
+    notes.style.cssText = 'width:100%;padding:.25rem';
+    notes.oninput = () => { w.notes = notes.value; cal_persist(); };
+    const rm = document.createElement('button');
+    rm.textContent = '✕'; rm.className = 'action-btn';
+    rm.title = 'Remove this observation';
+    rm.onclick = () => { d.weather.splice(idx, 1); cal_persist(); cal_renderWeatherRows(); updateStatusBar(); };
+    row.appendChild(locInput); row.appendChild(wSel); row.appendChild(notes); row.appendChild(rm);
+    wrap.appendChild(row);
+  });
+}
+function cal_renderTodaySummary() {
+  if (!CAL) return;
+  const d = CAL.days[CAL.current];
+  const summary = document.getElementById('cal-today-summary');
+  const weatherSummary = document.getElementById('cal-today-weather');
+  const wd = cal_weekday(d);
+  if (summary) summary.textContent = cal_dateToString(d) + (wd ? ' · ' + wd : '');
+  if (weatherSummary) weatherSummary.textContent = cal_weatherSummary(d) || '—';
+  const monthSel = document.getElementById('cal-month');
+  const daySel = document.getElementById('cal-day');
+  const yearInp = document.getElementById('cal-year');
+  const sacredSel = document.getElementById('cal-sacred');
+  const partyInp = document.getElementById('cal-party');
+  const labelInp = document.getElementById('cal-label');
+  const wkfest = document.getElementById('cal-weekday-festival');
+  if (!monthSel) return; // tab not yet rendered
+  if (d.month === 'sacred') {
+    monthSel.value = 'sacred';
+    sacredSel.value = String(d.sacredIndex);
+    sacredSel.style.display = '';
+    daySel.style.display = 'none';
+  } else {
+    monthSel.value = String(d.month);
+    daySel.value = d.day;
+    sacredSel.style.display = 'none';
+    daySel.style.display = '';
+  }
+  yearInp.value = d.year;
+  partyInp.value = d.party || '';
+  labelInp.value = d.label || '';
+  const fests = cal_festivalsForDate(d);
+  if (wkfest) {
+    // Build HTML so we can colour the visibility badges
+    let html = (wd || '(Sacred Day)');
+    if (fests.length) {
+      const festHTML = fests.map(f => cal_festivalBadge(f, true)).join(' · ');
+      html += ' · ' + festHTML;
+    }
+    wkfest.innerHTML = html;
+  }
+  cal_renderWeatherRows();
+}
+
+// Build a styled festival badge — visibility-aware
+function cal_festivalBadge(f, includeNote) {
+  const vis = f.visibility || 'public';
+  const noteSuffix = (includeNote && f.note) ? (' — ' + f.note) : '';
+  const cultureLine = ' (' + (f.culture || '') + ')';
+  if (vis === 'hidden') {
+    return '<span style="display:inline-block;background:rgba(122,26,26,0.35);border:1px solid var(--red2,#c44848);color:#f4c4c4;padding:1px 6px;border-radius:3px;font-size:11.5px;margin:1px 0">🔒 ' + cal_escape(f.name) + cal_escape(cultureLine) + ' <strong style="font-size:10px;letter-spacing:.5px">· DM ONLY</strong>' + cal_escape(noteSuffix) + '</span>';
+  }
+  if (vis === 'restricted') {
+    return '<span style="display:inline-block;background:rgba(160,128,64,0.18);border:1px solid var(--gold2,#c9a84c);color:var(--gold2,#c9a84c);padding:1px 6px;border-radius:3px;font-size:11.5px;margin:1px 0">🔍 ' + cal_escape(f.name) + cal_escape(cultureLine) + ' <strong style="font-size:10px;letter-spacing:.5px">· SCHOLARLY</strong>' + cal_escape(noteSuffix) + '</span>';
+  }
+  return '🎉 ' + cal_escape(f.name) + cal_escape(cultureLine) + cal_escape(noteSuffix);
+}
+function cal_escape(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+}
+function cal_renderDayLog() {
+  const log = document.getElementById('cal-day-log');
+  if (!log || !CAL) return;
+  log.innerHTML = '';
+  for (let i = CAL.days.length - 1; i >= 0; i--) {
+    const d = CAL.days[i];
+    const det = document.createElement('details');
+    det.style.cssText = 'background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.25);border-radius:3px;padding:.5rem .75rem;margin-bottom:.5rem';
+    if (i === CAL.current) det.open = true;
+    const sum = document.createElement('summary');
+    const fests = cal_festivalsForDate(d);
+    // Summary tag: hidden festivals show 🔒 (DM glance-warning), restricted show 🔍, public show 🎉
+    let festTag = '';
+    if (fests.length) {
+      const worst = fests.some(f => f.visibility === 'hidden') ? '🔒' :
+                    fests.some(f => f.visibility === 'restricted') ? '🔍' : '🎉';
+      festTag = ' ' + worst;
+    }
+    const todayBadge = (i === CAL.current) ? ' <span class="badge b-gold">today</span>' : '';
+    sum.innerHTML = '<strong>' + cal_escape(cal_dateToString(d)) + '</strong>' + festTag + ' &middot; ' + cal_escape(d.party || '—') + ' &middot; <span style="color:var(--parch3)">' + cal_escape(cal_weatherSummary(d)) + '</span>' + todayBadge;
+    sum.style.cssText = 'cursor:pointer';
+    det.appendChild(sum);
+    const body = document.createElement('div');
+    body.style.cssText = 'margin-top:.4rem;font-size:12.5px;color:var(--parch2);line-height:1.6';
+    let bodyHTML = '';
+    if (d.label) bodyHTML += '<em>' + cal_escape(d.label) + '</em><br>';
+    bodyHTML += (d.weather || []).map(w => {
+      const e = (WEATHER_OPTS.find(x => x.v === w.weather) || {e:''}).e;
+      return cal_escape(e + ' ' + (w.weather || '') + (w.location ? ' at ' + w.location : '') + (w.notes ? ' — ' + w.notes : ''));
+    }).join('<br>');
+    if (fests.length) {
+      bodyHTML += '<br><strong style="color:var(--gold2)">Festival:</strong> ' + fests.map(f => cal_festivalBadge(f, true)).join(' &nbsp; ');
+    }
+    body.innerHTML = bodyHTML;
+    if (i !== CAL.current) {
+      const btnWrap = document.createElement('div');
+      btnWrap.style.cssText = 'margin-top:.5rem;display:flex;gap:.4rem';
+      const setBtn = document.createElement('button');
+      setBtn.textContent = 'Set as Today'; setBtn.className = 'action-btn';
+      setBtn.onclick = () => { CAL.current = i; cal_persist(); cal_render(); updateStatusBar(); };
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑 Delete'; delBtn.className = 'action-btn';
+      delBtn.onclick = () => {
+        if (!confirm('Delete this day from the log?')) return;
+        CAL.days.splice(i, 1);
+        if (CAL.current >= CAL.days.length) CAL.current = CAL.days.length - 1;
+        cal_persist(); cal_render(); updateStatusBar();
+      };
+      btnWrap.appendChild(setBtn); btnWrap.appendChild(delBtn);
+      body.appendChild(btnWrap);
+    }
+    det.appendChild(body);
+    log.appendChild(det);
+  }
+}
+function cal_render() {
+  cal_renderTodaySummary();
+  cal_renderDayLog();
+}
+function cal_init() {
+  cal_load();
+  // Populate location datalist
+  const dl = document.getElementById('cal-locations-list');
+  if (dl) {
+    dl.innerHTML = '';
+    (CAL.knownLocations || []).forEach(l => {
+      const o = document.createElement('option');
+      o.value = l;
+      dl.appendChild(o);
+    });
+  }
+  // Wire month selector to toggle Sacred Day mode
+  const monthSel = document.getElementById('cal-month');
+  if (monthSel) {
+    monthSel.onchange = () => {
+      const isS = monthSel.value === 'sacred';
+      const sacredSel = document.getElementById('cal-sacred');
+      const daySel = document.getElementById('cal-day');
+      if (sacredSel) sacredSel.style.display = isS ? '' : 'none';
+      if (daySel) daySel.style.display = isS ? 'none' : '';
+    };
+  }
+  cal_render();
 }
 
 // NOTES
