@@ -642,7 +642,10 @@ function closePanel() {
     '.calibrate-mode .hotspot.region{border-color:rgba(100,200,255,0.85) !important;background:rgba(100,200,255,0.15) !important}',
     '.calibrate-mode .hotspot.dragging{outline:3px solid #fff !important;z-index:1000}',
     '.calibrate-mode .hotspot-label{color:rgba(255,255,255,0.95) !important;font-size:10px !important;text-shadow:0 1px 3px rgba(0,0,0,0.95) !important}',
-    '.calibrate-mode .cal-coord-tag{position:absolute;top:-22px;left:0;background:rgba(0,0,0,0.85);color:#ffd060;font-size:10px;font-family:monospace;padding:1px 5px;border-radius:2px;white-space:nowrap;pointer-events:none}',
+    '.calibrate-mode .cal-coord-tag{position:absolute;top:-22px;left:0;background:rgba(0,0,0,0.85);color:#ffd060;font-size:10px;font-family:monospace;padding:1px 5px;border-radius:2px;white-space:nowrap;pointer-events:none;z-index:11}',
+    '.calibrate-mode .cal-resize-handle{position:absolute;right:-6px;bottom:-6px;width:12px;height:12px;background:#ffd060;border:2px solid #1a1208;border-radius:2px;cursor:nwse-resize;z-index:12;box-shadow:0 1px 3px rgba(0,0,0,0.6)}',
+    '.calibrate-mode .cal-resize-handle:hover{background:#fff;transform:scale(1.3)}',
+    '.calibrate-mode .hotspot.resizing{outline:3px solid #fff !important;outline-style:dotted !important;z-index:1000}',
     '#cal-toolbar{position:fixed;bottom:18px;right:18px;background:rgba(20,15,8,0.97);border:2px solid #ffd060;border-radius:6px;padding:12px;color:#f4edd8;font-family:Cinzel,serif;font-size:11px;z-index:9999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.6)}',
     '#cal-toolbar h3{color:#ffd060;font-size:13px;margin-bottom:6px;letter-spacing:1.5px}',
     '#cal-toolbar .cal-row{margin:6px 0}',
@@ -660,7 +663,7 @@ function closePanel() {
   toolbar.id = 'cal-toolbar';
   toolbar.innerHTML =
     '<h3>🛠 CALIBRATION MODE</h3>' +
-    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Drag any hotspot. Yellow = city, blue = region. Positions auto-save.</div>' +
+    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Drag body to move · drag bottom-right corner to resize. Yellow = city, blue = region. Auto-saves.</div>' +
     '<div class="cal-row">' +
       '<label><input type="checkbox" id="cal-show-regions" checked> Regions</label> &nbsp; ' +
       '<label><input type="checkbox" id="cal-show-cities" checked> Cities</label>' +
@@ -694,7 +697,7 @@ function closePanel() {
     });
   }
 
-  // Set up dragging on every hotspot
+  // Set up move + resize on every hotspot
   document.querySelectorAll('.hotspot').forEach(function(h){
     var key = extractHotspotKey(h);
     if (!key) return;
@@ -707,9 +710,20 @@ function closePanel() {
     var tag = document.createElement('div');
     tag.className = 'cal-coord-tag';
     h.appendChild(tag);
+
+    // Add resize handle (bottom-right corner)
+    var handle = document.createElement('div');
+    handle.className = 'cal-resize-handle';
+    handle.title = 'Drag to resize';
+    h.appendChild(handle);
+
     updateTag(h, tag);
 
+    // === MOVE: drag the hotspot body ===
     h.addEventListener('mousedown', function(e){
+      // Ignore mousedowns that originated on the resize handle (it has its own handler below)
+      if (e.target === handle) return;
+      // Only initiate a move from the hotspot body itself (or its label / coord tag)
       if (e.target !== h && e.target.classList && !e.target.classList.contains('cal-coord-tag') && !e.target.classList.contains('hotspot-label')) return;
       e.preventDefault();
       var wrapper = document.getElementById('map-wrapper');
@@ -739,11 +753,44 @@ function closePanel() {
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     });
+
+    // === RESIZE: drag the bottom-right handle ===
+    handle.addEventListener('mousedown', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var wrapper = document.getElementById('map-wrapper');
+      var wrapRect = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      // Anchor: the hotspot's top-left stays where it is, mouse drives bottom-right
+      var leftPx = hRect.left - wrapRect.left;
+      var topPx  = hRect.top  - wrapRect.top;
+      h.classList.add('resizing');
+
+      function onMove(ev){
+        var newRightPx  = ev.clientX - wrapRect.left;
+        var newBottomPx = ev.clientY - wrapRect.top;
+        var widthPct  = ((newRightPx  - leftPx) / wrapRect.width)  * 100;
+        var heightPct = ((newBottomPx - topPx)  / wrapRect.height) * 100;
+        widthPct  = Math.max(1, Math.min(100, widthPct));
+        heightPct = Math.max(1, Math.min(100, heightPct));
+        h.style.width  = widthPct.toFixed(1)  + '%';
+        h.style.height = heightPct.toFixed(1) + '%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        h.classList.remove('resizing');
+        saveOne(key, h);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
   });
 
   function updateTag(h, tag) {
     var key = extractHotspotKey(h);
-    tag.textContent = (key || '?') + ' · L:' + h.style.left + ' T:' + h.style.top;
+    tag.textContent = (key || '?') + ' · L:' + h.style.left + ' T:' + h.style.top + ' W:' + h.style.width + ' H:' + h.style.height;
   }
 
   function saveOne(key, h) {
