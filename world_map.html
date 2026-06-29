@@ -92,14 +92,17 @@ body.player-mode .player-only.inline{display:inline}
   <div class="legend-item" onclick="showLocation('verdant_expanse')"><div class="legend-dot" style="background:#3a6a2a"></div>Verdant Expanse</div>
   <div class="legend-item" onclick="showLocation('frostwood_marsh')"><div class="legend-dot" style="background:#5a4a2a"></div>Frostwood Marsh</div>
   <div class="legend-item" onclick="showLocation('celestial_plateau')"><div class="legend-dot" style="background:#3a6a8a"></div>Celestial Plateau</div>
-  <div class="legend-item" onclick="showLocation('crimson_desert')"><div class="legend-dot" style="background:#a0501a"></div>Crimson Desert</div>
+  <div class="legend-item" onclick="showLocation('crimson_desert')"><div class="legend-dot" style="background:#a0501a"></div>Ember Wastes</div>
   <div class="legend-item" onclick="showLocation('serpent_isles')"><div class="legend-dot" style="background:#6a8a5a"></div>Serpent Isles</div>
   <div class="legend-item" onclick="showLocation('stonemarked')"><div class="legend-dot" style="background:#6a5a4a"></div>Stonemarked Mountains</div>
 </div>
 
 <!-- MAP WITH HOTSPOTS -->
 <div class="map-wrapper" id="map-wrapper">
-  <img class="map-img" src="world_map.jpg" alt="Eldoria world map" id="map-img" onerror="document.getElementById('no-image').style.display='block';this.style.display='none'">
+  <!-- DM view: shows all cities baked into the image -->
+  <img class="map-img dm-only" src="world_map_dm.jpg" alt="Eldoria world map (DM)" id="map-img-dm" onerror="document.getElementById('no-image').style.display='block';this.style.display='none'">
+  <!-- Player view: shows only the cities the party has been to -->
+  <img class="map-img player-only" src="world_map_player.jpg" alt="Eldoria world map" id="map-img-player" onerror="document.getElementById('no-image').style.display='block';this.style.display='none'">
   <div class="no-image-fallback" id="no-image">⚠ <code>world_map.jpg</code> not found in the repository yet. Save the world map image as <code>world_map.jpg</code> in the same folder as this file and push it to GitHub. The hotspots below are positioned for the campaign map.</div>
 
   <!-- REGION HOTSPOTS (percentage-based for responsiveness) -->
@@ -138,51 +141,51 @@ body.player-mode .player-only.inline{display:inline}
     <div class="hotspot-label">Celestial Plateau</div>
   </div>
 
-  <!-- Crimson Desert -->
-  <div class="hotspot region" style="left:68%;top:50%;width:32%;height:50%" onclick="showLocation('crimson_desert')" title="Crimson Desert">
-    <div class="hotspot-label">Crimson Desert</div>
+  <!-- Ember Wastes -->
+  <div class="hotspot region" style="left:68%;top:50%;width:32%;height:50%" onclick="showLocation('crimson_desert')" title="Ember Wastes">
+    <div class="hotspot-label">Ember Wastes</div>
   </div>
 
   <!-- CITY HOTSPOTS — Aelorian Territories -->
   <div class="hotspot city" style="left:64%;top:44%;width:6%;height:6%" onclick="showLocation('aeloria_city')" title="Aeloria Crossroads">
     <div class="hotspot-label" style="font-size:8px;top:115%">Aeloria</div>
   </div>
-  <div class="hotspot city" style="left:35%;top:34%;width:6%;height:6%" onclick="showLocation('duskmere')" title="Duskmere">
+  <div class="hotspot city dm-only" style="left:35%;top:34%;width:6%;height:6%" onclick="showLocation('duskmere')" title="Duskmere">
     <div class="hotspot-label" style="font-size:8px;top:115%">Duskmere</div>
   </div>
-  <div class="hotspot city" style="left:67%;top:29%;width:6%;height:6%" onclick="showLocation('stonegate')" title="Stonegate">
+  <div class="hotspot city dm-only" style="left:67%;top:29%;width:6%;height:6%" onclick="showLocation('stonegate')" title="Stonegate">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stonegate</div>
   </div>
-  <div class="hotspot city" style="left:54%;top:26%;width:6%;height:6%" onclick="showLocation('silverbrook')" title="Silverbrook">
+  <div class="hotspot city dm-only" style="left:54%;top:26%;width:6%;height:6%" onclick="showLocation('silverbrook')" title="Silverbrook">
     <div class="hotspot-label" style="font-size:8px;top:115%">Silverbrook</div>
   </div>
-  <div class="hotspot city" style="left:54%;top:58%;width:6%;height:6%" onclick="showLocation('ironhold')" title="Ironhold">
+  <div class="hotspot city dm-only" style="left:54%;top:58%;width:6%;height:6%" onclick="showLocation('ironhold')" title="Ironhold">
     <div class="hotspot-label" style="font-size:8px;top:115%">Ironhold</div>
   </div>
-  <div class="hotspot city" style="left:81%;top:49%;width:6%;height:6%" onclick="showLocation('crimson_outpost')" title="Crimson Outpost">
+  <div class="hotspot city dm-only" style="left:81%;top:49%;width:6%;height:6%" onclick="showLocation('crimson_outpost')" title="Crimson Outpost">
     <div class="hotspot-label" style="font-size:8px;top:115%">Crimson Outpost</div>
   </div>
 
   <!-- CITY HOTSPOTS — Aurora Peaks -->
-  <div class="hotspot city" style="left:73%;top:18%;width:5%;height:5%" onclick="showLocation('auranova')" title="Auranova">
+  <div class="hotspot city dm-only" style="left:73%;top:18%;width:5%;height:5%" onclick="showLocation('auranova')" title="Auranova">
     <div class="hotspot-label" style="font-size:8px;top:115%">Auranova</div>
   </div>
-  <div class="hotspot city" style="left:74%;top:7%;width:5%;height:5%" onclick="showLocation('eclipsia')" title="Eclipsia">
+  <div class="hotspot city dm-only" style="left:74%;top:7%;width:5%;height:5%" onclick="showLocation('eclipsia')" title="Eclipsia">
     <div class="hotspot-label" style="font-size:8px;top:115%">Eclipsia</div>
   </div>
-  <div class="hotspot city" style="left:80%;top:15%;width:5%;height:5%" onclick="showLocation('crystalholm')" title="Crystalholm">
+  <div class="hotspot city dm-only" style="left:80%;top:15%;width:5%;height:5%" onclick="showLocation('crystalholm')" title="Crystalholm">
     <div class="hotspot-label" style="font-size:8px;top:115%">Crystalholm</div>
   </div>
-  <div class="hotspot city" style="left:90%;top:2%;width:5%;height:5%" onclick="showLocation('auroras_rest')" title="Aurora's Rest">
+  <div class="hotspot city dm-only" style="left:90%;top:2%;width:5%;height:5%" onclick="showLocation('auroras_rest')" title="Aurora's Rest">
     <div class="hotspot-label" style="font-size:8px;top:115%">Aurora's Rest</div>
   </div>
-  <div class="hotspot city" style="left:90%;top:9%;width:5%;height:5%" onclick="showLocation('lunara_monastery')" title="Lunara Monastery">
+  <div class="hotspot city dm-only" style="left:90%;top:9%;width:5%;height:5%" onclick="showLocation('lunara_monastery')" title="Lunara Monastery">
     <div class="hotspot-label" style="font-size:8px;top:115%">Lunara Monastery</div>
   </div>
-  <div class="hotspot city" style="left:91%;top:19%;width:5%;height:5%" onclick="showLocation('stellara')" title="Stellara">
+  <div class="hotspot city dm-only" style="left:91%;top:19%;width:5%;height:5%" onclick="showLocation('stellara')" title="Stellara">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stellara</div>
   </div>
-  <div class="hotspot city" style="left:60%;top:10%;width:5%;height:5%" onclick="showLocation('starryhaven')" title="Starryhaven">
+  <div class="hotspot city dm-only" style="left:60%;top:10%;width:5%;height:5%" onclick="showLocation('starryhaven')" title="Starryhaven">
     <div class="hotspot-label" style="font-size:8px;top:115%">Starryhaven</div>
   </div>
 
@@ -201,25 +204,22 @@ body.player-mode .player-only.inline{display:inline}
   </div>
 
   <!-- CITY HOTSPOTS — Celestial Plateau -->
-  <div class="hotspot city" style="left:52%;top:78%;width:5%;height:5%" onclick="showLocation('stellargrove')" title="Stellargrove">
+  <div class="hotspot city dm-only" style="left:52%;top:78%;width:5%;height:5%" onclick="showLocation('stellargrove')" title="Stellargrove">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stellargrove</div>
   </div>
-  <div class="hotspot city" style="left:54%;top:88%;width:5%;height:5%" onclick="showLocation('astronhold')" title="Astronhold">
+  <div class="hotspot city dm-only" style="left:54%;top:88%;width:5%;height:5%" onclick="showLocation('astronhold')" title="Astronhold">
     <div class="hotspot-label" style="font-size:8px;top:115%">Astronhold</div>
   </div>
 
   <!-- CITY HOTSPOTS — Serpent Isles -->
-  <div class="hotspot city" style="left:7%;top:6%;width:5%;height:5%" onclick="showLocation('skullport')" title="Skullport">
+  <div class="hotspot city dm-only" style="left:7%;top:6%;width:5%;height:5%" onclick="showLocation('skullport')" title="Skullport">
     <div class="hotspot-label" style="font-size:8px;top:115%">Skullport</div>
   </div>
-  <div class="hotspot city" style="left:15%;top:15%;width:5%;height:5%" onclick="showLocation('coral_cove')" title="Coral Cove">
+  <div class="hotspot city dm-only" style="left:15%;top:15%;width:5%;height:5%" onclick="showLocation('coral_cove')" title="Coral Cove">
     <div class="hotspot-label" style="font-size:8px;top:115%">Coral Cove</div>
   </div>
-  <div class="hotspot city" style="left:27%;top:9%;width:5%;height:5%" onclick="showLocation('port_blackfin')" title="Port Blackfin">
+  <div class="hotspot city dm-only" style="left:27%;top:9%;width:5%;height:5%" onclick="showLocation('port_blackfin')" title="Port Blackfin">
     <div class="hotspot-label" style="font-size:8px;top:115%">Port Blackfin</div>
-  </div>
-  <div class="hotspot city" style="left:19%;top:26%;width:5%;height:5%" onclick="showLocation('scaleheart')" title="Scaleheart Brood">
-    <div class="hotspot-label" style="font-size:8px;top:115%">Scaleheart</div>
   </div>
 
 </div>
@@ -333,7 +333,7 @@ body.player-mode .player-only.inline{display:inline}
   <!-- CRIMSON DESERT / EMBER WASTES -->
   <div class="panel-card" id="loc-crimson_desert">
     <div class="panel-header">
-      <div><div class="panel-name">Crimson Desert / Ember Wastes</div><div class="panel-sub">Nomadic confederacies · Sandship caravans</div></div>
+      <div><div class="panel-name">Ember Wastes / Ember Wastes</div><div class="panel-sub">Nomadic confederacies · Sandship caravans</div></div>
       <button class="close-btn" onclick="closePanel()">×</button>
     </div>
     <div class="panel-grid">
@@ -341,7 +341,7 @@ body.player-mode .player-only.inline{display:inline}
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Harsh red sands and shifting dunes. Towering mesas and rugged canyons. Ancient ruins of long-collapsed civilisations buried beneath. The desert is unforgiving; the Nomads of the Ember Wastes have adapted — they travel in great sandship caravans across the dunes.</div></div>
         <div class="panel-section player-only"><div class="section-label">Major Camps</div><div class="section-body"><strong>Emberhold</strong> · <strong>Duneclaw Oasis</strong> · <strong>Sandshroud Outpost</strong></div></div>
         <div class="panel-section dm-only"><div class="section-label">Major Camps</div><div class="section-body"><strong>Emberhold</strong> (largest central camp, trade and storytelling) · <strong>Duneclaw Oasis</strong> (water festival) · <strong>Sandshroud Outpost</strong> (border lookout)</div></div>
-        <div class="panel-section dm-only"><div class="section-label">Religion</div><div class="section-body">Revere <strong>Sylvana</strong> (wind, travel) and <strong>Solara</strong> (sun, life). The deeper Crimson Desert holds tombs of <strong>Mor'nyx</strong> — the death-god's keepers maintain them.</div></div>
+        <div class="panel-section dm-only"><div class="section-label">Religion</div><div class="section-body">Revere <strong>Sylvana</strong> (wind, travel) and <strong>Solara</strong> (sun, life). The deeper Ember Wastes holds tombs of <strong>Mor'nyx</strong> — the death-god's keepers maintain them.</div></div>
       </div>
       <div>
         <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-grey">Unvisited</span></div></div>
@@ -451,7 +451,7 @@ body.player-mode .player-only.inline{display:inline}
       <div><div class="panel-name">Crimson Outpost</div><div class="panel-sub">Trade caravan point · Desert border</div></div>
       <button class="close-btn" onclick="closePanel()">×</button>
     </div>
-    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Along the border with the Crimson Desert. A vital trade caravan stop and a buffer against desert threats. Sandships occasionally dock here from the Ember Wastes.</div></div>
+    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Along the border with the Ember Wastes. A vital trade caravan stop and a buffer against desert threats. Sandships occasionally dock here from the Ember Wastes.</div></div>
   </div>
 
   <!-- ============ AURORA PEAKS CITIES ============ -->
@@ -546,10 +546,9 @@ body.player-mode .player-only.inline{display:inline}
     <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The Confederacy's most active free port. Taverns, markets, recruitment yards. If you want passage across the Azure Sea on a ship that doesn't ask questions, this is where you book it.</div></div>
   </div>
 
-  <div class="panel-card" id="loc-scaleheart">
-    <div class="panel-header"><div><div class="panel-name">Scaleheart Brood</div><div class="panel-sub">Lizardfolk clan home · Harmonious · Sea-connected</div></div><button class="close-btn" onclick="closePanel()">×</button></div>
-    <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Home of the Scaleheart Brood — one of the eleven lizardfolk clans. Led by <strong>Matriarch Nalara Scaleheart</strong>; her mate <strong>Drogan</strong> is the brood's hunter and scout. Harmonious with nature, deeply connected to the sea.</div></div>
-  </div>
+  <!-- Scaleheart Brood panel removed — that location was from a previous
+       campaign and is no longer on the map. The clan still exists in lore
+       (referenced in the Serpent Isles regional info). -->
 
 </div><!-- end info-panel -->
 
@@ -587,6 +586,202 @@ function showLocation(id) {
 function closePanel() {
   document.querySelectorAll('.panel-card').forEach(function(p){ p.classList.remove('active'); });
 }
+
+// ===================================================================
+// CALIBRATION MODE — activated by ?calibrate URL parameter (DM only)
+// Drag any hotspot to reposition; positions auto-save to localStorage.
+// Click "Export" to copy a position dump to bake back into source.
+// ===================================================================
+(function calibrationMode(){
+  var isCal = /[?&]calibrate(=|&|$)/.test(location.search);
+  var isPlayer = /[?&]player(=|&|$)/.test(location.search);
+  if (isCal && isPlayer) return; // calibration is DM-only
+
+  var CAL_KEY = 'eldoria-map-calibration';
+
+  function loadSaved() {
+    try {
+      var raw = localStorage.getItem(CAL_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e) { return {}; }
+  }
+  function saveAll(data) {
+    try { localStorage.setItem(CAL_KEY, JSON.stringify(data)); } catch(e){}
+  }
+
+  // Always apply saved positions when the page loads (so calibrated layout sticks
+  // even outside calibration mode for preview), unless ?nocal is passed.
+  var saved = loadSaved();
+  var noCal = /[?&]nocal(=|&|$)/.test(location.search);
+  if (!noCal) {
+    document.querySelectorAll('.hotspot').forEach(function(h){
+      var key = extractHotspotKey(h);
+      if (key && saved[key]) {
+        var p = saved[key];
+        if (p.left  !== undefined) h.style.left   = p.left  + '%';
+        if (p.top   !== undefined) h.style.top    = p.top   + '%';
+        if (p.width !== undefined) h.style.width  = p.width + '%';
+        if (p.height!== undefined) h.style.height = p.height+ '%';
+      }
+    });
+  }
+
+  function extractHotspotKey(h) {
+    var oc = h.getAttribute('onclick') || '';
+    var m = oc.match(/showLocation\('([^']+)'\)/);
+    return m ? m[1] : null;
+  }
+
+  if (!isCal) return; // not in calibration mode — just apply saved positions and bail
+
+  // === CALIBRATION UI BEGINS ===
+  document.documentElement.classList.add('calibrate-mode');
+  var style = document.createElement('style');
+  style.textContent = [
+    '.calibrate-mode .hotspot{border:2px dashed rgba(255,200,0,0.85) !important;background:rgba(255,200,0,0.18) !important;cursor:move !important;z-index:10}',
+    '.calibrate-mode .hotspot.region{border-color:rgba(100,200,255,0.85) !important;background:rgba(100,200,255,0.15) !important}',
+    '.calibrate-mode .hotspot.dragging{outline:3px solid #fff !important;z-index:1000}',
+    '.calibrate-mode .hotspot-label{color:rgba(255,255,255,0.95) !important;font-size:10px !important;text-shadow:0 1px 3px rgba(0,0,0,0.95) !important}',
+    '.calibrate-mode .cal-coord-tag{position:absolute;top:-22px;left:0;background:rgba(0,0,0,0.85);color:#ffd060;font-size:10px;font-family:monospace;padding:1px 5px;border-radius:2px;white-space:nowrap;pointer-events:none}',
+    '#cal-toolbar{position:fixed;bottom:18px;right:18px;background:rgba(20,15,8,0.97);border:2px solid #ffd060;border-radius:6px;padding:12px;color:#f4edd8;font-family:Cinzel,serif;font-size:11px;z-index:9999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.6)}',
+    '#cal-toolbar h3{color:#ffd060;font-size:13px;margin-bottom:6px;letter-spacing:1.5px}',
+    '#cal-toolbar .cal-row{margin:6px 0}',
+    '#cal-toolbar button{background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;font-size:10px;letter-spacing:.8px;cursor:pointer;margin:2px 2px 2px 0}',
+    '#cal-toolbar button:hover{background:#ffd060;color:#1a1208}',
+    '#cal-export-pane{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:80vw;max-width:720px;height:70vh;background:#1a1208;border:2px solid #ffd060;border-radius:6px;z-index:10000;padding:20px;color:#f4edd8;font-family:monospace;flex-direction:column}',
+    '#cal-export-pane.open{display:flex}',
+    '#cal-export-pane textarea{flex:1;background:#0a0805;color:#a0d4c4;border:1px solid #5a4820;padding:10px;font-family:Consolas,monospace;font-size:11px;line-height:1.5;border-radius:3px;resize:none;margin-top:10px}',
+    '#cal-status{font-family:Cinzel,serif;font-size:10px;color:#a0d4c4;margin-top:6px}'
+  ].join('\n');
+  document.head.appendChild(style);
+
+  // Build toolbar
+  var toolbar = document.createElement('div');
+  toolbar.id = 'cal-toolbar';
+  toolbar.innerHTML =
+    '<h3>🛠 CALIBRATION MODE</h3>' +
+    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Drag any hotspot. Yellow = city, blue = region. Positions auto-save.</div>' +
+    '<div class="cal-row">' +
+      '<label><input type="checkbox" id="cal-show-regions" checked> Regions</label> &nbsp; ' +
+      '<label><input type="checkbox" id="cal-show-cities" checked> Cities</label>' +
+    '</div>' +
+    '<div class="cal-row">' +
+      '<button onclick="calExport()">📋 Export</button>' +
+      '<button onclick="calReset()">↺ Reset all</button>' +
+      '<button onclick="window.location.href=location.pathname">Exit</button>' +
+    '</div>' +
+    '<div id="cal-status">Ready. <span id="cal-saved-count">0</span> hotspots calibrated.</div>';
+  document.body.appendChild(toolbar);
+
+  // Build export pane
+  var pane = document.createElement('div');
+  pane.id = 'cal-export-pane';
+  pane.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:#ffd060;font-family:Cinzel,serif;font-size:14px;letter-spacing:1.5px">CALIBRATED POSITIONS — paste this back to Claude</h3><button onclick="document.getElementById(\'cal-export-pane\').classList.remove(\'open\')" style="background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;cursor:pointer">✕ Close</button></div>' +
+    '<textarea id="cal-export-text" readonly></textarea>' +
+    '<div style="font-size:11px;color:#c0a870;margin-top:8px">Triple-click in the text area to select all, then copy.</div>';
+  document.body.appendChild(pane);
+
+  // Visibility filter checkboxes
+  document.getElementById('cal-show-regions').addEventListener('change', applyVisibility);
+  document.getElementById('cal-show-cities').addEventListener('change', applyVisibility);
+  function applyVisibility() {
+    var showR = document.getElementById('cal-show-regions').checked;
+    var showC = document.getElementById('cal-show-cities').checked;
+    document.querySelectorAll('.hotspot').forEach(function(h){
+      var isRegion = h.classList.contains('region');
+      h.style.display = ((isRegion && showR) || (!isRegion && showC)) ? '' : 'none';
+    });
+  }
+
+  // Set up dragging on every hotspot
+  document.querySelectorAll('.hotspot').forEach(function(h){
+    var key = extractHotspotKey(h);
+    if (!key) return;
+
+    // Suppress the click → showLocation navigation while in calibration mode
+    h.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    h.onclick = null;
+
+    // Add coord tag
+    var tag = document.createElement('div');
+    tag.className = 'cal-coord-tag';
+    h.appendChild(tag);
+    updateTag(h, tag);
+
+    h.addEventListener('mousedown', function(e){
+      if (e.target !== h && e.target.classList && !e.target.classList.contains('cal-coord-tag') && !e.target.classList.contains('hotspot-label')) return;
+      e.preventDefault();
+      var wrapper = document.getElementById('map-wrapper');
+      var wrapRect = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      var grabOffsetX = e.clientX - hRect.left;
+      var grabOffsetY = e.clientY - hRect.top;
+      h.classList.add('dragging');
+
+      function onMove(ev){
+        var x = ev.clientX - wrapRect.left - grabOffsetX;
+        var y = ev.clientY - wrapRect.top  - grabOffsetY;
+        var leftPct = (x / wrapRect.width)  * 100;
+        var topPct  = (y / wrapRect.height) * 100;
+        leftPct = Math.max(0, Math.min(99, leftPct));
+        topPct  = Math.max(0, Math.min(99, topPct));
+        h.style.left = leftPct.toFixed(1) + '%';
+        h.style.top  = topPct.toFixed(1)  + '%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        h.classList.remove('dragging');
+        saveOne(key, h);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+
+  function updateTag(h, tag) {
+    var key = extractHotspotKey(h);
+    tag.textContent = (key || '?') + ' · L:' + h.style.left + ' T:' + h.style.top;
+  }
+
+  function saveOne(key, h) {
+    var data = loadSaved();
+    data[key] = {
+      left:   parseFloat(h.style.left),
+      top:    parseFloat(h.style.top),
+      width:  parseFloat(h.style.width),
+      height: parseFloat(h.style.height)
+    };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+  // Initialise count
+  document.getElementById('cal-saved-count').textContent = Object.keys(loadSaved()).length;
+
+  // Export
+  window.calExport = function() {
+    var data = loadSaved();
+    var lines = [];
+    lines.push('// Calibrated hotspot positions — paste back to Claude');
+    lines.push('// Format: KEY  left%  top%  width%  height%');
+    lines.push('');
+    Object.keys(data).sort().forEach(function(k){
+      var p = data[k];
+      lines.push(k + '  ' + p.left + '%  ' + p.top + '%  ' + p.width + '%  ' + p.height + '%');
+    });
+    document.getElementById('cal-export-text').value = lines.join('\n');
+    document.getElementById('cal-export-pane').classList.add('open');
+    setTimeout(function(){ document.getElementById('cal-export-text').focus(); document.getElementById('cal-export-text').select(); }, 50);
+  };
+
+  window.calReset = function() {
+    if (!confirm('Wipe all saved calibration positions? This cannot be undone.')) return;
+    localStorage.removeItem(CAL_KEY);
+    location.reload();
+  };
+})();
 </script>
 </body>
 </html>

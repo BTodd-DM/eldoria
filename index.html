@@ -920,7 +920,9 @@ body {
           <div id="cal-weekday-festival" style="font-size:11.5px;margin-top:.5rem;color:var(--parch3);line-height:1.5;min-height:1.2em"></div>
 
           <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin:.75rem 0 .35rem">PARTY POSITION</div>
-          <input type="text" id="cal-party" value="Kolt's Depot" style="width:100%;padding:.3rem" list="cal-locations-list">
+          <select id="cal-party" style="width:100%;padding:.3rem">
+            <!-- populated dynamically by cal_init() from REGIONS -->
+          </select>
 
           <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin:.75rem 0 .35rem">DAY LABEL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--parch3)">(optional context — e.g. "Caravan Day 2")</span></div>
           <input type="text" id="cal-label" placeholder="e.g. Caravan Day 1" style="width:100%;padding:.3rem">
@@ -931,9 +933,8 @@ body {
           </div>
         </div>
         <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin-bottom:.35rem">WEATHER BY LOCATION</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin-bottom:.35rem">WEATHER BY REGION <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--parch3)">— click a region to expand</span></div>
           <div id="cal-weather-rows"></div>
-          <button class="action-btn" onclick="cal_addWeatherRow()" style="margin-top:.4rem">+ Add observation</button>
         </div>
       </div>
     </div>
@@ -1554,10 +1555,10 @@ body {
         </div>
       </div>
       <div class="card">
-        <div class="card-title">⚫ Ember Wastes / Crimson Desert</div>
+        <div class="card-title">⚫ Ember Wastes / Ember Wastes</div>
         <div class="card-sub">Quiet · Mid-campaign alliance hook</div>
         <div class="card-body" style="font-size:12.5px">
-          <strong>What's happening:</strong> Nothing dramatic yet. The Nomads of the Ember Wastes and the Mor'nyx tomb-keepers of the Crimson Desert are living their lives undisturbed.<br><br>
+          <strong>What's happening:</strong> Nothing dramatic yet. The Nomads of the Ember Wastes and the Mor'nyx tomb-keepers of the Ember Wastes are living their lives undisturbed.<br><br>
           <strong>When this activates:</strong> Around levels 10-12, when the party needs an unlikely alliance against the Aurum Dominion or Vaeloran. The Nomads have knowledge of ancient routes and hidden places. The Mor'nyx tomb-keepers have knowledge of death, undeath, and how to destroy a lich's phylactery.<br><br>
           <strong>The hook:</strong> Someone has to go to them. They don't come to anyone.
         </div>
@@ -1592,7 +1593,7 @@ body {
       <div class="card red"><div class="card-title">Serpent Isles</div><div class="card-sub">11 Lizardfolk clans · Pirate Confederacy · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Scaleheart Brood (Nalara), Blacktail Clan (Vessara), nine others. Pirate Confederacy: Port Blackfin, Skullport, Coral Cove, Serpent's Lair. The Scarlet Wake destabilising — countdown 5 sessions.</div></div>
       <div class="card"><div class="card-title">Stonemarked Mountains</div><div class="card-sub">Orin's tribe · NE of Duskmere · <span style="color:#f4e4a0">Known</span></div><div class="card-body">Goliath warrior clan. Squeezed by Naturus corruption from below and the Ashbound from the north. Countdown 5 sessions. Will activate when a wounded warrior arrives in Aeloria: "Your tribe is dying."</div></div>
       <div class="card"><div class="card-title">Celestial Plateau — Celestium Clans</div><div class="card-sub">Dwarven · Theocratic · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Dwarves migrated ~2000 years ago during the Usurpation. Astronhold (capital), Stellargrove. Revere Korvain. Pre-historical chamber recently uncovered — Valdris knew it was there.</div></div>
-      <div class="card"><div class="card-title">Ember Wastes / Crimson Desert</div><div class="card-sub">Nomadic tribes · Desert · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Emberhold, Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana and Solara. Crimson Desert: Mor'nyx tomb-keepers know how to destroy a phylactery.</div></div>
+      <div class="card"><div class="card-title">Ember Wastes / Ember Wastes</div><div class="card-sub">Nomadic tribes · Desert · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Emberhold, Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana and Solara. Ember Wastes: Mor'nyx tomb-keepers know how to destroy a phylactery.</div></div>
       <div class="card"><div class="card-title">Thalindel — The Feywild</div><div class="card-sub">Summer Court · Queen Thessavaine · <span style="color:rgba(160,128,64,0.7)">Unvisited</span></div><div class="card-body">Not on the material plane. Accessible via fey crossings near the Verdant Expanse. Queen Thessavaine — Summer Court eladrin, unpredictable. Fey crossing currently destabilised by Naturus corruption.</div></div>
     </div>
 
@@ -1627,7 +1628,7 @@ body {
       <div class="card red"><div class="card-title">Serpent Isles — Reptilian Tribes & Pirates</div><div class="card-sub">11 Lizardfolk clans · Pirate Confederacy</div><div class="card-body">11 clans including Scaleheart Brood (Nalara Scaleheart, matriarch) and Blacktail Clan (Matriarch Vessara Blacktail — largest clan). Pirate Confederacy: Council of Captains, free ports (Port Blackfin, Skullport, Coral Cove, Serpent's Lair). All revere Sirenna (Neutral — Nature, Water, Protection).</div></div>
       <div class="card"><div class="card-title">Frostwood Marsh</div><div class="card-sub">Lethraliri ruins · Bog Hag's domain · Distant lore</div><div class="card-body">Ancient Lethraliri civilization ruins (ice/water magic, Second Age). Frozen Spire, Bioluminescent Grove. <strong>A powerful Bog Hag dominates the southern marsh</strong> — she drove Vrass out, and is the reason the notice board warns of "Danger in Frostwood Marsh." Party has not visited. Future-arc material. Other creatures: Will-o'-Wisps, Specter, Water Weird, Giant Crocodile.</div></div>
       <div class="card"><div class="card-title">Celestial Plateau — Celestium Clans</div><div class="card-sub">Dwarven · Theocratic · Cosmic</div><div class="card-body">Dwarves migrated ~2000 years ago during the Usurpation. Cities: Astronhold (capital, Council of Sages), Stellargrove. Guardians of cosmic equilibrium. Blend dwarven craft with celestial magic. Revere Korvain.</div></div>
-      <div class="card"><div class="card-title">Ember Wastes / Crimson Desert</div><div class="card-sub">Nomadic tribes · Desert</div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Camps: Emberhold (central hub), Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana (wind/travel) and Solara (sun). Crimson Desert: tombs of Mor'nyx. Ancient ruined cities in the dunes.</div></div>
+      <div class="card"><div class="card-title">Ember Wastes / Ember Wastes</div><div class="card-sub">Nomadic tribes · Desert</div><div class="card-body">Nomads of the Ember Wastes. Sandship caravans. Camps: Emberhold (central hub), Duneclaw Oasis, Sandshroud Outpost. Revere Sylvana (wind/travel) and Solara (sun). Ember Wastes: tombs of Mor'nyx. Ancient ruined cities in the dunes.</div></div>
     </div>
   </div>
 
@@ -1699,7 +1700,7 @@ body {
       <div class="deity-card"><div class="deity-name">Korvain</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Craftsmanship, invention, dwarvenkind. Celestium Clans. Anvil and hammer symbol.</div></div>
       <div class="deity-card"><div class="deity-name">Sirenna</div><div class="deity-align">Neutral</div><div class="deity-body">Sea, protection, nature. Reptilian Tribes and Pirate Confederacy. Coiled sea serpent symbol.</div></div>
       <div class="deity-card"><div class="deity-name">Thalasia</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Arcane magic, elemental forces. Aurum Dominion. Crystal with elemental motifs symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Mor'nyx</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Death, afterlife, protection. Crimson Desert tombs. Ankh with winged scarab symbol.</div></div>
+      <div class="deity-card"><div class="deity-name">Mor'nyx</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Death, afterlife, protection. Ember Wastes tombs. Ankh with winged scarab symbol.</div></div>
     </div>
 
     <div class="sec-title">Betrayer Gods</div>
@@ -1710,18 +1711,84 @@ body {
       <span style="font-size:11px;color:#d8a8a8;font-style:italic">DM ONLY — common folk know nothing of any of this. Only deep First-Age scholars know the Dawnoak even exists.</span>
     </div>
     <div class="deity-grid">
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly <strong>Vaeloran's true patron</strong> — though Vaeloran may not consciously know it. Eclipse shrouding a sun symbol. His influence: slow, patient, through institutions and individuals who believe they're acting freely. <strong>Vaeloran is unknowingly collecting Astronar's shards.</strong></div></div>
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. Withered tree symbol. <strong>His unfinished child — Vroth-Khorn, "the Withering" — lies beneath the Frostwood Marsh,</strong> bound by the Lethraliri at the cost of their civilisation. See <em>Bestiary/Vroth-Khorn - The Withering</em>.</div></div>
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly <strong>Vaeloran's true patron</strong> — though Vaeloran may not consciously know it. His influence: slow, patient, through institutions and individuals who believe they're acting freely. <strong>Vaeloran is unknowingly collecting Astronar's shards.</strong> Eclipse shrouding a sun symbol.</div></div>
+      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. <strong>His unfinished child — Vroth-Khorn, "the Withering" — lies beneath the Frostwood Marsh,</strong> bound by the Lethraliri at the cost of their civilisation. See <em>Bestiary/Vroth-Khorn - The Withering</em>. Withered tree symbol.</div></div>
     </div>
   </div>
 
   <div id="tab-p-history" style="display:none">
-    <div class="sec-title">History of Eldoria</div>
-    <div class="card gold"><div class="card-title">1st Age — Creation and Harmony (1000 years)</div><div class="card-body">Luminos and Veridania collaborated to shape Eldoria. Luminos: celestial energies, light, order, structure. Veridania: nature, life, balance. Their combined work created the world's landscapes, magic, and sentient beings. Astronar and Naturus grew discontented and began subtly sowing discord among the other deities.</div></div>
-    <div class="card red"><div class="card-title">The Usurpation — End of the 1st Age</div><div class="card-body">Astronar and Naturus confronted Luminos and Veridania directly. Through deceit, manipulation, and force, they overcame the Creator Gods and drove them into hiding. During this upheaval, the Aurum Dominion infiltrated and displaced the Dwarven Clans of the Underpeak — forcing their exodus to the Celestial Plateau (~2000 years ago).</div></div>
-    <div class="card red"><div class="card-title">2nd Age — Dark Reign (750 years)</div><div class="card-body">Darkness crept over Eldoria. Ecosystems twisted. Astronar diminished the sun; Naturus corrupted nature. Cults of darkness flourished. Hidden resistance grew — the <strong>Lethraliri</strong> civilisation in what would become the Frostwood Marsh thrived during this period using ice/water magic. Heroes emerged under the banner of light.</div></div>
-    <div class="card teal"><div class="card-title">The Great Reclamation — End of the 2nd Age</div><div class="card-body">United faithful defeated Astronar and Naturus. Yggdris healed the land, Korvain crafted artifacts of light, Sirenna disrupted the usurpers' dominion, Thalasia's rituals counteracted dark magic, Mor'nyx guided fallen heroes. <strong>Luminos and Veridania grew the Dawnoak</strong> — a divine tree of light and root — and bound the Betrayers within it, in places mortals cannot reach. As Naturus was being bound, his last act was to hurl one of his unfinished children — <strong>Vroth-Khorn</strong> — through a tear in the planes into the material world. Vroth-Khorn struck what would become the Frostwood Marsh. The <strong>Lethraliri</strong>, unable to destroy it, sealed it in unbreaking ice and froze themselves in place as living wardens. Their civilisation ended in that act.</div></div>
-    <div class="card teal"><div class="card-title">3rd Age — Restoration and Renewal (300 years · Current)</div><div class="card-body">Luminos and Veridania emerged to help mend the damage. All deities then made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. <strong>They sealed themselves behind the Divine Gate</strong> — a barrier that keeps gods out of the material plane. Faith now operates without direct divine presence. The Dawnoak's binding holds; its true name was deliberately forgotten by every scholar who knew it, so that no being might ever speak it.</div></div>
+    <div class="sec-title">History of Eldoria <span style="font-size:11px;color:var(--parch3);font-weight:400">— click any age to expand</span></div>
+
+    <details class="card gold" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:13px">1st Age — Creation and Harmony (≈1,000 years)</summary>
+      <div class="card-body" style="margin-top:.5rem">
+        <p>Luminos and Veridania collaborated to shape Eldoria. Luminos contributed celestial energies — light, order, structure, the sun, stars, celestial realms. Veridania infused the world with nature, life, balance, plants, animals, natural ecosystems. The Pantheon of deities coexisted peacefully; each contributed to balance and prosperity.</p>
+        <p><strong>Seeds of Ambition.</strong> As time passed, Astronar and Naturus grew discontented. Astronar coveted the power darkness and secrets could offer. Naturus sought to unleash chaos and decay to assert dominance.</p>
+        <p><strong>Astronar's Manipulation.</strong> Astronar manipulated the emotions and desires of certain deities. He fostered mistrust, encouraged ambition, whispered lies about Luminos and Veridania's intentions. He planted seeds of doubt across the Pantheon — slowly, patiently, never showing his hand.</p>
+        <p><strong>Naturus's Corruption.</strong> Naturus spread decay and chaos across Eldoria. He tainted ecosystems, turned bountiful lands into wastelands. His followers revelled in destruction.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:#f4c4c4;font-weight:700;font-size:13px">The Usurpation — End of the 1st Age</summary>
+      <div class="card-body" style="margin-top:.5rem">
+        <p>At the end of the First Age, Astronar and Naturus openly challenged Luminos and Veridania. In a cataclysmic battle, the usurpers weakened the prime deities through deception, manipulation, and brute force. They drove Luminos and Veridania into hiding. Their power was significantly diminished.</p>
+        <p><strong>The Downfall of the Dwarves of the Underpeak.</strong> During the Usurpation, the Aurum Dominion covertly infiltrated the Dwarven clans of the Underpeak — exploiting internal divisions and economic pressures over years:</p>
+        <ul style="margin:.3rem 0 .5rem 1.25rem">
+          <li>Discovered rare enchanted crystals deep within the Underpeak.</li>
+          <li>Agents infiltrated communities posing as merchants and scholars.</li>
+          <li>Spread rumours, sowed discord between clans.</li>
+          <li>Economically isolated the clans by offering better deals to rivals.</li>
+          <li>Pressured neighbouring regions to withhold support.</li>
+          <li>When diplomacy failed, used military force and crystal magic superiority.</li>
+          <li>Some clans submitted; others who refused faced annihilation.</li>
+        </ul>
+        <p>The result: Dwarves who refused submission began a great exodus from their ancestral homeland approximately <strong>two thousand years ago</strong>.</p>
+        <p><strong>The Rise of the Celestium Clans.</strong> The exiled Dwarves settled beneath the Celestial Plateau. They carved intricate tunnels and halls into the rock. The proximity to celestial energies infused the environment with unique magic. They renamed themselves the Celestium Clans in recognition of their new home. They became skilled artificers, the plateau's protectors and guardians of celestial balance.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:#f4c4c4;font-weight:700;font-size:13px">2nd Age — Dark Reign (≈750 years)</summary>
+      <div class="card-body" style="margin-top:.5rem">
+        <p><strong>Astronar's Darkness.</strong> The sun's radiance was diminished. Perpetual twilight settled over Eldoria. Darkness extended into the hearts of mortals as fear and despair spread.</p>
+        <p><strong>Naturus's Corruption.</strong> Natural ecosystems twisted into grotesque forms. Once-lush forests became mazes of thorns. Rivers polluted with foul substances. Predator-prey balance disrupted.</p>
+        <p><strong>Tyranny of the Usurpers.</strong> Astronar and Naturus ruled with an iron fist. Absolute loyalty was demanded. Resisters were punished. Cults of darkness flourished with forbidden rituals.</p>
+        <p><strong>The Lethraliri Civilisation.</strong> While the rest of Eldoria suffered, the Lethraliri civilisation thrived in what would become the Frostwood Marsh. Skilled in ice and water magic. They built stilt settlements above the water with interconnected platforms and pathways. Their cities were known for translucent ice sculptures and bioluminescent flora. They communicated with the marsh's elemental spirits — and they would prove instrumental at the end of the Age.</p>
+        <p><strong>Whispered Resistance.</strong> Hidden followers of Luminos and Veridania whispered guidance through dreams. Secret networks formed. Heroes emerged under the banner of light.</p>
+        <p><strong>The Order of the Silver Crescent.</strong> Founded during this period of celestial upheaval. Their teachings came from Lunara's visions, emphasising the importance of maintaining balance between light and darkness.</p>
+        <p><strong>Heroes Rise.</strong> Mizura's followers unravelled the lies of the usurpers. Sylvana guided nomads and adventurers to organise resistance. Aetherius's prophecies inspired hope. Solara's light rekindled hope. Lunara's revelations exposed truths behind the reign.</p>
+      </div>
+    </details>
+
+    <details class="card teal" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:#a0d4c4;font-weight:700;font-size:13px">The Great Reclamation — End of the 2nd Age</summary>
+      <div class="card-body" style="margin-top:.5rem">
+        <p>The united faithful embarked on a grand quest:</p>
+        <ul style="margin:.3rem 0 .5rem 1.25rem">
+          <li><strong>Yggdris</strong> healed the land.</li>
+          <li><strong>Korvain</strong> crafted artifacts of light.</li>
+          <li><strong>Sirenna's</strong> followers disrupted the usurpers' dominion.</li>
+          <li><strong>Thalasia's</strong> rituals counteracted dark magic.</li>
+          <li><strong>Mor'nyx</strong> guided the spirits of fallen heroes.</li>
+        </ul>
+        <p>In a climactic battle, the combined might of deities and mortals proved overwhelming. Astronar and Naturus were cast down from their stolen thrones. Their followers turned against them.</p>
+        <p><strong>The Dawnoak.</strong> Luminos and Veridania, exhausted but resolved, grew the <strong>Dawnoak</strong> — a divine tree of pure light (Luminos's domain) and pure root (Veridania's domain), rooted in places mortals cannot reach — and <strong>bound the Betrayer Gods within it</strong>. The Lethraliri were summoned to assist: they wrote the rituals, inscribed the binding's true name in their own tongue, and held the structure in place. As Astronar was drawn in, he went silent and submitted, plotting a longer game. As <strong>Naturus</strong> was drawn in, he resisted — and with his final reach hurled one of his unfinished children, <strong>Vroth-Khorn</strong>, through a tear in the planes into the material world.</p>
+        <p><strong>The Lethraliri Sacrifice.</strong> Vroth-Khorn struck the land where the Lethraliri lived, gouging a wound that became the Frostwood Marsh. The Lethraliri could not destroy it — even a half-formed child of a god was too close to divine. So they sealed Vroth-Khorn beneath the marsh in unbreaking ice and <strong>froze themselves in place as living wardens</strong>. The Frozen Spire is the keystone. Their entire civilisation ended in that act.</p>
+        <p><strong>Valdris the Pale Archivist.</strong> Not all First-Age threats were resolved cleanly. Valdris — a powerful First-Age lich — was not destroyed. The Aurum Dominion made a deal: they would protect the location of his phylactery and leave him undisturbed in his Aurora Peaks sanctum, in exchange for occasional arcane consultation. This arrangement has lasted three hundred years.</p>
+      </div>
+    </details>
+
+    <details class="card teal" style="margin-bottom:.75rem" open>
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:#a0d4c4;font-weight:700;font-size:13px">3rd Age — Restoration and Renewal (300 years · current era)</summary>
+      <div class="card-body" style="margin-top:.5rem">
+        <p><strong>Restoration.</strong> With the defeat of Astronar and Naturus, balance gradually restored. Luminos and Veridania emerged from hiding. All deities joined forces to mend the damage. Eldoria began to heal.</p>
+        <p><strong>The Divine Gate.</strong> All deities made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. They sealed themselves behind the <strong>Divine Gate</strong>. This was a voluntary, collective sacrifice — not an imprisonment. The Dawnoak's binding holds; its true name was deliberately forgotten by every scholar who knew it, so that no being might ever speak it.</p>
+        <p><strong>The Current Era.</strong> Three hundred years of relative peace and rebuilding. Independent city-states, merchant republics, competing empires. The Aurum Dominion remains expansionist. Aeloria Crossroads emerged as the neutral hub of the continent. Magic is common but never overwhelming — without divine guidance, mortals have shaped their own paths.</p>
+        <p><strong>The Meteor Shards.</strong> Recently, a meteor struck north of Aeloria — in the wooded Aelorian Territories, about a day's travel from the city. The shards carry unusual arcane energy. <strong>Vaeloran</strong> sent his apprentice <strong>Lyssandra</strong> to retrieve one. The party found her there. The shards amplify magic significantly and are key components of Vaeloran's lich ritual. <em>(DM-only: they are also fragments of Astronar's prison — each one shed through the Dawnoak's binding.)</em></p>
+      </div>
+    </details>
+
     <div class="alert alert-warn" style="margin-top:.75rem">
       <strong>DM NOTE — the campaign endgame.</strong> Vaeloran is collecting meteor shards to fuel his lichdom; he does not know they are fragments of Astronar's prison. Kaelith spreads Naturus's rot believing she's serving her god; she does not know her work weakens the Frostwood Marsh seal on Vroth-Khorn. The true campaign-ending threat is anyone who discovers the Dawnoak's true name — or who frees Vroth-Khorn, which would give Naturus a foothold in the material plane he has not had in 1,050 years.
     </div>
@@ -2282,10 +2349,44 @@ const WEATHER_OPTS = [
   {v:'Thunderstorm', e:'⛈'},
   {v:'Fog', e:'🌫'},
   {v:'Snow', e:'❄'},
+  {v:'Blizzard', e:'🌨'},
   {v:'Heatwave', e:'🌡'},
+  {v:'Dust Storm', e:'🏜'},
+  {v:'Sandstorm', e:'🌪'},
   {v:'Wind', e:'🌬'},
   {v:'Other', e:'•'}
 ];
+
+// Regions of the world map, each with their canonical city/location list.
+// The Calendar tab tracks weather city-by-city within each region.
+const REGIONS = [
+  { name: "Aelorian Territories", cities: ["Aeloria", "Stillbrook", "Ironhold", "Stonegate", "Duskmere", "Silverbrook", "Crimson Outpost"] },
+  { name: "Aurora Peaks",         cities: ["Eclipsia", "Starryhaven", "Auranova", "Crystalholm", "Stellara", "Aurora's Rest", "Lunara Monastery"] },
+  { name: "Verdant Expanse",      cities: ["Eldralor", "Aurelia Haven", "Silentwood", "Celestia Glade"] },
+  { name: "Frostwood Marsh",      cities: ["Marsh edge"] },
+  { name: "Celestial Plateau",    cities: ["Stellargrove", "Astronhold"] },
+  { name: "Ember Wastes",         cities: ["Desert interior", "Trade routes"] },
+  { name: "Serpent Isles",        cities: ["Skullport", "Coral Cove", "Port Blackfin"] },
+  { name: "Stonemarked Mountains", cities: ["Mountain peaks (Orin's tribe)"] }
+];
+
+// Default weather profile per region (used when initialising a new day or new city)
+const REGION_DEFAULT_WEATHER = {
+  "Aelorian Territories": "Clear",
+  "Aurora Peaks": "Snow",
+  "Verdant Expanse": "Overcast",
+  "Frostwood Marsh": "Fog",
+  "Celestial Plateau": "Clear",
+  "Ember Wastes": "Heatwave",
+  "Serpent Isles": "Wind",
+  "Stonemarked Mountains": "Snow"
+};
+
+// Look up which region a city belongs to. Returns null if unknown.
+function cityRegion(city) {
+  for (const r of REGIONS) if (r.cities.includes(city)) return r.name;
+  return null;
+}
 // visibility: 'public' = everyone knows · 'restricted' = scholarly fringe knowledge · 'hidden' = secret (DM only)
 const FESTIVALS = [
   // Aelorian (human) — all public
@@ -2316,18 +2417,30 @@ const FESTIVALS = [
   {sacred:4, name:"Day of Stones", culture:"Stonemarked", type:'sacred', visibility:'public', note:"Mountain blessing"}
 ];
 const CAL_KEY = 'eldoria-calendar';
+
+// Build a default weather block: every region collapsed with each city defaulted
+// to that region's typical weather (Marsh → Fog, Desert → Heatwave, etc.).
+function cal_defaultWeatherByRegion() {
+  const out = {};
+  REGIONS.forEach(r => {
+    out[r.name] = r.cities.map(city => ({
+      city,
+      weather: REGION_DEFAULT_WEATHER[r.name] || 'Clear',
+      notes: ''
+    }));
+  });
+  return out;
+}
+
 const CAL_DEFAULT = {
   current: 0,
-  knownLocations: ["Aeloria", "Kolt's Depot", "Stillbrook", "Caravan Road", "Ironhold", "Frostwood Marsh", "Verdant Expanse", "Stonemarked", "Aurora Peaks"],
+  expandedRegions: { "Aelorian Territories": true }, // which region accordions start open
   days: [
     {
       era: 3, year: 1247, month: 6, day: 14, sacredIndex: null,
       label: "Caravan Day 0 — at Kolt's Depot",
-      party: "Kolt's Depot",
-      weather: [
-        { location: "Kolt's Depot", weather: "Overcast", notes: "Wind picking up from the east" },
-        { location: "Aeloria", weather: "Clear", notes: "" }
-      ]
+      party: "Aeloria",
+      weatherByRegion: null  // populated by cal_load via defaultWeatherByRegion()
     }
   ]
 };
@@ -2339,7 +2452,33 @@ function cal_load() {
     if (raw) CAL = JSON.parse(raw);
   } catch(e) {}
   if (!CAL || !CAL.days || !CAL.days.length) CAL = JSON.parse(JSON.stringify(CAL_DEFAULT));
+  if (!CAL.expandedRegions) CAL.expandedRegions = { "Aelorian Territories": true };
   if (CAL.current >= CAL.days.length) CAL.current = CAL.days.length - 1;
+
+  // Migrate: convert legacy flat weather[] array to weatherByRegion + ensure every day has it
+  CAL.days.forEach(d => {
+    if (!d.weatherByRegion) {
+      d.weatherByRegion = cal_defaultWeatherByRegion();
+      // If there's a legacy weather array, fold it in
+      if (Array.isArray(d.weather)) {
+        d.weather.forEach(w => {
+          const cityName = w.location || '';
+          // Special migration: "Kolt's Depot" rolled into Aeloria
+          const mappedCity = cityName === "Kolt's Depot" ? "Aeloria" : cityName;
+          const region = cityRegion(mappedCity);
+          if (region && d.weatherByRegion[region]) {
+            const target = d.weatherByRegion[region].find(c => c.city === mappedCity);
+            if (target) { target.weather = w.weather || target.weather; target.notes = w.notes || target.notes; }
+          }
+        });
+        delete d.weather;
+      }
+    }
+    // Also migrate party location: Kolt's Depot → Aeloria
+    if (d.party === "Kolt's Depot") d.party = "Aeloria";
+  });
+  // Drop legacy knownLocations field if present (now derived from REGIONS)
+  if (CAL.knownLocations) delete CAL.knownLocations;
 }
 function cal_persist() {
   try { localStorage.setItem(CAL_KEY, JSON.stringify(CAL)); } catch(e) {}
@@ -2365,10 +2504,24 @@ function cal_festivalsForDate(d) {
   });
 }
 function cal_weatherSummary(d) {
-  if (!d.weather || !d.weather.length) return '';
-  const partyW = d.weather.find(w => w.location === d.party) || d.weather[0];
-  const o = WEATHER_OPTS.find(x => x.v === partyW.weather) || { e: '' };
-  return o.e + ' ' + partyW.weather + (partyW.location ? ' (' + partyW.location + ')' : '');
+  if (!d || !d.weatherByRegion) return '';
+  // Find weather at the party's current city
+  const partyCity = d.party || '';
+  const region = cityRegion(partyCity);
+  let entry = null;
+  if (region && d.weatherByRegion[region]) {
+    entry = d.weatherByRegion[region].find(c => c.city === partyCity);
+  }
+  // Fallback: first city of the first region with any data
+  if (!entry) {
+    for (const r of REGIONS) {
+      const list = d.weatherByRegion[r.name];
+      if (list && list.length) { entry = list[0]; break; }
+    }
+  }
+  if (!entry) return '';
+  const o = WEATHER_OPTS.find(x => x.v === entry.weather) || { e: '' };
+  return o.e + ' ' + entry.weather + (entry.city ? ' (' + entry.city + ')' : '');
 }
 function cal_save() {
   if (!CAL) return;
@@ -2397,10 +2550,16 @@ function cal_advance() {
   if (!CAL) return;
   cal_save();
   const cur = CAL.days[CAL.current];
+  // Deep-copy weatherByRegion forward; clear all notes
+  const carriedWeather = {};
+  for (const r of REGIONS) {
+    const list = (cur.weatherByRegion && cur.weatherByRegion[r.name]) || [];
+    carriedWeather[r.name] = list.map(c => ({ city: c.city, weather: c.weather, notes: '' }));
+  }
   const nx = {
     era: cur.era, year: cur.year, month: cur.month, day: cur.day, sacredIndex: cur.sacredIndex,
     label: '', party: cur.party,
-    weather: (cur.weather || []).map(w => ({ location: w.location, weather: w.weather, notes: '' }))
+    weatherByRegion: carriedWeather
   };
   if (nx.month === 'sacred') {
     if (nx.sacredIndex < 4) {
@@ -2419,49 +2578,116 @@ function cal_advance() {
   cal_render();
   updateStatusBar();
 }
-function cal_addWeatherRow() {
+// Add a new (custom) city to a region — for one-off observations
+function cal_addCityToRegion(regionName) {
   if (!CAL) return;
+  const cityName = prompt(`Add a location to ${regionName}:`, '');
+  if (!cityName) return;
   const d = CAL.days[CAL.current];
-  d.weather = d.weather || [];
-  d.weather.push({ location: d.party || '', weather: 'Clear', notes: '' });
+  if (!d.weatherByRegion[regionName]) d.weatherByRegion[regionName] = [];
+  d.weatherByRegion[regionName].push({
+    city: cityName,
+    weather: REGION_DEFAULT_WEATHER[regionName] || 'Clear',
+    notes: ''
+  });
+  CAL.expandedRegions[regionName] = true;
   cal_persist();
-  cal_renderWeatherRows();
+  cal_renderWeatherRegions();
   updateStatusBar();
 }
-function cal_renderWeatherRows() {
+
+function cal_renderWeatherRegions() {
   const wrap = document.getElementById('cal-weather-rows');
   if (!wrap || !CAL) return;
   const d = CAL.days[CAL.current];
+  if (!d.weatherByRegion) d.weatherByRegion = cal_defaultWeatherByRegion();
   wrap.innerHTML = '';
-  (d.weather || []).forEach((w, idx) => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:.4rem;margin-bottom:.4rem;align-items:center';
-    const locInput = document.createElement('input');
-    locInput.type = 'text'; locInput.value = w.location || ''; locInput.placeholder = 'Location';
-    locInput.style.cssText = 'width:100%;padding:.25rem';
-    locInput.setAttribute('list', 'cal-locations-list');
-    locInput.oninput = () => { w.location = locInput.value; cal_persist(); updateStatusBar(); };
-    const wSel = document.createElement('select');
-    wSel.style.cssText = 'width:100%;padding:.25rem';
-    WEATHER_OPTS.forEach(opt => {
-      const o = document.createElement('option');
-      o.value = opt.v; o.textContent = opt.e + ' ' + opt.v;
-      wSel.appendChild(o);
-    });
-    wSel.value = w.weather || 'Clear';
-    wSel.onchange = () => { w.weather = wSel.value; cal_persist(); updateStatusBar(); cal_renderTodaySummary(); };
-    const notes = document.createElement('input');
-    notes.type = 'text'; notes.value = w.notes || ''; notes.placeholder = 'Notes (optional)';
-    notes.style.cssText = 'width:100%;padding:.25rem';
-    notes.oninput = () => { w.notes = notes.value; cal_persist(); };
-    const rm = document.createElement('button');
-    rm.textContent = '✕'; rm.className = 'action-btn';
-    rm.title = 'Remove this observation';
-    rm.onclick = () => { d.weather.splice(idx, 1); cal_persist(); cal_renderWeatherRows(); updateStatusBar(); };
-    row.appendChild(locInput); row.appendChild(wSel); row.appendChild(notes); row.appendChild(rm);
-    wrap.appendChild(row);
+
+  REGIONS.forEach(r => {
+    const list = d.weatherByRegion[r.name] || [];
+    const isOpen = !!(CAL.expandedRegions && CAL.expandedRegions[r.name]);
+
+    const block = document.createElement('div');
+    block.style.cssText = 'margin-bottom:.5rem;border:1px solid rgba(160,128,64,0.25);border-radius:3px;background:rgba(20,15,8,0.4);overflow:hidden';
+
+    // Region header (clickable to expand)
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:.4rem .6rem;cursor:pointer;background:rgba(40,30,15,0.5);user-select:none';
+    const headerLabel = document.createElement('div');
+    headerLabel.style.cssText = 'font-family:"Cinzel",serif;font-size:11px;color:var(--gold2);letter-spacing:1px';
+    // Region weather summary: count cities with non-default or list them as emoji chain
+    const emojis = list.map(c => (WEATHER_OPTS.find(x => x.v === c.weather) || {e:'•'}).e).join('');
+    headerLabel.innerHTML = `<span style="margin-right:6px">${isOpen ? '▼' : '▶'}</span>${r.name} <span style="opacity:.65;font-size:10px;margin-left:.4rem">${emojis} (${list.length})</span>`;
+    header.appendChild(headerLabel);
+    header.onclick = () => {
+      CAL.expandedRegions[r.name] = !isOpen;
+      cal_persist();
+      cal_renderWeatherRegions();
+    };
+    block.appendChild(header);
+
+    if (isOpen) {
+      const body = document.createElement('div');
+      body.style.cssText = 'padding:.5rem .6rem';
+
+      list.forEach((cityEntry, idx) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:grid;grid-template-columns:1.2fr 1.1fr 2fr auto;gap:.4rem;margin-bottom:.35rem;align-items:center';
+        // City label (read-only — keeps the location list canonical)
+        const cityLabel = document.createElement('div');
+        cityLabel.style.cssText = 'font-size:12px;color:var(--parch2);padding:.25rem .35rem;background:rgba(20,15,8,0.5);border-radius:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+        cityLabel.textContent = cityEntry.city;
+        cityLabel.title = cityEntry.city;
+        // Weather dropdown
+        const wSel = document.createElement('select');
+        wSel.style.cssText = 'width:100%;padding:.25rem;font-size:12px';
+        WEATHER_OPTS.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt.v; o.textContent = opt.e + ' ' + opt.v;
+          wSel.appendChild(o);
+        });
+        wSel.value = cityEntry.weather || 'Clear';
+        wSel.onchange = () => { cityEntry.weather = wSel.value; cal_persist(); updateStatusBar(); cal_renderTodaySummary(); cal_renderDayLog(); };
+        // Notes
+        const notes = document.createElement('input');
+        notes.type = 'text'; notes.value = cityEntry.notes || ''; notes.placeholder = 'Notes (optional)';
+        notes.style.cssText = 'width:100%;padding:.25rem;font-size:12px';
+        notes.oninput = () => { cityEntry.notes = notes.value; cal_persist(); };
+        // Remove button (only allowed for custom-added cities, i.e. not in REGIONS canonical list)
+        const rm = document.createElement('button');
+        rm.className = 'action-btn';
+        const isCanonical = (r.cities || []).includes(cityEntry.city);
+        rm.textContent = '✕';
+        rm.style.cssText = isCanonical ? 'opacity:.3;cursor:not-allowed' : '';
+        rm.title = isCanonical ? 'Canonical city — cannot remove' : 'Remove this custom location';
+        rm.onclick = () => {
+          if (isCanonical) return;
+          list.splice(idx, 1);
+          cal_persist();
+          cal_renderWeatherRegions();
+          updateStatusBar();
+        };
+        row.appendChild(cityLabel); row.appendChild(wSel); row.appendChild(notes); row.appendChild(rm);
+        body.appendChild(row);
+      });
+
+      // "+ Add location" button per region
+      const addBtn = document.createElement('button');
+      addBtn.className = 'action-btn';
+      addBtn.textContent = '+ Add location to ' + r.name;
+      addBtn.style.cssText = 'margin-top:.35rem;font-size:10px';
+      addBtn.onclick = () => cal_addCityToRegion(r.name);
+      body.appendChild(addBtn);
+
+      block.appendChild(body);
+    }
+
+    wrap.appendChild(block);
   });
 }
+
+// Legacy alias — older code paths still call cal_renderWeatherRows
+function cal_renderWeatherRows() { cal_renderWeatherRegions(); }
 function cal_renderTodaySummary() {
   if (!CAL) return;
   const d = CAL.days[CAL.current];
@@ -2582,14 +2808,19 @@ function cal_render() {
 }
 function cal_init() {
   cal_load();
-  // Populate location datalist
-  const dl = document.getElementById('cal-locations-list');
-  if (dl) {
-    dl.innerHTML = '';
-    (CAL.knownLocations || []).forEach(l => {
-      const o = document.createElement('option');
-      o.value = l;
-      dl.appendChild(o);
+  // Populate the party-position dropdown from REGIONS (every city in every region)
+  const partySel = document.getElementById('cal-party');
+  if (partySel) {
+    partySel.innerHTML = '';
+    REGIONS.forEach(r => {
+      const grp = document.createElement('optgroup');
+      grp.label = r.name;
+      r.cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city; opt.textContent = city;
+        grp.appendChild(opt);
+      });
+      partySel.appendChild(grp);
     });
   }
   // Wire month selector to toggle Sacred Day mode
