@@ -613,23 +613,63 @@ function closePanel() {
   // even outside calibration mode for preview), unless ?nocal is passed.
   var saved = loadSaved();
   var noCal = /[?&]nocal(=|&|$)/.test(location.search);
-  if (!noCal) {
-    document.querySelectorAll('.hotspot').forEach(function(h){
-      var key = extractHotspotKey(h);
-      if (key && saved[key]) {
-        var p = saved[key];
-        if (p.left  !== undefined) h.style.left   = p.left  + '%';
-        if (p.top   !== undefined) h.style.top    = p.top   + '%';
-        if (p.width !== undefined) h.style.width  = p.width + '%';
-        if (p.height!== undefined) h.style.height = p.height+ '%';
-      }
-    });
-  }
+  var SVG_NS = 'http://www.w3.org/2000/svg';
 
   function extractHotspotKey(h) {
     var oc = h.getAttribute('onclick') || '';
     var m = oc.match(/showLocation\('([^']+)'\)/);
     return m ? m[1] : null;
+  }
+
+  // For a region div: compute the polygon points (percentage coords on the wrapper).
+  // Prefers saved polygon → migrates legacy rectangle → falls back to source HTML rect.
+  function getRegionPoints(div) {
+    var key = extractHotspotKey(div);
+    if (key && saved[key] && Array.isArray(saved[key].points)) {
+      return saved[key].points.map(function(p){ return p.slice(); });
+    }
+    // Legacy rectangle save: convert to 4-corner polygon
+    if (key && saved[key] && saved[key].left !== undefined) {
+      var s = saved[key];
+      var l = s.left, t = s.top, w = s.width, h = s.height;
+      return [[l, t], [l+w, t], [l+w, t+h], [l, t+h]];
+    }
+    // Default: use the source HTML rectangle
+    var dl = parseFloat(div.style.left) || 0;
+    var dt = parseFloat(div.style.top)  || 0;
+    var dw = parseFloat(div.style.width) || 10;
+    var dh = parseFloat(div.style.height) || 10;
+    return [[dl, dt], [dl+dw, dt], [dl+dw, dt+dh], [dl, dt+dh]];
+  }
+
+  // Resize the region div to cover the whole wrapper and apply clip-path
+  function applyRegionPolygon(div, points) {
+    div.style.left   = '0%';
+    div.style.top    = '0%';
+    div.style.width  = '100%';
+    div.style.height = '100%';
+    var pathStr = 'polygon(' + points.map(function(p){ return p[0]+'% '+p[1]+'%'; }).join(', ') + ')';
+    div.style.clipPath = pathStr;
+    div.style.webkitClipPath = pathStr;
+    div._regionPoints = points;
+  }
+
+  if (!noCal) {
+    // CITIES: apply saved rectangle position
+    document.querySelectorAll('.hotspot.city').forEach(function(h){
+      var key = extractHotspotKey(h);
+      if (key && saved[key]) {
+        var p = saved[key];
+        if (p.left   !== undefined) h.style.left   = p.left   + '%';
+        if (p.top    !== undefined) h.style.top    = p.top    + '%';
+        if (p.width  !== undefined) h.style.width  = p.width  + '%';
+        if (p.height !== undefined) h.style.height = p.height + '%';
+      }
+    });
+    // REGIONS: always apply polygon (clip-path) — derived from saved data or default rect
+    document.querySelectorAll('.hotspot.region').forEach(function(div){
+      applyRegionPolygon(div, getRegionPoints(div));
+    });
   }
 
   if (!isCal) return; // not in calibration mode — just apply saved positions and bail
@@ -646,6 +686,12 @@ function closePanel() {
     '.calibrate-mode .cal-resize-handle{position:absolute;right:-6px;bottom:-6px;width:12px;height:12px;background:#ffd060;border:2px solid #1a1208;border-radius:2px;cursor:nwse-resize;z-index:12;box-shadow:0 1px 3px rgba(0,0,0,0.6)}',
     '.calibrate-mode .cal-resize-handle:hover{background:#fff;transform:scale(1.3)}',
     '.calibrate-mode .hotspot.resizing{outline:3px solid #fff !important;outline-style:dotted !important;z-index:1000}',
+    '#cal-svg-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex{cursor:move;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex:hover{fill:#fff !important}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add{cursor:crosshair;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add:hover{fill:rgba(255,255,255,0.95) !important}',
+    '.calibrate-mode .hotspot.region{border:0 !important;background:transparent !important}',
     '#cal-toolbar{position:fixed;bottom:18px;right:18px;background:rgba(20,15,8,0.97);border:2px solid #ffd060;border-radius:6px;padding:12px;color:#f4edd8;font-family:Cinzel,serif;font-size:11px;z-index:9999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.6)}',
     '#cal-toolbar h3{color:#ffd060;font-size:13px;margin-bottom:6px;letter-spacing:1.5px}',
     '#cal-toolbar .cal-row{margin:6px 0}',
@@ -663,7 +709,7 @@ function closePanel() {
   toolbar.id = 'cal-toolbar';
   toolbar.innerHTML =
     '<h3>🛠 CALIBRATION MODE</h3>' +
-    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Drag body to move · drag bottom-right corner to resize. Yellow = city, blue = region. Auto-saves.</div>' +
+    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Cities: drag body to move · drag corner to resize.<br>Regions: drag yellow vertex to reshape · click white dot on edge to add vertex · right-click vertex to remove.</div>' +
     '<div class="cal-row">' +
       '<label><input type="checkbox" id="cal-show-regions" checked> Regions</label> &nbsp; ' +
       '<label><input type="checkbox" id="cal-show-cities" checked> Cities</label>' +
@@ -695,10 +741,148 @@ function closePanel() {
       var isRegion = h.classList.contains('region');
       h.style.display = ((isRegion && showR) || (!isRegion && showC)) ? '' : 'none';
     });
+    // SVG region groups
+    document.querySelectorAll('#cal-svg-overlay g').forEach(function(g){
+      g.style.display = showR ? '' : 'none';
+    });
   }
 
-  // Set up move + resize on every hotspot
-  document.querySelectorAll('.hotspot').forEach(function(h){
+  // Build SVG overlay for region polygon editing
+  var wrapper = document.getElementById('map-wrapper');
+  var svgOverlay = document.createElementNS(SVG_NS, 'svg');
+  svgOverlay.id = 'cal-svg-overlay';
+  svgOverlay.setAttribute('viewBox', '0 0 100 100');
+  svgOverlay.setAttribute('preserveAspectRatio', 'none');
+  wrapper.appendChild(svgOverlay);
+
+  // === REGIONS: polygon vertex editing ===
+  document.querySelectorAll('.hotspot.region').forEach(function(div){
+    var key = extractHotspotKey(div);
+    if (!key) return;
+    // Suppress region body clicks in calibration mode (they'd open info panels)
+    div.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    div.onclick = null;
+
+    var points = div._regionPoints || getRegionPoints(div);
+    applyRegionPolygon(div, points);
+
+    var g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('data-key', key);
+    svgOverlay.appendChild(g);
+
+    function rebuildVertices() {
+      g.innerHTML = '';
+      // Outline
+      var poly = document.createElementNS(SVG_NS, 'polygon');
+      poly.setAttribute('points', points.map(function(p){ return p[0]+','+p[1]; }).join(' '));
+      poly.setAttribute('fill', 'rgba(100,200,255,0.15)');
+      poly.setAttribute('stroke', 'rgba(100,200,255,0.85)');
+      poly.setAttribute('stroke-width', '0.25');
+      poly.setAttribute('stroke-dasharray', '0.5,0.3');
+      poly.setAttribute('vector-effect', 'non-scaling-stroke');
+      poly.style.pointerEvents = 'none';
+      g.appendChild(poly);
+
+      // Region label
+      var cx = points.reduce(function(s, p){ return s + p[0]; }, 0) / points.length;
+      var cy = points.reduce(function(s, p){ return s + p[1]; }, 0) / points.length;
+      var label = document.createElementNS(SVG_NS, 'text');
+      label.setAttribute('x', cx);
+      label.setAttribute('y', cy);
+      label.setAttribute('fill', '#fff');
+      label.setAttribute('font-family', 'Cinzel,serif');
+      label.setAttribute('font-size', '1.4');
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('paint-order', 'stroke');
+      label.setAttribute('stroke', '#000');
+      label.setAttribute('stroke-width', '0.3');
+      label.style.pointerEvents = 'none';
+      label.textContent = key;
+      g.appendChild(label);
+
+      // Vertex circles
+      points.forEach(function(pt, i){
+        var c = document.createElementNS(SVG_NS, 'circle');
+        c.setAttribute('cx', pt[0]);
+        c.setAttribute('cy', pt[1]);
+        c.setAttribute('r', '0.9');
+        c.setAttribute('fill', '#ffd060');
+        c.setAttribute('stroke', '#1a1208');
+        c.setAttribute('stroke-width', '0.25');
+        c.setAttribute('vector-effect', 'non-scaling-stroke');
+        c.setAttribute('class', 'cal-vertex');
+        c.dataset.index = i;
+        // Drag to move vertex
+        c.addEventListener('mousedown', function(e){
+          e.preventDefault(); e.stopPropagation();
+          var wrapRect = wrapper.getBoundingClientRect();
+          function onMove(ev){
+            var x = ((ev.clientX - wrapRect.left) / wrapRect.width)  * 100;
+            var y = ((ev.clientY - wrapRect.top)  / wrapRect.height) * 100;
+            x = Math.max(0, Math.min(100, x));
+            y = Math.max(0, Math.min(100, y));
+            points[i] = [Math.round(x*10)/10, Math.round(y*10)/10];
+            applyRegionPolygon(div, points);
+            rebuildVertices();
+          }
+          function onUp(){
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            saveRegion(key, points);
+          }
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
+        // Right-click to remove (min 3 points)
+        c.addEventListener('contextmenu', function(e){
+          e.preventDefault();
+          if (points.length <= 3) { alert('A polygon needs at least 3 vertices.'); return; }
+          points.splice(i, 1);
+          applyRegionPolygon(div, points);
+          rebuildVertices();
+          saveRegion(key, points);
+        });
+        g.appendChild(c);
+      });
+
+      // Edge midpoint "add vertex" handles (small white dots)
+      for (var i = 0; i < points.length; i++) {
+        var p1 = points[i];
+        var p2 = points[(i + 1) % points.length];
+        var mid = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
+        var midC = document.createElementNS(SVG_NS, 'circle');
+        midC.setAttribute('cx', mid[0]);
+        midC.setAttribute('cy', mid[1]);
+        midC.setAttribute('r', '0.5');
+        midC.setAttribute('fill', 'rgba(255,255,255,0.7)');
+        midC.setAttribute('stroke', '#1a1208');
+        midC.setAttribute('stroke-width', '0.15');
+        midC.setAttribute('vector-effect', 'non-scaling-stroke');
+        midC.setAttribute('class', 'cal-edge-add');
+        (function(insertIdx, midPoint){
+          midC.addEventListener('click', function(e){
+            e.preventDefault(); e.stopPropagation();
+            points.splice(insertIdx + 1, 0, [midPoint[0], midPoint[1]]);
+            applyRegionPolygon(div, points);
+            rebuildVertices();
+            saveRegion(key, points);
+          });
+        })(i, mid);
+        g.appendChild(midC);
+      }
+    }
+    rebuildVertices();
+  });
+
+  function saveRegion(key, points) {
+    var data = loadSaved();
+    data[key] = { type: 'polygon', points: points.map(function(p){ return p.slice(); }) };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+
+  // === CITIES: move + resize on every hotspot ===
+  document.querySelectorAll('.hotspot.city').forEach(function(h){
     var key = extractHotspotKey(h);
     if (!key) return;
 
@@ -812,11 +996,18 @@ function closePanel() {
     var data = loadSaved();
     var lines = [];
     lines.push('// Calibrated hotspot positions — paste back to Claude');
-    lines.push('// Format: KEY  left%  top%  width%  height%');
+    lines.push('// CITY format:    city  KEY  left%  top%  width%  height%');
+    lines.push('// REGION format:  region  KEY  polygon(x1,y1; x2,y2; ...)  [percentages]');
     lines.push('');
-    Object.keys(data).sort().forEach(function(k){
+    var keys = Object.keys(data).sort();
+    keys.forEach(function(k){
       var p = data[k];
-      lines.push(k + '  ' + p.left + '%  ' + p.top + '%  ' + p.width + '%  ' + p.height + '%');
+      if (p.type === 'polygon' && Array.isArray(p.points)) {
+        var pts = p.points.map(function(pt){ return pt[0]+','+pt[1]; }).join('; ');
+        lines.push('region  ' + k + '  polygon(' + pts + ')');
+      } else if (p.left !== undefined) {
+        lines.push('city    ' + k + '  ' + p.left + '%  ' + p.top + '%  ' + p.width + '%  ' + p.height + '%');
+      }
     });
     document.getElementById('cal-export-text').value = lines.join('\n');
     document.getElementById('cal-export-pane').classList.add('open');
