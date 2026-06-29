@@ -71,6 +71,10 @@ body.player-mode .player-only{display:block}
 body.player-mode .player-only.inline{display:inline}
 
 @media(max-width:700px){.panel-grid{grid-template-columns:1fr}.hotspot-label{font-size:8px}}
+
+/* Polygon region hotspots: no rectangular border, hover shows inside the clipped shape */
+.hotspot.region{border:0 !important;background:transparent}
+.hotspot.region:hover{background:rgba(201,168,76,0.18)}
 </style>
 </head>
 <body>
@@ -107,118 +111,118 @@ body.player-mode .player-only.inline{display:inline}
 
   <!-- REGION HOTSPOTS (percentage-based for responsiveness) -->
   <!-- Serpent Isles (top-left) -->
-  <div class="hotspot region" style="left:1%;top:3%;width:30%;height:32%" onclick="showLocation('serpent_isles')" title="Serpent Isles">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(7.9% 4.5%, 30.9% 6.6%, 32.8% 15.4%, 30.4% 25%, 26.3% 33%, 19.2% 38.5%, 11.6% 32.2%, 6% 22.8%, 3.9% 11.2%);-webkit-clip-path:polygon(7.9% 4.5%, 30.9% 6.6%, 32.8% 15.4%, 30.4% 25%, 26.3% 33%, 19.2% 38.5%, 11.6% 32.2%, 6% 22.8%, 3.9% 11.2%)" onclick="showLocation('serpent_isles')" title="Serpent Isles">
     <div class="hotspot-label">Serpent Isles</div>
   </div>
 
   <!-- Aurora Peaks (top-right) -->
-  <div class="hotspot region" style="left:58%;top:0%;width:42%;height:42%" onclick="showLocation('aurora_peaks')" title="Aurora Peaks (Aurum Dominion)">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(54.8% 0%, 99.7% 0%, 99.7% 33.1%, 100% 42%, 95.8% 44.3%, 76.3% 41.5%, 74.7% 38.6%, 69.3% 35.6%, 69.6% 32.2%, 65.2% 24.6%, 66.8% 20.5%, 64.6% 18.3%, 62.5% 20.5%, 60.8% 19.3%, 59.9% 16.9%, 57.2% 18.8%, 55.3% 16.5%, 53.1% 19.5%, 49.9% 21.5%);-webkit-clip-path:polygon(54.8% 0%, 99.7% 0%, 99.7% 33.1%, 100% 42%, 95.8% 44.3%, 76.3% 41.5%, 74.7% 38.6%, 69.3% 35.6%, 69.6% 32.2%, 65.2% 24.6%, 66.8% 20.5%, 64.6% 18.3%, 62.5% 20.5%, 60.8% 19.3%, 59.9% 16.9%, 57.2% 18.8%, 55.3% 16.5%, 53.1% 19.5%, 49.9% 21.5%)" onclick="showLocation('aurora_peaks')" title="Aurora Peaks (Aurum Dominion)">
     <div class="hotspot-label">Aurora Peaks</div>
   </div>
 
   <!-- Stonemarked Mountains (the mountain ridge NE of Duskmere) -->
-  <div class="hotspot region" style="left:34%;top:25%;width:25%;height:18%" onclick="showLocation('stonemarked')" title="Stonemarked Mountains">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(50.7% 23.2%, 55.3% 17.1%, 57.2% 19.3%, 59.7% 17.4%, 60.6% 19.6%, 62.6% 20.9%, 64.6% 18.5%, 66.8% 20.8%, 65.1% 24.5%, 69.5% 32.9%, 68.4% 35.7%, 63.7% 34.1%, 61.1% 28.4%, 58.3% 26.5%, 55.6% 27.5%, 53.3% 31.9%, 55.3% 35.5%, 56.5% 39.3%, 46.1% 41.8%, 46.2% 32.3%);-webkit-clip-path:polygon(50.7% 23.2%, 55.3% 17.1%, 57.2% 19.3%, 59.7% 17.4%, 60.6% 19.6%, 62.6% 20.9%, 64.6% 18.5%, 66.8% 20.8%, 65.1% 24.5%, 69.5% 32.9%, 68.4% 35.7%, 63.7% 34.1%, 61.1% 28.4%, 58.3% 26.5%, 55.6% 27.5%, 53.3% 31.9%, 55.3% 35.5%, 56.5% 39.3%, 46.1% 41.8%, 46.2% 32.3%)" onclick="showLocation('stonemarked')" title="Stonemarked Mountains">
     <div class="hotspot-label">Stonemarked Mtns</div>
   </div>
 
   <!-- Aelorian Territories (centre) -->
-  <div class="hotspot region" style="left:42%;top:42%;width:30%;height:24%" onclick="showLocation('aeloria_region')" title="Aelorian Territories">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(74% 38.6%, 75.5% 41.3%, 95.3% 44.3%, 80.7% 58.3%, 77.3% 62.1%, 72.3% 69.1%, 62.6% 81.9%, 60.8% 88.3%, 60% 83%, 62% 78.6%, 59.8% 73%, 55.3% 68.6%, 47.5% 71.1%, 47.1% 80.1%, 36.3% 71.9%, 49.1% 62.8%, 51.2% 56.8%, 49.8% 51.4%, 46.6% 51.4%, 43.3% 49.2%, 46.6% 41.8%, 56.6% 39.6%, 55.5% 35.4%, 53.4% 31.7%, 55.6% 27.3%, 58.2% 26.6%, 60.8% 28.4%, 63.5% 34.1%, 68.1% 35.6%);-webkit-clip-path:polygon(74% 38.6%, 75.5% 41.3%, 95.3% 44.3%, 80.7% 58.3%, 77.3% 62.1%, 72.3% 69.1%, 62.6% 81.9%, 60.8% 88.3%, 60% 83%, 62% 78.6%, 59.8% 73%, 55.3% 68.6%, 47.5% 71.1%, 47.1% 80.1%, 36.3% 71.9%, 49.1% 62.8%, 51.2% 56.8%, 49.8% 51.4%, 46.6% 51.4%, 43.3% 49.2%, 46.6% 41.8%, 56.6% 39.6%, 55.5% 35.4%, 53.4% 31.7%, 55.6% 27.3%, 58.2% 26.6%, 60.8% 28.4%, 63.5% 34.1%, 68.1% 35.6%)" onclick="showLocation('aeloria_region')" title="Aelorian Territories">
     <div class="hotspot-label">Aelorian Territories</div>
   </div>
 
   <!-- Frostwood Marsh -->
-  <div class="hotspot region" style="left:22%;top:45%;width:22%;height:22%" onclick="showLocation('frostwood_marsh')" title="Frostwood Marsh">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(51.1% 57.2%, 49.1% 62.6%, 36.4% 71.1%, 31.2% 65.5%, 22.9% 57.8%, 29.8% 57.6%, 43.3% 49.2%, 46.5% 51.7%, 49.7% 51.5%);-webkit-clip-path:polygon(51.1% 57.2%, 49.1% 62.6%, 36.4% 71.1%, 31.2% 65.5%, 22.9% 57.8%, 29.8% 57.6%, 43.3% 49.2%, 46.5% 51.7%, 49.7% 51.5%)" onclick="showLocation('frostwood_marsh')" title="Frostwood Marsh">
     <div class="hotspot-label">Frostwood Marsh</div>
   </div>
 
   <!-- Verdant Expanse (bottom-left) -->
-  <div class="hotspot region" style="left:0%;top:60%;width:32%;height:40%" onclick="showLocation('verdant_expanse')" title="Verdant Expanse">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(0% 57.7%, 7% 52.7%, 16.8% 53.5%, 22.7% 57.8%, 32.2% 66.7%, 38.5% 74.35%, 47% 80%, 52.2% 87.7%, 60.4% 89.3%, 59.5% 99.4%, 57.8% 104.4%, 0% 104.4%);-webkit-clip-path:polygon(0% 57.7%, 7% 52.7%, 16.8% 53.5%, 22.7% 57.8%, 32.2% 66.7%, 38.5% 74.35%, 47% 80%, 52.2% 87.7%, 60.4% 89.3%, 59.5% 99.4%, 57.8% 104.4%, 0% 104.4%)" onclick="showLocation('verdant_expanse')" title="Verdant Expanse">
     <div class="hotspot-label">Verdant Expanse</div>
   </div>
 
   <!-- Celestial Plateau -->
-  <div class="hotspot region" style="left:46%;top:66%;width:22%;height:30%" onclick="showLocation('celestial_plateau')" title="Celestial Plateau">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(47.4% 71.6%, 55.2% 69%, 59.2% 73.3%, 61.2% 80%, 59.6% 82.2%, 59.8% 87.1%, 52.3% 87.6%, 47.8% 80.6%);-webkit-clip-path:polygon(47.4% 71.6%, 55.2% 69%, 59.2% 73.3%, 61.2% 80%, 59.6% 82.2%, 59.8% 87.1%, 52.3% 87.6%, 47.8% 80.6%)" onclick="showLocation('celestial_plateau')" title="Celestial Plateau">
     <div class="hotspot-label">Celestial Plateau</div>
   </div>
 
   <!-- Ember Wastes -->
-  <div class="hotspot region" style="left:68%;top:50%;width:32%;height:50%" onclick="showLocation('crimson_desert')" title="Ember Wastes">
+  <div class="hotspot region" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(72.4% 68.9%, 77.5% 61.9%, 80.8% 58.4%, 92.8% 46.9%, 99.7% 42.8%, 103% 43%, 103% 103.4%, 73% 103.4%, 60.3% 99.6%, 60.8% 87.5%, 62.7% 82.2%);-webkit-clip-path:polygon(72.4% 68.9%, 77.5% 61.9%, 80.8% 58.4%, 92.8% 46.9%, 99.7% 42.8%, 103% 43%, 103% 103.4%, 73% 103.4%, 60.3% 99.6%, 60.8% 87.5%, 62.7% 82.2%)" onclick="showLocation('crimson_desert')" title="Ember Wastes">
     <div class="hotspot-label">Ember Wastes</div>
   </div>
 
   <!-- CITY HOTSPOTS — Aelorian Territories -->
-  <div class="hotspot city" style="left:64%;top:44%;width:6%;height:6%" onclick="showLocation('aeloria_city')" title="Aeloria Crossroads">
+  <div class="hotspot city" style="left:64.5%;top:54.7%;width:2%;height:2.3%" onclick="showLocation('aeloria_city')" title="Aeloria Crossroads">
     <div class="hotspot-label" style="font-size:8px;top:115%">Aeloria</div>
   </div>
-  <div class="hotspot city dm-only" style="left:35%;top:34%;width:6%;height:6%" onclick="showLocation('duskmere')" title="Duskmere">
+  <div class="hotspot city dm-only" style="left:44.8%;top:44.5%;width:2%;height:2.2%" onclick="showLocation('duskmere')" title="Duskmere">
     <div class="hotspot-label" style="font-size:8px;top:115%">Duskmere</div>
   </div>
-  <div class="hotspot city dm-only" style="left:67%;top:29%;width:6%;height:6%" onclick="showLocation('stonegate')" title="Stonegate">
+  <div class="hotspot city dm-only" style="left:68.4%;top:35.4%;width:1.7%;height:1.9%" onclick="showLocation('stonegate')" title="Stonegate">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stonegate</div>
   </div>
-  <div class="hotspot city dm-only" style="left:54%;top:26%;width:6%;height:6%" onclick="showLocation('silverbrook')" title="Silverbrook">
+  <div class="hotspot city dm-only" style="left:60%;top:34.2%;width:1.8%;height:2%" onclick="showLocation('silverbrook')" title="Silverbrook">
     <div class="hotspot-label" style="font-size:8px;top:115%">Silverbrook</div>
   </div>
-  <div class="hotspot city dm-only" style="left:54%;top:58%;width:6%;height:6%" onclick="showLocation('ironhold')" title="Ironhold">
+  <div class="hotspot city dm-only" style="left:57%;top:64.9%;width:1.7%;height:1.7%" onclick="showLocation('ironhold')" title="Ironhold">
     <div class="hotspot-label" style="font-size:8px;top:115%">Ironhold</div>
   </div>
-  <div class="hotspot city dm-only" style="left:81%;top:49%;width:6%;height:6%" onclick="showLocation('crimson_outpost')" title="Crimson Outpost">
+  <div class="hotspot city dm-only" style="left:76%;top:61.7%;width:1.5%;height:1.9%" onclick="showLocation('crimson_outpost')" title="Crimson Outpost">
     <div class="hotspot-label" style="font-size:8px;top:115%">Crimson Outpost</div>
   </div>
 
   <!-- CITY HOTSPOTS — Aurora Peaks -->
-  <div class="hotspot city dm-only" style="left:73%;top:18%;width:5%;height:5%" onclick="showLocation('auranova')" title="Auranova">
+  <div class="hotspot city dm-only" style="left:76.1%;top:25.6%;width:1.6%;height:1.9%" onclick="showLocation('auranova')" title="Auranova">
     <div class="hotspot-label" style="font-size:8px;top:115%">Auranova</div>
   </div>
-  <div class="hotspot city dm-only" style="left:74%;top:7%;width:5%;height:5%" onclick="showLocation('eclipsia')" title="Eclipsia">
+  <div class="hotspot city dm-only" style="left:77%;top:10%;width:1.6%;height:2.1%" onclick="showLocation('eclipsia')" title="Eclipsia">
     <div class="hotspot-label" style="font-size:8px;top:115%">Eclipsia</div>
   </div>
-  <div class="hotspot city dm-only" style="left:80%;top:15%;width:5%;height:5%" onclick="showLocation('crystalholm')" title="Crystalholm">
+  <div class="hotspot city dm-only" style="left:83.1%;top:19.7%;width:1.4%;height:1.5%" onclick="showLocation('crystalholm')" title="Crystalholm">
     <div class="hotspot-label" style="font-size:8px;top:115%">Crystalholm</div>
   </div>
-  <div class="hotspot city dm-only" style="left:90%;top:2%;width:5%;height:5%" onclick="showLocation('auroras_rest')" title="Aurora's Rest">
+  <div class="hotspot city dm-only" style="left:86.4%;top:4.4%;width:1.7%;height:2%" onclick="showLocation('auroras_rest')" title="Aurora's Rest">
     <div class="hotspot-label" style="font-size:8px;top:115%">Aurora's Rest</div>
   </div>
-  <div class="hotspot city dm-only" style="left:90%;top:9%;width:5%;height:5%" onclick="showLocation('lunara_monastery')" title="Lunara Monastery">
+  <div class="hotspot city dm-only" style="left:91.3%;top:13.6%;width:1.7%;height:1.8%" onclick="showLocation('lunara_monastery')" title="Lunara Monastery">
     <div class="hotspot-label" style="font-size:8px;top:115%">Lunara Monastery</div>
   </div>
-  <div class="hotspot city dm-only" style="left:91%;top:19%;width:5%;height:5%" onclick="showLocation('stellara')" title="Stellara">
+  <div class="hotspot city dm-only" style="left:91.6%;top:24.8%;width:1.7%;height:1.9%" onclick="showLocation('stellara')" title="Stellara">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stellara</div>
   </div>
-  <div class="hotspot city dm-only" style="left:60%;top:10%;width:5%;height:5%" onclick="showLocation('starryhaven')" title="Starryhaven">
+  <div class="hotspot city dm-only" style="left:50.7%;top:16.6%;width:1.6%;height:1.9%" onclick="showLocation('starryhaven')" title="Starryhaven">
     <div class="hotspot-label" style="font-size:8px;top:115%">Starryhaven</div>
   </div>
 
   <!-- CITY HOTSPOTS — Verdant Expanse (DM-only: not yet known to players) -->
-  <div class="hotspot city dm-only" style="left:10%;top:65%;width:5%;height:5%" onclick="showLocation('eldralor')" title="Eldralor">
+  <div class="hotspot city dm-only" style="left:8.7%;top:69.8%;width:2.3%;height:2.8%" onclick="showLocation('eldralor')" title="Eldralor">
     <div class="hotspot-label" style="font-size:8px;top:115%">Eldralor</div>
   </div>
-  <div class="hotspot city dm-only" style="left:23%;top:69%;width:5%;height:5%" onclick="showLocation('aurelia_haven')" title="Aurelia Haven">
+  <div class="hotspot city dm-only" style="left:29.3%;top:74.8%;width:1.9%;height:1.9%" onclick="showLocation('aurelia_haven')" title="Aurelia Haven">
     <div class="hotspot-label" style="font-size:8px;top:115%">Aurelia Haven</div>
   </div>
-  <div class="hotspot city dm-only" style="left:7%;top:85%;width:5%;height:5%" onclick="showLocation('silentwood')" title="Silentwood">
+  <div class="hotspot city dm-only" style="left:11.6%;top:85.6%;width:1.7%;height:2.3%" onclick="showLocation('silentwood')" title="Silentwood">
     <div class="hotspot-label" style="font-size:8px;top:115%">Silentwood</div>
   </div>
-  <div class="hotspot city dm-only" style="left:27%;top:93%;width:5%;height:5%" onclick="showLocation('celestia_glade')" title="Celestia Glade">
+  <div class="hotspot city dm-only" style="left:35.3%;top:89.1%;width:1.9%;height:2.3%" onclick="showLocation('celestia_glade')" title="Celestia Glade">
     <div class="hotspot-label" style="font-size:8px;top:115%">Celestia Glade</div>
   </div>
 
   <!-- CITY HOTSPOTS — Celestial Plateau -->
-  <div class="hotspot city dm-only" style="left:52%;top:78%;width:5%;height:5%" onclick="showLocation('stellargrove')" title="Stellargrove">
+  <div class="hotspot city dm-only" style="left:50.3%;top:77.3%;width:1.7%;height:2%" onclick="showLocation('stellargrove')" title="Stellargrove">
     <div class="hotspot-label" style="font-size:8px;top:115%">Stellargrove</div>
   </div>
-  <div class="hotspot city dm-only" style="left:54%;top:88%;width:5%;height:5%" onclick="showLocation('astronhold')" title="Astronhold">
+  <div class="hotspot city dm-only" style="left:55.8%;top:83.1%;width:1.8%;height:2%" onclick="showLocation('astronhold')" title="Astronhold">
     <div class="hotspot-label" style="font-size:8px;top:115%">Astronhold</div>
   </div>
 
   <!-- CITY HOTSPOTS — Serpent Isles -->
-  <div class="hotspot city dm-only" style="left:7%;top:6%;width:5%;height:5%" onclick="showLocation('skullport')" title="Skullport">
+  <div class="hotspot city dm-only" style="left:10%;top:9.7%;width:2.1%;height:2.4%" onclick="showLocation('skullport')" title="Skullport">
     <div class="hotspot-label" style="font-size:8px;top:115%">Skullport</div>
   </div>
-  <div class="hotspot city dm-only" style="left:15%;top:15%;width:5%;height:5%" onclick="showLocation('coral_cove')" title="Coral Cove">
+  <div class="hotspot city dm-only" style="left:16.8%;top:20.6%;width:1.6%;height:2.6%" onclick="showLocation('coral_cove')" title="Coral Cove">
     <div class="hotspot-label" style="font-size:8px;top:115%">Coral Cove</div>
   </div>
-  <div class="hotspot city dm-only" style="left:27%;top:9%;width:5%;height:5%" onclick="showLocation('port_blackfin')" title="Port Blackfin">
+  <div class="hotspot city dm-only" style="left:31.3%;top:14%;width:1.7%;height:2.2%" onclick="showLocation('port_blackfin')" title="Port Blackfin">
     <div class="hotspot-label" style="font-size:8px;top:115%">Port Blackfin</div>
   </div>
 
