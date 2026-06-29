@@ -115,58 +115,62 @@ body.player-mode .player-only.npc-row{display:flex}
 
   <!-- DISTRICT ZONES (percentage-based for responsiveness) -->
   <!-- NW: Merchants Rise -->
-  <div class="hotspot" style="left:3%;top:15%;width:32%;height:38%" onclick="showLocation('merchants_rise')" title="Merchants Rise">
+  <div class="hotspot district" style="left:3%;top:15%;width:32%;height:38%" onclick="showLocation('merchants_rise')" title="Merchants Rise">
     <div class="hotspot-label">Merchants Rise</div>
   </div>
 
   <!-- NE: High Spires District -->
-  <div class="hotspot" style="left:52%;top:10%;width:46%;height:42%" onclick="showLocation('high_spires')" title="High Spires District">
+  <div class="hotspot district" style="left:52%;top:10%;width:46%;height:42%" onclick="showLocation('high_spires')" title="High Spires District">
     <div class="hotspot-label">High Spires District</div>
   </div>
 
   <!-- SW: Ashgate Slums -->
-  <div class="hotspot" style="left:3%;top:55%;width:38%;height:40%" onclick="showLocation('ashgate_slums')" title="Ashgate Slums">
+  <div class="hotspot district" style="left:3%;top:55%;width:38%;height:40%" onclick="showLocation('ashgate_slums')" title="Ashgate Slums">
     <div class="hotspot-label">Ashgate Slums</div>
   </div>
 
   <!-- SE: Copper Light Ward -->
-  <div class="hotspot" style="left:55%;top:55%;width:43%;height:40%" onclick="showLocation('copper_light')" title="Copper Light Ward">
+  <div class="hotspot district" style="left:55%;top:55%;width:43%;height:40%" onclick="showLocation('copper_light')" title="Copper Light Ward">
     <div class="hotspot-label">Copper Light Ward</div>
   </div>
 
   <!-- CENTRE: City Hall -->
-  <div class="hotspot" style="left:38%;top:35%;width:24%;height:28%" onclick="showLocation('city_hall')" title="City Hall">
+  <div class="hotspot building" style="left:38%;top:35%;width:24%;height:28%" onclick="showLocation('city_hall')" title="City Hall">
     <div class="hotspot-label">City Hall</div>
   </div>
 
   <!-- Grand Bazaar (inner NW) -->
-  <div class="hotspot" style="left:28%;top:18%;width:14%;height:16%" onclick="showLocation('grand_bazaar')" title="Grand Bazaar">
+  <div class="hotspot building" style="left:28%;top:18%;width:14%;height:16%" onclick="showLocation('grand_bazaar')" title="Grand Bazaar">
     <div class="hotspot-label" style="font-size:8px">Grand Bazaar</div>
   </div>
 
   <!-- Wayfarer's Rest (inner E) -->
-  <div class="hotspot" style="left:64%;top:43%;width:14%;height:12%" onclick="showLocation('wayfarers_rest')" title="Wayfarer's Rest">
+  <div class="hotspot building" style="left:64%;top:43%;width:14%;height:12%" onclick="showLocation('wayfarers_rest')" title="Wayfarer's Rest">
     <div class="hotspot-label" style="font-size:8px">Wayfarer's Rest</div>
   </div>
 
   <!-- Pig's Head (SW, Ashgate) -->
-  <div class="hotspot" style="left:28%;top:57%;width:14%;height:12%" onclick="showLocation('pigs_head')" title="Pig's Head Inn">
+  <div class="hotspot building" style="left:28%;top:57%;width:14%;height:12%" onclick="showLocation('pigs_head')" title="Pig's Head Inn">
     <div class="hotspot-label" style="font-size:8px">Pig's Head</div>
   </div>
 
   <!-- Spire of the Silver Eclipse (NE corner) -->
-  <div class="hotspot" style="left:82%;top:8%;width:14%;height:16%" onclick="showLocation('vaelorans_tower')" title="Spire of the Silver Eclipse">
+  <div class="hotspot building" style="left:82%;top:8%;width:14%;height:16%" onclick="showLocation('vaelorans_tower')" title="Spire of the Silver Eclipse">
     <div class="hotspot-label" style="font-size:8px">The Spire</div>
   </div>
 
   <!-- North Gate / O'Leary's -->
-  <div class="hotspot" style="left:40%;top:2%;width:20%;height:10%" onclick="showLocation('oleary_stables')" title="North Gate — O'Leary's Stables">
+  <div class="hotspot building" style="left:40%;top:2%;width:20%;height:10%" onclick="showLocation('oleary_stables')" title="North Gate — O'Leary's Stables">
     <div class="hotspot-label" style="font-size:8px">North Gate</div>
   </div>
 
   <!-- Ironwell Forge (Merchants Rise) -->
-  <div class="hotspot" style="left:22%;top:30%;width:12%;height:10%" onclick="showLocation('ironwell_forge')" title="Ironwell Forge">
+  <div class="hotspot building" style="left:22%;top:30%;width:12%;height:10%" onclick="showLocation('ironwell_forge')" title="Ironwell Forge">
     <div class="hotspot-label" style="font-size:8px">Ironwell Forge</div>
+  </div>
+
+  <div class="hotspot building" style="left:70%;top:75%;width:14%;height:12%" onclick="showLocation('temple_luminos')" title="Temple of Luminos">
+    <div class="hotspot-label" style="font-size:8px">Temple of Luminos</div>
   </div>
 
 </div>
@@ -657,6 +661,367 @@ window.addEventListener('load', function(){
     if(saved) el.value = saved;
   });
 });
+
+// ===================================================================
+// CALIBRATION MODE — Aeloria city map
+// Same model as world_map.html: districts = polygons, buildings = rectangles.
+// Activated by ?calibrate URL parameter; DM-only.
+// ===================================================================
+(function calibrationMode(){
+  var isCal = /[?&]calibrate(=|&|$)/.test(location.search);
+  var isPlayer = /[?&]player(=|&|$)/.test(location.search);
+  if (isCal && isPlayer) return;
+
+  var CAL_KEY = 'eldoria-aeloria-calibration';
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function loadSaved(){
+    try { var raw = localStorage.getItem(CAL_KEY); return raw ? JSON.parse(raw) : {}; }
+    catch(e){ return {}; }
+  }
+  function saveAll(data){ try { localStorage.setItem(CAL_KEY, JSON.stringify(data)); } catch(e){} }
+
+  function extractHotspotKey(h){
+    var oc = h.getAttribute('onclick') || '';
+    var m = oc.match(/showLocation\('([^']+)'\)/);
+    return m ? m[1] : null;
+  }
+
+  function getDistrictPoints(div){
+    var key = extractHotspotKey(div);
+    if (key && saved[key] && Array.isArray(saved[key].points)) {
+      return saved[key].points.map(function(p){ return p.slice(); });
+    }
+    if (key && saved[key] && saved[key].left !== undefined) {
+      var s = saved[key];
+      var l = s.left, t = s.top, w = s.width, h = s.height;
+      return [[l,t],[l+w,t],[l+w,t+h],[l,t+h]];
+    }
+    var dl = parseFloat(div.style.left) || 0;
+    var dt = parseFloat(div.style.top)  || 0;
+    var dw = parseFloat(div.style.width) || 10;
+    var dh = parseFloat(div.style.height) || 10;
+    return [[dl,dt],[dl+dw,dt],[dl+dw,dt+dh],[dl,dt+dh]];
+  }
+
+  function applyDistrictPolygon(div, points){
+    div.style.left='0%'; div.style.top='0%'; div.style.width='100%'; div.style.height='100%';
+    var pathStr = 'polygon(' + points.map(function(p){ return p[0]+'% '+p[1]+'%'; }).join(', ') + ')';
+    div.style.clipPath = pathStr; div.style.webkitClipPath = pathStr;
+    div._districtPoints = points;
+  }
+
+  var saved = loadSaved();
+  var noCal = /[?&]nocal(=|&|$)/.test(location.search);
+
+  if (!noCal) {
+    // BUILDINGS — apply saved rect positions
+    document.querySelectorAll('.hotspot.building').forEach(function(h){
+      var key = extractHotspotKey(h);
+      if (key && saved[key]){
+        var p = saved[key];
+        if (p.left   !== undefined) h.style.left   = p.left   + '%';
+        if (p.top    !== undefined) h.style.top    = p.top    + '%';
+        if (p.width  !== undefined) h.style.width  = p.width  + '%';
+        if (p.height !== undefined) h.style.height = p.height + '%';
+      }
+    });
+    // DISTRICTS — apply polygon (clip-path) always
+    document.querySelectorAll('.hotspot.district').forEach(function(div){
+      applyDistrictPolygon(div, getDistrictPoints(div));
+    });
+  }
+
+  if (!isCal) return; // not in calibration mode — just apply saved positions
+
+  // === CALIBRATION UI BEGINS ===
+  document.documentElement.classList.add('calibrate-mode');
+  var style = document.createElement('style');
+  style.textContent = [
+    '.calibrate-mode .hotspot{border:2px dashed rgba(255,200,0,0.85) !important;background:rgba(255,200,0,0.18) !important;cursor:move !important;z-index:10}',
+    '.calibrate-mode .hotspot.district{border:0 !important;background:transparent !important}',
+    '.calibrate-mode .hotspot.dragging{outline:3px solid #fff !important;z-index:1000}',
+    '.calibrate-mode .hotspot.resizing{outline:3px solid #fff !important;outline-style:dotted !important;z-index:1000}',
+    '.calibrate-mode .hotspot-label{color:rgba(255,255,255,0.95) !important;font-size:10px !important;text-shadow:0 1px 3px rgba(0,0,0,0.95) !important}',
+    '.calibrate-mode .cal-coord-tag{position:absolute;top:-22px;left:0;background:rgba(0,0,0,0.85);color:#ffd060;font-size:10px;font-family:monospace;padding:1px 5px;border-radius:2px;white-space:nowrap;pointer-events:none;z-index:11}',
+    '.calibrate-mode .cal-resize-handle{position:absolute;right:-6px;bottom:-6px;width:12px;height:12px;background:#ffd060;border:2px solid #1a1208;border-radius:2px;cursor:nwse-resize;z-index:12;box-shadow:0 1px 3px rgba(0,0,0,0.6)}',
+    '.calibrate-mode .cal-resize-handle:hover{background:#fff;transform:scale(1.3)}',
+    '#cal-svg-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex{cursor:move;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex:hover{fill:#fff !important}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add{cursor:crosshair;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add:hover{fill:rgba(255,255,255,0.95) !important}',
+    '#cal-toolbar{position:fixed;bottom:18px;right:18px;background:rgba(20,15,8,0.97);border:2px solid #ffd060;border-radius:6px;padding:12px;color:#f4edd8;font-family:Cinzel,serif;font-size:11px;z-index:9999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.6)}',
+    '#cal-toolbar h3{color:#ffd060;font-size:13px;margin-bottom:6px;letter-spacing:1.5px}',
+    '#cal-toolbar .cal-row{margin:6px 0}',
+    '#cal-toolbar button{background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;font-size:10px;letter-spacing:.8px;cursor:pointer;margin:2px 2px 2px 0}',
+    '#cal-toolbar button:hover{background:#ffd060;color:#1a1208}',
+    '#cal-export-pane{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:80vw;max-width:720px;height:70vh;background:#1a1208;border:2px solid #ffd060;border-radius:6px;z-index:10000;padding:20px;color:#f4edd8;font-family:monospace;flex-direction:column}',
+    '#cal-export-pane.open{display:flex}',
+    '#cal-export-pane textarea{flex:1;background:#0a0805;color:#a0d4c4;border:1px solid #5a4820;padding:10px;font-family:Consolas,monospace;font-size:11px;line-height:1.5;border-radius:3px;resize:none;margin-top:10px}',
+    '#cal-status{font-family:Cinzel,serif;font-size:10px;color:#a0d4c4;margin-top:6px}'
+  ].join('\n');
+  document.head.appendChild(style);
+
+  var toolbar = document.createElement('div');
+  toolbar.id = 'cal-toolbar';
+  toolbar.innerHTML =
+    '<h3>🛠 AELORIA CALIBRATION</h3>' +
+    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Buildings: drag body to move · drag corner to resize.<br>Districts: drag yellow vertex · click white dot on edge to add vertex · right-click vertex to remove.</div>' +
+    '<div class="cal-row">' +
+      '<label><input type="checkbox" id="cal-show-districts" checked> Districts</label> &nbsp; ' +
+      '<label><input type="checkbox" id="cal-show-buildings" checked> Buildings</label>' +
+    '</div>' +
+    '<div class="cal-row">' +
+      '<button onclick="calExport()">📋 Export</button>' +
+      '<button onclick="calReset()">↺ Reset all</button>' +
+      '<button onclick="window.location.href=location.pathname">Exit</button>' +
+    '</div>' +
+    '<div id="cal-status">Ready. <span id="cal-saved-count">' + Object.keys(saved).length + '</span> hotspots calibrated.</div>';
+  document.body.appendChild(toolbar);
+
+  var pane = document.createElement('div');
+  pane.id = 'cal-export-pane';
+  pane.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:#ffd060;font-family:Cinzel,serif;font-size:14px;letter-spacing:1.5px">CALIBRATED POSITIONS — paste back to Claude</h3><button onclick="document.getElementById(\'cal-export-pane\').classList.remove(\'open\')" style="background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;cursor:pointer">✕ Close</button></div>' +
+    '<textarea id="cal-export-text" readonly></textarea>' +
+    '<div style="font-size:11px;color:#c0a870;margin-top:8px">Triple-click in the text area to select all, then copy.</div>';
+  document.body.appendChild(pane);
+
+  document.getElementById('cal-show-districts').addEventListener('change', applyVisibility);
+  document.getElementById('cal-show-buildings').addEventListener('change', applyVisibility);
+  function applyVisibility(){
+    var showD = document.getElementById('cal-show-districts').checked;
+    var showB = document.getElementById('cal-show-buildings').checked;
+    document.querySelectorAll('.hotspot').forEach(function(h){
+      var isDistrict = h.classList.contains('district');
+      h.style.display = ((isDistrict && showD) || (!isDistrict && showB)) ? '' : 'none';
+    });
+    document.querySelectorAll('#cal-svg-overlay g').forEach(function(g){
+      g.style.display = showD ? '' : 'none';
+    });
+  }
+
+  var wrapper = document.getElementById('map-wrapper');
+  var svgOverlay = document.createElementNS(SVG_NS, 'svg');
+  svgOverlay.id = 'cal-svg-overlay';
+  svgOverlay.setAttribute('viewBox', '0 0 100 100');
+  svgOverlay.setAttribute('preserveAspectRatio', 'none');
+  wrapper.appendChild(svgOverlay);
+
+  // === DISTRICTS: polygon vertex editing ===
+  document.querySelectorAll('.hotspot.district').forEach(function(div){
+    var key = extractHotspotKey(div);
+    if (!key) return;
+    div.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    div.onclick = null;
+    var points = div._districtPoints || getDistrictPoints(div);
+    applyDistrictPolygon(div, points);
+
+    var g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('data-key', key);
+    svgOverlay.appendChild(g);
+
+    function rebuild(){
+      g.innerHTML = '';
+      var poly = document.createElementNS(SVG_NS, 'polygon');
+      poly.setAttribute('points', points.map(function(p){ return p[0]+','+p[1]; }).join(' '));
+      poly.setAttribute('fill', 'rgba(100,200,255,0.15)');
+      poly.setAttribute('stroke', 'rgba(100,200,255,0.85)');
+      poly.setAttribute('stroke-width', '0.25');
+      poly.setAttribute('stroke-dasharray', '0.5,0.3');
+      poly.setAttribute('vector-effect', 'non-scaling-stroke');
+      poly.style.pointerEvents = 'none';
+      g.appendChild(poly);
+
+      var cx = points.reduce(function(s,p){return s+p[0];}, 0) / points.length;
+      var cy = points.reduce(function(s,p){return s+p[1];}, 0) / points.length;
+      var label = document.createElementNS(SVG_NS, 'text');
+      label.setAttribute('x', cx); label.setAttribute('y', cy);
+      label.setAttribute('fill', '#fff');
+      label.setAttribute('font-family', 'Cinzel,serif');
+      label.setAttribute('font-size', '1.4');
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('paint-order', 'stroke');
+      label.setAttribute('stroke', '#000');
+      label.setAttribute('stroke-width', '0.3');
+      label.style.pointerEvents = 'none';
+      label.textContent = key;
+      g.appendChild(label);
+
+      points.forEach(function(pt, i){
+        var c = document.createElementNS(SVG_NS, 'circle');
+        c.setAttribute('cx', pt[0]); c.setAttribute('cy', pt[1]); c.setAttribute('r', '0.9');
+        c.setAttribute('fill', '#ffd060');
+        c.setAttribute('stroke', '#1a1208');
+        c.setAttribute('stroke-width', '0.25');
+        c.setAttribute('vector-effect', 'non-scaling-stroke');
+        c.setAttribute('class', 'cal-vertex');
+        c.addEventListener('mousedown', function(e){
+          e.preventDefault(); e.stopPropagation();
+          var wr = wrapper.getBoundingClientRect();
+          function onMove(ev){
+            var x = ((ev.clientX - wr.left)/wr.width)*100;
+            var y = ((ev.clientY - wr.top)/wr.height)*100;
+            x = Math.max(0,Math.min(100,x)); y = Math.max(0,Math.min(100,y));
+            points[i] = [Math.round(x*10)/10, Math.round(y*10)/10];
+            applyDistrictPolygon(div, points);
+            rebuild();
+          }
+          function onUp(){
+            document.removeEventListener('mousemove',onMove);
+            document.removeEventListener('mouseup',onUp);
+            saveDistrict(key, points);
+          }
+          document.addEventListener('mousemove',onMove);
+          document.addEventListener('mouseup',onUp);
+        });
+        c.addEventListener('contextmenu', function(e){
+          e.preventDefault();
+          if (points.length <= 3){ alert('A polygon needs at least 3 vertices.'); return; }
+          points.splice(i,1);
+          applyDistrictPolygon(div, points);
+          rebuild();
+          saveDistrict(key, points);
+        });
+        g.appendChild(c);
+      });
+
+      for (var i=0; i<points.length; i++){
+        var p1=points[i], p2=points[(i+1)%points.length];
+        var mid=[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+        var midC = document.createElementNS(SVG_NS, 'circle');
+        midC.setAttribute('cx', mid[0]); midC.setAttribute('cy', mid[1]); midC.setAttribute('r', '0.5');
+        midC.setAttribute('fill', 'rgba(255,255,255,0.7)');
+        midC.setAttribute('stroke', '#1a1208');
+        midC.setAttribute('stroke-width', '0.15');
+        midC.setAttribute('vector-effect', 'non-scaling-stroke');
+        midC.setAttribute('class', 'cal-edge-add');
+        (function(idx, mp){
+          midC.addEventListener('click', function(e){
+            e.preventDefault(); e.stopPropagation();
+            points.splice(idx+1, 0, [mp[0], mp[1]]);
+            applyDistrictPolygon(div, points);
+            rebuild();
+            saveDistrict(key, points);
+          });
+        })(i, mid);
+        g.appendChild(midC);
+      }
+    }
+    rebuild();
+  });
+
+  function saveDistrict(key, points){
+    var data = loadSaved();
+    data[key] = { type:'polygon', points: points.map(function(p){return p.slice();}) };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+
+  // === BUILDINGS: move + resize ===
+  document.querySelectorAll('.hotspot.building').forEach(function(h){
+    var key = extractHotspotKey(h);
+    if (!key) return;
+    h.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    h.onclick = null;
+
+    var tag = document.createElement('div'); tag.className = 'cal-coord-tag'; h.appendChild(tag);
+    var handle = document.createElement('div'); handle.className = 'cal-resize-handle';
+    handle.title = 'Drag to resize'; h.appendChild(handle);
+    updateTag(h, tag);
+
+    h.addEventListener('mousedown', function(e){
+      if (e.target === handle) return;
+      if (e.target !== h && e.target.classList && !e.target.classList.contains('cal-coord-tag') && !e.target.classList.contains('hotspot-label')) return;
+      e.preventDefault();
+      var wr = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      var grabX = e.clientX - hRect.left, grabY = e.clientY - hRect.top;
+      h.classList.add('dragging');
+      function onMove(ev){
+        var x = ev.clientX - wr.left - grabX;
+        var y = ev.clientY - wr.top  - grabY;
+        var lp = (x/wr.width)*100, tp = (y/wr.height)*100;
+        lp = Math.max(0,Math.min(99,lp)); tp = Math.max(0,Math.min(99,tp));
+        h.style.left = lp.toFixed(1)+'%'; h.style.top = tp.toFixed(1)+'%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+        h.classList.remove('dragging');
+        saveBuilding(key, h);
+      }
+      document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    });
+
+    handle.addEventListener('mousedown', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var wr = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      var leftPx = hRect.left - wr.left, topPx = hRect.top - wr.top;
+      h.classList.add('resizing');
+      function onMove(ev){
+        var nrx = ev.clientX - wr.left, nby = ev.clientY - wr.top;
+        var wp = ((nrx-leftPx)/wr.width)*100, hp = ((nby-topPx)/wr.height)*100;
+        wp = Math.max(1,Math.min(100,wp)); hp = Math.max(1,Math.min(100,hp));
+        h.style.width = wp.toFixed(1)+'%'; h.style.height = hp.toFixed(1)+'%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+        h.classList.remove('resizing');
+        saveBuilding(key, h);
+      }
+      document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    });
+  });
+
+  function updateTag(h, tag){
+    var key = extractHotspotKey(h);
+    tag.textContent = (key||'?') + ' · L:'+h.style.left+' T:'+h.style.top+' W:'+h.style.width+' H:'+h.style.height;
+  }
+
+  function saveBuilding(key, h){
+    var data = loadSaved();
+    data[key] = {
+      type: 'rect',
+      left:   parseFloat(h.style.left),
+      top:    parseFloat(h.style.top),
+      width:  parseFloat(h.style.width),
+      height: parseFloat(h.style.height)
+    };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+
+  window.calExport = function(){
+    var data = loadSaved();
+    var lines = [];
+    lines.push('// Aeloria City Map — calibrated positions — paste back to Claude');
+    lines.push('// BUILDING format: building  KEY  left%  top%  width%  height%');
+    lines.push('// DISTRICT format: district  KEY  polygon(x1,y1; x2,y2; ...)  [percentages]');
+    lines.push('');
+    Object.keys(data).sort().forEach(function(k){
+      var p = data[k];
+      if (p.type === 'polygon' && Array.isArray(p.points)){
+        var pts = p.points.map(function(pt){ return pt[0]+','+pt[1]; }).join('; ');
+        lines.push('district  ' + k + '  polygon(' + pts + ')');
+      } else if (p.left !== undefined) {
+        lines.push('building  ' + k + '  ' + p.left + '%  ' + p.top + '%  ' + p.width + '%  ' + p.height + '%');
+      }
+    });
+    document.getElementById('cal-export-text').value = lines.join('\n');
+    document.getElementById('cal-export-pane').classList.add('open');
+    setTimeout(function(){ var t = document.getElementById('cal-export-text'); t.focus(); t.select(); }, 50);
+  };
+
+  window.calReset = function(){
+    if (!confirm('Wipe all saved calibration positions? This cannot be undone.')) return;
+    localStorage.removeItem(CAL_KEY);
+    location.reload();
+  };
+})();
 </script>
 </body>
 </html>
