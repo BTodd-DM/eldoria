@@ -546,6 +546,438 @@ body {
   .panel { padding: 1rem; }
   .npc-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   INTERACTIVE 2024 CHARACTER SHEET — modal + sheet styles
+   ============================================================ */
+#sheet-dialog {
+  width: 96vw; max-width: 1280px;
+  height: 92vh; max-height: 92vh;
+  margin: 4vh auto;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: linear-gradient(160deg, #1a1208 0%, #0d0a06 100%);
+  color: var(--parch);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(201,168,76,0.2);
+}
+#sheet-dialog::backdrop { background: rgba(0,0,0,0.75); }
+#sheet-dialog[open] { display: flex; flex-direction: column; }
+
+.sheet-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: .75rem 1.25rem;
+  background: linear-gradient(180deg, #1a1208, #14100a);
+  border-bottom: 2px solid var(--gold);
+  flex-shrink: 0;
+}
+.sheet-topbar-title {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold2);
+  font-size: 18px;
+  letter-spacing: 1.5px;
+}
+.sheet-topbar-actions { display: flex; gap: .4rem; }
+.sheet-close-btn {
+  background: var(--red); color: var(--parch); border: none;
+  padding: .5rem 1rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+  cursor: pointer;
+}
+.sheet-close-btn:hover { background: var(--red2); }
+
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  background: #100a05;
+}
+
+/* Sheet header strip: name, class, species, AC, HP, hit dice, death saves */
+.sheet-header {
+  display: grid;
+  grid-template-columns: 1.4fr .9fr .9fr .9fr .9fr;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+.sheet-id-block {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  padding: .5rem .75rem;
+}
+.sheet-id-name {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold3);
+  font-size: 16px;
+  margin-bottom: .15rem;
+}
+.sheet-id-meta { font-size: 11.5px; color: var(--parch3); line-height: 1.5; }
+.sheet-id-meta strong { color: var(--parch2); font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: .5px; }
+
+.sheet-hex {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  padding: .4rem .5rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+}
+.sheet-hex-label {
+  font-family: 'Cinzel', serif; font-size: 9px;
+  letter-spacing: 1.5px; color: var(--parch3);
+  text-transform: uppercase;
+}
+.sheet-hex-value {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 26px; color: var(--gold3);
+  line-height: 1.1;
+}
+.sheet-hex-sub { font-size: 10.5px; color: var(--parch4); margin-top: .15rem; }
+
+/* HP block with +/- controls */
+.sheet-hp {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  padding: .4rem .5rem;
+  text-align: center;
+}
+.sheet-hp-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: var(--parch3); }
+.sheet-hp-row { display: flex; justify-content: center; align-items: center; gap: .25rem; margin-top: .25rem; }
+.sheet-hp-row input {
+  width: 56px; text-align: center;
+  background: transparent; border: 1px solid rgba(160,128,64,0.3);
+  color: var(--gold3); font-family: 'Cinzel Decorative', serif; font-size: 18px;
+  border-radius: 2px; padding: .1rem;
+  outline: none;
+}
+.sheet-hp-row input:focus { border-color: var(--gold2); }
+.sheet-hp-max { font-size: 13px; color: var(--parch4); }
+.sheet-hp-btns { display: flex; gap: .25rem; justify-content: center; margin-top: .35rem; flex-wrap: wrap; }
+.sheet-hp-btn {
+  background: rgba(160,128,64,0.15); color: var(--parch);
+  border: 1px solid rgba(160,128,64,0.3); border-radius: 2px;
+  padding: .1rem .4rem; font-size: 10.5px; cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+}
+.sheet-hp-btn:hover { background: rgba(160,128,64,0.3); }
+.sheet-hp-btn.heal { background: rgba(13,74,42,0.4); }
+.sheet-hp-btn.heal:hover { background: rgba(13,74,42,0.7); }
+.sheet-hp-btn.dmg { background: rgba(139,26,26,0.4); }
+.sheet-hp-btn.dmg:hover { background: rgba(139,26,26,0.7); }
+
+.sheet-temp-row { font-size: 10.5px; color: var(--parch3); margin-top: .25rem; }
+.sheet-temp-row input { width: 36px; background: transparent; border: 1px solid rgba(160,128,64,0.3); color: var(--parch); text-align: center; border-radius: 2px; }
+
+.sheet-deathsaves { display: flex; flex-direction: column; gap: .2rem; align-items: center; }
+.sheet-ds-row { display: flex; gap: .35rem; align-items: center; font-size: 10.5px; color: var(--parch3); }
+.sheet-ds-circle {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid var(--parch3); cursor: pointer;
+}
+.sheet-ds-circle.success.on { background: var(--safe); border-color: var(--gold2); }
+.sheet-ds-circle.failure.on { background: var(--danger); border-color: var(--red2); }
+
+/* Main 3-column body grid */
+.sheet-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 1fr;
+  gap: .75rem;
+}
+@media (max-width: 1100px) {
+  .sheet-header { grid-template-columns: 1fr 1fr; }
+  .sheet-grid { grid-template-columns: 1fr; }
+}
+
+/* Strip row above grid: initiative, speed, size, passive perception, prof, inspiration */
+.sheet-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: .4rem;
+  margin-bottom: .75rem;
+}
+
+/* Ability score cards */
+.sheet-ability {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  padding: .4rem .55rem;
+  margin-bottom: .5rem;
+}
+.sheet-ability-head { display: flex; align-items: center; gap: .5rem; }
+.sheet-ability-name {
+  font-family: 'Cinzel', serif; font-size: 10px;
+  letter-spacing: 2px; color: var(--gold2);
+  flex: 1;
+}
+.sheet-ability-mod {
+  font-family: 'Cinzel Decorative', serif; color: var(--gold3);
+  font-size: 22px; line-height: 1; cursor: pointer;
+  padding: .1rem .4rem; border: 1px solid transparent; border-radius: 2px;
+}
+.sheet-ability-mod:hover { border-color: var(--gold2); background: rgba(201,168,76,0.1); }
+.sheet-ability-score { font-size: 11px; color: var(--parch3); margin-left: .2rem; }
+
+.sheet-ability-list { margin-top: .25rem; }
+.sheet-skill-row {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: 11.5px; color: var(--parch2);
+  padding: .1rem .25rem; border-radius: 2px;
+  cursor: pointer;
+}
+.sheet-skill-row:hover { background: rgba(201,168,76,0.08); }
+.sheet-skill-prof {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1px solid var(--parch3);
+  flex-shrink: 0;
+}
+.sheet-skill-prof.on { background: var(--gold2); border-color: var(--gold2); }
+.sheet-skill-prof.expertise { background: var(--gold3); border: 2px solid var(--gold); }
+.sheet-skill-mod { width: 28px; text-align: right; color: var(--gold3); font-family: 'Cinzel', serif; font-size: 11px; }
+.sheet-skill-name { flex: 1; }
+.sheet-skill-save .sheet-skill-name { font-weight: 600; color: var(--parch); font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; }
+
+/* Sheet sub-panels (right + middle columns) */
+.sheet-sub {
+  background: rgba(20,15,8,0.6);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 3px;
+  padding: .6rem .75rem;
+  margin-bottom: .5rem;
+}
+.sheet-sub-title {
+  font-family: 'Cinzel', serif; color: var(--gold2);
+  font-size: 11px; letter-spacing: 2px;
+  border-bottom: 1px solid rgba(160,128,64,0.3);
+  padding-bottom: .35rem; margin-bottom: .5rem;
+}
+
+.sheet-weapon-table {
+  width: 100%; border-collapse: collapse; font-size: 11.5px;
+}
+.sheet-weapon-table th {
+  text-align: left; font-family: 'Cinzel', serif; font-size: 9.5px;
+  letter-spacing: 1px; color: var(--parch3);
+  padding: .2rem .3rem; border-bottom: 1px solid rgba(160,128,64,0.2);
+}
+.sheet-weapon-table td {
+  padding: .25rem .3rem; border-bottom: 1px dashed rgba(160,128,64,0.15);
+  color: var(--parch2); vertical-align: top;
+}
+.sheet-weapon-roll {
+  background: rgba(13,61,48,0.4); color: var(--parch);
+  border: 1px solid rgba(160,128,64,0.3); border-radius: 2px;
+  padding: .15rem .5rem; font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: .5px;
+  cursor: pointer;
+}
+.sheet-weapon-roll:hover { background: rgba(26,96,80,0.7); }
+
+.sheet-feature-list { display: flex; flex-direction: column; gap: .5rem; }
+.sheet-feature {
+  border-left: 2px solid var(--gold);
+  padding: .15rem .55rem;
+}
+.sheet-feature-name { font-family: 'Cinzel', serif; color: var(--gold2); font-size: 11.5px; letter-spacing: .5px; }
+.sheet-feature-desc { font-size: 12px; color: var(--parch2); line-height: 1.45; margin-top: .15rem; }
+
+/* Spell slots row */
+.sheet-slots-row {
+  display: grid; grid-template-columns: repeat(9, 1fr);
+  gap: .35rem; margin: .35rem 0 .75rem;
+}
+.sheet-slot-block {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 3px;
+  padding: .25rem;
+  text-align: center;
+}
+.sheet-slot-level { font-family: 'Cinzel', serif; font-size: 9px; color: var(--parch3); letter-spacing: 1px; }
+.sheet-slot-diamonds { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; margin-top: .2rem; min-height: 14px; }
+.sheet-slot-diamond {
+  width: 10px; height: 10px;
+  transform: rotate(45deg);
+  border: 1px solid var(--gold2);
+  background: var(--gold2);
+  cursor: pointer;
+}
+.sheet-slot-diamond.expended { background: transparent; }
+.sheet-slot-diamond:hover { box-shadow: 0 0 4px var(--gold3); }
+.sheet-slot-count { font-size: 10px; color: var(--parch3); margin-top: .15rem; }
+
+/* Spell list */
+.sheet-spell-list {
+  max-height: 360px; overflow-y: auto;
+  border: 1px solid rgba(160,128,64,0.2);
+  border-radius: 3px;
+}
+.sheet-spell-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: .5rem; align-items: center;
+  padding: .3rem .5rem;
+  border-bottom: 1px dashed rgba(160,128,64,0.15);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.sheet-spell-row:hover { background: rgba(201,168,76,0.06); }
+.sheet-spell-row.signature { background: rgba(122,26,26,0.12); }
+.sheet-spell-level { font-family: 'Cinzel', serif; color: var(--gold2); font-size: 10px; text-align: center; }
+.sheet-spell-name { color: var(--parch); }
+.sheet-spell-name .spell-tag {
+  display: inline-block;
+  font-size: 9px; padding: 1px 5px; border-radius: 2px;
+  background: rgba(160,128,64,0.25); color: var(--parch2);
+  margin-left: .35rem; letter-spacing: .5px; font-family: 'Cinzel', serif;
+  vertical-align: middle;
+}
+.sheet-spell-name .spell-tag.conc { background: rgba(74,45,122,0.4); color: var(--parch); }
+.sheet-spell-name .spell-tag.sig { background: rgba(122,26,26,0.5); color: var(--parch); }
+.sheet-spell-cast {
+  background: rgba(13,61,48,0.4); color: var(--parch);
+  border: 1px solid rgba(160,128,64,0.3); border-radius: 2px;
+  padding: .1rem .5rem; font-family: 'Cinzel', serif;
+  font-size: 9.5px; letter-spacing: .5px; cursor: pointer;
+}
+.sheet-spell-cast:hover { background: rgba(26,96,80,0.7); }
+.sheet-spell-cast:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Spell detail popover */
+.sheet-spell-detail {
+  background: rgba(20,15,8,0.95);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  padding: .6rem .8rem;
+  margin: .35rem .5rem;
+  font-size: 12px;
+  color: var(--parch2);
+  line-height: 1.5;
+}
+.sheet-spell-detail strong { color: var(--gold2); }
+
+/* Conditions sidebar */
+.sheet-cond-list {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: .25rem .5rem;
+  font-size: 11.5px;
+}
+.sheet-cond-row { display: flex; align-items: center; gap: .4rem; color: var(--parch3); cursor: pointer; }
+.sheet-cond-row input { cursor: pointer; }
+.sheet-cond-row.on { color: var(--red2); font-weight: 600; }
+
+.sheet-exhaustion {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: 12px; margin-top: .4rem;
+}
+.sheet-ex-box {
+  width: 18px; height: 18px;
+  border: 1px solid var(--parch3);
+  cursor: pointer; border-radius: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--red2);
+}
+.sheet-ex-box.on { background: var(--danger); color: var(--parch); border-color: var(--red2); }
+
+/* Roll result toast */
+.sheet-roll-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(180deg, #1a1208, #0d0a06);
+  border: 2px solid var(--gold2);
+  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold3);
+  font-size: 16px;
+  z-index: 99999;
+  box-shadow: 0 0 30px rgba(201,168,76,0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  white-space: nowrap;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sheet-roll-toast.show { opacity: 1; }
+.sheet-roll-toast .roll-label { font-family: 'Cinzel', serif; color: var(--parch3); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: .25rem; }
+.sheet-roll-toast .roll-formula { font-family: 'Crimson Pro', serif; font-size: 12px; color: var(--parch3); font-style: italic; display: block; margin-top: .25rem; }
+.sheet-roll-toast.crit { border-color: var(--gold3); box-shadow: 0 0 50px var(--gold3); }
+.sheet-roll-toast.fumble { border-color: var(--red2); box-shadow: 0 0 30px var(--red2); }
+
+/* Rest buttons */
+.sheet-rest-row { display: flex; gap: .5rem; margin-top: .5rem; }
+.sheet-rest-btn {
+  flex: 1;
+  background: linear-gradient(180deg, rgba(13,61,48,0.4), rgba(13,61,48,0.2));
+  color: var(--parch);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  padding: .5rem;
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
+  cursor: pointer;
+}
+.sheet-rest-btn:hover { background: var(--teal); }
+
+/* Open Character Sheet card button */
+.open-sheet-btn {
+  display: inline-block;
+  margin-top: .5rem;
+  background: linear-gradient(180deg, var(--gold), var(--muted));
+  color: var(--ink);
+  border: none;
+  padding: .45rem 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.open-sheet-btn:hover { background: var(--gold2); }
+
+/* Inspiration toggle */
+.sheet-inspiration {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .4rem .6rem;
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.sheet-inspiration.on { border-color: var(--gold3); background: rgba(201,168,76,0.15); box-shadow: 0 0 8px rgba(201,168,76,0.3); }
+.sheet-inspiration-star { font-size: 16px; color: var(--parch3); }
+.sheet-inspiration.on .sheet-inspiration-star { color: var(--gold3); }
+
+/* Hit Dice block */
+.sheet-hd-row { display: flex; align-items: center; gap: .3rem; justify-content: center; margin-top: .25rem; }
+.sheet-hd-roll {
+  background: rgba(160,128,64,0.15); color: var(--parch);
+  border: 1px solid rgba(160,128,64,0.4); border-radius: 2px;
+  padding: .15rem .4rem; font-size: 10px; cursor: pointer;
+  font-family: 'Cinzel', serif; letter-spacing: .5px;
+}
+.sheet-hd-roll:hover { background: rgba(160,128,64,0.35); }
+
+/* Notes textarea */
+.sheet-notes-area {
+  width: 100%;
+  min-height: 90px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 3px;
+  color: var(--parch);
+  font-family: 'Crimson Pro', serif;
+  font-size: 12.5px;
+  padding: .5rem;
+  outline: none;
+  resize: vertical;
+}
+.sheet-notes-area:focus { border-color: var(--gold2); }
 </style>
 </head>
 <body>
@@ -1106,6 +1538,7 @@ body {
       </div>
       <div class="card-body" style="font-size:12.5px">Alias: <strong>Aurek Voln Drowhiss</strong> (anagram). True goal: control all of Eldoria — starting with Aeloria through engineered instability. Pursuing lichdom. <strong>Phylactery target: a specific meteor shard</strong> — the one Lyssandra was sent to retrieve from the crash site. The party unknowingly recovered his phylactery component when they found Lyssandra. He now has the shard. Has noticed Sylas's Lich Initiate and the necklace spirit jar — their "spell study sessions" are observation. Knows about Valdris the Pale Archivist and wants to locate his phylactery before Valdris can use Sylas as a reconstitution vessel. Believes he is the only one willing to do what must be done. Genuinely sees himself as the hero.</div>
       <div style="margin-top:.4rem"><span class="badge b-red">main villain</span><span class="badge b-purple">aspiring lich</span><span class="badge b-gold">patron</span><span class="badge b-grey">Astronar-aligned</span></div>
+      <button class="open-sheet-btn" onclick="openCharacterSheet('vaeloran')">📜 Open Character Sheet</button>
     </div>
 
     <div class="card teal">
@@ -1910,9 +2343,679 @@ body {
   </div>
 </div>
 
+<!-- ============ INTERACTIVE 2024 CHARACTER SHEET MODAL ============ -->
+<dialog id="sheet-dialog">
+  <div class="sheet-topbar">
+    <div class="sheet-topbar-title" id="sheet-title">Character Sheet</div>
+    <div class="sheet-topbar-actions">
+      <button class="sheet-close-btn" onclick="closeSheet()">✕ Close</button>
+    </div>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+</dialog>
+<div class="sheet-roll-toast" id="sheet-roll-toast"></div>
+
 </div><!-- end #app -->
 
 <script>
+// =====================================================================
+// INTERACTIVE 2024 CHARACTER SHEET SYSTEM
+// Renderer + state management for major character sheets.
+// Each character has its own JSON object on CHARACTERS; sheets persist
+// combat state (HP, slots, conditions, etc.) in localStorage.
+// =====================================================================
+
+const CHARACTERS = {};
+
+// ----- VAELORAN DUSKWHISPER ----------------------------------------
+CHARACTERS.vaeloran = {
+  id: 'vaeloran',
+  name: 'Vaeloran Duskwhisper',
+  alias: 'Aurek Voln Drowhiss',
+  species: 'Human',
+  className: 'Wizard',
+  level: 20,
+  subclass: 'School of Divination',
+  background: 'Sage',
+  alignment: 'Lawful Evil (believes Lawful Neutral)',
+  age: 67,
+  size: 'Medium',
+  appearance: 'Silver-threaded robes, calm eyes that carry warmth he has not yet abandoned, hands that are never still.',
+  ac: 17, acNote: 'Robe of the Archmagi + Mage Armour',
+  hpMax: 144,
+  hitDice: { max: 20, die: 'd6' },
+  speed: 30, initiative: 4, proficiencyBonus: 6, passivePerception: 20,
+  abilities: { str: 10, dex: 14, con: 16, int: 26, wis: 18, cha: 16 },
+  saves: {
+    int: { proficient: true, modOverride: 14 },
+    wis: { proficient: true, modOverride: 10 }
+  },
+  skills: {
+    arcana:     { proficient: true, expertise: true, modOverride: 20 },
+    history:    { proficient: true, modOverride: 14 },
+    insight:    { proficient: true, modOverride: 10 },
+    deception:  { proficient: true, modOverride: 9 },
+    perception: { proficient: true, modOverride: 10 }
+  },
+  senses: 'Truesight 10ft (Gem of Seeing), passive Perception 20',
+  damageResist: ['Damage from spells (Robe of the Archmagi)'],
+  weapons: [
+    { name: 'Fire Bolt (cantrip)', atk: 13, damage: '4d10 fire', notes: 'Range 120ft · L17+ scaling' },
+    { name: 'Quarterstaff',         atk: 6,  damage: '1d6 bludgeoning', notes: 'Versatile (1d8); fallback only' }
+  ],
+  classFeatures: [
+    { name: 'Portent (Divination signature)', desc: 'Rolls 2d20 at dawn each day. Can replace ANY roll (his or another creature\'s) with one of these dice. Always has two stored. Most dangerous ability — guarantees a Counterspell, forces an enemy fail, or survives a crit.' },
+    { name: 'Architect of Inevitability',     desc: 'At the start of combat, has already prepared one free Counterspell or Shield (his choice). Does not need to expend a spell slot for the first use.' },
+    { name: 'Expert Divination',              desc: 'When he casts a divination spell of 2nd level or higher, regains one expended spell slot (max 5th level).' },
+    { name: 'The Third Eye',                  desc: 'Darkvision 60ft OR read any language OR see Ethereal Plane 60ft (bonus action; resets on short rest).' },
+    { name: 'Signature Spells',               desc: 'Foresight and Mind Blank — cast once per day each without a spell slot.' },
+    { name: 'Spell Mastery',                  desc: 'Misty Step (2nd) and Counterspell (3rd) can be cast at their lowest level without expending a slot (1/short rest each).' },
+    { name: 'Legendary Resistance (3/day)',   desc: 'When he fails a saving throw, he can choose to succeed instead.' }
+  ],
+  speciesTraits: [
+    { name: 'Human (Resourceful)', desc: 'Gains Heroic Inspiration whenever he finishes a long rest.' },
+    { name: 'Skillful',            desc: 'Proficient in one additional skill (Insight).' },
+    { name: 'Versatile',           desc: 'Gained the Skilled feat at 1st level.' }
+  ],
+  feats: [
+    { name: 'Skilled (Origin)',  desc: 'Three additional skill proficiencies.' },
+    { name: 'War Caster',        desc: 'Adv on Con saves for concentration; can perform somatic components with hands full; cast a spell as opportunity attack.' },
+    { name: 'Resilient (Wisdom)', desc: 'Proficiency in Wisdom saves.' },
+    { name: 'Alert',             desc: '+5 to initiative; cannot be surprised while conscious.' },
+    { name: 'Lucky',             desc: 'Has 3 luck points per day to alter d20 rolls.' }
+  ],
+  equipmentProf: {
+    armor: [],
+    weapons: ['Daggers', 'darts', 'slings', 'quarterstaffs', 'light crossbows'],
+    tools: ["Calligrapher's supplies"]
+  },
+  spellcasting: {
+    ability: 'INT', modifier: 8, saveDC: 21, attackBonus: 13,
+    slots: [4, 3, 3, 3, 3, 2, 2, 1, 1]
+  },
+  spells: [
+    { level: 0, name: 'Fire Bolt',          school: 'Evocation',   cast: 'Action',     range: '120ft',         desc: 'Ranged spell attack. Hit: 4d10 fire damage. Ignites unattended flammables.' },
+    { level: 0, name: 'Mage Hand',          school: 'Conjuration', cast: 'Action',     range: '30ft',          desc: 'Spectral hand. Move/manipulate objects up to 10lb. 1 minute.' },
+    { level: 0, name: 'Prestidigitation',   school: 'Transmutation', cast: 'Action',   range: '10ft',          desc: 'Minor magical trick: sensory effect, clean/soil, chill/warm/flavour matter, illusory trinkets.' },
+    { level: 0, name: 'Minor Illusion',     school: 'Illusion',    cast: 'Action',     range: '30ft',          desc: 'Sound or image of an object lasting 1 minute. Investigation DC ' + 21 + ' to discern.' },
+    { level: 0, name: 'Light',              school: 'Evocation',   cast: 'Action',     range: 'Touch',         desc: 'Object sheds bright 20ft / dim 20ft. 1 hour.' },
+    { level: 1, name: 'Shield',             school: 'Abjuration',  cast: 'Reaction',   range: 'Self',          desc: '+5 AC until start of next turn. Triggered by being hit or Magic Missile. ARCHITECT OF INEVITABILITY: free first use per combat.', tags: ['reaction'] },
+    { level: 1, name: 'Mage Armor',         school: 'Abjuration',  cast: 'Action',     range: 'Touch',         desc: 'AC = 13 + Dex (no armour). 8 hours. He casts this on himself every morning.' },
+    { level: 1, name: 'Detect Magic',       school: 'Divination',  cast: 'Action (R)', range: 'Self (30ft)',   desc: 'Sense magic within 30ft for 10 minutes. Action to see faint aura and school.', tags: ['concentration', 'ritual'] },
+    { level: 2, name: 'Misty Step',         school: 'Conjuration', cast: 'Bonus',      range: 'Self',          desc: 'Teleport 30ft to unoccupied space he can see. SPELL MASTERY: free 1/short rest at 2nd level.', tags: ['mastery'] },
+    { level: 2, name: 'Suggestion',         school: 'Enchantment', cast: 'Action',     range: '30ft',          desc: 'WIS DC 21 or follow reasonable course of action. 8 hours. He prefers this to violence.', tags: ['concentration'] },
+    { level: 2, name: 'Mirror Image',       school: 'Illusion',    cast: 'Action',     range: 'Self',          desc: 'Three illusory duplicates. Attacks may hit a duplicate (DC 6/8/11 depending on number remaining).' },
+    { level: 3, name: 'Counterspell',       school: 'Abjuration',  cast: 'Reaction',   range: '60ft',          desc: 'Interrupt a creature casting. L3 or below: auto. Higher: ability check DC 10+spell level (uses Portent if critical). SPELL MASTERY: free 1/short rest at 3rd level.', tags: ['reaction', 'mastery'] },
+    { level: 3, name: 'Dispel Magic',       school: 'Abjuration',  cast: 'Action',     range: '120ft',         desc: 'End spell of L3 or lower. Higher: ability check DC 10 + spell level.' },
+    { level: 3, name: 'Fly',                school: 'Transmutation', cast: 'Action',   range: 'Touch',         desc: 'Target gains flying speed 60ft for 10 minutes.', tags: ['concentration'] },
+    { level: 4, name: 'Greater Invisibility', school: 'Illusion',  cast: 'Action',     range: 'Touch',         desc: 'Target invisible for 1 minute. Adv on attacks; attacks vs target have disadv.', tags: ['concentration'] },
+    { level: 4, name: 'Polymorph',          school: 'Transmutation', cast: 'Action',   range: '60ft',          desc: 'WIS DC 21 or transform into a beast (CR ≤ target\'s level) for 1 hour or until 0 HP.', tags: ['concentration'] },
+    { level: 4, name: 'Banishment',         school: 'Abjuration',  cast: 'Action',     range: '60ft',          desc: 'CHA DC 21 or banished to a harmless demiplane for 1 minute (if from this plane) or sent home permanently.', tags: ['concentration'] },
+    { level: 5, name: 'Hold Monster',       school: 'Enchantment', cast: 'Action',     range: '90ft',          desc: 'WIS DC 21 each turn or paralyzed. Melee = auto-crit. 1 minute.', tags: ['concentration'] },
+    { level: 5, name: 'Dominate Person',    school: 'Enchantment', cast: 'Action',     range: '60ft',          desc: 'WIS DC 21 or full control of humanoid. Repeat save on damage. 1 minute. His preferred opening on the most physically dangerous PC.', tags: ['concentration'] },
+    { level: 5, name: 'Modify Memory',      school: 'Enchantment', cast: 'Action',     range: '30ft',          desc: 'WIS DC 21 or modify memories of an event in past 24h. He has done this to Lyssandra. NOT usable mid-combat.', tags: ['concentration'] },
+    { level: 5, name: 'Wall of Force',      school: 'Evocation',   cast: 'Action',     range: '120ft',         desc: 'Invisible force barrier. Nothing physical passes. 10 minutes. Immune to dispel magic.', tags: ['concentration'] },
+    { level: 6, name: 'Globe of Invulnerability', school: 'Abjuration', cast: 'Action', range: 'Self (10ft sphere)', desc: 'Immune to spells of 5th level and below within 10ft. Each 6th+ slot raises immunity by one level.', tags: ['concentration'] },
+    { level: 6, name: 'Disintegrate',       school: 'Transmutation', cast: 'Action',   range: '60ft',          desc: 'CON DC 21 or 10d6+40 force. On 0 HP: dust. No resurrection except Wish.' },
+    { level: 6, name: 'Mass Suggestion',    school: 'Enchantment', cast: 'Action',     range: '60ft',          desc: 'WIS DC 21 (up to 12 creatures) or follow reasonable course of action. 24 hours.' },
+    { level: 6, name: 'True Seeing',        school: 'Divination',  cast: 'Action',     range: 'Touch',         desc: 'Target sees through illusions, invisibility, into Ethereal Plane. 120ft truesight. 1 hour.' },
+    { level: 7, name: 'Forcecage',          school: 'Evocation',   cast: 'Action',     range: '100ft',         desc: 'Immobile cube of force traps creatures. CHA save DC 21 to teleport out. 1 hour.' },
+    { level: 7, name: 'Teleport',           school: 'Conjuration', cast: 'Action',     range: '10ft',          desc: 'Instantly transport self + up to 8 willing creatures to a destination he knows.' },
+    { level: 7, name: 'Plane Shift',        school: 'Conjuration', cast: 'Action',     range: 'Touch',         desc: 'Transport up to 8 willing creatures (or banish one — CHA DC 21) to another plane.' },
+    { level: 8, name: 'Mind Blank',         school: 'Abjuration',  cast: 'Action',     range: 'Touch',         desc: 'Immune to psychic damage, any mind-reading, charm of any kind. 24 hours. SIGNATURE: free 1/day. He casts this every morning — assume active.', tags: ['signature'] },
+    { level: 8, name: 'Maze',               school: 'Conjuration', cast: 'Action',     range: '60ft',          desc: 'Banishes target to extradimensional maze. INT DC 20 to escape (check each turn).', tags: ['concentration'] },
+    { level: 8, name: 'Feeblemind',         school: 'Enchantment', cast: 'Action',     range: '150ft',         desc: 'INT/CHA DC 21 or INT and CHA become 1. Cannot cast spells. Until Greater Restoration / Heal / Wish.' },
+    { level: 9, name: 'Foresight',          school: 'Divination',  cast: '1 minute',   range: 'Touch',         desc: 'Cannot be surprised. Adv on attacks/saves/checks. Attacks vs = disadv. 8 hours. SIGNATURE: free 1/day. Cast this morning — assume active.', tags: ['signature'] },
+    { level: 9, name: 'Meteor Swarm',       school: 'Evocation',   cast: 'Action',     range: '1 mile',        desc: '40d6 fire+bludgeoning in four 40ft-radius spheres. DEX DC 21 half. Last resort — he dislikes destruction.' },
+    { level: 9, name: 'Wish',               school: 'Conjuration', cast: 'Action',     range: 'Self',          desc: 'Mightiest spell. Duplicate any spell of L8 or lower with no components, or alter reality. Stress penalty after duplicating L7+.' },
+    { level: 9, name: 'Time Stop',          school: 'Transmutation', cast: 'Action',   range: 'Self',          desc: 'Take 1d4+1 turns in a row. Ends if he affects another creature or moves more than 1000ft from start.' }
+  ],
+  languages: ['Common', 'Elvish', 'Draconic', 'Infernal', 'Deep Speech', 'Celestial'],
+  equipment: [
+    'Robe of the Archmagi (attuned · resistance to spell damage · adv on saves vs spells · spell save DC +2 already in totals)',
+    'Gem of Seeing (attuned · truesight 10ft when activated)',
+    'Ring of Mind Shielding (attuned · immune to magical mind reading)',
+    'Wand of the War Mage +2 (arcane focus)',
+    'Spellbook (master copy, kept in his tower)',
+    'Component pouch',
+    'Scholar\'s journal',
+    'Identification papers as "Aurek Voln Drowhiss"',
+    'Diamond dust (1000gp, components)'
+  ],
+  attunements: ['Robe of the Archmagi', 'Gem of Seeing', 'Ring of Mind Shielding'],
+  coins: { cp: 0, sp: 0, ep: 0, gp: 2400, pp: 180 },
+  backstory: 'Patron to Sylas. Secret villain. Operates the "Aurek Voln Drowhiss" criminal alias to engineer political instability while presenting as a benevolent archmage. True goal: control all of Eldoria — pursuing lichdom via meteor shard phylactery. Believes he is the only one willing to do what must be done. Genuinely sees himself as the hero.',
+  personality: 'Calm authority. Treats every conversation as a negotiation. Disappointed, not angry, when crossed. Patient on the scale of decades. Believes ends justify means absolutely.',
+  ideal: 'Order through control.',
+  bond: 'Aeloria Crossroads must not fall to the Aurum Dominion.',
+  flaw: 'Cannot conceive that his methods might be worse than the disease he is curing.',
+  resources: [
+    { id: 'portent',       label: 'Portent dice',                     max: 2, recharge: 'long',  note: 'Stored 2d20. Replace any roll.' },
+    { id: 'legres',        label: 'Legendary Resistance',             max: 3, recharge: 'long' },
+    { id: 'mastery_misty', label: 'Misty Step (free, mastery)',       max: 1, recharge: 'short' },
+    { id: 'mastery_cs',    label: 'Counterspell (free, mastery)',     max: 1, recharge: 'short' },
+    { id: 'thirdeye',      label: 'Third Eye',                        max: 1, recharge: 'short' },
+    { id: 'signature_mb',  label: 'Mind Blank (signature, free)',     max: 1, recharge: 'long' },
+    { id: 'signature_fs',  label: 'Foresight (signature, free)',      max: 1, recharge: 'long' },
+    { id: 'arch_inev',     label: 'Architect of Inevitability',       max: 1, recharge: 'long' }
+  ]
+};
+
+// ----- SHEET RENDERER / STATE / DICE --------------------------------
+const SHEET_SKILL_LABELS = {
+  acrobatics: 'Acrobatics', animalHandling: 'Animal Handling', arcana: 'Arcana',
+  athletics: 'Athletics', deception: 'Deception', history: 'History',
+  insight: 'Insight', intimidation: 'Intimidation', investigation: 'Investigation',
+  medicine: 'Medicine', nature: 'Nature', perception: 'Perception',
+  performance: 'Performance', persuasion: 'Persuasion', religion: 'Religion',
+  sleightOfHand: 'Sleight of Hand', stealth: 'Stealth', survival: 'Survival'
+};
+const SHEET_SKILL_ABILITY = {
+  acrobatics: 'dex', animalHandling: 'wis', arcana: 'int', athletics: 'str',
+  deception: 'cha', history: 'int', insight: 'wis', intimidation: 'cha',
+  investigation: 'int', medicine: 'wis', nature: 'int', perception: 'wis',
+  performance: 'cha', persuasion: 'cha', religion: 'int', sleightOfHand: 'dex',
+  stealth: 'dex', survival: 'wis'
+};
+const SHEET_SKILLS_BY_ABILITY = {
+  str: ['athletics'],
+  dex: ['acrobatics', 'sleightOfHand', 'stealth'],
+  con: [],
+  int: ['arcana', 'history', 'investigation', 'nature', 'religion'],
+  wis: ['animalHandling', 'insight', 'medicine', 'perception', 'survival'],
+  cha: ['deception', 'intimidation', 'performance', 'persuasion']
+};
+const SHEET_CONDITIONS = ['Blinded','Charmed','Deafened','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious','Concentration'];
+
+function sheetAbilityMod(score) { return Math.floor((score - 10) / 2); }
+function sheetFmtMod(n) { return (n >= 0 ? '+' : '') + n; }
+function sheetRollD20() { return 1 + Math.floor(Math.random() * 20); }
+function sheetRollDice(count, sides) {
+  let total = 0;
+  for (let i = 0; i < count; i++) total += 1 + Math.floor(Math.random() * sides);
+  return total;
+}
+function sheetGetSkillMod(char, key) {
+  const skill = (char.skills || {})[key] || {};
+  if (skill.modOverride !== undefined) return skill.modOverride;
+  const abil = SHEET_SKILL_ABILITY[key];
+  let mod = sheetAbilityMod(char.abilities[abil]);
+  if (skill.proficient) mod += char.proficiencyBonus;
+  if (skill.expertise) mod += char.proficiencyBonus;
+  return mod;
+}
+function sheetGetSaveMod(char, abil) {
+  const save = (char.saves || {})[abil] || {};
+  if (save.modOverride !== undefined) return save.modOverride;
+  let mod = sheetAbilityMod(char.abilities[abil]);
+  if (save.proficient) mod += char.proficiencyBonus;
+  return mod;
+}
+
+// State management
+function sheetStateKey(id) { return 'eldoria-char-state-' + id; }
+function loadSheetState(id) {
+  try { const raw = localStorage.getItem(sheetStateKey(id)); return raw ? JSON.parse(raw) : null; }
+  catch (e) { return null; }
+}
+function saveSheetState(id, state) { localStorage.setItem(sheetStateKey(id), JSON.stringify(state)); }
+function initSheetState(char) {
+  const slots = {};
+  (char.spellcasting ? char.spellcasting.slots : []).forEach((n, i) => slots[i+1] = 0);
+  const resources = {};
+  (char.resources || []).forEach(r => resources[r.id] = r.max);
+  return {
+    hp: { current: char.hpMax, temp: 0 },
+    hitDiceSpent: 0,
+    deathSaves: { successes: 0, failures: 0 },
+    slots, resources,
+    conditions: {},
+    exhaustion: 0,
+    inspiration: false,
+    notes: ''
+  };
+}
+function getSheetState(id) {
+  const char = CHARACTERS[id];
+  let state = loadSheetState(id);
+  if (!state) state = initSheetState(char);
+  // Backfill missing keys (schema migrations)
+  if (!state.hp) state.hp = { current: char.hpMax, temp: 0 };
+  if (!state.deathSaves) state.deathSaves = { successes: 0, failures: 0 };
+  if (!state.slots) state.slots = {};
+  if (!state.resources) state.resources = {};
+  if (!state.conditions) state.conditions = {};
+  if (state.exhaustion === undefined) state.exhaustion = 0;
+  if (state.inspiration === undefined) state.inspiration = false;
+  if (state.notes === undefined) state.notes = '';
+  if (char.spellcasting) {
+    char.spellcasting.slots.forEach((n, i) => { if (state.slots[i+1] === undefined) state.slots[i+1] = 0; });
+  }
+  (char.resources || []).forEach(r => { if (state.resources[r.id] === undefined) state.resources[r.id] = r.max; });
+  return state;
+}
+function withSheetState(charId, fn) {
+  const state = getSheetState(charId);
+  fn(state);
+  saveSheetState(charId, state);
+  refreshSheet(charId);
+}
+
+// Toast
+let _sheetToastTimer;
+function showRollToast(label, formula, result, opts) {
+  opts = opts || {};
+  const toast = document.getElementById('sheet-roll-toast');
+  if (!toast) return;
+  let cls = '';
+  if (opts.crit) cls = 'crit';
+  else if (opts.fumble) cls = 'fumble';
+  toast.className = 'sheet-roll-toast show ' + cls;
+  toast.innerHTML = '<span class="roll-label">' + label + '</span>' +
+    '<span style="font-size:24px;display:block">' + result + '</span>' +
+    '<span class="roll-formula">' + formula + '</span>';
+  clearTimeout(_sheetToastTimer);
+  _sheetToastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3800);
+}
+
+// Open / close / refresh
+function openCharacterSheet(charId) {
+  const char = CHARACTERS[charId];
+  if (!char) { alert('Character sheet not found: ' + charId); return; }
+  const dialog = document.getElementById('sheet-dialog');
+  document.getElementById('sheet-title').textContent = char.name + ' — Character Sheet';
+  renderSheet(charId);
+  if (typeof dialog.showModal === 'function') dialog.showModal();
+  else dialog.setAttribute('open', '');
+}
+function closeSheet() {
+  const dialog = document.getElementById('sheet-dialog');
+  if (typeof dialog.close === 'function') dialog.close();
+  else dialog.removeAttribute('open');
+}
+function refreshSheet(charId) {
+  const body = document.getElementById('sheet-body');
+  if (!body) return;
+  const scrollTop = body.scrollTop;
+  renderSheet(charId);
+  body.scrollTop = scrollTop;
+}
+
+// Renderer
+function renderSheet(charId) {
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  const body = document.getElementById('sheet-body');
+  let html = '';
+
+  // Header strip
+  html += '<div class="sheet-header">';
+  html += '<div class="sheet-id-block">';
+  html += '<div class="sheet-id-name">' + char.name + '</div>';
+  html += '<div class="sheet-id-meta">';
+  html += '<strong>Class:</strong> ' + char.className + ' ' + char.level + ' (' + char.subclass + ')<br>';
+  html += '<strong>Species:</strong> ' + char.species + ' &nbsp; <strong>Background:</strong> ' + char.background + '<br>';
+  html += '<strong>Alignment:</strong> ' + char.alignment;
+  if (char.alias) html += '<br><strong>Alias:</strong> ' + char.alias;
+  html += '</div></div>';
+  html += '<div class="sheet-hex"><div class="sheet-hex-label">Armor Class</div><div class="sheet-hex-value">' + char.ac + '</div><div class="sheet-hex-sub">' + (char.acNote || '') + '</div></div>';
+  html += renderHpBlock(charId, char, state);
+  html += renderHitDiceBlock(charId, char, state);
+  html += renderDeathSavesBlock(charId, state);
+  html += '</div>';
+
+  // Strip row
+  html += '<div class="sheet-strip">';
+  html += '<div class="sheet-hex"><div class="sheet-hex-label">Proficiency</div><div class="sheet-hex-value">+' + char.proficiencyBonus + '</div></div>';
+  html += '<div class="sheet-hex" onclick="rollInitiative(\'' + charId + '\')" style="cursor:pointer"><div class="sheet-hex-label">Initiative</div><div class="sheet-hex-value">' + sheetFmtMod(char.initiative) + '</div><div class="sheet-hex-sub" style="font-size:9px">click to roll</div></div>';
+  html += '<div class="sheet-hex"><div class="sheet-hex-label">Speed</div><div class="sheet-hex-value">' + char.speed + '</div><div class="sheet-hex-sub">ft</div></div>';
+  html += '<div class="sheet-hex"><div class="sheet-hex-label">Size</div><div class="sheet-hex-value" style="font-size:14px">' + char.size + '</div></div>';
+  html += '<div class="sheet-hex"><div class="sheet-hex-label">Passive Perception</div><div class="sheet-hex-value">' + char.passivePerception + '</div></div>';
+  html += '<div class="sheet-inspiration ' + (state.inspiration ? 'on' : '') + '" onclick="toggleInspiration(\'' + charId + '\')"><div class="sheet-inspiration-star">★</div><div style="flex:1;text-align:center;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px">Heroic Inspiration</div></div>';
+  html += '</div>';
+
+  // Main grid
+  html += '<div class="sheet-grid">';
+
+  // Left col
+  html += '<div>';
+  ['str','dex','con','int','wis','cha'].forEach(function(a) { html += renderAbilityCard(charId, char, a); });
+  html += '<div class="sheet-rest-row">';
+  html += '<button class="sheet-rest-btn" onclick="shortRest(\'' + charId + '\')">Short Rest</button>';
+  html += '<button class="sheet-rest-btn" onclick="longRest(\'' + charId + '\')">Long Rest</button>';
+  html += '</div>';
+  html += '</div>';
+
+  // Middle col
+  html += '<div>';
+  html += renderWeaponsSection(charId, char);
+  html += renderResourcesSection(charId, char, state);
+  html += renderFeaturesSection(char);
+  html += renderConditionsSection(charId, state);
+  html += '</div>';
+
+  // Right col
+  html += '<div>';
+  if (char.spellcasting) html += renderSpellsSection(charId, char, state);
+  html += renderEquipmentSection(char);
+  html += renderBioSection(charId, char, state);
+  html += '</div>';
+
+  html += '</div>'; // sheet-grid
+  body.innerHTML = html;
+}
+
+function renderHpBlock(charId, char, state) {
+  return '<div class="sheet-hp">' +
+    '<div class="sheet-hp-label">Hit Points</div>' +
+    '<div class="sheet-hp-row">' +
+      '<input type="number" value="' + state.hp.current + '" onchange="setHpCurrent(\'' + charId + '\', this.value)">' +
+      '<span class="sheet-hp-max">/ ' + char.hpMax + '</span>' +
+    '</div>' +
+    '<div class="sheet-temp-row">Temp: <input type="number" value="' + (state.hp.temp||0) + '" onchange="setHpTemp(\'' + charId + '\', this.value)"></div>' +
+    '<div class="sheet-hp-btns">' +
+      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -1)">-1</button>' +
+      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -5)">-5</button>' +
+      '<button class="sheet-hp-btn dmg" onclick="hpPrompt(\'' + charId + '\', \'dmg\')">-?</button>' +
+      '<button class="sheet-hp-btn heal" onclick="hpDelta(\'' + charId + '\', 1)">+1</button>' +
+      '<button class="sheet-hp-btn heal" onclick="hpDelta(\'' + charId + '\', 5)">+5</button>' +
+      '<button class="sheet-hp-btn heal" onclick="hpPrompt(\'' + charId + '\', \'heal\')">+?</button>' +
+    '</div>' +
+  '</div>';
+}
+function renderHitDiceBlock(charId, char, state) {
+  return '<div class="sheet-hex">' +
+    '<div class="sheet-hex-label">Hit Dice</div>' +
+    '<div class="sheet-hex-value" style="font-size:18px">' + (char.hitDice.max - state.hitDiceSpent) + '<span style="font-size:11px;color:var(--parch3)">/' + char.hitDice.max + '</span></div>' +
+    '<div class="sheet-hex-sub">' + char.hitDice.die + '</div>' +
+    '<div class="sheet-hd-row"><button class="sheet-hd-roll" onclick="rollHitDie(\'' + charId + '\')" ' + (state.hitDiceSpent >= char.hitDice.max ? 'disabled' : '') + '>Spend</button></div>' +
+  '</div>';
+}
+function renderDeathSavesBlock(charId, state) {
+  let succHtml = '', failHtml = '';
+  for (let i = 1; i <= 3; i++) {
+    succHtml += '<div class="sheet-ds-circle success ' + (i<=state.deathSaves.successes?'on':'') + '" onclick="toggleDeathSave(\'' + charId + '\',\'successes\',' + i + ')"></div>';
+    failHtml += '<div class="sheet-ds-circle failure ' + (i<=state.deathSaves.failures?'on':'') + '" onclick="toggleDeathSave(\'' + charId + '\',\'failures\',' + i + ')"></div>';
+  }
+  return '<div class="sheet-hex"><div class="sheet-hex-label">Death Saves</div><div class="sheet-deathsaves" style="margin-top:.3rem"><div class="sheet-ds-row">Succ ' + succHtml + '</div><div class="sheet-ds-row">Fail ' + failHtml + '</div></div></div>';
+}
+function renderAbilityCard(charId, char, abil) {
+  const score = char.abilities[abil];
+  const mod = sheetAbilityMod(score);
+  const label = { str:'Strength', dex:'Dexterity', con:'Constitution', int:'Intelligence', wis:'Wisdom', cha:'Charisma' }[abil];
+  const save = (char.saves || {})[abil];
+  const saveMod = sheetGetSaveMod(char, abil);
+  let rows = '<div class="sheet-skill-row sheet-skill-save" onclick="rollSave(\'' + charId + '\',\'' + abil + '\')">';
+  rows += '<div class="sheet-skill-prof ' + (save && save.proficient ? 'on' : '') + '"></div>';
+  rows += '<div class="sheet-skill-mod">' + sheetFmtMod(saveMod) + '</div>';
+  rows += '<div class="sheet-skill-name">Saving Throw</div></div>';
+  (SHEET_SKILLS_BY_ABILITY[abil] || []).forEach(function(sk) {
+    const skObj = (char.skills || {})[sk] || {};
+    const skMod = sheetGetSkillMod(char, sk);
+    let profCls = '';
+    if (skObj.expertise) profCls = 'on expertise';
+    else if (skObj.proficient) profCls = 'on';
+    rows += '<div class="sheet-skill-row" onclick="rollSkill(\'' + charId + '\',\'' + sk + '\')">';
+    rows += '<div class="sheet-skill-prof ' + profCls + '"></div>';
+    rows += '<div class="sheet-skill-mod">' + sheetFmtMod(skMod) + '</div>';
+    rows += '<div class="sheet-skill-name">' + SHEET_SKILL_LABELS[sk] + '</div></div>';
+  });
+  return '<div class="sheet-ability"><div class="sheet-ability-head"><div class="sheet-ability-name">' + label + '</div><div class="sheet-ability-mod" onclick="rollAbility(\'' + charId + '\',\'' + abil + '\')" title="Roll ability check">' + sheetFmtMod(mod) + '</div><div class="sheet-ability-score">' + score + '</div></div><div class="sheet-ability-list">' + rows + '</div></div>';
+}
+function renderWeaponsSection(charId, char) {
+  let rows = '';
+  (char.weapons || []).forEach(function(w, i) {
+    rows += '<tr><td>' + w.name + '</td><td>' + sheetFmtMod(w.atk) + '</td><td>' + w.damage + '</td><td>' + (w.notes||'') + '</td><td><button class="sheet-weapon-roll" onclick="rollWeapon(\'' + charId + '\',' + i + ')">Roll</button></td></tr>';
+  });
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Weapons & Damage Cantrips</div><table class="sheet-weapon-table"><thead><tr><th>Name</th><th>Atk</th><th>Damage</th><th>Notes</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+function renderFeaturesSection(char) {
+  function buildList(items) {
+    return (items || []).map(function(f) {
+      return '<div class="sheet-feature"><div class="sheet-feature-name">' + f.name + '</div><div class="sheet-feature-desc">' + f.desc + '</div></div>';
+    }).join('');
+  }
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Class Features</div><div class="sheet-feature-list">' + buildList(char.classFeatures) + '</div></div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">Species Traits</div><div class="sheet-feature-list">' + buildList(char.speciesTraits) + '</div></div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">Feats</div><div class="sheet-feature-list">' + buildList(char.feats) + '</div></div>';
+}
+function renderResourcesSection(charId, char, state) {
+  if (!char.resources || !char.resources.length) return '';
+  let rows = '';
+  char.resources.forEach(function(r) {
+    const cur = state.resources[r.id] || 0;
+    let dots = '';
+    if (r.max > 0) {
+      for (let i = 1; i <= r.max; i++) {
+        dots += '<span style="display:inline-block;width:11px;height:11px;border:1.5px solid var(--gold2);border-radius:50%;margin-right:3px;background:' + (i<=cur?'var(--gold2)':'transparent') + ';cursor:pointer" onclick="toggleResource(\'' + charId + '\',\'' + r.id + '\',' + i + ')"></span>';
+      }
+    } else { dots = '<span style="color:var(--parch3);font-style:italic;font-size:11px">tracked manually</span>'; }
+    rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem .15rem;border-bottom:1px dashed rgba(160,128,64,0.15);gap:.5rem">' +
+      '<div style="flex:1"><div style="font-family:\'Cinzel\',serif;font-size:11px;color:var(--gold2);letter-spacing:.5px">' + r.label + '</div>' +
+      (r.note ? '<div style="font-size:10.5px;color:var(--parch3);font-style:italic;margin-top:.1rem">' + r.note + '</div>' : '') +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:.4rem">' + dots +
+      '<span style="font-size:10px;color:var(--parch3);min-width:28px;text-align:right">' + (r.max > 0 ? (cur + '/' + r.max) : '') + '</span>' +
+      '<span style="font-size:9px;color:var(--parch4);background:rgba(160,128,64,0.15);padding:1px 4px;border-radius:2px;letter-spacing:.5px">' + r.recharge[0].toUpperCase() + r.recharge.slice(1) + '</span>' +
+      '</div></div>';
+  });
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Resources & Per-Rest Pools</div>' + rows + '</div>';
+}
+function renderConditionsSection(charId, state) {
+  let rows = '';
+  SHEET_CONDITIONS.forEach(function(c) {
+    const on = !!state.conditions[c];
+    rows += '<div class="sheet-cond-row ' + (on?'on':'') + '" onclick="toggleCondition(\'' + charId + '\',\'' + c + '\')"><input type="checkbox" ' + (on?'checked':'') + ' onclick="event.stopPropagation();toggleCondition(\'' + charId + '\',\'' + c + '\')"> ' + c + '</div>';
+  });
+  let boxes = '';
+  for (let i = 1; i <= 10; i++) {
+    boxes += '<div class="sheet-ex-box ' + (i<=state.exhaustion?'on':'') + '" onclick="setExhaustion(\'' + charId + '\',' + i + ')">' + (i<=state.exhaustion?'✗':'') + '</div>';
+  }
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Conditions</div><div class="sheet-cond-list">' + rows + '</div>' +
+    '<div class="sheet-exhaustion"><strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--parch3)">EXHAUSTION:</strong>' + boxes +
+    '<span style="font-size:10.5px;color:var(--parch3);margin-left:.4rem">' + (state.exhaustion === 0 ? 'none' : '−' + state.exhaustion + ' to all d20 rolls') + '</span></div></div>';
+}
+function renderSpellsSection(charId, char, state) {
+  const sc = char.spellcasting;
+  let slotHtml = '';
+  for (let lvl = 1; lvl <= 9; lvl++) {
+    const max = sc.slots[lvl-1] || 0;
+    const expended = state.slots[lvl] || 0;
+    let diamonds = '';
+    for (let i = 1; i <= max; i++) {
+      diamonds += '<div class="sheet-slot-diamond ' + (i<=expended?'expended':'') + '" onclick="toggleSlot(\'' + charId + '\',' + lvl + ',' + i + ')"></div>';
+    }
+    slotHtml += '<div class="sheet-slot-block"><div class="sheet-slot-level">L' + lvl + '</div><div class="sheet-slot-diamonds">' + diamonds + '</div><div class="sheet-slot-count">' + (max > 0 ? (max-expended) + '/' + max : '—') + '</div></div>';
+  }
+  let spellHtml = '';
+  (char.spells || []).forEach(function(sp, i) {
+    const tags = sp.tags || [];
+    let tagSpans = '';
+    if (tags.indexOf('concentration') >= 0) tagSpans += '<span class="spell-tag conc">C</span>';
+    if (tags.indexOf('ritual') >= 0) tagSpans += '<span class="spell-tag">R</span>';
+    if (tags.indexOf('reaction') >= 0) tagSpans += '<span class="spell-tag">React</span>';
+    if (tags.indexOf('mastery') >= 0) tagSpans += '<span class="spell-tag">Mastery</span>';
+    if (tags.indexOf('signature') >= 0) tagSpans += '<span class="spell-tag sig">Signature</span>';
+    const sigRow = tags.indexOf('signature') >= 0 ? 'signature' : '';
+    const isCantrip = sp.level === 0;
+    const isFree = tags.indexOf('signature') >= 0 || tags.indexOf('mastery') >= 0;
+    const canCast = isCantrip || isFree || ((sc.slots[sp.level-1] || 0) - (state.slots[sp.level] || 0)) > 0;
+    spellHtml += '<div class="sheet-spell-row ' + sigRow + '" onclick="toggleSpellDetail(' + i + ')">' +
+      '<div class="sheet-spell-level">' + (isCantrip ? '0' : sp.level) + '</div>' +
+      '<div class="sheet-spell-name">' + sp.name + tagSpans + '</div>' +
+      (isCantrip ? '<span style="font-size:9.5px;color:var(--parch4);font-style:italic">at will</span>' :
+        '<button class="sheet-spell-cast" onclick="event.stopPropagation();castSpell(\'' + charId + '\',' + i + ')" ' + (canCast?'':'disabled') + '>Cast L' + sp.level + '</button>') +
+    '</div>' +
+    '<div class="sheet-spell-detail" id="spell-detail-' + i + '" style="display:none">' +
+      '<strong>' + (sp.school||'') + ' · ' + (isCantrip ? 'Cantrip' : 'L' + sp.level) + ' · ' + (sp.cast||'') + ' · Range ' + (sp.range||'—') + '</strong><br>' +
+      sp.desc +
+    '</div>';
+  });
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + sc.saveDC + ' · Atk ' + sheetFmtMod(sc.attackBonus) + '</div>' +
+    '<div class="sheet-slots-row">' + slotHtml + '</div>' +
+    '<div class="sheet-spell-list">' + spellHtml + '</div></div>';
+}
+function renderEquipmentSection(char) {
+  const eqList = (char.equipment || []).map(function(e) { return '<li style="margin-bottom:.2rem">' + e + '</li>'; }).join('');
+  const attList = (char.attunements || []).map(function(a) { return '<li>' + a + '</li>'; }).join('');
+  const langs = (char.languages || []).join(', ');
+  const coins = char.coins || {};
+  let trainHtml = '';
+  if (char.equipmentProf) {
+    const ep = char.equipmentProf;
+    trainHtml = '<div style="font-size:11.5px;color:var(--parch2);margin-bottom:.4rem">' +
+      '<strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">ARMOR:</strong> ' + ((ep.armor||[]).length ? ep.armor.join(', ') : 'None') + '<br>' +
+      '<strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">WEAPONS:</strong> ' + (ep.weapons||[]).join(', ') + '<br>' +
+      '<strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">TOOLS:</strong> ' + ((ep.tools||[]).length ? ep.tools.join(', ') : 'None') +
+    '</div>';
+  }
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Languages</div><div style="font-size:12px;color:var(--parch2)">' + langs + '</div></div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">Equipment Training & Proficiencies</div>' + trainHtml + '</div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">Equipment</div><ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + eqList + '</ul>' +
+      '<div style="margin-top:.5rem"><strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">ATTUNEMENTS (max 3):</strong>' +
+      '<ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + attList + '</ul></div>' +
+      '<div style="display:flex;gap:.5rem;margin-top:.6rem;font-size:11px;color:var(--parch3);font-family:\'Cinzel\',serif"><span>CP ' + (coins.cp||0) + '</span><span>SP ' + (coins.sp||0) + '</span><span>EP ' + (coins.ep||0) + '</span><span>GP ' + (coins.gp||0) + '</span><span>PP ' + (coins.pp||0) + '</span></div>' +
+    '</div>';
+}
+function renderBioSection(charId, char, state) {
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Appearance · Backstory · Personality</div><div style="font-size:12px;color:var(--parch2);line-height:1.5">' +
+    (char.appearance ? '<strong>Appearance:</strong> ' + char.appearance + '<br><br>' : '') +
+    (char.backstory ? '<strong>Backstory:</strong> ' + char.backstory + '<br><br>' : '') +
+    (char.personality ? '<strong>Personality:</strong> ' + char.personality + '<br>' : '') +
+    (char.ideal ? '<strong>Ideal:</strong> ' + char.ideal + '<br>' : '') +
+    (char.bond ? '<strong>Bond:</strong> ' + char.bond + '<br>' : '') +
+    (char.flaw ? '<strong>Flaw:</strong> ' + char.flaw : '') +
+    '</div></div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">DM Notes</div><textarea class="sheet-notes-area" oninput="setSheetNotes(\'' + charId + '\', this.value)" placeholder="Combat notes, observations, anything…">' + (state.notes || '') + '</textarea></div>';
+}
+
+// ----- State mutators -----
+function hpDelta(charId, amt) {
+  withSheetState(charId, function(s) {
+    const max = CHARACTERS[charId].hpMax;
+    if (amt < 0 && s.hp.temp > 0) {
+      const tempLoss = Math.min(s.hp.temp, -amt);
+      s.hp.temp -= tempLoss; amt += tempLoss;
+    }
+    s.hp.current = Math.max(0, Math.min(max, s.hp.current + amt));
+  });
+}
+function hpPrompt(charId, kind) {
+  const amt = parseInt(prompt(kind === 'dmg' ? 'Damage amount?' : 'Healing amount?'));
+  if (!isNaN(amt) && amt > 0) hpDelta(charId, kind === 'dmg' ? -amt : amt);
+}
+function setHpCurrent(charId, val) { const n = parseInt(val); if (!isNaN(n)) withSheetState(charId, function(s) { s.hp.current = Math.max(0, Math.min(CHARACTERS[charId].hpMax, n)); }); }
+function setHpTemp(charId, val) { const n = parseInt(val); if (!isNaN(n)) withSheetState(charId, function(s) { s.hp.temp = Math.max(0, n); }); }
+function toggleDeathSave(charId, kind, n) { withSheetState(charId, function(s) { if (s.deathSaves[kind] >= n) s.deathSaves[kind] = n - 1; else s.deathSaves[kind] = n; }); }
+function toggleSlot(charId, lvl, n) { withSheetState(charId, function(s) { if ((s.slots[lvl] || 0) >= n) s.slots[lvl] = n - 1; else s.slots[lvl] = n; }); }
+function castSpell(charId, idx) {
+  const char = CHARACTERS[charId];
+  const sp = char.spells[idx];
+  if (sp.level === 0) { showRollToast('Cantrip cast', sp.name, '✦'); return; }
+  const tags = sp.tags || [];
+  if (tags.indexOf('signature') >= 0 || tags.indexOf('mastery') >= 0) {
+    showRollToast('Cast (free use)', sp.name + ' — uses signature/mastery slot', '✦');
+    return;
+  }
+  const state = getSheetState(charId);
+  const max = char.spellcasting.slots[sp.level - 1] || 0;
+  const expended = state.slots[sp.level] || 0;
+  if (expended >= max) { alert('No L' + sp.level + ' slots remaining.'); return; }
+  withSheetState(charId, function(s) { s.slots[sp.level] = (s.slots[sp.level] || 0) + 1; });
+  showRollToast('Cast L' + sp.level, sp.name, '✦');
+}
+function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
+function toggleCondition(charId, c) { withSheetState(charId, function(s) { if (s.conditions[c]) delete s.conditions[c]; else s.conditions[c] = true; }); }
+function setExhaustion(charId, n) { withSheetState(charId, function(s) { if (s.exhaustion === n) s.exhaustion = n - 1; else s.exhaustion = n; }); }
+function toggleInspiration(charId) { withSheetState(charId, function(s) { s.inspiration = !s.inspiration; }); }
+function setSheetNotes(charId, val) { const state = getSheetState(charId); state.notes = val; saveSheetState(charId, state); /* no re-render */ }
+function toggleSpellDetail(idx) { const el = document.getElementById('spell-detail-' + idx); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+function shortRest(charId) {
+  withSheetState(charId, function(s) {
+    (CHARACTERS[charId].resources || []).forEach(function(r) { if (r.recharge === 'short') s.resources[r.id] = r.max; });
+  });
+  showRollToast('Short Rest', 'Short-rest resources restored', '✦');
+}
+function longRest(charId) {
+  const char = CHARACTERS[charId];
+  withSheetState(charId, function(s) {
+    s.hp.current = char.hpMax;
+    s.hp.temp = 0;
+    s.deathSaves = { successes: 0, failures: 0 };
+    Object.keys(s.slots).forEach(function(k) { s.slots[k] = 0; });
+    (char.resources || []).forEach(function(r) { s.resources[r.id] = r.max; });
+    const hdRecovered = Math.max(1, Math.floor(char.hitDice.max / 2));
+    s.hitDiceSpent = Math.max(0, s.hitDiceSpent - hdRecovered);
+    if (s.exhaustion > 0) s.exhaustion -= 1;
+  });
+  showRollToast('Long Rest', 'HP, slots, resources restored', '✦');
+}
+function rollHitDie(charId) {
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  if (state.hitDiceSpent >= char.hitDice.max) return;
+  const sides = parseInt(char.hitDice.die.slice(1));
+  const conMod = sheetAbilityMod(char.abilities.con);
+  const roll = 1 + Math.floor(Math.random() * sides);
+  const total = Math.max(1, roll + conMod);
+  state.hitDiceSpent += 1;
+  state.hp.current = Math.min(char.hpMax, state.hp.current + total);
+  saveSheetState(charId, state);
+  refreshSheet(charId);
+  showRollToast('Hit Die spent', char.hitDice.die + ' (' + roll + ') + CON (' + conMod + ')', '+' + total + ' HP');
+}
+
+// Roll handlers
+function rollAbility(charId, abil) {
+  const char = CHARACTERS[charId];
+  const mod = sheetAbilityMod(char.abilities[abil]);
+  const exh = getSheetState(charId).exhaustion || 0;
+  const roll = sheetRollD20();
+  const total = roll + mod - exh;
+  const label = { str:'Strength', dex:'Dexterity', con:'Constitution', int:'Intelligence', wis:'Wisdom', cha:'Charisma' }[abil] + ' Check';
+  showRollToast(label, 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+}
+function rollSave(charId, abil) {
+  const char = CHARACTERS[charId];
+  const mod = sheetGetSaveMod(char, abil);
+  const exh = getSheetState(charId).exhaustion || 0;
+  const roll = sheetRollD20();
+  const total = roll + mod - exh;
+  showRollToast(abil.toUpperCase() + ' Saving Throw', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+}
+function rollSkill(charId, sk) {
+  const char = CHARACTERS[charId];
+  const mod = sheetGetSkillMod(char, sk);
+  const exh = getSheetState(charId).exhaustion || 0;
+  const roll = sheetRollD20();
+  const total = roll + mod - exh;
+  showRollToast(SHEET_SKILL_LABELS[sk] + ' Check', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+}
+function rollInitiative(charId) {
+  const char = CHARACTERS[charId];
+  const roll = sheetRollD20();
+  const total = roll + char.initiative;
+  showRollToast('Initiative', 'd20 (' + roll + ') ' + sheetFmtMod(char.initiative), total, { crit: roll === 20, fumble: roll === 1 });
+}
+function rollWeapon(charId, idx) {
+  const char = CHARACTERS[charId];
+  const w = char.weapons[idx];
+  const atkRoll = sheetRollD20();
+  const atkTotal = atkRoll + w.atk;
+  const dmgMatch = w.damage.match(/^(\d+)d(\d+)(?:\s*\+\s*(\d+))?(.*)$/);
+  let dmgStr = w.damage;
+  if (dmgMatch) {
+    const count = parseInt(dmgMatch[1]);
+    const sides = parseInt(dmgMatch[2]);
+    const bonus = dmgMatch[3] ? parseInt(dmgMatch[3]) : 0;
+    const rest = (dmgMatch[4] || '').trim();
+    const isCrit = atkRoll === 20;
+    const dmg = sheetRollDice(isCrit ? count * 2 : count, sides) + bonus;
+    dmgStr = dmg + ' ' + rest + (isCrit ? ' (crit doubled)' : '');
+  }
+  showRollToast(w.name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(w.atk) + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
+}
+
 // =====================================================================
 // CHARACTER SHEET URLs — edit these when each player provides a URL
 // (D&D Beyond: open the character → "..." menu → "Share" → copy link).
