@@ -189,7 +189,6 @@ body.player-mode .player-only.npc-row{display:flex}
     <div class="panel-grid">
       <div>
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The commercial heart of Aeloria. Wide cobbled streets lined with workshops, storefronts, and trading houses. The smell of hot metal from the Ironwell Forge drifts through the quarter. Merchants from across Eldoria maintain offices here. During the day it is loud, bustling, and relentlessly mercantile.</div></div>
-        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Ironwell Forge · Various merchant houses · Caravan staging yards · The Guilds Row (artisan workshops)</div></div>
         <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Energetic by day, quieter at night but never fully dark. The wealthy merchants here have private guards. Occasional guild disputes spill into the streets.</div></div>
       </div>
       <div>
@@ -212,7 +211,6 @@ body.player-mode .player-only.npc-row{display:flex}
     <div class="panel-grid">
       <div>
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The most affluent quarter of Aeloria. Home to nobles, wealthy scholars, arcane practitioners, and the powerful. Streets are well-maintained and guarded. Towers of stone rise above the roofline — most notably the Spire of the Silver Eclipse, Vaeloran's iconic landmark. The air feels different here: cleaner, quieter, watched.</div></div>
-        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Spire of the Silver Eclipse (Vaeloran's tower) · Noble manors · Private arcane libraries · The Scholars' Circle offices</div></div>
         <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Polished and reserved. Guards are private, professional, and observant. Not hostile to visitors, but scrutinising. Residents value discretion above all.</div></div>
       </div>
       <div>
@@ -280,7 +278,6 @@ body.player-mode .player-only.npc-row{display:flex}
     <div class="panel-grid">
       <div>
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A quieter, more residential quarter. Moderate wealth — craftspeople, healers, clergy, and ordinary citizens. The Temple of Luminos is the district's most prominent landmark. Copper lanterns light the streets at night, giving the ward its name. There is a sense of genuine community here — neighbours who know each other, shared gardens between buildings.</div></div>
-        <div class="panel-section"><div class="section-label">Key Locations</div><div class="section-body">Temple of Luminos · Residential streets · Healers' quarter · Local market (smaller than the Bazaar) · Several small shrines to various deities</div></div>
         <!-- Atmosphere — public -->
         <div class="panel-section player-only"><div class="section-label">Atmosphere</div><div class="section-body">Calm, warm, approachable. Children play in the streets. The temple bell rings at dawn and dusk. The most welcoming district in Aeloria.</div></div>
         <!-- Atmosphere — DM -->
@@ -321,7 +318,6 @@ body.player-mode .player-only.npc-row{display:flex}
     <div class="panel-grid">
       <div>
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The largest building in Aeloria, situated at the exact crossroads of the city's main thoroughfares. A grand stone structure with a tall central spire. Home to the Council of Five, administrative offices, public records, and the offices of the Townmaster. All roads in Aeloria lead here — literally and politically.</div></div>
-        <div class="panel-section"><div class="section-label">Key Locations within</div><div class="section-body">Council Chamber (upper floor) · Oskar's Townmaster office · Public records archive · Council member private offices · Great Hall (public hearings)</div></div>
         <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Busy, bureaucratic, and carefully neutral. Everyone here represents something. Conversations are diplomatic by default. The building is impressive — designed to remind visitors of Aeloria's independence.</div></div>
       </div>
       <div>
@@ -448,7 +444,7 @@ body.player-mode .player-only.npc-row{display:flex}
       <div>
         <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Polished dark wood interior. Soft lighting, clean linens, private booths with sound-dampening curtains. Stable is guarded and well-run. Staff are professional, observant, and loyal. Upper-middle clientele — merchants, minor nobles, guild officials, scholars, well-paid adventurers. This is where people talk business without wanting trouble.</div></div>
         <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Calm, refined, comfortable. Not flashy but quality throughout. The kind of place where conversations stay quiet and deals get made. Violence here is unthinkable — Sarah ensures that absolutely.</div></div>
-        <div class="panel-section"><div class="section-label">Sample Dialogue — Sarah</div><div class="section-body" style="font-style:italic">"The Wayfarer's Rest isn't the place for certain questions."<br>"If you need… flexible answers, the Pig's Head serves a different crowd."<br>"Ask for Gerald. He'll decide if you're worth his time."</div></div>
+        <div class="panel-section dm-only"><div class="section-label">Sample Dialogue — Sarah</div><div class="section-body" style="font-style:italic">"The Wayfarer's Rest isn't the place for certain questions."<br>"If you need… flexible answers, the Pig's Head serves a different crowd."<br>"Ask for Gerald. He'll decide if you're worth his time."</div></div>
       </div>
       <div>
         <div class="panel-section"><div class="section-label">Key NPC</div>
@@ -597,7 +593,7 @@ body.player-mode .player-only.npc-row{display:flex}
   <!-- IRONWELL FORGE -->
   <div class="panel-card" id="loc-ironwell_forge">
     <div class="panel-header">
-      <div><div class="panel-name">Ironwell Forge</div><div class="panel-sub">Merchants Rise · Anchor Location · Grand Bazaar</div></div>
+      <div><div class="panel-name">Ironwell Forge</div><div class="panel-sub">Merchants Rise · Smithy · Party has visited</div></div>
       <button class="close-btn" onclick="closePanel()">×</button>
     </div>
     <div class="panel-grid">
@@ -609,7 +605,7 @@ body.player-mode .player-only.npc-row{display:flex}
         <div class="panel-section"><div class="section-label">Key NPC</div>
           <div class="npc-row"><div class="npc-av" style="background:#3a2010">DI</div><div><div class="npc-name">Durnan Ironwell</div><div class="npc-body">Dwarf. Broad, soot-covered, calm but intense. Takes pride in quality over speed. Has no patience for haggling or rushed work. Absolutely trustworthy — he does not deal in stolen goods or guild politics.</div><div style="margin-top:4px"><span class="badge b-teal">honest dealer</span></div></div></div>
         </div>
-        <div class="panel-section"><div class="section-label">Pricing Guide</div><div class="section-body">Standard PHB prices for off-the-shelf items. Custom work: +50% premium, 1-week minimum. Exceptional custom work (masterwork equivalent): +150%, 2-3 weeks, personal consultation required.</div></div>
+        <div class="panel-section dm-only"><div class="section-label">Pricing Guide</div><div class="section-body">Standard PHB prices for off-the-shelf items. Custom work: +50% premium, 1-week minimum. Exceptional custom work (masterwork equivalent): +150%, 2-3 weeks, personal consultation required.</div></div>
         <div class="dm-note dm-only">DM: The Aurum Dominion has approached Durnan about exclusive supply contracts for Dominion military equipment. He refused — "I sell to Aeloria, not to armies." He hasn't told anyone. He will if asked directly. This is a small but real piece of the Dominion infiltration puzzle.</div>
         <textarea class="notes-area dm-only" placeholder="DM notes for Ironwell Forge..." onchange="saveNote('ironwell_forge',this.value)" id="note-ironwell_forge"></textarea>
       </div>
