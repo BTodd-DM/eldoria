@@ -160,10 +160,109 @@ function refreshSheet(charId) {
 // Multi-tab live sync: when any tab changes a character's state, refresh any open
 // sheet in this tab that's currently showing the same character.
 window.addEventListener('storage', function(e) {
-  if (!e.key || !e.key.startsWith('eldoria-char-state-')) return;
-  const updatedId = e.key.replace('eldoria-char-state-', '');
-  if (_currentSheetId === updatedId) refreshSheet(updatedId);
+  if (!e.key) return;
+  if (e.key.startsWith('eldoria-char-state-')) {
+    const updatedId = e.key.replace('eldoria-char-state-', '');
+    if (_currentSheetId === updatedId) refreshSheet(updatedId);
+  }
+  // Cross-tab sync for the Lich Progress clock (shared between Now tab and
+  // Vaeloran's sheet, also across browser tabs).
+  if (e.key === 'eldoria-lich') {
+    if (e.newValue !== null) lichFilled = parseInt(e.newValue, 10) || 0;
+    renderLichClock();
+  }
 });
+
+// ----- LICH PROGRESS CLOCK (shared: Now tab + Vaeloran's sheet + standalone) ---
+// Renders into every element with class .lich-clock-display (and updates every
+// .lich-count). State is persisted in localStorage key `eldoria-lich`.
+let lichFilled = 2;
+const LICH_LABELS = ['Self-Severance','Shard Acquired','Shard Attunement','Memories Extracted','Gate Node Corrupted','100 Souls','Valdris Formula','The Dark Rite','Willing Death','Lich Ascension'];
+const LICH_COLORS = ['#2d6a30','#2d6a30','#8a6010','#555','#555','#555','#555','#7a1a1a','#7a1a1a','#7a1a1a'];
+function initLichClock() {
+  try {
+    const saved = localStorage.getItem('eldoria-lich');
+    if (saved !== null) lichFilled = parseInt(saved, 10) || 0;
+  } catch (e) {}
+  renderLichClock();
+}
+function renderLichClock() {
+  // Always re-read from localStorage so cross-context renders are never stale.
+  try {
+    const saved = localStorage.getItem('eldoria-lich');
+    if (saved !== null) lichFilled = parseInt(saved, 10) || 0;
+  } catch (e) {}
+  const displays = document.querySelectorAll('.lich-clock-display');
+  displays.forEach(function(d) {
+    d.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+      const seg = document.createElement('div');
+      seg.style.cssText = 'min-width:80px;padding:6px 8px;border-radius:3px;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.3px;cursor:pointer;transition:all .2s;border:1px solid rgba(160,128,64,0.3);text-align:center;line-height:1.3;';
+      if (i < lichFilled) {
+        seg.style.background = LICH_COLORS[i];
+        seg.style.color = '#f4edd8';
+        seg.style.borderColor = LICH_COLORS[i];
+      } else {
+        seg.style.background = 'rgba(20,15,8,0.6)';
+        seg.style.color = 'rgba(160,128,64,0.4)';
+      }
+      seg.innerHTML = '<div style="font-size:11px;margin-bottom:2px">' + (i < lichFilled ? '✓' : (i+1)) + '</div>' + LICH_LABELS[i];
+      const idx = i;
+      seg.onclick = function() { advanceLichTo(idx); };
+      d.appendChild(seg);
+    }
+  });
+  document.querySelectorAll('.lich-count').forEach(function(c) { c.textContent = lichFilled; });
+  if (typeof updateStatusBar === 'function') { try { updateStatusBar(); } catch (e) {} }
+}
+function advanceLichTo(idx) {
+  // Click logic: if clicking a filled segment, retreat to that index; otherwise advance to idx+1.
+  lichFilled = idx < lichFilled ? idx : idx + 1;
+  try { localStorage.setItem('eldoria-lich', lichFilled); } catch (e) {}
+  renderLichClock();
+}
+
+// ----- PLAGUE SYMPTOM ROLLER (Kaelith) -----
+const PLAGUE_SYMPTOMS = [
+  'Drained of all colour — appears in monochromatic grays.',
+  'Sheds metallic rust-hued flakes and creaks while moving.',
+  'Secretes foul-smelling mucus.',
+  'Surrounded by a cloud of buzzing insects.',
+  'Sprouts fungi or foliage from their flesh.',
+  'Covered in glowing pustules.'
+];
+function rollPlagueSymptom(targetId) {
+  targetId = targetId || 'plague-out';
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  const idx = Math.floor(Math.random() * PLAGUE_SYMPTOMS.length);
+  el.textContent = '1d6 (' + (idx + 1) + ') → ' + PLAGUE_SYMPTOMS[idx];
+}
+// Backwards-compat alias used by any legacy callers
+function genPlague() { rollPlagueSymptom('plague-out'); }
+
+// ----- Character-specific extras: rendered at the end of each sheet -----
+function renderCharacterExtras(char) {
+  if (char.id === 'vaeloran') return renderVaeloranExtras();
+  if (char.id === 'kaelith')  return renderKaelithExtras();
+  return '';
+}
+function renderVaeloranExtras() {
+  return '<div class="sheet-sub">' +
+    '<div class="sheet-sub-title">Lich Progress — 10 Stages</div>' +
+    '<div style="font-size:11px;color:var(--parch3);font-style:italic;margin-bottom:.4rem">Click a segment to set the stage. Live-synced with the Now tab.</div>' +
+    '<div class="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0"></div>' +
+    '<div style="font-size:11.5px;color:var(--parch3);font-style:italic;margin-top:.3rem">Stages complete: <span class="lich-count">0</span> / 10 — see Now tab for stage details</div>' +
+  '</div>';
+}
+function renderKaelithExtras() {
+  return '<div class="sheet-sub">' +
+    '<div class="sheet-sub-title">DM Tools — Plague Symptom Roller</div>' +
+    '<div style="font-size:11.5px;color:var(--parch3);font-style:italic;margin-bottom:.4rem">Roll the 1d6 manifestation table for Plague Blessing effects on victims.</div>' +
+    '<div id="plague-out" style="background:rgba(20,15,8,0.7);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.6rem .75rem;font-size:12.5px;color:var(--parch2);min-height:2.5rem;margin-bottom:.5rem;line-height:1.5">Click to roll...</div>' +
+    '<button class="sheet-rest-btn" style="width:auto;padding:.4rem 1rem" onclick="rollPlagueSymptom()">🎲 Roll Symptom</button>' +
+  '</div>';
+}
 
 // ----- Renderer -----
 function renderSheet(charId) {
@@ -218,6 +317,7 @@ function renderSheet(charId) {
   if (char.spellcasting) html += renderSpellsSection(charId, char, state);
   html += renderEquipmentSection(char);
   html += renderBioSection(charId, char, state);
+  html += renderCharacterExtras(char);
   html += '</div>';
 
   html += '</div>';
@@ -225,6 +325,11 @@ function renderSheet(charId) {
 
   // Keep _currentSheetId in sync (in case renderSheet is called directly by a standalone page)
   _currentSheetId = charId;
+
+  // If this character includes a lich clock section, populate it from the saved state.
+  if (body.querySelector('.lich-clock-display')) {
+    if (typeof renderLichClock === 'function') renderLichClock();
+  }
 }
 
 function renderHpBlock(charId, char, state) {
