@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Character Sheet — Eldoria 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0a06;
+  --parch: #f2e8d0;
+  --parch2: #e8d9b8;
+  --parch3: #d4c49a;
+  --parch4: #c0aa7a;
+  --gold: #9a7a1a;
+  --gold2: #c9a84c;
+  --gold3: #e8c96a;
+  --red: #7a1a1a;
+  --red2: #a02020;
+  --teal: #0d3d30;
+  --teal2: #1a6050;
+  --purple: #2d1a4a;
+  --purple2: #4a2d7a;
+  --border: #a08040;
+  --muted: #5a4820;
+  --danger: #8b1a1a;
+  --warn: #7a5a10;
+  --safe: #0d4a2a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0805;
+  color: var(--parch);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.sheet-empty {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--parch3);
+}
+.sheet-empty code {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-family: 'Cinzel', monospace;
+  color: var(--gold2);
+}
+</style>
+<link rel="stylesheet" href="sheet-styles.css">
+</head>
+<body>
+
+<div class="sheet-page-header">
+  <a href="index.html" class="sheet-back-btn">← BACK TO DASHBOARD</a>
+  <div class="sheet-page-title" id="sheet-page-title">Character Sheet</div>
+  <span class="sheet-dm-badge">DM</span>
+</div>
+
+<div class="sheet-standalone-body">
+  <div id="sheet-body">
+    <div class="sheet-empty">Loading…</div>
+  </div>
+</div>
+
+<div class="sheet-roll-toast" id="sheet-roll-toast"></div>
+
+<script src="sheet-data.js"></script>
+<script src="sheet-engine.js"></script>
+<script>
+// Read ?id=<charId> from URL and render that character.
+(function bootstrapStandaloneSheet() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || params.get('sheet');
+  if (!id) {
+    document.getElementById('sheet-body').innerHTML =
+      '<div class="sheet-empty">' +
+      '<p style="font-family:\'Cinzel Decorative\',serif;color:var(--gold2);font-size:18px;margin-bottom:1rem">No character specified</p>' +
+      '<p>Add <code>?id=&lt;charId&gt;</code> to the URL. Example: <code>sheet.html?id=vaeloran</code></p>' +
+      '<p style="margin-top:1rem"><a href="index.html" class="sheet-back-btn" style="display:inline-block">← Back to Dashboard</a></p>' +
+      '</div>';
+    return;
+  }
+  if (!CHARACTERS[id]) {
+    document.getElementById('sheet-body').innerHTML =
+      '<div class="sheet-empty">' +
+      '<p style="font-family:\'Cinzel Decorative\',serif;color:var(--red2);font-size:18px;margin-bottom:1rem">Character not found: <code>' + id + '</code></p>' +
+      '<p>Available characters: ' + Object.keys(CHARACTERS).map(function(k) { return '<code>' + k + '</code>'; }).join(', ') + '</p>' +
+      '<p style="margin-top:1rem"><a href="index.html" class="sheet-back-btn" style="display:inline-block">← Back to Dashboard</a></p>' +
+      '</div>';
+    return;
+  }
+  const char = CHARACTERS[id];
+  document.title = char.name + ' — Character Sheet';
+  document.getElementById('sheet-page-title').textContent = char.name;
+  renderSheet(id);
+})();
+</script>
+</body>
+</html>
