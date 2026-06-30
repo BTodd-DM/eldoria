@@ -139,3 +139,169 @@ CHARACTERS.vaeloran = {
     { id: 'arch_inev',     label: 'Architect of Inevitability',       max: 1, recharge: 'long' }
   ]
 };
+
+// ----- SISTER KAELITH -----------------------------------------------
+// Tiefling Cleric 10, Pestilence Domain (WotC playtest material)
+CHARACTERS.kaelith = {
+  id: 'kaelith',
+  name: 'Sister Kaelith',
+  species: 'Tiefling',
+  className: 'Cleric',
+  level: 10,
+  subclass: 'Pestilence Domain (playtest)',
+  background: 'Acolyte',
+  alignment: 'Neutral Evil',
+  age: 30,
+  size: 'Medium',
+  appearance: 'Ashen skin, green eyes, black hair. 5ft tall, 95lb. Carries the smell of damp earth and turning leaves. Devoted to Naturus.',
+  ac: 19, acNote: 'Mithral Half Plate + Shield',
+  hpMax: 83,
+  hitDice: { max: 10, die: 'd8' },
+  speed: 30, initiative: 2, proficiencyBonus: 4, passivePerception: 15,
+  abilities: { str: 14, dex: 14, con: 14, int: 12, wis: 20, cha: 8 },
+  saves: {
+    wis: { proficient: true, modOverride: 9 },
+    cha: { proficient: true, modOverride: 3 }
+  },
+  skills: {
+    arcana:    { proficient: false, modOverride: 6 },  // Thaumaturge +5 to Arcana
+    religion:  { proficient: false, modOverride: 6 },  // Thaumaturge +5 to Religion
+    medicine:  { proficient: true },
+    insight:   { proficient: true },
+    perception: { proficient: true }
+  },
+  senses: 'Darkvision 60ft, passive Perception 15',
+  damageResist: ['Necrotic', 'Poison', 'Fire (Tiefling Hellish Resistance)'],
+  weapons: [
+    { name: 'Mace +3 (magic)',       atk: 9, damage: '1d6+5 bludgeoning', notes: 'Magic; Sap mastery (disadv on next atk)' },
+    { name: 'Chill Touch (cantrip)', atk: 9, damage: '2d10 necrotic',     notes: 'V/S · range 120ft · target can\'t regain HP until end of next turn' },
+    { name: 'Sacred Flame (cantrip)', atk: 0, damage: '2d8+5 radiant',   notes: 'DEX DC 17 · range 60ft · no cover benefit · +5 Potent Spellcasting' },
+    { name: 'Light Crossbow',        atk: 6, damage: '1d8+2 piercing',    notes: 'Range 80/320 · Slow mastery' },
+    { name: 'Mace (basic)',          atk: 6, damage: '1d6+2 bludgeoning', notes: 'Fallback if disarmed of magic mace' }
+  ],
+  classFeatures: [
+    { name: 'Blight Weaver (Pestilence 1)',     desc: 'Resistance to Necrotic and Poison damage. As a Reaction when taking necrotic or poison damage, can swap which type she\'s resistant to. Her own necrotic/poison damage ignores resistance.' },
+    { name: 'Plague Blessing (Pestilence 2)',   desc: 'As a Bonus Action expend a Channel Divinity: become a 5ft Emanation of plague for 1 minute. Each creature that starts its turn in the emanation makes CON DC 17 or gains 1 Exhaustion (max = WIS mod = 5 levels stacking). Concentration. 3/Long Rest.' },
+    { name: 'Virulent Burst (Pestilence 6, Reaction)', desc: 'When a creature within 60ft drops to 0HP: 10ft Emanation centred on that creature (20ft if they had Exhaustion). Each creature in the burst makes CON DC 17 or suffers EITHER Putrid Shock (Incapacitated until end of next turn) OR Toxic Infection (3d6 Necrotic + 3d6 Poison). Uses = WIS mod = 5/Long Rest.' },
+    { name: 'Potent Spellcasting (Pestilence/Cleric)', desc: '+5 (WIS mod) damage to Cleric cantrips that deal damage (already in cantrip damage above).' },
+    { name: 'Channel Divinity (3/Long Rest)',   desc: 'Spend a use for: Divine Spark · Turn Undead · Sear Undead (when Turn Undead succeeds, deal 5d8 radiant) · Plague Blessing. Recovers on short rest (1 use) or long rest (all).' },
+    { name: 'Divine Intervention (1/Long Rest)', desc: 'Once per long rest, cast any Cleric spell of L5 or lower for free, no components, no concentration penalty. At Cleric 20 this becomes auto-success at 100%.' },
+    { name: 'Thaumaturge',                       desc: '+5 (Prof + WIS) to Arcana and Religion checks. Knows Thaumaturgy cantrip.' },
+    { name: 'Cloak of Displacement (attuned)',   desc: 'Attackers have disadvantage on attack rolls against her, until she takes damage. Resets at the start of her next turn or when she takes damage.' }
+  ],
+  speciesTraits: [
+    { name: 'Tiefling (Infernal Legacy)',  desc: 'Innate spellcasting (Thaumaturgy at will; can cast Hellish Rebuke 1/long rest at 2nd level; Darkness 1/long rest).' },
+    { name: 'Darkvision 60ft',             desc: 'See in dim light as if bright, darkness as if dim (greyscale).' },
+    { name: 'Hellish Resistance',          desc: 'Resistance to fire damage.' },
+    { name: 'Otherworldly Presence',       desc: 'Knows Thaumaturgy cantrip (Charisma).' }
+  ],
+  feats: [
+    { name: 'Acolyte (Origin)',  desc: 'Proficiency in Insight + Religion; can perform religious ceremonies.' },
+    { name: 'War Caster',        desc: 'Adv on Con saves to maintain concentration; can perform somatic components with weapon/shield in hand; cast a single-target spell as Opportunity Attack.' },
+    { name: 'Resilient (Charisma)', desc: 'Proficiency in Charisma saves (+1 CHA).' }
+  ],
+  equipmentProf: {
+    armor: ['Light', 'Medium', 'Heavy', 'Shields'],
+    weapons: ['Simple weapons'],
+    tools: []
+  },
+  spellcasting: {
+    ability: 'WIS', modifier: 5, saveDC: 17, attackBonus: 9,
+    slots: [4, 3, 3, 3, 2, 0, 0, 0, 0]
+  },
+  spells: [
+    // Cantrips (8)
+    { level: 0, name: 'Sacred Flame',        school: 'Evocation',   cast: 'Action', range: '60ft',   desc: 'Flame-like radiance descends. DEX DC 17 or 2d8 radiant. No cover. +5 from Potent Spellcasting on hit.' },
+    { level: 0, name: 'Chill Touch',         school: 'Necromancy',  cast: 'Action', range: '120ft', desc: 'Ghostly skeletal hand. Ranged spell attack +9. Hit: 2d10 necrotic. Target can\'t regain HP until end of next turn. If undead, also has disadvantage on attacks against you until end of next turn.' },
+    { level: 0, name: 'Guidance',            school: 'Divination',  cast: 'Action', range: 'Touch', desc: 'Target adds 1d4 to one ability check before spell ends (concentration, 1 minute).', tags: ['concentration'] },
+    { level: 0, name: 'Light',               school: 'Evocation',   cast: 'Action', range: 'Touch', desc: 'Object sheds bright 20ft / dim 20ft for 1 hour. No effect on a held magical object.' },
+    { level: 0, name: 'Mending',             school: 'Transmutation', cast: '1 min', range: 'Touch', desc: 'Repair a single break or tear no larger than 1ft.' },
+    { level: 0, name: 'Resistance',          school: 'Abjuration',  cast: 'Action', range: 'Touch', desc: 'Target adds 1d4 to one saving throw before spell ends (concentration, 1 minute).', tags: ['concentration'] },
+    { level: 0, name: 'Spare the Dying',     school: 'Necromancy',  cast: 'Action', range: '15ft',  desc: 'Stabilise a creature at 0HP. No effect on undead or constructs.' },
+    { level: 0, name: 'Thaumaturgy',         school: 'Transmutation', cast: 'Action', range: '30ft', desc: 'Voice booms x3 louder · flames flicker / brighten / dim / change colour · tremors · sound effect · open/close door/window · alter eyes\' appearance. 1 minute.' },
+    // 1st level (4 slots)
+    { level: 1, name: 'Bless',               school: 'Enchantment', cast: 'Action',     range: '30ft',  desc: 'Up to 3 creatures add 1d4 to attack rolls and saving throws. Concentration, 1 minute.', tags: ['concentration'] },
+    { level: 1, name: 'Cure Wounds',         school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'Heal 2d8 + 5 HP.' },
+    { level: 1, name: 'Guiding Bolt',        school: 'Evocation',   cast: 'Action',     range: '120ft', desc: 'Ranged spell attack +9. Hit: 4d6 radiant. Next attack roll vs target before end of next turn has advantage.' },
+    { level: 1, name: 'Healing Word',        school: 'Abjuration',  cast: 'Bonus',      range: '60ft',  desc: 'Heal 1d4 + 5 HP. Cannot raise from 0 HP if creature is undead or construct.' },
+    { level: 1, name: 'Bane',                school: 'Enchantment', cast: 'Action',     range: '30ft',  desc: 'Up to 3 creatures CHA DC 17 or subtract 1d4 from attack rolls and saves. Concentration, 1 minute.', tags: ['concentration'] },
+    { level: 1, name: 'Protection from Evil and Good', school: 'Abjuration', cast: 'Action', range: 'Touch', desc: 'Aberrations, celestials, elementals, fey, fiends, undead have disadvantage on attacks vs target; target can\'t be charmed, frightened, or possessed by them. Concentration, 10 minutes.', tags: ['concentration'] },
+    { level: 1, name: 'Command',             school: 'Enchantment', cast: 'Action',     range: '60ft',  desc: 'WIS DC 17 or follow a one-word command on its next turn. Approach/Drop/Flee/Grovel/Halt.' },
+    { level: 1, name: 'Shield of Faith',     school: 'Abjuration',  cast: 'Bonus',      range: '60ft',  desc: 'Target gains +2 AC. Concentration, 10 minutes.', tags: ['concentration'] },
+    { level: 1, name: 'Detect Poison and Disease', school: 'Divination', cast: 'Action (R)', range: 'Self (30ft)', desc: 'Sense location and type of poisons/diseases/poisonous creatures within 30ft. PESTILENCE DOMAIN.', tags: ['concentration', 'ritual'] },
+    { level: 1, name: 'Protection from Poison', school: 'Abjuration', cast: 'Action',   range: 'Touch', desc: 'Neutralise poisons; resistance to poison damage; immune to Poisoned condition. 1 hour. PESTILENCE DOMAIN.' },
+    { level: 1, name: 'Ray of Sickness',     school: 'Necromancy',  cast: 'Action',     range: '60ft',  desc: 'Ranged spell attack +9. Hit: 2d8 poison + CON DC 17 or Poisoned until end of next turn. PESTILENCE DOMAIN.' },
+    { level: 1, name: 'Inflict Wounds',      school: 'Necromancy',  cast: 'Action',     range: 'Touch', desc: 'Melee spell attack. Hit: 3d10 necrotic. PESTILENCE DOMAIN.' },
+    // 2nd level (3 slots)
+    { level: 2, name: 'Spiritual Weapon',    school: 'Evocation',   cast: 'Bonus',      range: '60ft',  desc: 'Floating spectral weapon. Bonus action to melee spell attack +9 within 5ft of weapon: 1d8+5 force. Move 20ft each turn. 1 minute. No concentration.' },
+    { level: 2, name: 'Hold Person',         school: 'Enchantment', cast: 'Action',     range: '60ft',  desc: 'WIS DC 17 each turn or Paralyzed. Concentration, 1 minute. Melee attacks from within 5ft = auto-crit.', tags: ['concentration'] },
+    { level: 2, name: 'Prayer of Healing',   school: 'Abjuration',  cast: '10 min',     range: '30ft',  desc: 'Up to 6 creatures regain 2d8+5 HP each.' },
+    { level: 2, name: 'Aid',                 school: 'Abjuration',  cast: 'Action',     range: '30ft',  desc: 'Up to 3 creatures gain +5 max HP and current HP for 8 hours.' },
+    { level: 2, name: 'Silence',             school: 'Illusion',    cast: 'Action (R)', range: '120ft', desc: '20ft radius sphere of silence — no sound passes; no spells with verbal components can be cast inside. Concentration, 10 minutes. KEY OPENING: cast on Orin.', tags: ['concentration', 'ritual'] },
+    { level: 2, name: 'Calm Emotions',       school: 'Enchantment', cast: 'Action',     range: '60ft',  desc: 'Humanoids in 20ft sphere CHA DC 17 or suppress charm/fright or anger/hostility. Concentration, 1 minute.', tags: ['concentration'] },
+    { level: 2, name: 'Lesser Restoration',  school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'End one condition on target: Blinded, Deafened, Paralyzed, Poisoned, or one disease.' },
+    { level: 2, name: 'Warding Bond',        school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'Bond with target within 60ft. +1 AC, saves; resistance to all damage; take half damage target takes. 1 hour.' },
+    { level: 2, name: 'Zone of Truth',       school: 'Enchantment', cast: 'Action',     range: '60ft',  desc: '15ft radius. CHA DC 17 or cannot deliberately lie inside for 10 minutes.' },
+    { level: 2, name: 'Ray of Enfeeblement', school: 'Necromancy',  cast: 'Action',     range: '60ft',  desc: 'Ranged spell attack +9. Hit: target deals only half damage with weapons that use STR until end of next turn. Concentration. PESTILENCE DOMAIN.', tags: ['concentration'] },
+    // 3rd level (3 slots)
+    { level: 3, name: 'Spirit Guardians',    school: 'Conjuration', cast: 'Action',     range: 'Self (15ft)', desc: '15ft radius emanation. Each creature in it: speed halved + WIS DC 17 or 3d8 radiant (good cleric) or 3d8 necrotic (evil cleric — Kaelith uses necrotic). Concentration, 10 minutes. CORE BATTLEFIELD CONTROL.', tags: ['concentration'] },
+    { level: 3, name: 'Beacon of Hope',      school: 'Abjuration',  cast: 'Action',     range: '30ft',  desc: 'Any number of creatures: adv on WIS saves and death saves; gain max HP from healing. Concentration, 1 minute.', tags: ['concentration'] },
+    { level: 3, name: 'Mass Healing Word',   school: 'Abjuration',  cast: 'Bonus',      range: '60ft',  desc: 'Up to 6 creatures regain 1d4+5 HP each.' },
+    { level: 3, name: 'Dispel Magic',        school: 'Abjuration',  cast: 'Action',     range: '120ft', desc: 'End spell of L3 or lower. Higher: ability check DC 10 + spell level.' },
+    { level: 3, name: 'Animate Dead',        school: 'Necromancy',  cast: '1 min',      range: '10ft',  desc: 'Animate skeleton or zombie. Lasts 24h; re-cast to maintain. Can command up to 4 with each casting.' },
+    { level: 3, name: 'Bestow Curse',        school: 'Necromancy',  cast: 'Action',     range: 'Touch', desc: 'Touch attack + WIS DC 17 or curse: disadv on chosen ability checks/saves OR target attacks at disadv vs you OR target wastes action OR you deal +1d8 necrotic. Concentration, 1 minute.', tags: ['concentration'] },
+    { level: 3, name: 'Glyph of Warding',    school: 'Abjuration',  cast: '1 hour',     range: 'Touch', desc: 'Inscribe a magical trap or stored spell. Triggered by specified condition. Permanent until triggered.' },
+    { level: 3, name: 'Sending',             school: 'Evocation',   cast: 'Action',     range: 'Unlimited', desc: 'Send a 25-word message to a known creature. They can reply. Crosses planes (variable success).' },
+    { level: 3, name: 'Stinking Cloud',      school: 'Conjuration', cast: 'Action',     range: '90ft',  desc: '20ft radius cloud. CON DC 17 each turn or lose action retching. Concentration, 1 minute. Heavy obscurement. PESTILENCE DOMAIN.', tags: ['concentration'] },
+    { level: 3, name: 'Vampiric Touch',      school: 'Necromancy',  cast: 'Action',     range: 'Self', desc: 'Melee spell attack +9, hit: 3d6 necrotic and she regains half as HP. Repeat attack each action for duration. Concentration, 1 minute. PESTILENCE DOMAIN.', tags: ['concentration'] },
+    // 4th level (3 slots)
+    { level: 4, name: 'Banishment',          school: 'Abjuration',  cast: 'Action',     range: '60ft',  desc: 'CHA DC 17 or banish target to harmless demiplane (if native plane) or send home (if extraplanar) for up to 1 minute. Concentration.', tags: ['concentration'] },
+    { level: 4, name: 'Death Ward',          school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'When target drops to 0HP, instead drops to 1HP. Spell ends after triggering. 8 hours.' },
+    { level: 4, name: 'Aura of Life',        school: 'Abjuration',  cast: 'Action',     range: 'Self (30ft)', desc: '30ft aura: creatures (other than undead/constructs) have resistance to necrotic; max HP cannot be reduced; if at 0HP start of turn, regain 1HP. Concentration, 10 minutes.', tags: ['concentration'] },
+    { level: 4, name: 'Freedom of Movement', school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'Target ignores difficult terrain, can\'t be paralyzed or restrained by spells, can spend 5ft of movement to escape grapple. 1 hour.' },
+    { level: 4, name: 'Guardian of Faith',   school: 'Conjuration', cast: 'Action',     range: '30ft',  desc: 'Spectral guardian appears. Any hostile creature within 10ft of it: DEX DC 17 or take 20 radiant (half on save). 60 total damage budget. 8 hours.' },
+    { level: 4, name: 'Divination',          school: 'Divination',  cast: 'Action (R)', range: 'Self', desc: 'Pose one question about an event in the next 7 days; receive truthful answer (limited).', tags: ['ritual'] },
+    { level: 4, name: 'Blight',              school: 'Necromancy',  cast: 'Action',     range: '30ft',  desc: 'CON DC 17 or 8d8 necrotic (half on save). Plants take max damage; magical plants gain save. PESTILENCE DOMAIN.' },
+    { level: 4, name: 'Giant Insect',        school: 'Transmutation', cast: 'Action',   range: '30ft',  desc: 'Up to 10 centipedes / 3 spiders / 5 wasps / 1 scorpion become Giant variants for 10 minutes. PESTILENCE DOMAIN.', tags: ['concentration'] },
+    // 5th level (2 slots)
+    { level: 5, name: 'Flame Strike',        school: 'Evocation',   cast: 'Action',     range: '60ft',  desc: '10ft radius column from sky. DEX DC 17 or 4d6 fire + 4d6 radiant (half on save).' },
+    { level: 5, name: 'Raise Dead',          school: 'Necromancy',  cast: '1 hour',     range: 'Touch', desc: 'Resurrect a creature dead no more than 10 days. Diamond worth 500gp consumed.' },
+    { level: 5, name: 'Geas',                school: 'Enchantment', cast: '1 min',      range: '60ft',  desc: 'WIS DC 17 or magically compelled to follow a command for 30 days. 5d10 psychic damage when defying. Heavy social tool — used to mark Naturus loyalists.', tags: ['concentration'] },
+    { level: 5, name: 'Greater Restoration', school: 'Abjuration',  cast: 'Action',     range: 'Touch', desc: 'End: one of: charm/petrification effect, exhaustion, ability score reduction, HP max reduction. Diamond worth 100gp consumed.' },
+    { level: 5, name: 'Commune',             school: 'Divination',  cast: '1 min (R)',  range: 'Self', desc: 'Contact deity for 3 yes/no questions. Once per long rest reliable.', tags: ['ritual'] },
+    { level: 5, name: 'Scrying',             school: 'Divination',  cast: '10 min',     range: 'Self', desc: 'WIS DC 17 — scry on a creature (DC depends on how well you know them and any focus you have). Concentration, 10 minutes.', tags: ['concentration'] },
+    { level: 5, name: 'Contagion',           school: 'Necromancy',  cast: 'Action',     range: 'Touch', desc: 'Touch attack + CON DC 17 each turn for 3 turns. 3 fails: contracts disease (Blinding Sickness/Filth Fever/Flesh Rot/Mindfire/Seizure/Slimy Doom). PESTILENCE DOMAIN.' },
+    { level: 5, name: 'Insect Plague',       school: 'Conjuration', cast: 'Action',     range: '300ft', desc: '20ft radius sphere of locusts. CON DC 17 or 4d10 piercing (half on save). Difficult terrain inside. Concentration, 10 minutes. PESTILENCE DOMAIN.', tags: ['concentration'] }
+  ],
+  languages: ['Common', 'Draconic', 'Elvish', 'Modron'],
+  equipment: [
+    'Mithral Half Plate (light, no stealth disadvantage)',
+    'Shield (+2 AC included in AC 19)',
+    'Mace +3 (magic weapon)',
+    'Light Crossbow + 20 bolts',
+    'Cloak of Displacement (attuned · disadv on attacks vs her until she takes damage)',
+    'Component pouch · Holy symbol of Naturus (twisted gnarled wood pendant)',
+    'Vestments of Naturus (black robe with green vine motifs over the armour)',
+    'Diamond dust (300gp, for Revivify-style components if she carries them)',
+    'Diamond (500gp, Raise Dead component)',
+    'Diamond (100gp, Greater Restoration component)',
+    'Vial of foul-smelling oil (signature — leaves on those she\'s "blessed")',
+    'The "K" note seal — used to grant Pig\'s Head back-room access'
+  ],
+  attunements: ['Cloak of Displacement', '— (one slot free)', '— (one slot free)'],
+  coins: { cp: 0, sp: 0, ep: 0, gp: 240, pp: 0 },
+  backstory: 'Cleric of Naturus. Charmed the gnoll pack leader. The "K" on the note that grants Pig\'s Head back-room access. Believes she serves a greater demon — actually being manipulated through whispers (Naturus speaking to her from beyond the Dawnoak). Her rot spread is, from Naturus\'s perspective, less about cult expansion and more about destabilising the marsh seal on Vroth-Khorn.',
+  personality: 'Blunt. No filter. Believes rot and decay bring new life. Sees suffering as a necessary stage. Will tell you exactly why she\'s killing you. Patient with the slow path of corruption.',
+  ideal: 'All things must rot to make way for new growth.',
+  bond: 'Devoted to Naturus above all else.',
+  flaw: 'No filter — speaks her actual thoughts even when diplomatically catastrophic.',
+  resources: [
+    { id: 'channel_div',     label: 'Channel Divinity',           max: 3, recharge: 'short', note: 'Divine Spark / Turn Undead / Sear Undead / Plague Blessing' },
+    { id: 'plague_blessing', label: 'Plague Blessing uses',       max: 3, recharge: 'long',  note: 'Bonus action emanation, CON DC 17 or 1 Exhaustion/turn' },
+    { id: 'virulent_burst',  label: 'Virulent Burst (Reaction)',  max: 5, recharge: 'long',  note: 'When enemy within 60ft drops to 0HP' },
+    { id: 'divine_int',      label: 'Divine Intervention',        max: 1, recharge: 'long',  note: 'Cast any L5 or lower Cleric spell free' },
+    { id: 'blight_swap',     label: 'Blight Weaver swap (Reaction)', max: 0, recharge: 'long', note: 'Swap necrotic/poison resistance — no per-rest cap, freely used' },
+    { id: 'hellish_rebuke',  label: 'Hellish Rebuke (Tiefling)',  max: 1, recharge: 'long' },
+    { id: 'darkness',        label: 'Darkness (Tiefling)',        max: 1, recharge: 'long' }
+  ]
+};
