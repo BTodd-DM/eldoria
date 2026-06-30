@@ -978,6 +978,29 @@ body {
   resize: vertical;
 }
 .sheet-notes-area:focus { border-color: var(--gold2); }
+
+/* Pop-out button in topbar */
+.sheet-popout-btn {
+  background: linear-gradient(180deg, var(--gold), var(--muted));
+  color: var(--ink); border: none;
+  padding: .5rem 1rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+  cursor: pointer; font-weight: 700;
+}
+.sheet-popout-btn:hover { background: var(--gold2); }
+
+/* POPOUT MODE — dedicated standalone sheet tab */
+body.popout-mode .site-header,
+body.popout-mode .main-nav,
+body.popout-mode .panel { display: none !important; }
+body.popout-mode #app { padding: 0; }
+body.popout-mode #sheet-dialog {
+  width: 100vw; max-width: 100vw;
+  height: 100vh; max-height: 100vh;
+  margin: 0; border-radius: 0;
+  border: none;
+}
+body.popout-mode #sheet-dialog::backdrop { background: #0a0805; }
 </style>
 </head>
 <body>
@@ -2348,6 +2371,7 @@ body {
   <div class="sheet-topbar">
     <div class="sheet-topbar-title" id="sheet-title">Character Sheet</div>
     <div class="sheet-topbar-actions">
+      <button class="sheet-popout-btn" id="sheet-popout-btn" onclick="popOutCurrentSheet()" title="Open this sheet in a separate tab so you can view multiple at once">↗ Pop Out</button>
       <button class="sheet-close-btn" onclick="closeSheet()">✕ Close</button>
     </div>
   </div>
@@ -2618,10 +2642,15 @@ function showRollToast(label, formula, result, opts) {
   _sheetToastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3800);
 }
 
-// Open / close / refresh
+// Open / close / refresh / popout
+let _currentSheetId = null;
+function isPopoutMode() {
+  return document.body.classList.contains('popout-mode');
+}
 function openCharacterSheet(charId) {
   const char = CHARACTERS[charId];
   if (!char) { alert('Character sheet not found: ' + charId); return; }
+  _currentSheetId = charId;
   const dialog = document.getElementById('sheet-dialog');
   document.getElementById('sheet-title').textContent = char.name + ' — Character Sheet';
   renderSheet(charId);
@@ -2629,9 +2658,15 @@ function openCharacterSheet(charId) {
   else dialog.setAttribute('open', '');
 }
 function closeSheet() {
+  if (isPopoutMode()) {
+    // This tab is the sheet — close the whole tab
+    window.close();
+    return;
+  }
   const dialog = document.getElementById('sheet-dialog');
   if (typeof dialog.close === 'function') dialog.close();
   else dialog.removeAttribute('open');
+  _currentSheetId = null;
 }
 function refreshSheet(charId) {
   const body = document.getElementById('sheet-body');
@@ -2639,6 +2674,47 @@ function refreshSheet(charId) {
   const scrollTop = body.scrollTop;
   renderSheet(charId);
   body.scrollTop = scrollTop;
+}
+function popOutCurrentSheet() {
+  if (!_currentSheetId) return;
+  popOutSheet(_currentSheetId);
+}
+function popOutSheet(charId) {
+  // Open the same page with ?sheet=<id>; on load it renders just the sheet fullscreen.
+  const url = window.location.origin + window.location.pathname + '?sheet=' + encodeURIComponent(charId);
+  const win = window.open(url, 'sheet-' + charId, 'width=1400,height=900,resizable=yes,scrollbars=yes');
+  if (!win) {
+    alert('Popup blocked. Allow popups for this site, or right-click the button and Open in New Tab.');
+  }
+}
+// Multi-tab sync: when any tab changes a character's state, refresh open sheets in this tab.
+window.addEventListener('storage', function(e) {
+  if (!e.key || !e.key.startsWith('eldoria-char-state-')) return;
+  const dialog = document.getElementById('sheet-dialog');
+  if (!dialog || !dialog.open) return;
+  const updatedId = e.key.replace('eldoria-char-state-', '');
+  if (_currentSheetId === updatedId) refreshSheet(updatedId);
+});
+// In popout mode, the dialog's close event (e.g. Esc key) should close the tab too.
+document.addEventListener('DOMContentLoaded', function() {
+  const dialog = document.getElementById('sheet-dialog');
+  if (!dialog) return;
+  dialog.addEventListener('close', function() {
+    if (isPopoutMode()) window.close();
+  });
+});
+// On page load (after auth), check for ?sheet=<id> in URL and auto-open in popout mode.
+function maybeAutoOpenSheetFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const sheetParam = params.get('sheet');
+    if (!sheetParam) return;
+    if (!CHARACTERS[sheetParam]) return;
+    document.body.classList.add('popout-mode');
+    document.title = CHARACTERS[sheetParam].name + ' — Character Sheet';
+    // Slight defer so #app has fully rendered
+    setTimeout(function() { openCharacterSheet(sheetParam); }, 30);
+  } catch (e) { /* silent */ }
 }
 
 // Renderer
@@ -3043,6 +3119,7 @@ function unlockApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); cal_init(); updateStatusBar();
+  maybeAutoOpenSheetFromUrl();
 }
 
 function checkAuth() {
