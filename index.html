@@ -580,25 +580,25 @@ body {
 <div class="status-bar" id="status-bar">
   <div class="status-item" onclick="showPanelById('sessions','now')" title="Jump to Sessions › Now">
     <span class="status-label">🎲 Session</span>
-    <span class="status-value" id="status-session">5 — next at the table</span>
+    <span class="status-value" id="status-session">6 — next at the table &nbsp;·&nbsp; The Wayward Company</span>
   </div>
   <div class="status-item" onclick="showPanelById('sessions','calendar')" title="Jump to Sessions › Calendar">
     <span class="status-label">📅 Date</span>
-    <span class="status-value" id="status-date">14 Frostfall · 3E 1247</span>
-    <span class="status-small" id="status-weather">⛅ Overcast (Kolt's Depot)</span>
+    <span class="status-value" id="status-date">24 Frostfall · 3E 1247</span>
+    <span class="status-small" id="status-weather">⛅ Smoky (Ironhold — northern gate camp)</span>
   </div>
   <div class="status-item" onclick="showPanelById('clock')" title="Jump to Instability Clock">
     <span class="status-label">⏳ Instability</span>
-    <span class="status-dots" id="status-instability">●●○○○○○○</span>
-    <span class="status-small" id="status-instability-fraction">2/8</span>
+    <span class="status-dots" id="status-instability">●●●○○○○○</span>
+    <span class="status-small" id="status-instability-fraction">3/8</span>
   </div>
   <div class="status-item" onclick="showPanelById('clock')" title="Jump to Lich Progress">
     <span class="status-label">💀 Lich</span>
-    <span class="status-value" id="status-lich">Stage 3 (in progress)</span>
+    <span class="status-value" id="status-lich">Stage 3/10 (~30%)</span>
   </div>
-  <div class="status-item" title="Active arc countdowns (Verdant Expanse · Stonemarked · Scarlet Wake)">
+  <div class="status-item" title="Active arc countdowns (Verdant Expanse · Stonemarked · Scarlet Wake) — plus Vroth-Khorn Seal (4/6)">
     <span class="status-label">⌛ Countdowns</span>
-    <span class="status-value">VE 3 · SM 5 · SW 5</span>
+    <span class="status-value">VE 2 · SM 4 · SW 4 · Seal 4/6</span>
   </div>
 </div>
 
@@ -625,7 +625,7 @@ body {
 
   <div id="tab-now">
   <div class="alert alert-danger">⚠ URGENT — Lyssandra Vale is in Vaeloran's custody. Her memory has been wiped. She now serves him willingly. Every session that passes without the party finding her worsens her fate.</div>
-  <div class="alert alert-warn">Current position: Kolt's Depot. <strong>Session 5 next — caravan departing south to Ironhold.</strong> See the "Arc 02 — Caravan to Ironhold" card below for the three-session plan and the Combat tab for Vrass's stat block.</div>
+  <div class="alert alert-warn">Current position: <strong>outside Ironhold's northern gates</strong> (evening of Day 11 · 24 Frostfall). <strong>Session 6 next — The Wayward Company enters Ironhold.</strong> Torren is bound to Vrass by dark bond (whisper coming Session 6, night 1). Coin Cipher chest still hidden in Sylas's Bag of Holding. See Arc 02 card below.</div>
 
   <div class="sec-title">Threads in Play</div>
   <div class="grid-2">
@@ -657,8 +657,8 @@ body {
     <div class="card gold">
       <div class="card-title"><span class="qdot qdot-active"></span>🎲 Arc 02 — Caravan to Ironhold (Sessions 5–7)</div>
       <div class="card-body" style="font-size:12.5px">
-        <strong>Session 5 (next, 3h):</strong> Kolt's Depot opener — players name the company. Torren spots the Coin Cipher seal on the chest (Wagon 2). Day 2 stop at Stillbrook (corrupted stream — Naturus foreshadowing). Sera Vey joins the caravan. Day 2 afternoon: <strong>Vrass the young black dragon attacks</strong> (CR 7, MM stats — Combat tab). Cliffhanger, level up to 6.<br><br>
-        <strong>Session 6:</strong> Optional Vrass lair detour (loot + Wizard scrolls — Hypnotic Pattern, Counterspell, Phantom Steed). Day 3: Aurum Dominion dignitary encounter (Veris Caelthorn + mixed Watch escort). Night watcher. Arrive Ironhold gates.<br><br>
+        <strong>Session 5 ✅ COMPLETE:</strong> Party named themselves <strong>The Wayward Company</strong> at Kolt's Depot. Torren spotted the Coin Cipher seal on the chest. Stillbrook stop, Sera Vey joins hidden in the Wayward Company wagon. Vrass ambush — Torren swore lifetime servitude (nat 20 Persuasion), dark bond formed. Sylas quietly moved the sealed chest into his Bag of Holding while the negotiation dragged. Vrass took Wagon 2. Party pushed on, levelled to 6, camped outside Ironhold's northern gates.<br><br>
+        <strong>Session 6 (next, 3h):</strong> Optional Vrass lair detour (loot + Wizard scrolls). Day 3 encounter with Envoy Veris Caelthorn (flags Sylas's Aurora Peaks blood to Selene's file). Northern Gate arrival (Sergeant Gorren). Grey Kettle lodging (Mother Hessa). <strong>Vrass's first whisper lands late — the Heart of Ironhold ask, three-week deadline to the dark moon.</strong><br><br>
         <strong>Session 7:</strong> Bryndis vs Drake political crisis. Halvor moral grey resolution. Coin Cipher chest delivered to warehouse #14 — black carriage rides <em>north</em>. Sera's reckoning. Return-hook to Aeloria (Davos / Lis).<br><br>
         <strong>Trackers this arc:</strong> Instability Clock 2 → 3 (one off-screen Aeloria trade incident). Lich Progress: Stage 3 advances ~70%. Countdowns tick: Verdant Expanse 3→2, Stonemarked 5→4, Scarlet Wake 5→4. Eryn Feld goes missing in Aeloria off-screen.
       </div>
@@ -672,7 +672,7 @@ body {
   <div class="grid-2" style="gap:.6rem;margin-top:.75rem">
     <div class="card red"><div class="card-title">✅ Stage 1 — Arcane Self-Severance</div><div class="card-sub">Auto-complete · Cannot be interrupted</div><div class="card-body" style="font-size:12px">Ritual that begins separating soul from mortality. Performed years ago in secret. Complete before the campaign began.</div></div>
     <div class="card red"><div class="card-title">✅ Stage 2 — Phylactery Vessel Acquired</div><div class="card-sub">Auto-complete · Party delivered it</div><div class="card-body" style="font-size:12px">The meteor shard. Lyssandra was sent to retrieve it. The party found her and brought it back. They unknowingly retrieved his phylactery component.</div></div>
-    <div class="card gold"><div class="card-title">🔄 Stage 3 — Shard Attunement</div><div class="card-sub">IN PROGRESS · Interruptible · 30-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely.</div></div>
+    <div class="card gold"><div class="card-title">🔄 Stage 3/10 — Shard Attunement</div><div class="card-sub">IN PROGRESS · ~30% · Interruptible · 90-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely. **10 stages targeting Lich Ascension at party level 12** — slowed via extended durations and rate caps, not added stages.</div></div>
     <div class="card"><div class="card-title">⏳ Stage 4 — Lyssandra's Memories Extracted</div><div class="card-sub">Pending · Auto-completes if party doesn't rescue her</div><div class="card-body" style="font-size:12px">Her full memories of Vaeloran's plans are extracted and sealed into a spellbook — his record of intent. If rescued before Stage 4, Lyssandra can remember fragments. After Stage 4, they're gone permanently.</div></div>
     <div class="card"><div class="card-title">⏳ Stage 5 — Corrupt a Divine Gate Node</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">One of three hidden nodes that anchor the Divine Gate near Aeloria must be corrupted. This weakens divine interference during the final ritual. The party can find and protect these nodes.</div></div>
     <div class="card"><div class="card-title">⏳ Stage 6 — 100 Souls Consumed</div><div class="card-sub">Pending · Partially interruptible via Instability Clock</div><div class="card-body" style="font-size:12px">The Aurek network's operations — guild violence, cult operations, engineered unrest — feed this count. Slowing the Instability Clock slows this. The party can never fully stop it without dismantling the entire network.</div></div>
@@ -701,18 +701,19 @@ body {
       <div class="card red">
         <div class="card-title">Next Session — Active Threads</div>
         <div class="card-body" style="font-size:12.5px">
-          <strong>Party position:</strong> Kolt's Depot. Caravan escort to Ironhold available.<br>
-          <strong>Urgent (DM only):</strong> Lyssandra memory-wiped, Vaeloran's shard attunement in progress (Stage 3).<br>
-          <strong>Live threads:</strong> Naturus cult, Merric/Orin, Kaelith's operations, Instability Clock at 2/8.
+          <strong>Party position:</strong> The Wayward Company camped outside Ironhold's northern gates (evening of Day 11 · 24 Frostfall).<br>
+          <strong>Urgent (DM only):</strong> Lyssandra memory-wiped; Vaeloran's shard attunement ~85% (Stage 3, ~5 days left). Torren dark-bond-active to Vrass; Coin Cipher chest hidden in Sylas's Bag of Holding.<br>
+          <strong>Live threads:</strong> Vrass's Heart of Ironhold ask (Session 6 whisper); Bryndis vs Drake contract vote; Kellan framing; Sera's Halvor confrontation; Wesley Halloran's inquiry into the missing chest; Instability Clock 3/8; Vroth-Khorn Seal Clock 4/6.
         </div>
       </div>
       <div class="sec-title">Vaeloran — Off-Screen Actions</div>
       <div class="card red">
         <div class="card-title">What Vaeloran is doing RIGHT NOW</div>
         <div class="card-body" style="font-size:12.5px">
-          Stage 3: Attuning the meteor shard — 30-day continuous ritual in the Spire's deepest chamber. Lyssandra assists unwittingly as ritual witness.<br><br>
+          Stage 3: Shard attunement ~30% complete — 90-day ritual, ~63 days remaining. Lyssandra assists unwittingly as ritual witness.<br><br>
           Running Aurek Voln Drowhiss correspondence — directing Kaelith's operations to feed the soul count for Stage 6.<br><br>
-          Monitoring Sylas through their study sessions — studying the necklace/spirit jar. Patient. Not yet ready to act.
+          Coordinating Coin Cipher logistics — will hear that the Wayward Company's caravan was hit by a dragon and the chest is (as far as the network knows) with Vrass. Will not learn Sylas hid the chest unless the truth surfaces.<br><br>
+          Publicly: continuing civic duties flawlessly.
         </div>
       </div>
       <textarea class="editable-area" id="prep-overview" placeholder="Session overview notes..." onchange="saveNote('prep-overview',this.value)" style="height:80px;margin-top:.5rem"></textarea>
@@ -897,7 +898,7 @@ body {
 
   <div id="tab-calendar" style="display:none">
     <div class="sec-title">Calendar &amp; Weather — The Cycle of Lights</div>
-    <div class="alert alert-info"><strong>Today:</strong> <span id="cal-today-summary">14 Frostfall · 3E 1247 · Stonefast</span> &nbsp;·&nbsp; <span id="cal-today-weather">⛅ Overcast (Kolt's Depot)</span></div>
+    <div class="alert alert-info"><strong>Today:</strong> <span id="cal-today-summary">24 Frostfall · 3E 1247</span> &nbsp;·&nbsp; <span id="cal-today-weather">⛅ Smoky (Ironhold — northern gate camp)</span></div>
     <datalist id="cal-locations-list"></datalist>
 
     <div class="card gold" id="cal-today-card" style="margin-bottom:1rem">
@@ -906,7 +907,7 @@ body {
         <div>
           <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;margin-bottom:.35rem">DATE</div>
           <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
-            <input type="number" id="cal-day" min="1" max="30" style="width:60px;padding:.3rem" value="14">
+            <input type="number" id="cal-day" min="1" max="30" style="width:60px;padding:.3rem" value="24">
             <select id="cal-month" style="padding:.3rem">
               <option value="0">Greenwake (Spring)</option>
               <option value="1">Lumineth</option>
@@ -976,11 +977,17 @@ body {
 
   <div id="tab-recaps" style="display:none">
   <div class="sec-title">Campaign Arc</div>
-  <div class="alert alert-info">Current arc: <strong>The Shard and the Letters</strong> — The party has returned Lyssandra to Vaeloran and cleared the gnoll den. They now stand at Kolt's Depot with threads pulling in every direction.</div>
+  <div class="alert alert-info">Current arc: <strong>Arc 02 — Caravan to Ironhold</strong> (Sessions 5–7). Session 5 complete. <strong>The Wayward Company</strong> is camped outside Ironhold's northern gates. Torren dark-bound to Vrass. Coin Cipher chest hidden in Sylas's Bag of Holding. Session 6 opens at the gates.</div>
 
   <div class="sec-title">Session Log <span style="font-size:11px;color:var(--parch3);font-weight:400">— most recent first</span></div>
   <div class="card gold">
-    <div class="card-sub">Sessions 3–4 &nbsp;·&nbsp; Most recent</div>
+    <div class="card-sub">Session 5 &nbsp;·&nbsp; Most recent</div>
+    <div class="card-title">The Caravan Out</div>
+    <div class="card-body">Party signed on at Kolt's Depot as <strong>The Wayward Company</strong>. Twelve crates of cargo including a sealed iron-bound chest bearing the Coin Cipher eclipse seal. Day 1: Torren spotted the seal; Sylas confirmed necromantic aura with Detect Magic. Day 2 Stillbrook: Orin identified acidic contamination in the brook (Nature 24). Sera Vey approached, wounded, seeking passage to find her sister — <strong>Torren rolled Insight nat 20 (35): she is honest.</strong> Later that day, a dead cow with acid burns. Then a shadow crossed the road — <strong>Vrass, a young black dragon</strong>, landed and demanded the caravan. Torren dismounted, knelt, offered praise, offered a caravan. Vrass wanted a servant. <strong>Torren agreed to a lifetime of servitude (Persuasion nat 20).</strong> While the negotiation dragged, <strong>Sylas quietly moved the Coin Cipher chest into his Bag of Holding.</strong> Vrass took Wagon 2 (contract cargo minus the chest) and flew off to his lair. Parting words: <em>"We will speak soon."</em> Losses: Wagon 2 + half cargo. Retained: Wagons 1 and 3 + the hidden chest. Party pushed on, saw Ironhold's smelting fires at last light, camped. Level up to 6. Instability Clock advances to 3/8. Dark bond formed — Vrass can whisper to Torren from any distance; Torren can summon Vrass by speaking his name three times aloud in solitude.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">Vrass encounter</span><span class="badge b-gold">Torren dark-bound</span><span class="badge b-teal">Wayward Company named</span><span class="badge b-purple">chest hidden</span><span class="badge b-grey">level 6</span></div>
+  </div>
+  <div class="card gold">
+    <div class="card-sub">Sessions 3–4</div>
     <div class="card-title">The Gnoll Den and the Rot Beneath</div>
     <div class="card-body">Hired by Oskar (Goliath Townmaster) to deal with gnolls threatening southeastern farmlands. Party hunted them to their den and destroyed the pack. Discovery: a shrine to Naturus, a charmed and marked pack leader (Sister Kaelith's work), writings about rot spreading through the Aelorian territories guided by unseen hands. A note pointed to the Pig's Head Inn. Back in Aeloria: Torren found Matilda missing (runaway, tracks north). Orin pressed patrons about Merric. Torren gained Guilded Veil access — Rulden is Merric. Merric sent Orin a cold warning signed "R" but ending "Keep to the light, Orin." Seraphine at the Temple of Luminos guided Orin not to stop. Party now at Kolt's Depot.</div>
     <div style="margin-top:.5rem"><span class="badge b-red">cult shrine</span><span class="badge b-red">Naturus confirmed</span><span class="badge b-gold">Merric revealed</span><span class="badge b-teal">milestone</span></div>
@@ -1253,12 +1260,18 @@ body {
   <div class="card red"><div class="card-title"><span class="qdot qdot-urgent"></span>The Naturus network — rot spreading through the territories</div><div class="card-sub">Main threat · Ongoing</div><div class="card-body">Sister Kaelith is operating freely. Gnoll den writings point to a larger coordinated plan. The Pig's Head Inn is a confirmed meeting point. "K" note (Kaelith) connects Naturus cult to the Guilded Veil. Instability Clock: 2/8. Gerald's missing guild member job likely connected.</div><div style="margin-top:.4rem"><span class="badge b-red">active</span><span class="badge b-orange">Kaelith</span></div></div>
   <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Bring Merric back to the light</div><div class="card-sub">Personal · Orin · Ongoing</div><div class="card-body">Orin knows Rulden is Merric. Merric's care slipped through his cold warning letter. Seraphine: don't stop. Merric doesn't know Vaeloran is using him — that truth could be what breaks him free. The anagram reveal (Aurek Voln Drowhiss) could be the key weapon.</div><div style="margin-top:.4rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos faith</span></div></div>
   <div class="card purple"><div class="card-title"><span class="qdot qdot-active"></span>Sylas's lich path — where does it lead?</div><div class="card-sub">Personal · Sylas · Ongoing · Party unaware</div><div class="card-body">Sylas has taken Lich Initiate. Soul Siphon is active. Vaeloran knows. The original lich pact in Sylas's lineage is unexplored. His spirit jar is undefined. At level 12, Lich Ascension is possible. The party will eventually confront what he's becoming — or won't.</div><div style="margin-top:.4rem"><span class="badge b-purple">Sylas personal</span><span class="badge b-red">soul consumption</span></div></div>
-  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Kolt's Depot — caravan escort to Ironhold</div><div class="card-sub">Immediate · Decision point</div><div class="card-body">Escort job south to Ironhold. Aurum Dominion pressuring Ironhold's smiths for exclusive weapon contracts — Guildmaster Bryndis Ashveil refuses but is losing to Corvan Drake's ambition. Road encounter opportunity, political intrigue, and potential Dominion contact.</div><div style="margin-top:.4rem"><span class="badge b-gold">next session</span></div></div>
+  <div class="card red"><div class="card-title"><span class="qdot qdot-urgent"></span>Vrass's Heart of Ironhold ask</div><div class="card-sub">Torren personal · Three-week deadline</div><div class="card-body">Vrass's first whisper (Session 6, night 1): steal the Heart of Ironhold and bring it to his lair before the dark moon. The Heart is Ironhold's founding relic — Volcanos-blessed ingot in the Council Hall reliquary chamber, guarded by taboo rather than walls. Elisara is ceremonial guardian. Delivering it accelerates Ironhold's decline; refusing it triggers Vrass's punishment. Torren's arc-defining choice.</div><div style="margin-top:.4rem"><span class="badge b-red">Torren personal</span><span class="badge b-purple">Vrass bond</span><span class="badge b-gold">Session 6</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Ironhold Forge Council — the Aurum contract vote</div><div class="card-sub">Political · Session 7 climax</div><div class="card-body">Bryndis Ashveil (Blades Guild, reformist) refuses. Corvan Drake (Ingots Guild) pushes it hard. Envoy Veris at Envoy's Rest. Vote is close and scheduled end of Session 7. Party can influence via: exposing the Kellan framing (Drake's move), Mara Volk's documents (50 gp per doc), winning Torvi's Stonecut Ward voice, or turning Bram against Drake. Every move matters.</div><div style="margin-top:.4rem"><span class="badge b-gold">Ironhold arc</span><span class="badge b-red">contract vote</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Sera Vey — Halvor's warehouse</div><div class="card-sub">Emotional · Session 7</div><div class="card-body">Sera's sister Mira and her two children are held in Halvor's back warehouse. Cor Brackin on watch (folds quickly). Halvor is himself being squeezed — his daughter Lis held in Aeloria by Davos Hark. Twelve-day countdown on Lis. Full negotiated solution opens the Aeloria return-arc.</div><div style="margin-top:.4rem"><span class="badge b-gold">Sera thread</span><span class="badge b-teal">moral grey</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Kellan Bracewell framing — clear her name</div><div class="card-sub">Political · Guilded Veil win</div><div class="card-body">Drake framed Kellan (Ironhold Veilmaster) with forged Naturus-cult documents. She has 2 of 6; Mara Volk has 3; the Watch has 1 (via Corporal Vasso — Broken Anvil, Tuesdays and Fridays). Assembling five of six unwinds the framing publicly. Reward: Ironhold Guilded Veil loyalty (20 operatives, tunnels, discreet muscle).</div><div style="margin-top:.4rem"><span class="badge b-gold">Guilded Veil</span><span class="badge b-orange">Kellan ally</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-active"></span>Coin Cipher inquiry — Wesley Halloran asks questions</div><div class="card-sub">Slow-burn threat · Warehouse #14</div><div class="card-body">Wesley expected the chest and did not receive it. His network's reputation is on the line. Inquiry proceeds in weeks, not scenes. Party has options: return the chest (huge ally), stay hidden (slow-burn threat), or engage him formally via Kellan's introduction. Do not underestimate.</div><div style="margin-top:.4rem"><span class="badge b-purple">Coin Cipher</span><span class="badge b-red">slow-burn</span></div></div>
+  <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Coldhearth — dying fenling village</div><div class="card-sub">Notice board · Aeloria</div><div class="card-body">"Coldhearth village dying. Livestock and wells foul. Elders ask for help. Discreet enquiry. Coin." Last fenling village on the Frostwood Marsh's southern rim. Livestock born wrong, wells souring, children dreaming of "a voice from the stones." Unknowingly the seal canary. Investigating leads to the Grey Cairn ruin — first evidence of the Six Wardens.</div><div style="margin-top:.4rem"><span class="badge b-grey">available</span><span class="badge b-purple">seal thread</span></div></div>
   <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Matilda — tracks leading north</div><div class="card-sub">Personal · Torren · Simmering</div><div class="card-body">Horse escaped after being spooked by foxes. No sinister faction involved. Tracks head north toward Aurora Peaks. Could develop into an Aurora Peaks connection — or just a fun recovery sidequest. Stablehands searching for 5gp.</div><div style="margin-top:.4rem"><span class="badge b-gold">Torren personal</span></div></div>
   <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Sylas's Dominion letter — the red herring</div><div class="card-sub">Personal · Sylas · Pending</div><div class="card-body">Sylas needs to receive a letter from the Aurum Dominion warning about a powerful mage undermining Aeloria's political structure. The letter subtly points to Maelis Raventhorn — but the true culprit is Vaeloran. Planned by Vaeloran to discredit Maelis and keep the party off his trail.</div><div style="margin-top:.4rem"><span class="badge b-gold">Sylas personal</span><span class="badge b-red">Vaeloran's manipulation</span></div></div>
   <div class="card gold"><div class="card-title"><span class="qdot qdot-pending"></span>Gerald's job — missing guild member</div><div class="card-sub">Available · Guilded Veil</div><div class="card-body">Offered at the Pig's Head, left untouched. Still available. Could pull the party deeper into the Guilded Veil hierarchy and toward Merric/Rulden from a different angle. Likely connected to the Naturus network.</div><div style="margin-top:.4rem"><span class="badge b-grey">available</span><span class="badge b-orange">Guilded Veil</span></div></div>
   <hr class="divider">
   <div class="sec-title">Completed</div>
+  <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Kolt's Depot — caravan escort to Ironhold (Session 5)</div><div class="card-body">Delivered Wagons 1 and 3 to Ironhold. Wagon 2 lost to Vrass. Brenna Hartwell's personally-promised 25 gp stands. Coin Cipher chest was <em>believed</em> lost but is in fact hidden in Sylas's Bag of Holding — this remains live as the Wesley Halloran inquiry.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>The gnoll threat</div><div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar. Shrine to Naturus discovered — opened new threads.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Find Lyssandra Vale</div><div class="card-body">Found, captured, returned to Vaeloran. At a cost the party doesn't yet understand.</div></div>
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for Eldoria 2.0 appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
