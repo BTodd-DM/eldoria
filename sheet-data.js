@@ -305,3 +305,166 @@ CHARACTERS.kaelith = {
     { id: 'darkness',        label: 'Darkness (Tiefling)',        max: 1, recharge: 'long' }
   ]
 };
+
+// ----- SYLAS ---------------------------------------------------------
+// Tiefling (Chthonic) Wizard 6, Illusionist Subclass. Player: Jacob_Pies.
+CHARACTERS.sylas = {
+  id: 'sylas',
+  name: 'Sylas',
+  playerName: 'Jacob_Pies',
+  species: 'Tiefling (Chthonic)',
+  className: 'Wizard',
+  level: 6,
+  subclass: 'Illusionist',
+  background: 'Sage',
+  alignment: 'Neutral',
+  age: 29,
+  size: 'Small',
+  height: '6\'0"',
+  weight: '160 lb',
+  appearance: 'Male tiefling, pale purple skin — a distinctive Aurum curse-line marker known to scholars. Heterochromia: left eye white, right eye white. Eyes glow faintly in dim light. Whispers of necrotic energy seem to cling to his presence. Wears the plain robe of a Scholars\' Circle graduate.',
+  ac: 12, acNote: 'No armor (Mage Armor available: 13 + DEX = 15)',
+  hpMax: 51,
+  hitDice: { max: 6, die: 'd6' },
+  speed: 30, initiative: 2, proficiencyBonus: 3, passivePerception: 13,
+  abilities: { str: 8, dex: 15, con: 18, int: 20, wis: 10, cha: 10 },
+  saves: {
+    int: { proficient: true, modOverride: 8 },
+    wis: { proficient: true, modOverride: 3 }
+  },
+  skills: {
+    arcana:        { proficient: true, modOverride: 8 },
+    history:       { proficient: true, modOverride: 8 },
+    investigation: { proficient: true, expertise: true, modOverride: 11 },
+    nature:        { proficient: true, modOverride: 5 },
+    perception:    { proficient: true, modOverride: 3 },
+    religion:      { proficient: true, modOverride: 5 }
+  },
+  senses: 'Darkvision 60ft, passive Perception 13, passive Investigation 21, passive Insight 10',
+  damageResist: ['Necrotic (Chthonic Legacy)'],
+  weapons: [
+    { name: 'Dagger',        atk: 5, damage: '1d4+2 piercing',   notes: 'Simple, Finesse, Light, Thrown, Nick, Range 20/60' },
+    { name: 'Chill Touch (cantrip)', atk: 8, damage: '2d10 necrotic', notes: 'V/S · Range 120ft · Target can\'t regain HP until end of next turn. If Undead, disadv on attacks vs Sylas.' },
+    { name: 'Unarmed Strike', atk: 2, damage: '0 bludgeoning',    notes: 'Fallback only' }
+  ],
+  classFeatures: [
+    { name: 'Spellcasting (Wizard)', desc: 'INT is his spellcasting ability. Spell save DC 16, spell attack +8. Prepares from spellbook after long rest.' },
+    { name: 'Ritual Adept',          desc: 'Can cast any Wizard spell he knows as a ritual, whether or not it has the Ritual tag, without a spell slot.' },
+    { name: 'Arcane Recovery',       desc: 'Once per Long Rest, after a Short Rest he can recover spell slots totaling no more than 3, none higher than 5th level.' },
+    { name: 'Scholar (Sage)',        desc: 'Expertise in one skill he\'s proficient in — Investigation. His +11 Investigation is the highest passive on the table.' },
+    { name: 'Illusion Savant (Illusionist)', desc: 'Chose two illusion spells of L2 or lower and added them to his spellbook for free: Disguise Self (L1) and Invisibility (L2). Whenever he gains a new level of Wizard spell slots, he adds one Illusion school Wizard spell to his spellbook for free.' },
+    { name: 'Improved Illusions',    desc: 'Can cast illusion spells without needing to provide Verbal components. Illusion spells with a range of 10ft or more have their range increased by 60ft. Also knows Minor Illusion cantrip.' },
+    { name: 'Memorize Spell',        desc: 'When he finishes a Short Rest, he can study his spellbook and replace one of his prepared level 1+ Wizard spells with another level 1+ Wizard spell from his book.' },
+    { name: 'Phantasmal Creatures',  desc: 'Always has Summon Beast and Summon Fey prepared. When he casts either spell, he can change its school to Illusion so it appears spectral. Once per Long Rest he can cast the Illusion version without expending a slot, but the summoned creature has half HP.' }
+  ],
+  speciesTraits: [
+    { name: 'Tiefling (Chthonic Legacy)', desc: 'Fiend-touched bloodline with a lich in the ancestry. Grants Necrotic resistance and the Fiendish Legacy Spells list (Chthonic variant).' },
+    { name: 'Fiendish Legacy Spells (Chthonic)', desc: 'Chill Touch (cantrip, always known). Once per Long Rest each without a slot: False Life (L1) and Ray of Enfeeblement (L2). Can also cast either using spell slots normally.' },
+    { name: 'Otherworldly Presence', desc: 'Knows Thaumaturgy cantrip. Uses INT for it.' },
+    { name: 'Darkvision 60ft',      desc: 'See in dim light as if bright, darkness as if dim (greyscale).' },
+    { name: 'Creature Type: Humanoid', desc: 'Standard humanoid for effects that target creature type.' }
+  ],
+  feats: [
+    { name: 'Lich Initiate',     desc: '**Soul Siphon (No Action).** When he reduces a Humanoid to 0 HP with a spell of 1st level or higher, he can consume its soul. The soul is destroyed and cannot be raised except by Wish. Sylas has a spirit jar (his necklace) that stores the essence. **This is his defining secret feat — the party does not know he took it. Orin does not yet know. Vaeloran knows and is watching.**' },
+    { name: 'Magic Initiate (Wizard)', desc: 'Grants two cantrips from the Wizard list — **Mage Hand** and **Message** — and one 1st-level Wizard spell always prepared: **Shield**. Shield can be cast once per Long Rest without a slot, or using any spell slot he has.' },
+    { name: 'Sage Ability Score Improvements', desc: 'The Sage background feat granting +2/+1 to ability scores (applied to INT and CON at 1st level).' }
+  ],
+  equipmentProf: {
+    armor: [],
+    weapons: ['Simple weapons'],
+    tools: ['Calligrapher\'s Supplies', 'Mask Making Kit']
+  },
+  spellcasting: {
+    ability: 'INT', modifier: 5, saveDC: 16, attackBonus: 8,
+    slots: [4, 3, 3, 0, 0, 0, 0, 0, 0]
+  },
+  spells: [
+    // Cantrips — at will
+    { level: 0, name: 'Shape Water',    school: 'Transmutation', cast: 'Action', range: '30ft/5ft Cube', desc: 'Manipulate up to 5ft cube of water. Move it, shape it, freeze it (fragile), animate briefly.' },
+    { level: 0, name: 'Toll the Dead',  school: 'Necromancy',    cast: 'Action', range: '60ft', desc: 'WIS DC 16 or 1d8 necrotic (1d12 if target is missing HP). Bell tolls audibly.' },
+    { level: 0, name: 'Friends',        school: 'Enchantment',   cast: 'Action', range: '10ft', desc: 'Adv on CHA checks against a non-hostile creature for 1 minute (concentration). Target knows it was charmed when the spell ends and becomes hostile.', tags: ['concentration'] },
+    { level: 0, name: 'Mending',        school: 'Transmutation', cast: '1 minute', range: 'Touch', desc: 'Repair a single break or tear no larger than 1ft.' },
+    { level: 0, name: 'Mage Hand',      school: 'Conjuration',   cast: 'Action', range: '30ft', desc: 'Spectral hand. Move/manipulate objects up to 10lb. 1 minute. (Magic Initiate)' },
+    { level: 0, name: 'Message',        school: 'Transmutation', cast: 'Action', range: '120ft', desc: 'Whisper to a target you can see — only they hear. They may whisper back. (Magic Initiate)' },
+    { level: 0, name: 'Chill Touch',    school: 'Necromancy',    cast: 'Action', range: '120ft', desc: 'Ranged spell attack +8. Hit: 2d10 necrotic. Target can\'t regain HP until end of next turn. If undead, disadv on attacks vs Sylas until end of next turn. (Chthonic Legacy)' },
+    { level: 0, name: 'Thaumaturgy',    school: 'Transmutation', cast: 'Action', range: '30ft', desc: 'Voice booms 3x louder · flames flicker · minor tremor · sound effect · door/window open/close · alter eye appearance. 1 minute. (Otherworldly Presence — INT)' },
+    { level: 0, name: 'Minor Illusion', school: 'Illusion',      cast: 'Action', range: '30ft', desc: 'Create a sound or image of an object lasting 1 minute. Investigation DC 16 to discern. (Improved Illusions — 5ft cube, 30ft range base, cast without V component)' },
+
+    // 1st level — 4 slots
+    { level: 1, name: 'Mage Armor',     school: 'Abjuration',    cast: 'Action',     range: 'Touch', desc: 'AC = 13 + DEX (no armour). 8 hours. His self-buff of choice — sets AC to 15 when cast.' },
+    { level: 1, name: 'Catapult',       school: 'Transmutation', cast: 'Action',     range: '60ft', desc: 'Choose an object weighing 1-5 lb within 30ft. Launch it at a target within 60ft. DEX DC 16 or 3d8 bludgeoning damage.' },
+    { level: 1, name: 'Alarm',          school: 'Abjuration',    cast: '1 minute (R)', range: '30ft/20ft Cube', desc: 'Ward an area against intrusion. Ritual. 8 hours.', tags: ['ritual'] },
+    { level: 1, name: 'Magic Missile',  school: 'Evocation',     cast: 'Action',     range: '120ft', desc: '3 darts, each 1d4+1 force damage. Autohit. Can split among targets.' },
+    { level: 1, name: 'Chromatic Orb',  school: 'Evocation',     cast: 'Action',     range: '90ft', desc: 'Ranged spell attack +8. Choose damage type (acid/cold/fire/lightning/poison/thunder). Hit: 3d8 of chosen type. On natural 20 or when cast at higher level, can leap to a second target.' },
+    { level: 1, name: 'Detect Magic',   school: 'Divination',    cast: 'Action (R)', range: 'Self (30ft)', desc: 'Sense magic within 30ft for 10 minutes. Ritual.', tags: ['concentration', 'ritual'] },
+    { level: 1, name: 'Shield',         school: 'Abjuration',    cast: 'Reaction',   range: 'Self', desc: '+5 AC until start of next turn. Triggered by being hit or Magic Missile. **Magic Initiate: 1 free cast per Long Rest, then can cast with slots.**', tags: ['reaction'] },
+    { level: 1, name: 'False Life',     school: 'Necromancy',    cast: 'Action',     range: 'Self', desc: '1d4+4 temp HP. 1 hour.' },
+    { level: 1, name: 'False Life (Chthonic)', school: 'Necromancy', cast: 'Action', range: 'Self', desc: '**Fiendish Legacy: 1 free cast per Long Rest without expending a slot.** Same effect as above.', tags: ['legacy'] },
+    { level: 1, name: 'Disguise Self',  school: 'Illusion',      cast: 'Action',     range: 'Self', desc: 'Change appearance — clothing, armor, weapons, and other belongings included. 1 hour. Investigation DC 16 to see through. (Illusion Savant — free spellbook entry)' },
+
+    // 2nd level — 3 slots
+    { level: 2, name: 'Misty Step',     school: 'Conjuration',   cast: 'Bonus',      range: 'Self', desc: 'Teleport up to 30ft to an unoccupied space he can see.' },
+    { level: 2, name: 'Shatter',        school: 'Evocation',     cast: 'Action',     range: '60ft/10ft Sphere', desc: 'CON DC 16 or 3d8 thunder damage (half on save). Objects and Constructs disadv on save.' },
+    { level: 2, name: 'Enhance Ability', school: 'Transmutation', cast: 'Action',    range: 'Touch', desc: 'Target gains adv on ability checks of chosen ability score + additional benefit depending on ability. 1 hour.', tags: ['concentration'] },
+    { level: 2, name: 'Locate Object',  school: 'Divination',    cast: 'Action',     range: 'Self', desc: 'Sense the direction to a familiar or specifically described object within 1000ft. 10 minutes.', tags: ['concentration'] },
+    { level: 2, name: 'Ray of Enfeeblement', school: 'Necromancy', cast: 'Action',   range: '60ft', desc: 'CON DC 16 or target\'s STR-weapon attacks deal only half damage until end of next turn. 1 minute.', tags: ['concentration'] },
+    { level: 2, name: 'Ray of Enfeeblement (Chthonic)', school: 'Necromancy', cast: 'Action', range: '60ft', desc: '**Fiendish Legacy: 1 free cast per Long Rest without expending a slot.** Same effect.', tags: ['concentration', 'legacy'] },
+    { level: 2, name: 'Invisibility',   school: 'Illusion',      cast: 'Action',     range: 'Touch', desc: 'Target becomes invisible for up to 1 hour or until they attack/cast a spell. (Illusion Savant — free spellbook entry)', tags: ['concentration'] },
+    { level: 2, name: 'Summon Beast',   school: 'Conjuration',   cast: 'Action',     range: '90ft', desc: 'Summon a Bestial Spirit (Air, Land, or Water). 1 hour. **Phantasmal Creatures: always prepared. Can change school to Illusion to appear spectral.**', tags: ['concentration'] },
+    { level: 2, name: 'Summon Beast (Illusion)', school: 'Illusion', cast: 'Action', range: '90ft', desc: '**Phantasmal Creatures: 1 free cast per Long Rest without expending a slot** — but the summoned creature has half HP. Appears spectral.', tags: ['concentration', 'phantasmal'] },
+
+    // 3rd level — 3 slots
+    { level: 3, name: 'Animate Dead',   school: 'Necromancy',    cast: '1 minute',   range: '10ft', desc: 'Animate a Small or Medium corpse as a Skeleton or Zombie. Lasts 24h; re-cast to maintain. Can command up to 4 with each casting. **Sylas\'s current zombies were raised via this spell.**' },
+    { level: 3, name: 'Summon Undead',  school: 'Necromancy',    cast: 'Action',     range: '10ft', desc: 'Summon an Undead Spirit (Ghostly, Putrid, or Skeletal). 1 hour.', tags: ['concentration'] },
+    { level: 3, name: 'Fly',            school: 'Transmutation', cast: 'Action',     range: 'Touch', desc: 'Target gains flying speed 60ft for 10 minutes.', tags: ['concentration'] },
+    { level: 3, name: 'Summon Fey',     school: 'Conjuration',   cast: 'Action',     range: '90ft', desc: 'Summon a Fey Spirit (Fuming, Mirthful, or Tricksy). 1 hour. **Phantasmal Creatures: always prepared. Can change school to Illusion to appear spectral.**', tags: ['concentration'] },
+    { level: 3, name: 'Summon Fey (Illusion)', school: 'Illusion', cast: 'Action',   range: '90ft', desc: '**Phantasmal Creatures: uses the same Long Rest free cast as Summon Beast** — but the summoned creature has half HP. Appears spectral.', tags: ['concentration', 'phantasmal'] }
+  ],
+  languages: ['Common', 'Elvish', 'Goblin'],
+  equipment: [
+    'Potion of Healing (×2)',
+    'Bag of Holding — **currently contains the sealed Coin Cipher chest (hidden from Vrass)**',
+    'Dagger (×2)',
+    'Quarterstaff',
+    'Whip',
+    'Spellbook (personal, in the Backpack)',
+    'Spellbook — necromantic lore volume gifted by a Scholars\' Circle professor',
+    'Backpack, Bedroll, Mess Kit, Rations (10 days), Rope (Hempen, 50 ft), Waterskin',
+    'Tinderbox (×2), Torch (×10), Lamp, Oil (×10)',
+    'Ink Pen, Ink, Parchment (×10), Book',
+    'Robe (scholar\'s robe)',
+    'Poisonous Spider Fang (×2), Spider Venom Sacks (×2) — collected components',
+    '17 Spears (odd inventory quirk — noted on sheet)',
+    '17 Longbow (odd inventory quirk — noted on sheet)',
+    '**The Necklace / Spirit Jar** — Lich Initiate focus. Vaeloran has been studying it during their spell sessions.'
+  ],
+  attunements: [
+    '(no attuned items yet — Robe of Bones would go here if he keeps and attunes the chest\'s contents)',
+    '— (attunement slot open)',
+    '— (attunement slot open)'
+  ],
+  coins: { cp: 0, sp: 6, ep: 0, gp: 6, pp: 0 },
+  backstory: 'Born in a quiet village in the Aurora Peaks, the unexpected child of two humble human parents. His Tiefling heritage was the surfacing of a recessive pact made generations ago with a lich — eyes that glow faintly in the dark and whispers of necrotic energy clinging to his presence. The local school treated him as an outcast, fearing his lineage. He persevered, graduated top of his class, and won a scholarship to the **Scholars\' Circle** — Eldoria\'s most prestigious arcane institution, in the Aelorian Territories. There he impressed both mentors and peers with his mastery of illusion and his quiet fascination with the undead. His mentor **Vaelith Morgrave** — a former adventurer turned academic with a reputation for mentoring "dangerous prodigies" — was intrigued by his lineage and gifted him a spellbook containing necromantic lore. Now, he has left academia to gain life experience, collect rare spells, and test his theories in the real world. Whether he seeks redemption, mastery, or something darker remains to be seen.',
+  personality: '(Personality traits/ideals/bonds/flaws left open on his sheet — for the player to develop through play.)',
+  ideal: '(Open — for Sylas\'s player to define.)',
+  bond: '(Open — for Sylas\'s player to define.)',
+  flaw: '(Open — for Sylas\'s player to define.)',
+  allies: [
+    '**Vaelith Morgrave** — former adventurer turned academic, Sylas\'s mentor at the Scholars\' Circle. Reputation for mentoring "dangerous prodigies."',
+    '**Scholars\' Circle** — Eldoria\'s most prestigious arcane institution, based in the Aelorian Territories.'
+  ],
+  notes: [
+    '**Pulsating Rock** — the meteor shard the party recovered and delivered. Sylas noted it as "our quest objective" on his sheet.',
+    '**Lyssandra\'s Spells** — a bundle of higher-level spell scrolls gifted to Sylas from Lyssandra\'s personal collection: L2 Suggestion; L3 Counterspell, Fireball, Fly; L4 Greater Invisibility, Ice Storm; L5 Cone of Cold. Spell components also from Lyssandra.',
+    '**Eloin** — a friend Lyssandra grew up with. Referenced in Sylas\'s notes as a name to remember.',
+    '**DM-visible thread — Vellaris curse-line.** Sylas\'s pale purple skin is the visible marker of an old Aurum noble house (House Vellaris) exiled three centuries ago. He does not know the house name. Vaeloran knows. Envoy Veris will recognise it in Session 6.'
+  ],
+  resources: [
+    { id: 'arcane_recovery',   label: 'Arcane Recovery',                     max: 1, recharge: 'long',  note: 'After Short Rest, recover slots totaling ≤3, none higher than L5' },
+    { id: 'shield_free',       label: 'Shield (Magic Initiate, free)',       max: 1, recharge: 'long' },
+    { id: 'false_life_leg',    label: 'False Life (Chthonic Legacy, free)',  max: 1, recharge: 'long' },
+    { id: 'ray_enf_leg',       label: 'Ray of Enfeeblement (Chthonic Legacy, free)', max: 1, recharge: 'long' },
+    { id: 'phantasmal_free',   label: 'Summon Beast/Fey Illusion version (free, half HP)', max: 1, recharge: 'long' },
+    { id: 'soul_siphon',       label: 'Soul Siphon consumed count (DM-visible)', max: 999, recharge: 'never', note: 'Tally the souls Sylas has taken. Long-term Lich Initiate progress.' }
+  ]
+};
