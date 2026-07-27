@@ -411,18 +411,31 @@ function renderResourcesSection(charId, char, state) {
   let rows = '';
   char.resources.forEach(function(r) {
     const cur = state.resources[r.id] || 0;
-    let dots = '';
-    if (r.max > 0) {
+    let control = '';
+    let numberDisplay = '';
+    if (r.display === 'counter') {
+      // Numeric counter with − / value / + buttons. Better than 999 dots.
+      const btnStyle = 'background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);width:22px;height:22px;border-radius:2px;cursor:pointer;font-size:14px;line-height:1;font-family:\'Cinzel\',serif;padding:0';
+      const valStyle = 'min-width:2.5ch;text-align:center;font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold3);font-weight:600;padding:0 .2rem';
+      control =
+        '<button type="button" style="' + btnStyle + '" onclick="bumpResource(\'' + charId + '\',\'' + r.id + '\',-1)">−</button>' +
+        '<span style="' + valStyle + '">' + cur + '</span>' +
+        '<button type="button" style="' + btnStyle + '" onclick="bumpResource(\'' + charId + '\',\'' + r.id + '\',1)">+</button>';
+      numberDisplay = '';
+    } else if (r.max > 0) {
       for (let i = 1; i <= r.max; i++) {
-        dots += '<span style="display:inline-block;width:11px;height:11px;border:1.5px solid var(--gold2);border-radius:50%;margin-right:3px;background:' + (i<=cur?'var(--gold2)':'transparent') + ';cursor:pointer" onclick="toggleResource(\'' + charId + '\',\'' + r.id + '\',' + i + ')"></span>';
+        control += '<span style="display:inline-block;width:11px;height:11px;border:1.5px solid var(--gold2);border-radius:50%;margin-right:3px;background:' + (i<=cur?'var(--gold2)':'transparent') + ';cursor:pointer" onclick="toggleResource(\'' + charId + '\',\'' + r.id + '\',' + i + ')"></span>';
       }
-    } else { dots = '<span style="color:var(--parch3);font-style:italic;font-size:11px">tracked manually</span>'; }
+      numberDisplay = cur + '/' + r.max;
+    } else {
+      control = '<span style="color:var(--parch3);font-style:italic;font-size:11px">tracked manually</span>';
+    }
     rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem .15rem;border-bottom:1px dashed rgba(160,128,64,0.15);gap:.5rem">' +
       '<div style="flex:1"><div style="font-family:\'Cinzel\',serif;font-size:11px;color:var(--gold2);letter-spacing:.5px">' + r.label + '</div>' +
       (r.note ? '<div style="font-size:10.5px;color:var(--parch3);font-style:italic;margin-top:.1rem">' + r.note + '</div>' : '') +
       '</div>' +
-      '<div style="display:flex;align-items:center;gap:.4rem">' + dots +
-      '<span style="font-size:10px;color:var(--parch3);min-width:28px;text-align:right">' + (r.max > 0 ? (cur + '/' + r.max) : '') + '</span>' +
+      '<div style="display:flex;align-items:center;gap:.4rem">' + control +
+      '<span style="font-size:10px;color:var(--parch3);min-width:28px;text-align:right">' + numberDisplay + '</span>' +
       '<span style="font-size:9px;color:var(--parch4);background:rgba(160,128,64,0.15);padding:1px 4px;border-radius:2px;letter-spacing:.5px">' + r.recharge[0].toUpperCase() + r.recharge.slice(1) + '</span>' +
       '</div></div>';
   });
@@ -552,6 +565,15 @@ function castSpell(charId, idx) {
   showRollToast('Cast L' + sp.level, sp.name, '✦');
 }
 function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
+function bumpResource(charId, rid, delta) {
+  withSheetState(charId, function(s) {
+    const char = CHARACTERS[charId];
+    const res = (char.resources || []).find(function(r) { return r.id === rid; });
+    const max = res && typeof res.max === 'number' ? res.max : 999;
+    const cur = s.resources[rid] || 0;
+    s.resources[rid] = Math.max(0, Math.min(max, cur + delta));
+  });
+}
 function toggleCondition(charId, c) { withSheetState(charId, function(s) { if (s.conditions[c]) delete s.conditions[c]; else s.conditions[c] = true; }); }
 function setExhaustion(charId, n) { withSheetState(charId, function(s) { if (s.exhaustion === n) s.exhaustion = n - 1; else s.exhaustion = n; }); }
 function toggleInspiration(charId) { withSheetState(charId, function(s) { s.inspiration = !s.inspiration; }); }
