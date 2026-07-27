@@ -49,6 +49,76 @@ body {
   font-family: 'Cinzel', monospace;
   color: var(--gold2);
 }
+#sheet-auth-screen {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  background: #0a0805;
+  z-index: 100;
+}
+#sheet-auth-screen.on { display: flex; }
+.sheet-auth-box {
+  background: rgba(20,15,8,0.9);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 4px;
+  padding: 2rem 2.5rem;
+  max-width: 380px;
+  width: 92%;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(154,122,26,0.15);
+}
+.sheet-auth-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 22px;
+  color: var(--gold3);
+  letter-spacing: 2px;
+  margin-bottom: .35rem;
+}
+.sheet-auth-sub {
+  color: var(--parch3);
+  font-size: 13px;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.sheet-auth-input {
+  width: 100%;
+  background: rgba(10,8,5,0.8);
+  border: 1px solid rgba(160,128,64,0.5);
+  border-radius: 2px;
+  padding: .55rem .75rem;
+  color: var(--parch);
+  font-family: 'Cinzel', monospace;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  outline: none;
+}
+.sheet-auth-input:focus {
+  border-color: var(--gold2);
+  box-shadow: 0 0 10px rgba(201,168,76,0.2);
+}
+.sheet-auth-btn {
+  margin-top: .75rem;
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 2px;
+  padding: .55rem;
+  color: #0d0a06;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.sheet-auth-btn:hover { background: var(--gold2); }
+.sheet-auth-err {
+  color: var(--red2);
+  font-size: 13px;
+  margin-top: .6rem;
+  display: none;
+}
+.sheet-auth-err.on { display: block; }
 </style>
 <link rel="stylesheet" href="sheet-styles.css">
 </head>
@@ -66,12 +136,24 @@ body {
   </div>
 </div>
 
+<div id="sheet-auth-screen">
+  <div class="sheet-auth-box">
+    <div class="sheet-auth-title" id="sheet-auth-title">Character Sheet</div>
+    <div class="sheet-auth-sub" id="sheet-auth-sub">Enter passphrase to view this sheet</div>
+    <input type="password" class="sheet-auth-input" id="sheet-auth-input" placeholder="PASSPHRASE" autocomplete="off">
+    <button class="sheet-auth-btn" id="sheet-auth-btn">Unlock</button>
+    <div class="sheet-auth-err" id="sheet-auth-err">Incorrect passphrase. Try again.</div>
+  </div>
+</div>
+
 <div class="sheet-roll-toast" id="sheet-roll-toast"></div>
 
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
+<script src="sheet-auth.js"></script>
 <script>
 // Read ?id=<charId> from URL and render that character.
+// Character IDs listed in SHEET_PASSWORDS require a passphrase; others render directly.
 (function bootstrapStandaloneSheet() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id') || params.get('sheet');
@@ -96,7 +178,45 @@ body {
   const char = CHARACTERS[id];
   document.title = char.name + ' — Character Sheet';
   document.getElementById('sheet-page-title').textContent = char.name;
-  renderSheet(id);
+
+  function renderNow() { renderSheet(id); }
+
+  // Gate if this character has a password entry AND is not already unlocked
+  if (sheetIsGated(id) && !sheetIsUnlocked(id)) {
+    const authScreen = document.getElementById('sheet-auth-screen');
+    const input = document.getElementById('sheet-auth-input');
+    const btn = document.getElementById('sheet-auth-btn');
+    const err = document.getElementById('sheet-auth-err');
+    document.getElementById('sheet-auth-title').textContent = char.name;
+    document.getElementById('sheet-auth-sub').textContent = 'Enter passphrase to view this sheet';
+    document.getElementById('sheet-body').innerHTML = '<div class="sheet-empty">🔒 Locked</div>';
+    authScreen.classList.add('on');
+    setTimeout(function() { input.focus(); }, 50);
+
+    async function attempt() {
+      const pw = input.value;
+      if (!pw) return;
+      btn.disabled = true;
+      const ok = await sheetCheckPassword(id, pw);
+      btn.disabled = false;
+      if (ok) {
+        sheetMarkUnlocked(id);
+        authScreen.classList.remove('on');
+        document.getElementById('sheet-body').innerHTML = '';
+        renderNow();
+      } else {
+        err.classList.add('on');
+        input.value = '';
+        input.focus();
+      }
+    }
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keypress', function(e) { if (e.key === 'Enter') attempt(); });
+    input.addEventListener('input', function() { err.classList.remove('on'); });
+    return;
+  }
+
+  renderNow();
 })();
 </script>
 </body>
