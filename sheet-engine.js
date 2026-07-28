@@ -55,7 +55,7 @@ function sheetGetSaveMod(char, abil) {
   return mod;
 }
 
-// ----- State management (localStorage) -----
+// ----- State management (localStorage + optional Firebase sync) -----
 function sheetStateKey(id) { return 'eldoria-char-state-' + id; }
 function loadSheetState(id) {
   try { const raw = localStorage.getItem(sheetStateKey(id)); return raw ? JSON.parse(raw) : null; }
@@ -63,6 +63,32 @@ function loadSheetState(id) {
 }
 function saveSheetState(id, state) {
   try { localStorage.setItem(sheetStateKey(id), JSON.stringify(state)); } catch (e) {}
+  // Push to Firebase if sync layer is loaded and connected. Fire-and-forget.
+  if (window.CharacterSync && window.CharacterSync.ready) {
+    window.CharacterSync.push(id, state);
+  }
+}
+// Track which characters we've subscribed to for remote updates.
+const _sheetSubscribed = {};
+function _subscribeSheetIfPossible(id) {
+  if (_sheetSubscribed[id]) return;
+  if (!window.CharacterSync || !window.CharacterSync.ready) {
+    // Firebase may still be initialising — retry a couple of times.
+    if (_subscribeSheetIfPossible._retries === undefined) _subscribeSheetIfPossible._retries = {};
+    const retries = _subscribeSheetIfPossible._retries[id] || 0;
+    if (retries < 6) {
+      _subscribeSheetIfPossible._retries[id] = retries + 1;
+      setTimeout(function() { _subscribeSheetIfPossible(id); }, 500);
+    }
+    return;
+  }
+  _sheetSubscribed[id] = true;
+  window.CharacterSync.subscribe(id, function(remoteState) {
+    // Apply remote state to localStorage WITHOUT triggering another Firebase push.
+    try { localStorage.setItem(sheetStateKey(id), JSON.stringify(remoteState)); } catch (e) {}
+    // Re-render if this character is currently visible.
+    if (typeof refreshSheet === 'function') refreshSheet(id);
+  });
 }
 function initSheetState(char) {
   const slots = {};
@@ -266,6 +292,8 @@ function renderKaelithExtras() {
 
 // ----- Renderer -----
 function renderSheet(charId) {
+  // Subscribe to Firebase updates for this character (once per session).
+  _subscribeSheetIfPossible(charId);
   const char = CHARACTERS[charId];
   const state = getSheetState(charId);
   const body = document.getElementById('sheet-body');

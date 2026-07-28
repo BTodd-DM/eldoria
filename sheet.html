@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Character Sheet — Eldoria 2.0</title>
+<title>Character Sheet — The Wayward Company</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
@@ -148,6 +148,10 @@ body {
 
 <div class="sheet-roll-toast" id="sheet-roll-toast"></div>
 
+<!-- Firebase compat SDK (loaded before sheet-engine so CharacterSync can hook in) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
 <script src="sheet-auth.js"></script>

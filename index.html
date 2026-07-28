@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eldoria 2.0 — DM Command Centre</title>
+<title>The Wayward Company — DM Command Centre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="sheet-styles.css">
@@ -554,7 +554,7 @@ body {
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-title">Eldoria 2.0</div>
+    <div class="auth-title">The Wayward Company</div>
     <div class="auth-sub">DM Command Centre — Authorised Access Only</div>
     <input type="password" class="auth-input" id="pw-input" placeholder="ENTER PASSPHRASE" autocomplete="off">
     <button class="auth-btn" onclick="checkAuth()">Enter</button>
@@ -567,7 +567,7 @@ body {
 
 <header class="site-header">
   <div>
-    <div class="site-title">Eldoria 2.0</div>
+    <div class="site-title">The Wayward Company</div>
     <div class="site-meta">DM Command Centre &nbsp;·&nbsp; Bradley Todd &nbsp;·&nbsp; Level 5 &nbsp;·&nbsp; Aeloria Crossroads</div>
   </div>
   <div class="header-actions">
@@ -685,11 +685,11 @@ body {
 
   <div class="sec-title">Quick Session Tools</div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-    <button class="action-btn" onclick="sendPrompt('Design the Kolt\'s Depot caravan escort job for Eldoria 2.0 — level 5 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos), road to Ironhold, include a road encounter tied to the Naturus network and an NPC on the caravan with a secret')">Design Caravan Job ↗</button>
-    <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the Eldoria 2.0 party is at Kolt\'s Depot? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 5) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in Eldoria 2.0 — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Advance the Eldoria 2.0 Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the Eldoria 2.0 party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design the Kolt\'s Depot caravan escort job for The Wayward Company — level 5 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos), road to Ironhold, include a road encounter tied to the Naturus network and an NPC on the caravan with a secret')">Design Caravan Job ↗</button>
+    <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the The Wayward Company party is at Kolt\'s Depot? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 5) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in The Wayward Company — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Advance the The Wayward Company Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the The Wayward Company party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
   </div>
   </div>
 
@@ -893,7 +893,7 @@ body {
 
   </div>
 
-  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of Eldoria 2.0 — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
+  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of The Wayward Company — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
   </div>
 
   <div id="tab-calendar" style="display:none">
@@ -1001,7 +1001,7 @@ body {
 
   <div class="sec-title">Session Notes (DM Only)</div>
   <textarea class="editable-area" id="session-notes" placeholder="Add notes for your next session here..." onchange="saveNote('session-notes',this.value)" style="height:120px"></textarea>
-  <button class="action-btn" onclick="sendPrompt('Help me write the session recap for the next Eldoria 2.0 session — the party is level 5 at Kolt\'s Depot considering a caravan escort to Ironhold while the Naturus network spreads and Merric awaits a reckoning')">Write Next Recap ↗</button>
+  <button class="action-btn" onclick="sendPrompt('Help me write the session recap for the next The Wayward Company session — the party is level 5 at Kolt\'s Depot considering a caravan escort to Ironhold while the Naturus network spreads and Merric awaits a reckoning')">Write Next Recap ↗</button>
 
   <hr class="divider">
   <div class="sec-title">Roll20 Maps</div>
@@ -1045,7 +1045,7 @@ body {
         <textarea class="editable-area" id="pc-backstory-torren" placeholder="Add Torren's backstory here when the player provides it..." onchange="saveNote('pc-backstory-torren',this.value)" style="height:80px;font-size:12px"></textarea>
       </div>
 
-      <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in Eldoria 2.0 that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in The Wayward Company that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
       <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="torren" class="action-btn" style="display:inline-block;text-decoration:none">📜 D&amp;D Beyond Sheet ↗</a>
     </div>
 
@@ -1079,7 +1079,7 @@ body {
         <span class="badge b-grey">Vaeloran watching</span>
       </div>
       <button class="open-sheet-btn" onclick="openCharacterSheet('sylas')">📜 Open Character Sheet</button>
-      <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in Eldoria 2.0 — his lineage comes from a generational pact with Valdris the Pale Archivist. What complications arise now that his spirit jar (the necklace) is the same vessel Valdris designed for reconstitution?')">Spirit Jar Complications ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Sylas is a tiefling illusionist wizard on the Path of the Lich in The Wayward Company — his lineage comes from a generational pact with Valdris the Pale Archivist. What complications arise now that his spirit jar (the necklace) is the same vessel Valdris designed for reconstitution?')">Spirit Jar Complications ↗</button>
       <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="sylas" class="action-btn" style="display:inline-block;text-decoration:none">🔗 D&amp;D Beyond ↗</a>
     </div>
 
@@ -1111,7 +1111,7 @@ body {
       <div class="stat-row"><span class="stat-label">Tribe status</span><span class="stat-val">Still exists — NE of Duskmere. Future encounter.</span></div>
       <div class="stat-row"><span class="stat-label">Does NOT know</span><span class="stat-val">Sylas is consuming souls</span></div>
       <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="orin" class="action-btn" style="display:inline-block;text-decoration:none;margin-top:.5rem">📜 D&amp;D Beyond Sheet ↗</a>
-      <button class="action-btn" onclick="sendPrompt('Design the moment in Eldoria 2.0 when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Design the moment in The Wayward Company when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
     </div>
   </div>
 </div>
@@ -1253,7 +1253,7 @@ body {
         <div><div class="card-title" style="margin:0">Generate NPC</div><div class="card-sub" style="margin:0">New character for the campaign</div></div>
       </div>
       <div class="card-body" style="font-size:12.5px">Need a council member, guard captain, merchant, or street contact? Generate a fully fleshed NPC tied to the campaign.</div>
-      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC for Aeloria Crossroads in Eldoria 2.0 — include name, race, appearance, personality, secret, which deity from the Eldoria pantheon they worship, and how they connect to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Generate NPC ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC for Aeloria Crossroads in The Wayward Company — include name, race, appearance, personality, secret, which deity from the Eldoria pantheon they worship, and how they connect to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Generate NPC ↗</button>
     </div>
 
   </div>
@@ -1280,7 +1280,7 @@ body {
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Kolt's Depot — caravan escort to Ironhold (Session 5)</div><div class="card-body">Delivered Wagons 1 and 3 to Ironhold. Wagon 2 lost to Vrass. Brenna Hartwell's personally-promised 25 gp stands. Coin Cipher chest was <em>believed</em> lost but is in fact hidden in Sylas's Bag of Holding — this remains live as the Wesley Halloran inquiry.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>The gnoll threat</div><div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar. Shrine to Naturus discovered — opened new threads.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Find Lyssandra Vale</div><div class="card-body">Found, captured, returned to Vaeloran. At a cost the party doesn't yet understand.</div></div>
-  <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for Eldoria 2.0 appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
+  <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
 </div>
 
 <!-- ============ CLOCK ============ -->
@@ -1331,7 +1331,7 @@ body {
     <div class="card-body">Location: arcane archive. A player rearranges letters idly. No roll required if they physically rearrange it. Skill-based: Investigation DC 20. When they confront Merric with this name, he freezes. That is the confirmation.<br><br>Merric eventually notices the anagram himself and panics. Options: tries to blackmail Vaeloran, tries to flee the city, confesses to Orin, or is assassinated — leaving an encoded note revealing the truth.</div>
   </div>
 
-  <button class="action-btn" onclick="sendPrompt('Advance the Eldoria 2.0 Instability Clock by one segment — describe the specific event that just happened in Aeloria, the city\'s immediate reaction, and how Vaeloran Duskwhisper quietly exploits it to position himself as the solution')">Advance Clock ↗</button>
+  <button class="action-btn" onclick="sendPrompt('Advance the The Wayward Company Instability Clock by one segment — describe the specific event that just happened in Aeloria, the city\'s immediate reaction, and how Vaeloran Duskwhisper quietly exploits it to position himself as the solution')">Advance Clock ↗</button>
 </div>
 
 <!-- ============ COMBAT ============ -->
@@ -1383,9 +1383,9 @@ body {
       <hr class="divider">
       <div class="sec-title">Encounter Builder</div>
       <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the Eldoria 2.0 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) on the road to Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for Eldoria 2.0 in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter in the Pig\'s Head Inn back room for the Eldoria 2.0 party — finding evidence connecting Kaelith\'s Naturus cult to the Guilded Veil without being caught')">Guild Infiltration ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the The Wayward Company party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) on the road to Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for The Wayward Company in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter in the Pig\'s Head Inn back room for the The Wayward Company party — finding evidence connecting Kaelith\'s Naturus cult to the Guilded Veil without being caught')">Guild Infiltration ↗</button>
         <button class="action-btn" onclick="sendPrompt('Design a level 5 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
       </div>
     </div>
@@ -1499,7 +1499,7 @@ body {
         </div>
       </div>
     </div>
-    <button class="action-btn" onclick="sendPrompt('Based on the Eldoria 2.0 world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Based on the The Wayward Company world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
   </div>
 
   <div id="tab-aeloria" style="display:none">
@@ -1551,7 +1551,7 @@ body {
       <div class="card gold"><div class="card-title">Notice Board</div><div class="card-sub">City centre · Public</div><div class="card-body">Gnoll infestation (complete) · Danger in Frostwood Marsh · Join the City Watch · Missing Halfling Merric — speak to Sarah (posted by Orin) · Mercenaries needed for caravan delivery.</div></div>
     </div>
 
-    <button class="action-btn" style="margin-top:.75rem" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for Eldoria 2.0 — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
+    <button class="action-btn" style="margin-top:.75rem" onclick="sendPrompt('Generate a fully fleshed out Aeloria Crossroads city district for The Wayward Company — include 3 named locations, 3 NPCs with personalities and secrets, 2 plot hooks tied to Vaeloran or the Naturus cult, and the dominant guild or faction in the area')">Generate District ↗</button>
   </div><!-- end tab-aeloria -->
 
   <div id="tab-regions" style="display:none">
@@ -1603,7 +1603,7 @@ body {
       <div class="card-sub">City of constant change · Feywild</div>
       <div class="card-body">A city of constant change and artistic expression. Layout and architecture morph and shift as if guided by the city's own whims. Bridges of living vines connect treehouse-like structures. Enchanting lights dance like fireflies. Hub of creativity where Changelings and fey creatures celebrate art, music, and magic. Vibrant festivals blend reality and illusion. Residents take on multiple personas daily.</div>
     </div>
-    <button class="action-btn" onclick="sendPrompt('Design a Feywild encounter in or near Thalindel for the Eldoria 2.0 campaign involving Queen Thessavaine — she wants something from the party that seems trivial but has significant political implications. Include her personality, her court, and a bargain she offers')">Design Feywild Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a Feywild encounter in or near Thalindel for the The Wayward Company campaign involving Queen Thessavaine — she wants something from the party that seems trivial but has significant political implications. Include her personality, her court, and a bargain she offers')">Design Feywild Encounter ↗</button>
   </div>
 </div>
 
@@ -1749,7 +1749,7 @@ body {
       <div class="card-sub">Random scenes — all tied to your plot threads</div>
       <div class="gen-output" id="enc-out">Click to generate a scene...</div>
       <button class="action-btn" onclick="genEncounter()">Roll Scene</button>
-      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC encounter in Aeloria Crossroads for the Eldoria 2.0 party — include name, race, appearance, what they want, a secret they are hiding, which Eldoria deity they worship, and a connection to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Full NPC ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC encounter in Aeloria Crossroads for the The Wayward Company party — include name, race, appearance, what they want, a secret they are hiding, which Eldoria deity they worship, and a connection to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Full NPC ↗</button>
     </div>
   </div>
   <div class="grid-2" style="margin-top:.75rem">
@@ -1778,6 +1778,10 @@ body {
 </div><!-- end #app -->
 
 <!-- Character sheet system: data + engine are external so sheet.html can share them. -->
+<!-- Firebase compat SDK (loaded before sheet-engine so CharacterSync can hook in) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
 
