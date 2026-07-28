@@ -341,9 +341,9 @@ function renderHpBlock(charId, char, state) {
     '</div>' +
     '<div class="sheet-temp-row">Temp: <input type="number" value="' + (state.hp.temp||0) + '" onchange="setHpTemp(\'' + charId + '\', this.value)"></div>' +
     '<div class="sheet-hp-btns">' +
-      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -1)">-1</button>' +
-      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -5)">-5</button>' +
       '<button class="sheet-hp-btn dmg" onclick="hpPrompt(\'' + charId + '\', \'dmg\')">-?</button>' +
+      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -5)">-5</button>' +
+      '<button class="sheet-hp-btn dmg" onclick="hpDelta(\'' + charId + '\', -1)">-1</button>' +
       '<button class="sheet-hp-btn heal" onclick="hpDelta(\'' + charId + '\', 1)">+1</button>' +
       '<button class="sheet-hp-btn heal" onclick="hpDelta(\'' + charId + '\', 5)">+5</button>' +
       '<button class="sheet-hp-btn heal" onclick="hpPrompt(\'' + charId + '\', \'heal\')">+?</button>' +
