@@ -175,7 +175,8 @@ function toggleEditMode(charId) {
 
 // ---- Currency section -------------------------------------------------
 function renderCurrencySection(charId, state) {
-  const editing = !!state.editMode;
+  // Currency is always editable (no lock/unlock — per user preference).
+  const editing = true;
   const c = state.currency || { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
   const totalGp = ((c.pp||0)*10) + (c.gp||0) + ((c.ep||0)*0.5) + ((c.sp||0)*0.1) + ((c.cp||0)*0.01);
   const denoms = [
@@ -207,7 +208,8 @@ function updateCurrency(charId, denom, raw) {
 
 // ---- Inventory section -----------------------------------------------
 function renderInventorySection(charId, char, state) {
-  const editing = !!state.editMode;
+  // Inventory is always editable (no lock/unlock — per user preference).
+  const editing = true;
   const items = state.equipment || [];
   const catalogLoaded = (typeof ITEMS_BY_ID !== 'undefined');
   let rows = '';
@@ -327,11 +329,21 @@ function openItemPicker(charId) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'sheet-item-picker';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:\'Crimson Pro\',Georgia,serif';
+    // Massive z-index for safety in every non-top-layer parent; when reparented
+    // into an open <dialog>, z-index stops mattering (dialog is top layer).
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:\'Crimson Pro\',Georgia,serif';
     modal.addEventListener('click', function(e) {
       if (e.target === modal) closeItemPicker();
     });
-    document.body.appendChild(modal);
+  }
+  // Reparent every time the picker opens: if the DM's sheet-dialog is open,
+  // append the picker INSIDE it (so we render in the same browser top layer
+  // and don't get hidden behind the dialog's backdrop). Otherwise the picker
+  // lives on <body> for standalone sheet.html.
+  const dialog = document.getElementById('sheet-dialog');
+  const desiredParent = (dialog && dialog.open) ? dialog : document.body;
+  if (modal.parentNode !== desiredParent) {
+    desiredParent.appendChild(modal);
   }
   modal.style.display = 'flex';
   renderItemPicker();
@@ -564,8 +576,6 @@ function renderSheet(charId) {
   const body = document.getElementById('sheet-body');
   if (!body) return;
   let html = '';
-
-  html += renderEditModeToggle(charId, state);
 
   html += '<div class="sheet-header">';
   html += '<div class="sheet-id-block">';

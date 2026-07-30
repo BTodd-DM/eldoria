@@ -478,3 +478,15 @@
   resize: vertical;
 }
 .sheet-notes-area:focus { border-color: var(--gold2); }
+
+/* Hide native number-input spinner arrows inside sheets — we render our own
+   +/- controls next to the input, so the browser's built-in arrows are noisy. */
+#sheet-body input[type="number"]::-webkit-inner-spin-button,
+#sheet-body input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#sheet-body input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
