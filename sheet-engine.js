@@ -756,13 +756,32 @@ function renderConditionsSection(charId, state) {
     const on = !!state.conditions[c];
     rows += '<div class="sheet-cond-row ' + (on?'on':'') + '" onclick="toggleCondition(\'' + charId + '\',\'' + c + '\')"><input type="checkbox" ' + (on?'checked':'') + ' onclick="event.stopPropagation();toggleCondition(\'' + charId + '\',\'' + c + '\')"> ' + c + '</div>';
   });
+  // 2024 PHB Exhaustion: six levels total. Levels 1–5 each stack: −2 to
+  // every d20 test and −5 ft Speed per level. Level 6 = death. The 6th
+  // box is styled as DEATH to make the terminal state visually distinct.
   let boxes = '';
-  for (let i = 1; i <= 10; i++) {
-    boxes += '<div class="sheet-ex-box ' + (i<=state.exhaustion?'on':'') + '" onclick="setExhaustion(\'' + charId + '\',' + i + ')">' + (i<=state.exhaustion?'✗':'') + '</div>';
+  for (let i = 1; i <= 6; i++) {
+    const filled = i <= state.exhaustion;
+    const isDeath = i === 6;
+    const deathStyle = isDeath
+      ? 'border-color:var(--red2)!important;' + (filled ? 'background:var(--red2)!important;color:#fff!important;' : 'color:var(--red2)!important;')
+      : '';
+    const label = isDeath ? (filled ? '☠' : '6') : (filled ? '✗' : '');
+    boxes += '<div class="sheet-ex-box ' + (filled?'on':'') + '" style="' + deathStyle + '" title="' + (isDeath ? 'Level 6 — DEATH' : 'Level ' + i) + '" onclick="setExhaustion(\'' + charId + '\',' + i + ')">' + label + '</div>';
+  }
+  let statusText;
+  if (state.exhaustion === 0) {
+    statusText = 'none';
+  } else if (state.exhaustion >= 6) {
+    statusText = '<strong style="color:var(--red2)">DEAD</strong>';
+  } else {
+    const d20Pen = state.exhaustion * 2;
+    const spdPen = state.exhaustion * 5;
+    statusText = '−' + d20Pen + ' to d20 Tests · Speed −' + spdPen + ' ft';
   }
   return '<div class="sheet-sub"><div class="sheet-sub-title">Conditions</div><div class="sheet-cond-list">' + rows + '</div>' +
     '<div class="sheet-exhaustion"><strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--parch3)">EXHAUSTION:</strong>' + boxes +
-    '<span style="font-size:10.5px;color:var(--parch3);margin-left:.4rem">' + (state.exhaustion === 0 ? 'none' : '−' + state.exhaustion + ' to all d20 rolls') + '</span></div></div>';
+    '<span style="font-size:10.5px;color:var(--parch3);margin-left:.4rem">' + statusText + '</span></div></div>';
 }
 function renderSpellsSection(charId, char, state) {
   const sc = char.spellcasting;

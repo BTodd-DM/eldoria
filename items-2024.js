@@ -504,10 +504,147 @@ const ITEMS_2024 = [
 
 ];
 
-// Flat lookup by id
+// =====================================================================
+// AUTO-GENERATED: MAGIC WEAPONS +1 / +2 / +3
+// For every base weapon above, we synthesise three magic variants.
+// Damage strings get the bonus added; rarity scales with the bonus.
+// Add a new base weapon → three variants come along automatically.
+// =====================================================================
+(function generateMagicWeaponVariants() {
+  const baseWeapons = ITEMS_2024.filter(function(it) { return it.category === 'weapon'; });
+  const rarities = { 1: 'uncommon', 2: 'rare', 3: 'very rare' };
+  baseWeapons.forEach(function(w) {
+    [1, 2, 3].forEach(function(plus) {
+      // Damage string: turn "1d8 slashing" into "1d8+1 slashing", or "1 piercing" into "2 piercing"
+      let magicDamage = w.damage;
+      const diceMatch = w.damage.match(/^(\d+d\d+)(\s+.*)$/);
+      const flatMatch = w.damage.match(/^(\d+)(\s+.*)$/);
+      if (diceMatch) {
+        magicDamage = diceMatch[1] + '+' + plus + diceMatch[2];
+      } else if (flatMatch) {
+        magicDamage = (parseInt(flatMatch[1], 10) + plus) + flatMatch[2];
+      }
+      ITEMS_2024.push({
+        id: w.id + '_plus' + plus,
+        name: w.name + ' +' + plus,
+        category: 'magic',
+        subcategory: 'magic_weapon',
+        cost: '(magic weapon · ' + rarities[plus] + ')',
+        weight: w.weight,
+        damage: magicDamage,
+        properties: w.properties,
+        mastery: w.mastery,
+        attunement: false,
+        description: 'You have a +' + plus + ' bonus to attack and damage rolls made with this magic weapon. In every other respect it behaves as a normal ' + w.name.toLowerCase() + '. Base damage becomes ' + magicDamage + '. Original properties: ' + ((w.properties || []).join(', ') || 'none') + '. Weapon Mastery (if you have proficiency): ' + (w.mastery || '—') + '.',
+        source: 'DMG 2024 · ' + rarities[plus] + ' magic weapon'
+      });
+    });
+  });
+})();
+
+// =====================================================================
+// NAMED MAGIC WEAPONS (curated iconic set)
+// Add more here on demand.
+// =====================================================================
+[
+  { id: 'flame_tongue_longsword', name: 'Flame Tongue (Longsword)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 slashing + 2d6 fire', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You can speak the sword\'s Command Word as a Bonus Action to make bright red flames erupt from the blade. Flames shed Bright Light in a 40-foot radius and Dim Light for an additional 40 feet. While the sword is ablaze, it deals an extra 2d6 Fire damage on a hit. Flames last until you use another Bonus Action to end them or drop or sheathe the sword. Available as any sword or greataxe — this entry is the longsword variant.',
+    source: 'DMG 2024 · rare (requires attunement)' },
+  { id: 'flame_tongue_greatsword', name: 'Flame Tongue (Greatsword)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 6, damage: '2d6 slashing + 2d6 fire', properties: ['Heavy', 'Two-Handed'],
+    attunement: true,
+    description: 'As Flame Tongue (Longsword) but built on a greatsword base.',
+    source: 'DMG 2024 · rare (requires attunement)' },
+  { id: 'frost_brand', name: 'Frost Brand', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(very rare)', weight: 3, damage: '1d8 slashing + 1d6 cold', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'When you hit with an attack using this sword, the target takes an extra 1d6 Cold damage. You have Resistance to Fire damage while you hold this sword. In addition, while you hold the sword, you can use an action to extinguish all nonmagical flames within 30 feet. The sword sheds Bright Light in a 10-foot radius and Dim Light for an additional 10 feet when the temperature around it is 0°F or colder.',
+    source: 'DMG 2024 · very rare (requires attunement)' },
+  { id: 'sun_blade', name: 'Sun Blade', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 radiant', properties: ['Finesse', 'Versatile (1d10)'],
+    attunement: true,
+    description: 'This item appears to be a longsword hilt. While grasping it, you can use a Bonus Action to cause a blade of pure radiance to spring into existence, or make the blade disappear. While the blade exists, this magic longsword has the Finesse property. You are proficient with it if you are proficient with any longsword or shortsword. The blade sheds Bright Light in a 15-foot radius and Dim Light for an additional 15 feet. The blade is a magic weapon that deals 1d8 Radiant damage (1d10 if wielded with two hands). On a hit, an Undead target takes an extra 1d8 Radiant damage. The Bright Light is Sunlight.',
+    source: 'DMG 2024 · rare (requires attunement)' },
+  { id: 'holy_avenger', name: 'Holy Avenger', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(legendary)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true, attunementRestriction: 'Paladin',
+    description: 'You gain a +3 bonus to attack and damage rolls made with this magic sword. When you hit a Fiend or Undead with it, that creature takes an extra 2d10 Radiant damage. While you hold the sword drawn, it creates an aura in a 10-foot Emanation originating from you. You and all creatures friendly to you in the aura have Advantage on saves against spells and other magical effects. If you have 17+ levels of Paladin, the aura extends to 30 feet.',
+    source: 'DMG 2024 · legendary (requires attunement by Paladin)' },
+  { id: 'vorpal_sword', name: 'Vorpal Sword', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(legendary)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You gain a +3 bonus to attack and damage rolls made with this magic weapon. In addition, the weapon ignores Resistance to slashing damage. When you attack a creature that has at least one head with this weapon and roll a 20 on the attack roll, you cut off one of the creature\'s heads. The creature dies if it cannot survive without the lost head. A creature is immune to this effect if it has Legendary Resistance or if the DM decides its head is too large to cut off.',
+    source: 'DMG 2024 · legendary (requires attunement)' },
+  { id: 'sword_of_sharpness', name: 'Sword of Sharpness', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(very rare)', weight: 3, damage: '1d8 slashing (see text)', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'When you attack an object with this magic sword and hit, maximise your weapon damage dice against the target. When you attack a creature with this weapon and roll a 20 on the attack roll, the target takes an extra 4d6 Slashing damage. Then roll another d20 — on 20 you lop off one of the target\'s limbs (DM chooses which; if all limbs are gone, chops off head).',
+    source: 'DMG 2024 · very rare (requires attunement)' },
+  { id: 'dragon_slayer_longsword', name: 'Dragon Slayer (Longsword)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: false,
+    description: 'You gain a +1 bonus to attack and damage rolls made with this magic weapon. When you hit a Dragon with this weapon, the Dragon takes an extra 3d6 damage of the weapon\'s damage type. For this purpose, "Dragon" refers to any creature with the Dragon type, including Dragon Turtles and Wyverns.',
+    source: 'DMG 2024 · rare' },
+  { id: 'giant_slayer_longsword', name: 'Giant Slayer (Longsword)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: false,
+    description: 'You gain a +1 bonus to attack and damage rolls made with this magic weapon. When you hit a Giant with this weapon, the Giant takes an extra 2d6 damage of the weapon\'s damage type and must succeed on a DC 15 Strength save or fall Prone. For this purpose, "Giant" refers to any creature with the Giant type, including Ettins and Trolls.',
+    source: 'DMG 2024 · rare' },
+  { id: 'berserker_axe', name: 'Berserker Axe', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 4, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You gain a +1 bonus to attack and damage rolls made with this magic weapon. In addition, while you are attuned to this weapon, your HP max increases by 1 for each of your levels. Curse: while attuned, you have Disadvantage on attack rolls made with weapons other than this axe unless no foe is within 60 feet of you that you can see or hear. When a creature causes damage to you, you can\'t willingly part with the axe until you finish a Short Rest, having a compulsion to keep the axe within reach.',
+    source: 'DMG 2024 · rare (requires attunement; cursed)' },
+  { id: 'defender_longsword', name: 'Defender (Longsword)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(legendary)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You gain a +3 bonus to attack and damage rolls made with this magic weapon. The first time you attack with the sword each of your turns, you can transfer some or all of the sword\'s bonus to your AC instead of using it on attacks. For example, you could reduce the bonus to your attack and damage by 2 to gain a +2 bonus to AC. The adjusted bonuses remain in effect until start of your next turn (until you release the weapon if you release it before then).',
+    source: 'DMG 2024 · legendary (requires attunement)' },
+  { id: 'dwarven_thrower', name: 'Dwarven Thrower (Warhammer)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(very rare)', weight: 2, damage: '1d8 bludgeoning', properties: ['Versatile (1d10)', 'Thrown (20/60)'],
+    attunement: true, attunementRestriction: 'Dwarf',
+    description: 'You gain a +3 bonus to attack and damage rolls made with this magic weapon. It has the Thrown property with a normal range of 20 feet and a long range of 60 feet. When you hit with a ranged attack using this weapon, it deals an extra 1d8 damage or, if the target is a Giant, 2d8 damage. Immediately after the attack, the weapon flies back to your hand.',
+    source: 'DMG 2024 · very rare (requires attunement by Dwarf)' },
+  { id: 'hammer_of_thunderbolts', name: 'Hammer of Thunderbolts (Maul)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(legendary)', weight: 15, damage: '2d6 bludgeoning', properties: ['Heavy', 'Two-Handed'],
+    attunement: true,
+    description: 'You gain a +1 bonus to attack and damage rolls made with this magic weapon. This bonus increases to +3 and grants special properties while you are wearing a Belt of Giant Strength and Gauntlets of Ogre Power. Giant\'s Bane: while attuned to all three items, when you hit a Giant with the hammer, the Giant takes an extra 1d8 damage and must succeed on a DC 17 CON save or die. Throwing the hammer produces a thunderclap; on a hit, you can expend up to 5 Charges to unleash devastating thunder (1 charge/hit = extra 2d6 Thunder + 300-ft thunder audible).',
+    source: 'DMG 2024 · legendary (requires attunement)' },
+  { id: 'luck_blade', name: 'Luck Blade', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(legendary)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You gain a +1 bonus to attack and damage rolls made with this magic weapon. While the sword is on your person, you also gain a +1 bonus to saving throws. Luck: if the sword is on your person, you can call on its luck (no action required) to reroll one attack roll, ability check, or saving throw you dislike. Must use the second roll. Once used, cannot be used again until dawn. Wish (rare): the sword has 1d4 - 1 charges. While holding it, you can use an action to expend 1 charge to cast Wish. Property can\'t be used again until the next dawn.',
+    source: 'DMG 2024 · legendary (requires attunement)' },
+  { id: 'vicious_weapon', name: 'Vicious Weapon (Any)', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: null, damage: '(as base + 7)', properties: [],
+    attunement: false,
+    description: 'When you roll a 20 on an attack roll made with this weapon, the target takes an extra 7 damage of the weapon\'s type. Add this template to any weapon — replace "Any" with the base type when adding to inventory.',
+    source: 'DMG 2024 · rare' },
+  { id: 'sword_of_life_stealing', name: 'Sword of Life Stealing', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'When you attack a creature with this magic weapon and roll a 20 on the attack roll, the target takes an extra 3d6 Necrotic damage (provided the target is not a Construct or Undead). You gain temp HP equal to the extra damage dealt.',
+    source: 'DMG 2024 · rare (requires attunement)' },
+  { id: 'sword_of_wounding', name: 'Sword of Wounding', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(rare)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'Hit points lost to this weapon\'s damage can be regained only through a Short or Long Rest, rather than by regeneration, magic, or any other means. Once per turn when you hit a creature with the sword, you can wound the target. At the start of each of the wounded creature\'s turns, it takes 1d4 Necrotic damage for each time you\'ve wounded it, and it can then make a DC 15 CON save, ending the effect on itself on a success. Alternatively, the wounded creature or a creature within 5 ft. can use an action to make a DC 15 Wisdom (Medicine) check to end the effect.',
+    source: 'DMG 2024 · rare (requires attunement)' },
+  { id: 'nine_lives_stealer', name: 'Nine Lives Stealer', category: 'magic', subcategory: 'magic_weapon',
+    cost: '(very rare)', weight: 3, damage: '1d8 slashing', properties: ['Versatile (1d10)'],
+    attunement: true,
+    description: 'You gain a +2 bonus to attack and damage rolls made with this magic weapon. The sword has 1d8 + 1 charges. When you attack a creature that has 100 HP or fewer with it and roll a 20 on the attack roll, that target must succeed on a DC 15 CON save or be slain instantly as the sword tears its life force from its body (creature is immune if it is a Construct or an Undead). The sword loses 1 charge if the creature is slain. When the sword has no charges, it loses this property.',
+    source: 'DMG 2024 · very rare (requires attunement)' }
+].forEach(function(it) { ITEMS_2024.push(it); });
+
+// =====================================================================
+// LOOKUPS (built AFTER magic-weapon auto-gen + named appends, so every
+// item is indexed exactly once regardless of source.)
+// =====================================================================
 const ITEMS_BY_ID = ITEMS_2024.reduce(function(m, it) { m[it.id] = it; return m; }, {});
 
-// Categorised for the picker
 const ITEMS_BY_CATEGORY = ITEMS_2024.reduce(function(m, it) {
   if (!m[it.category]) m[it.category] = [];
   m[it.category].push(it);

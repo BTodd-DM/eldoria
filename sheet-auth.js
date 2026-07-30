@@ -23,11 +23,14 @@
 
 const SHEET_PASSWORDS = {
   torren: '5679daa7c55dde153a0e3f2e5d7c5318f149fa10716a7d874fa97e46639426a3', // Dagger
-  sylas:  'e875b7811b5900b25140c59df676c52c4160e33c41d8379cdaa4be6379e50dad', // Syphon
+  sylas:  'b8cf9eccda31d3c1dc28292f078e68ac09e8fcc5457c89b586128ba03678ab79', // Siphon
   orin:   '68c01a8e40fe9ec7d8949bdc80513d65a50428ce6d23536588f86376ad78ef15'  // Luminos
 };
 
-const SHEET_AUTH_KEY_PREFIX = 'eldoria-sheet-auth-';
+// v2 — bumped from 'eldoria-sheet-auth-' when Sylas's password changed
+// (Syphon → Siphon). Old localStorage sessions become invalid, forcing
+// re-entry with the new password.
+const SHEET_AUTH_KEY_PREFIX = 'eldoria-sheet-auth-v2-';
 const SHEET_AUTH_DAYS = 30;
 
 async function sheetAuthSha256Hex(str) {
