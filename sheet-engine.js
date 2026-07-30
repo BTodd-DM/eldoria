@@ -361,7 +361,14 @@ function renderItemPicker() {
   const filter = (_pickerFilter || '').toLowerCase();
   const cat = _pickerCategory;
   const filtered = ITEMS_2024.filter(function(it) {
-    if (cat !== 'all' && it.category !== cat) return false;
+    if (cat !== 'all') {
+      // Weapon tab also includes magic weapons (+1/+2/+3 variants and named
+      // magic weapons like Flame Tongue) so a player browsing "weapons"
+      // sees everything wieldable, not just mundane ones.
+      const isMagicWeapon = it.subcategory === 'magic_weapon';
+      const matches = it.category === cat || (cat === 'weapon' && isMagicWeapon);
+      if (!matches) return false;
+    }
     if (!filter) return true;
     return it.name.toLowerCase().indexOf(filter) !== -1 ||
            (it.subcategory || '').toLowerCase().indexOf(filter) !== -1;

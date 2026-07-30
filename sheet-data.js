@@ -439,7 +439,7 @@ CHARACTERS.sylas = {
     '**The Necklace / Spirit Jar** — Lich Initiate focus. Vaeloran has been studying it during their spell sessions.'
   ],
   attunements: [
-    '(no attuned items yet — Robe of Bones would go here if he keeps and attunes the chest\'s contents)',
+    '— (attunement slot open)',
     '— (attunement slot open)',
     '— (attunement slot open)'
   ],
