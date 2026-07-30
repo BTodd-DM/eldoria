@@ -465,6 +465,6 @@ CHARACTERS.sylas = {
     { id: 'false_life_leg',    label: 'False Life (Chthonic Legacy, free)',  max: 1, recharge: 'long' },
     { id: 'ray_enf_leg',       label: 'Ray of Enfeeblement (Chthonic Legacy, free)', max: 1, recharge: 'long' },
     { id: 'phantasmal_free',   label: 'Summon Beast/Fey Illusion version (free, half HP)', max: 1, recharge: 'long' },
-    { id: 'soul_siphon',       label: 'Soul Siphon consumed count (DM-visible)', max: 999, display: 'counter', recharge: 'never', note: 'Tally the souls Sylas has taken. Long-term Lich Initiate progress.' }
+    { id: 'soul_siphon',       label: 'Soul Siphon consumed count', max: 999, default: 0, display: 'counter', recharge: 'never', note: 'Tally the souls Sylas has taken. Long-term Lich Initiate progress. Type or use +/-.' }
   ]
 };

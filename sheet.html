@@ -127,7 +127,7 @@ body {
 <div class="sheet-page-header">
   <a href="index.html" class="sheet-back-btn">← BACK TO DASHBOARD</a>
   <div class="sheet-page-title" id="sheet-page-title">Character Sheet</div>
-  <span class="sheet-dm-badge">DM</span>
+  <span class="sheet-dm-badge" id="sheet-dm-badge">DM</span>
 </div>
 
 <div class="sheet-standalone-body">
@@ -152,6 +152,7 @@ body {
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="firebase-sync.js"></script>
+<script src="items-2024.js"></script>
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
 <script src="sheet-auth.js"></script>
@@ -182,6 +183,15 @@ body {
   const char = CHARACTERS[id];
   document.title = char.name + ' — Character Sheet';
   document.getElementById('sheet-page-title').textContent = char.name;
+
+  // Player-view flag: any character reachable through the password gate is a
+  // player-facing sheet. Hide the DM badge and expose the flag for future
+  // render-time checks (e.g. hiding DM-only fields on player sheets).
+  if (sheetIsGated(id)) {
+    window.__SHEET_IS_PLAYER_VIEW = true;
+    const badge = document.getElementById('sheet-dm-badge');
+    if (badge) badge.style.display = 'none';
+  }
 
   function renderNow() { renderSheet(id); }
 

@@ -615,8 +615,24 @@ function closePanel() {
     return m ? m[1] : null;
   }
 
+  // Parse a CSS clip-path polygon string like "polygon(10% 20%, 30% 40%, ...)"
+  // into an array of [x, y] percentage pairs. Returns null if parse fails.
+  function parseClipPathPolygon(cp) {
+    if (!cp) return null;
+    var m = cp.match(/polygon\(([^)]+)\)/);
+    if (!m) return null;
+    var pts = m[1].split(',').map(function(pair){
+      var pm = pair.trim().match(/(-?[\d.]+)%\s+(-?[\d.]+)%/);
+      return pm ? [parseFloat(pm[1]), parseFloat(pm[2])] : null;
+    }).filter(Boolean);
+    return pts.length >= 3 ? pts : null;
+  }
+
   // For a region div: compute the polygon points (percentage coords on the wrapper).
-  // Prefers saved polygon → migrates legacy rectangle → falls back to source HTML rect.
+  // Prefers saved polygon → migrates legacy rectangle → uses source HTML clip-path
+  // → falls back to source HTML rectangle (last-resort; produces a full-cover box
+  // when source uses left:0;top:0;width:100%;height:100%, so we ALWAYS try the
+  // clip-path parse first).
   function getRegionPoints(div) {
     var key = extractHotspotKey(div);
     if (key && saved[key] && Array.isArray(saved[key].points)) {
@@ -628,6 +644,14 @@ function closePanel() {
       var l = s.left, t = s.top, w = s.width, h = s.height;
       return [[l, t], [l+w, t], [l+w, t+h], [l, t+h]];
     }
+    // No saved data — try to parse the source clip-path from the div's style.
+    // (Without this step, the fallback rectangle below yields a full-map cover
+    // for regions that use left:0;width:100% with clip-path — meaning every
+    // region becomes a full-map click zone and the last one in DOM order
+    // intercepts every click.)
+    var sourceClip = div.style.clipPath || div.style.webkitClipPath || '';
+    var sourcePts = parseClipPathPolygon(sourceClip);
+    if (sourcePts) return sourcePts;
     // Default: use the source HTML rectangle
     var dl = parseFloat(div.style.left) || 0;
     var dt = parseFloat(div.style.top)  || 0;

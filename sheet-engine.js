@@ -94,7 +94,9 @@ function initSheetState(char) {
   const slots = {};
   (char.spellcasting ? char.spellcasting.slots : []).forEach((n, i) => slots[i+1] = 0);
   const resources = {};
-  (char.resources || []).forEach(r => resources[r.id] = r.max);
+  (char.resources || []).forEach(r => {
+    resources[r.id] = (r.default !== undefined) ? r.default : r.max;
+  });
   return {
     hp: { current: char.hpMax, temp: 0 },
     hitDiceSpent: 0,
@@ -121,7 +123,23 @@ function getSheetState(id) {
   if (char.spellcasting) {
     char.spellcasting.slots.forEach((n, i) => { if (state.slots[i+1] === undefined) state.slots[i+1] = 0; });
   }
-  (char.resources || []).forEach(r => { if (state.resources[r.id] === undefined) state.resources[r.id] = r.max; });
+  (char.resources || []).forEach(r => {
+    if (state.resources[r.id] === undefined) {
+      state.resources[r.id] = (r.default !== undefined) ? r.default : r.max;
+    }
+  });
+  // Phase 4A migration: seed editable equipment + currency + editMode from
+  // the sheet-data.js defaults on first load. After that, state is canonical
+  // and syncs via Firebase.
+  if (!state.equipment) {
+    state.equipment = (char.equipment || []).map(function(str, i) {
+      return { id: 'seed_' + i, name: str, quantity: 1, notes: '', custom: true, sourceItemId: null };
+    });
+  }
+  if (!state.currency) {
+    state.currency = Object.assign({ cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }, char.coins || {});
+  }
+  if (state.editMode === undefined) state.editMode = false;
   return state;
 }
 function withSheetState(charId, fn) {
@@ -129,6 +147,253 @@ function withSheetState(charId, fn) {
   fn(state);
   saveSheetState(charId, state);
   refreshSheet(charId);
+}
+
+// ===================================================================
+// PHASE 4A — EDITABLE INVENTORY + CURRENCY + EDIT MODE + ITEM PICKER
+// ===================================================================
+function _sheetEscapeAttr(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ---- Edit mode toggle -------------------------------------------------
+function renderEditModeToggle(charId, state) {
+  const on = !!state.editMode;
+  const btnBg = on ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
+  const btnFg = on ? '#0d0a06' : 'var(--gold2)';
+  const label = on ? '🔓 EDITING — click to lock' : '🔒 LOCKED — click to edit';
+  return '<div style="display:flex;justify-content:flex-end;padding:.3rem 0 .5rem;margin-bottom:.5rem;border-bottom:1px dashed rgba(160,128,64,0.2)">' +
+    '<button onclick="toggleEditMode(\'' + charId + '\')" style="background:' + btnBg + ';color:' + btnFg + ';border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">' +
+    label + '</button>' +
+    '</div>';
+}
+function toggleEditMode(charId) {
+  withSheetState(charId, function(s) { s.editMode = !s.editMode; });
+}
+
+// ---- Currency section -------------------------------------------------
+function renderCurrencySection(charId, state) {
+  const editing = !!state.editMode;
+  const c = state.currency || { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
+  const totalGp = ((c.pp||0)*10) + (c.gp||0) + ((c.ep||0)*0.5) + ((c.sp||0)*0.1) + ((c.cp||0)*0.01);
+  const denoms = [
+    { key: 'cp', label: 'CP' },
+    { key: 'sp', label: 'SP' },
+    { key: 'ep', label: 'EP' },
+    { key: 'gp', label: 'GP' },
+    { key: 'pp', label: 'PP' }
+  ];
+  const cells = denoms.map(function(d) {
+    const val = c[d.key] || 0;
+    const inner = editing
+      ? '<input type="number" min="0" step="1" value="' + val + '" onchange="updateCurrency(\'' + charId + '\',\'' + d.key + '\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()" style="width:100%;text-align:center;font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold3);background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.4);border-radius:2px;padding:2px;font-weight:600">'
+      : '<div style="font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold3);font-weight:600;text-align:center">' + val + '</div>';
+    return '<div><div style="font-family:\'Cinzel\',serif;font-size:9px;color:var(--parch3);letter-spacing:1px;margin-bottom:.15rem;text-align:center">' + d.label + '</div>' + inner + '</div>';
+  }).join('');
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Currency</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin-bottom:.35rem">' + cells + '</div>' +
+    '<div style="font-size:10px;color:var(--parch4);text-align:right;font-family:\'Cinzel\',serif;letter-spacing:.5px">≈ ' + totalGp.toFixed(2) + ' gp total</div>' +
+    '</div>';
+}
+function updateCurrency(charId, denom, raw) {
+  const n = Math.max(0, parseInt(raw, 10) || 0);
+  withSheetState(charId, function(s) {
+    if (!s.currency) s.currency = { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
+    s.currency[denom] = n;
+  });
+}
+
+// ---- Inventory section -----------------------------------------------
+function renderInventorySection(charId, char, state) {
+  const editing = !!state.editMode;
+  const items = state.equipment || [];
+  const catalogLoaded = (typeof ITEMS_BY_ID !== 'undefined');
+  let rows = '';
+  if (items.length === 0) {
+    rows = '<tr><td colspan="' + (editing ? 4 : 3) + '" style="text-align:center;padding:.5rem;color:var(--parch4);font-style:italic;font-size:12px">' +
+      (editing ? 'No items. Use the buttons below to add.' : 'No items. Enable edit mode to add.') +
+      '</td></tr>';
+  } else {
+    items.forEach(function(item, i) {
+      let nameHtml;
+      if (!item.custom && catalogLoaded && ITEMS_BY_ID[item.sourceItemId]) {
+        const catItem = ITEMS_BY_ID[item.sourceItemId];
+        nameHtml = '<span title="' + _sheetEscapeAttr(catItem.description + '\n\n' + (catItem.source || '')) + '" style="cursor:help;border-bottom:1px dotted var(--gold2)">' + _sheetEscapeAttr(item.name) + '</span>';
+      } else {
+        nameHtml = _sheetEscapeAttr(item.name);
+      }
+      const qty = editing
+        ? '<input type="number" min="1" step="1" value="' + (item.quantity || 1) + '" onchange="updateInventoryItem(\'' + charId + '\',' + i + ',\'quantity\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()" style="width:5ch;text-align:center;background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.3);color:var(--parch);padding:2px;border-radius:2px;font-size:11px">'
+        : String(item.quantity || 1);
+      const notes = editing
+        ? '<input type="text" value="' + _sheetEscapeAttr(item.notes || '') + '" onchange="updateInventoryItem(\'' + charId + '\',' + i + ',\'notes\',this.value)" placeholder="notes" style="width:100%;background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.3);color:var(--parch);padding:2px 4px;border-radius:2px;font-size:11px">'
+        : (item.notes ? '<span style="font-style:italic;color:var(--parch3)">' + _sheetEscapeAttr(item.notes) + '</span>' : '');
+      const removeCell = editing
+        ? '<td style="text-align:center;padding:.15rem"><button onclick="removeInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px" title="Remove">✕</button></td>'
+        : '';
+      rows += '<tr style="border-bottom:1px dashed rgba(160,128,64,0.1)">' +
+        '<td style="font-size:12px;color:var(--parch2);padding:.2rem .3rem .2rem 0">' + nameHtml + '</td>' +
+        '<td style="text-align:center;font-size:12px;color:var(--parch2);padding:.2rem;width:5ch">' + qty + '</td>' +
+        '<td style="font-size:11px;color:var(--parch3);padding:.2rem">' + notes + '</td>' +
+        removeCell + '</tr>';
+    });
+  }
+  const header = '<tr style="border-bottom:1px solid rgba(160,128,64,0.3)">' +
+    '<th style="text-align:left;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem .3rem .2rem 0;letter-spacing:1px">Item</th>' +
+    '<th style="text-align:center;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem;letter-spacing:1px">Qty</th>' +
+    '<th style="text-align:left;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem;letter-spacing:1px">Notes</th>' +
+    (editing ? '<th style="width:3ch"></th>' : '') +
+    '</tr>';
+  const addRow = editing
+    ? '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap">' +
+        (catalogLoaded
+          ? '<button onclick="openItemPicker(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add from Catalog</button>'
+          : '') +
+        '<button onclick="addCustomInventoryPrompt(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add Custom</button>' +
+      '</div>'
+    : '';
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Inventory</div>' +
+    '<table style="width:100%;border-collapse:collapse">' + header + rows + '</table>' +
+    addRow +
+    '</div>';
+}
+function addInventoryFromCatalog(charId, itemId) {
+  if (typeof ITEMS_BY_ID === 'undefined' || !ITEMS_BY_ID[itemId]) return;
+  const item = ITEMS_BY_ID[itemId];
+  withSheetState(charId, function(s) {
+    if (!s.equipment) s.equipment = [];
+    s.equipment.push({
+      id: 'inv_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      name: item.name,
+      quantity: 1,
+      notes: '',
+      custom: false,
+      sourceItemId: itemId
+    });
+  });
+  closeItemPicker();
+}
+function addCustomInventoryPrompt(charId) {
+  const name = prompt('Item name:');
+  if (!name || !name.trim()) return;
+  const qtyRaw = prompt('Quantity (default 1):', '1');
+  if (qtyRaw === null) return; // user cancelled
+  const qty = Math.max(1, parseInt(qtyRaw, 10) || 1);
+  const notes = prompt('Notes (optional):', '') || '';
+  withSheetState(charId, function(s) {
+    if (!s.equipment) s.equipment = [];
+    s.equipment.push({
+      id: 'custom_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      name: name.trim(),
+      quantity: qty,
+      notes: notes.trim(),
+      custom: true,
+      sourceItemId: null
+    });
+  });
+}
+function updateInventoryItem(charId, idx, field, value) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    if (field === 'quantity') s.equipment[idx].quantity = Math.max(1, parseInt(value, 10) || 1);
+    else s.equipment[idx][field] = value;
+  });
+}
+function removeInventoryItem(charId, idx) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    if (!confirm('Remove "' + (s.equipment[idx].name || 'item') + '" from inventory?')) return;
+    s.equipment.splice(idx, 1);
+  });
+}
+
+// ---- Item picker modal ------------------------------------------------
+let _pickerCharId = null;
+let _pickerFilter = '';
+let _pickerCategory = 'all';
+
+function openItemPicker(charId) {
+  if (typeof ITEMS_2024 === 'undefined') {
+    alert('Item catalog (items-2024.js) not loaded — falling back to custom entry.');
+    addCustomInventoryPrompt(charId);
+    return;
+  }
+  _pickerCharId = charId;
+  _pickerFilter = '';
+  _pickerCategory = 'all';
+  let modal = document.getElementById('sheet-item-picker');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'sheet-item-picker';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:\'Crimson Pro\',Georgia,serif';
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeItemPicker();
+    });
+    document.body.appendChild(modal);
+  }
+  modal.style.display = 'flex';
+  renderItemPicker();
+}
+function closeItemPicker() {
+  const modal = document.getElementById('sheet-item-picker');
+  if (modal) modal.style.display = 'none';
+  _pickerCharId = null;
+}
+function setPickerFilter(text) { _pickerFilter = text; renderItemPicker(); }
+function setPickerCategory(cat) { _pickerCategory = cat; renderItemPicker(); }
+function renderItemPicker() {
+  const modal = document.getElementById('sheet-item-picker');
+  if (!modal || typeof ITEMS_2024 === 'undefined') return;
+  const filter = (_pickerFilter || '').toLowerCase();
+  const cat = _pickerCategory;
+  const filtered = ITEMS_2024.filter(function(it) {
+    if (cat !== 'all' && it.category !== cat) return false;
+    if (!filter) return true;
+    return it.name.toLowerCase().indexOf(filter) !== -1 ||
+           (it.subcategory || '').toLowerCase().indexOf(filter) !== -1;
+  });
+  const categories = ['all', 'weapon', 'armor', 'gear', 'consumable', 'magic'];
+  const catTabs = categories.map(function(c) {
+    const active = c === _pickerCategory;
+    const bg = active ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
+    const fg = active ? '#0d0a06' : 'var(--gold2)';
+    return '<button onclick="setPickerCategory(\'' + c + '\')" style="background:' + bg + ';color:' + fg + ';border:1px solid var(--gold2);border-radius:2px;padding:.25rem .6rem;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:1px;cursor:pointer">' + c.toUpperCase() + '</button>';
+  }).join(' ');
+  const rows = filtered.slice(0, 200).map(function(it) {
+    return '<div style="padding:.5rem;border-bottom:1px solid rgba(160,128,64,0.15);cursor:pointer" onclick="addInventoryFromCatalog(\'' + _pickerCharId + '\',\'' + it.id + '\')" onmouseover="this.style.background=\'rgba(160,128,64,0.1)\'" onmouseout="this.style.background=\'transparent\'">' +
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.15rem">' +
+      '<strong style="font-family:\'Cinzel\',serif;color:var(--gold3);font-size:13px">' + _sheetEscapeAttr(it.name) + '</strong>' +
+      '<span style="font-size:10px;color:var(--parch4);white-space:nowrap">' + _sheetEscapeAttr(it.cost || '') + (it.weight ? ' · ' + it.weight + ' lb' : '') + '</span>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--parch2);line-height:1.4">' + _sheetEscapeAttr(it.description || '') + '</div>' +
+      '<div style="font-size:9px;color:var(--parch4);margin-top:.2rem;font-style:italic">' + _sheetEscapeAttr(it.source || '') + (it.attunement ? ' · requires attunement' : '') + '</div>' +
+      '</div>';
+  }).join('');
+  const body = rows || '<div style="padding:2rem;text-align:center;color:var(--parch4);font-style:italic">No items match. Use "Add Custom" for anything not in the catalog.</div>';
+  modal.innerHTML =
+    '<div style="background:#1a1208;border:1px solid var(--gold2);border-radius:4px;width:100%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;color:var(--parch)">' +
+      '<div style="padding:.75rem 1rem;border-bottom:1px solid rgba(160,128,64,0.3);display:flex;justify-content:space-between;align-items:center;background:rgba(20,15,8,0.9)">' +
+        '<div style="font-family:\'Cinzel Decorative\',serif;color:var(--gold3);font-size:15px;letter-spacing:1.5px">Add to Inventory</div>' +
+        '<button onclick="closeItemPicker()" style="background:transparent;border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:.2rem .6rem;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">✕ Close</button>' +
+      '</div>' +
+      '<div style="padding:.6rem 1rem;background:rgba(20,15,8,0.7);border-bottom:1px solid rgba(160,128,64,0.15)">' +
+        '<input type="text" id="sheet-picker-search" value="' + _sheetEscapeAttr(_pickerFilter) + '" placeholder="Search…" oninput="setPickerFilter(this.value)" style="width:100%;background:rgba(10,8,5,0.8);border:1px solid rgba(160,128,64,0.4);color:var(--parch);padding:.4rem .6rem;border-radius:2px;font-size:13px;margin-bottom:.4rem;font-family:inherit">' +
+        '<div style="display:flex;flex-wrap:wrap;gap:.3rem">' + catTabs + '</div>' +
+      '</div>' +
+      '<div style="flex:1;overflow-y:auto">' + body + '</div>' +
+      '<div style="padding:.6rem 1rem;border-top:1px solid rgba(160,128,64,0.3);background:rgba(20,15,8,0.9);display:flex;justify-content:space-between;align-items:center">' +
+        '<span style="font-size:10px;color:var(--parch4)">' + filtered.length + ' items' + (filtered.length > 200 ? ' (showing 200)' : '') + '</span>' +
+        '<button onclick="closeItemPicker();addCustomInventoryPrompt(\'' + _pickerCharId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">+ Add Custom Item</button>' +
+      '</div>' +
+    '</div>';
+  const searchInput = document.getElementById('sheet-picker-search');
+  if (searchInput) {
+    searchInput.focus();
+    const l = searchInput.value.length;
+    searchInput.setSelectionRange(l, l);
+  }
 }
 
 // ----- Roll toast -----
@@ -300,6 +565,8 @@ function renderSheet(charId) {
   if (!body) return;
   let html = '';
 
+  html += renderEditModeToggle(charId, state);
+
   html += '<div class="sheet-header">';
   html += '<div class="sheet-id-block">';
   html += '<div class="sheet-id-name">' + char.name + '</div>';
@@ -343,6 +610,8 @@ function renderSheet(charId) {
 
   html += '<div>';
   if (char.spellcasting) html += renderSpellsSection(charId, char, state);
+  html += renderInventorySection(charId, char, state);
+  html += renderCurrencySection(charId, state);
   html += renderEquipmentSection(char);
   html += renderBioSection(charId, char, state);
   html += renderCharacterExtras(char);
@@ -442,12 +711,14 @@ function renderResourcesSection(charId, char, state) {
     let control = '';
     let numberDisplay = '';
     if (r.display === 'counter') {
-      // Numeric counter with − / value / + buttons. Better than 999 dots.
+      // Numeric counter with − / typeable input / + buttons. Better than 999 dots.
       const btnStyle = 'background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);width:22px;height:22px;border-radius:2px;cursor:pointer;font-size:14px;line-height:1;font-family:\'Cinzel\',serif;padding:0';
-      const valStyle = 'min-width:2.5ch;text-align:center;font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold3);font-weight:600;padding:0 .2rem';
+      const inputStyle = 'width:4.5ch;text-align:center;font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold3);font-weight:600;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.4);border-radius:2px;padding:1px 2px;-moz-appearance:textfield';
       control =
         '<button type="button" style="' + btnStyle + '" onclick="bumpResource(\'' + charId + '\',\'' + r.id + '\',-1)">−</button>' +
-        '<span style="' + valStyle + '">' + cur + '</span>' +
+        '<input type="number" min="0" max="' + (r.max || 999) + '" step="1" value="' + cur + '" style="' + inputStyle + '"' +
+        ' onchange="setResourceValue(\'' + charId + '\',\'' + r.id + '\',this.value)"' +
+        ' onkeydown="if(event.key===\'Enter\'){this.blur();}">' +
         '<button type="button" style="' + btnStyle + '" onclick="bumpResource(\'' + charId + '\',\'' + r.id + '\',1)">+</button>';
       numberDisplay = '';
     } else if (r.max > 0) {
@@ -524,10 +795,12 @@ function renderSpellsSection(charId, char, state) {
     '<div class="sheet-spell-list">' + spellHtml + '</div></div>';
 }
 function renderEquipmentSection(char) {
-  const eqList = (char.equipment || []).map(function(e) { return '<li style="margin-bottom:.2rem">' + e + '</li>'; }).join('');
+  // Phase 4A: this section is now static reference only (Languages,
+  // Proficiencies, Attunements — the read-only class/species/background
+  // material). Inventory and Currency are their own editable sections
+  // rendered separately.
   const attList = (char.attunements || []).map(function(a) { return '<li>' + a + '</li>'; }).join('');
   const langs = (char.languages || []).join(', ');
-  const coins = char.coins || {};
   let trainHtml = '';
   if (char.equipmentProf) {
     const ep = char.equipmentProf;
@@ -539,10 +812,9 @@ function renderEquipmentSection(char) {
   }
   return '<div class="sheet-sub"><div class="sheet-sub-title">Languages</div><div style="font-size:12px;color:var(--parch2)">' + langs + '</div></div>' +
     '<div class="sheet-sub"><div class="sheet-sub-title">Equipment Training & Proficiencies</div>' + trainHtml + '</div>' +
-    '<div class="sheet-sub"><div class="sheet-sub-title">Equipment</div><ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + eqList + '</ul>' +
-      '<div style="margin-top:.5rem"><strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">ATTUNEMENTS (max 3):</strong>' +
-      '<ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + attList + '</ul></div>' +
-      '<div style="display:flex;gap:.5rem;margin-top:.6rem;font-size:11px;color:var(--parch3);font-family:\'Cinzel\',serif"><span>CP ' + (coins.cp||0) + '</span><span>SP ' + (coins.sp||0) + '</span><span>EP ' + (coins.ep||0) + '</span><span>GP ' + (coins.gp||0) + '</span><span>PP ' + (coins.pp||0) + '</span></div>' +
+    '<div class="sheet-sub"><div class="sheet-sub-title">Attunements (max 3)</div>' +
+      '<ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + attList + '</ul>' +
+      '<div style="font-size:10px;color:var(--parch4);font-style:italic;margin-top:.3rem">Attunement management arrives in a later update.</div>' +
     '</div>';
 }
 function renderBioSection(charId, char, state) {
@@ -600,6 +872,16 @@ function bumpResource(charId, rid, delta) {
     const max = res && typeof res.max === 'number' ? res.max : 999;
     const cur = s.resources[rid] || 0;
     s.resources[rid] = Math.max(0, Math.min(max, cur + delta));
+  });
+}
+function setResourceValue(charId, rid, raw) {
+  const n = parseInt(raw, 10);
+  if (isNaN(n)) return;
+  withSheetState(charId, function(s) {
+    const char = CHARACTERS[charId];
+    const res = (char.resources || []).find(function(r) { return r.id === rid; });
+    const max = res && typeof res.max === 'number' ? res.max : 999;
+    s.resources[rid] = Math.max(0, Math.min(max, n));
   });
 }
 function toggleCondition(charId, c) { withSheetState(charId, function(s) { if (s.conditions[c]) delete s.conditions[c]; else s.conditions[c] = true; }); }

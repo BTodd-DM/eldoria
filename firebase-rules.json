@@ -5,8 +5,7 @@
     "characters": {
       "$charId": {
         ".read": true,
-        ".write": true,
-        ".validate": "newData.hasChildren(['_updatedAt']) || !newData.exists()"
+        ".write": true
       }
     }
   }
