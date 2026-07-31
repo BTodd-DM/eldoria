@@ -29,8 +29,8 @@ body{background:#0a0805;font-family:'Crimson Pro',Georgia,serif;color:var(--p1);
 .hotspot:hover{border-color:var(--gold2);background:rgba(201,168,76,0.15)}
 .hotspot.region{border-radius:10px}
 .hotspot.city{border-radius:50%}
-.hotspot-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,0);text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap;transition:color .2s}
-.hotspot:hover .hotspot-label{color:rgba(255,255,255,0.9)}
+.hotspot-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,0.9);text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap;opacity:0;transition:opacity .2s}
+.hotspot:hover .hotspot-label{opacity:1}
 
 /* INFO PANEL */
 .info-panel{max-width:1200px;margin:0 auto 2rem;padding:0 1rem}
