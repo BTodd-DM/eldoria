@@ -757,9 +757,16 @@ window.addEventListener('load', function(){
         if (p.height !== undefined) h.style.height = p.height + '%';
       }
     });
-    // DISTRICTS — apply polygon (clip-path) always
+    // DISTRICTS — apply saved polygon (clip-path) ONLY if there is saved
+    // calibration data. If nothing is saved, the source inline clip-path is
+    // correct and should not be touched. (Same fragility issue as world_map.html.)
     document.querySelectorAll('.hotspot.district').forEach(function(div){
-      applyDistrictPolygon(div, getDistrictPoints(div));
+      var key = extractHotspotKey(div);
+      var hasSaved = key && saved[key] && (Array.isArray(saved[key].points) || saved[key].left !== undefined);
+      if (hasSaved) {
+        applyDistrictPolygon(div, getDistrictPoints(div));
+      }
+      // else: keep source inline clip-path as-is
     });
   }
 

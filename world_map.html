@@ -684,9 +684,20 @@ function closePanel() {
         if (p.height !== undefined) h.style.height = p.height + '%';
       }
     });
-    // REGIONS: always apply polygon (clip-path) — derived from saved data or default rect
+    // REGIONS: apply saved polygon (clip-path) ONLY if there is saved calibration
+    // data for this region. If nothing is saved, the source HTML already has the
+    // correct clip-path inline — do not touch it. Overwriting it via
+    // applyRegionPolygon has proven fragile in some browsers (parsed clip-path
+    // whitespace didn't round-trip cleanly), causing every region to fall back
+    // to a full-cover polygon and the last one in DOM order (Ember Wastes) to
+    // eat every click on the map.
     document.querySelectorAll('.hotspot.region').forEach(function(div){
-      applyRegionPolygon(div, getRegionPoints(div));
+      var key = extractHotspotKey(div);
+      var hasSaved = key && saved[key] && (Array.isArray(saved[key].points) || saved[key].left !== undefined);
+      if (hasSaved) {
+        applyRegionPolygon(div, getRegionPoints(div));
+      }
+      // else: keep the source inline clip-path as-is
     });
   }
 
