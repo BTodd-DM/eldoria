@@ -938,7 +938,13 @@ function longRest(charId) {
     s.hp.temp = 0;
     s.deathSaves = { successes: 0, failures: 0 };
     Object.keys(s.slots).forEach(function(k) { s.slots[k] = 0; });
-    (char.resources || []).forEach(function(r) { s.resources[r.id] = r.max; });
+    // Reset short- and long-rest resources only. `recharge: 'never'` resources
+    // (e.g. Soul Siphon — a permanent tally) must not be touched.
+    (char.resources || []).forEach(function(r) {
+      if (r.recharge === 'short' || r.recharge === 'long') {
+        s.resources[r.id] = r.max;
+      }
+    });
     const hdRecovered = Math.max(1, Math.floor(char.hitDice.max / 2));
     s.hitDiceSpent = Math.max(0, s.hitDiceSpent - hdRecovered);
     if (s.exhaustion > 0) s.exhaustion -= 1;
