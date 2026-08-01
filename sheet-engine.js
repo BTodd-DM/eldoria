@@ -140,7 +140,47 @@ function getSheetState(id) {
     state.currency = Object.assign({ cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }, char.coins || {});
   }
   if (state.editMode === undefined) state.editMode = false;
+  // Phase 4B migration: seed editable spells from char.spells on first load.
+  if (!state.spells) {
+    state.spells = (char.spells || []).map(function(sp, i) {
+      const tags = sp.tags || [];
+      return {
+        id: 'seed_spell_' + i,
+        sourceSpellId: null,
+        name: sp.name,
+        level: sp.level,
+        school: (sp.school || '').toLowerCase(),
+        castingTime: sp.cast || 'Action',
+        range: sp.range || '—',
+        components: sp.components || '',
+        duration: sp.duration || '',
+        concentration: tags.indexOf('concentration') >= 0,
+        ritual: tags.indexOf('ritual') >= 0,
+        description: sp.desc || '',
+        atHigherLevels: sp.atHigherLevels || null,
+        prepared: true,
+        custom: true
+      };
+    });
+  }
   return state;
+}
+
+// Prepared spell max derived from class + ability mod + level. Returns null
+// for classes that don't prepare (Sorcerer / Bard / Warlock in 2024) so the
+// UI can hide the counter.
+function getPreparedMax(char) {
+  const cls = (char.className || '').toLowerCase();
+  const level = char.level || 1;
+  const abil = char.abilities || {};
+  const mod = function(score) { return Math.floor(((score || 10) - 10) / 2); };
+  if (cls === 'wizard')    return Math.max(1, mod(abil.int) + level);
+  if (cls === 'cleric')    return Math.max(1, mod(abil.wis) + level);
+  if (cls === 'druid')     return Math.max(1, mod(abil.wis) + level);
+  if (cls === 'paladin')   return Math.max(1, mod(abil.cha) + Math.ceil(level / 2));
+  if (cls === 'ranger')    return Math.max(1, mod(abil.wis) + Math.ceil(level / 2));
+  if (cls === 'artificer') return Math.max(1, mod(abil.int) + Math.ceil(level / 2));
+  return null; // sorcerer, bard, warlock don't prepare
 }
 function withSheetState(charId, fn) {
   const state = getSheetState(charId);
@@ -428,6 +468,14 @@ function showRollToast(label, formula, result, opts) {
   toast.innerHTML = '<span class="roll-label">' + label + '</span>' +
     '<span style="font-size:24px;display:block">' + result + '</span>' +
     '<span class="roll-formula">' + formula + '</span>';
+  // If the DM sheet-dialog is open (top-layer <dialog>), reparent the toast
+  // into it so we render in the same browser top layer and don't disappear
+  // behind the dialog's backdrop. Same fix pattern as the item picker.
+  const dialog = document.getElementById('sheet-dialog');
+  const desiredParent = (dialog && dialog.open) ? dialog : document.body;
+  if (toast.parentNode !== desiredParent) {
+    desiredParent.appendChild(toast);
+  }
   clearTimeout(_sheetToastTimer);
   _sheetToastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3800);
 }
@@ -792,6 +840,7 @@ function renderConditionsSection(charId, state) {
 }
 function renderSpellsSection(charId, char, state) {
   const sc = char.spellcasting;
+  // ---- Slot diamonds (unchanged) ----
   let slotHtml = '';
   for (let lvl = 1; lvl <= 9; lvl++) {
     const max = sc.slots[lvl-1] || 0;
@@ -802,33 +851,88 @@ function renderSpellsSection(charId, char, state) {
     }
     slotHtml += '<div class="sheet-slot-block"><div class="sheet-slot-level">L' + lvl + '</div><div class="sheet-slot-diamonds">' + diamonds + '</div><div class="sheet-slot-count">' + (max > 0 ? (max-expended) + '/' + max : '—') + '</div></div>';
   }
-  let spellHtml = '';
-  (char.spells || []).forEach(function(sp, i) {
-    const tags = sp.tags || [];
-    let tagSpans = '';
-    if (tags.indexOf('concentration') >= 0) tagSpans += '<span class="spell-tag conc">C</span>';
-    if (tags.indexOf('ritual') >= 0) tagSpans += '<span class="spell-tag">R</span>';
-    if (tags.indexOf('reaction') >= 0) tagSpans += '<span class="spell-tag">React</span>';
-    if (tags.indexOf('mastery') >= 0) tagSpans += '<span class="spell-tag">Mastery</span>';
-    if (tags.indexOf('signature') >= 0) tagSpans += '<span class="spell-tag sig">Signature</span>';
-    const sigRow = tags.indexOf('signature') >= 0 ? 'signature' : '';
-    const isCantrip = sp.level === 0;
-    const isFree = tags.indexOf('signature') >= 0 || tags.indexOf('mastery') >= 0;
-    const canCast = isCantrip || isFree || ((sc.slots[sp.level-1] || 0) - (state.slots[sp.level] || 0)) > 0;
-    spellHtml += '<div class="sheet-spell-row ' + sigRow + '" onclick="toggleSpellDetail(' + i + ')">' +
-      '<div class="sheet-spell-level">' + (isCantrip ? '0' : sp.level) + '</div>' +
-      '<div class="sheet-spell-name">' + sp.name + tagSpans + '</div>' +
-      (isCantrip ? '<span style="font-size:9.5px;color:var(--parch4);font-style:italic">at will</span>' :
-        '<button class="sheet-spell-cast" onclick="event.stopPropagation();castSpell(\'' + charId + '\',' + i + ')" ' + (canCast?'':'disabled') + '>Cast L' + sp.level + '</button>') +
-    '</div>' +
-    '<div class="sheet-spell-detail" id="spell-detail-' + i + '" style="display:none">' +
-      '<strong>' + (sp.school||'') + ' · ' + (isCantrip ? 'Cantrip' : 'L' + sp.level) + ' · ' + (sp.cast||'') + ' · Range ' + (sp.range||'—') + '</strong><br>' +
-      sp.desc +
+
+  // ---- Prep counter ----
+  const prepMax = getPreparedMax(char);
+  const spells = state.spells || [];
+  const preparedCount = spells.filter(function(sp) { return sp.level > 0 && sp.prepared; }).length;
+  let prepHtml = '';
+  if (prepMax !== null) {
+    const over = preparedCount > prepMax;
+    prepHtml = '<div style="font-size:11px;font-family:\'Cinzel\',serif;letter-spacing:.5px;color:' + (over ? 'var(--red2)' : 'var(--parch3)') + ';margin-top:.3rem;margin-bottom:.4rem">' +
+      'Prepared: <strong style="color:' + (over ? 'var(--red2)' : 'var(--gold3)') + '">' + preparedCount + ' / ' + prepMax + '</strong>' +
+      (over ? ' &nbsp;⚠ OVER LIMIT' : '') +
+      '&nbsp;<span style="font-style:italic;color:var(--parch4);font-size:10px">(cantrips always available; don\'t count)</span>' +
+      '</div>';
+  }
+
+  // ---- Spells grouped by level ----
+  const byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
+  spells.forEach(function(sp) { if (byLevel[sp.level]) byLevel[sp.level].push(sp); });
+  // Alphabetise within each level
+  Object.keys(byLevel).forEach(function(k) { byLevel[k].sort(function(a, b) { return (a.name || '').localeCompare(b.name || ''); }); });
+
+  let spellsHtml = '';
+  for (let lvl = 0; lvl <= 9; lvl++) {
+    const list = byLevel[lvl];
+    if (list.length === 0) continue;
+    const label = (lvl === 0) ? 'Cantrips' : ('Level ' + lvl);
+    spellsHtml += '<div class="sheet-spell-level-group">' +
+      '<div class="sheet-spell-level-header">' + label + '</div>';
+    list.forEach(function(sp) {
+      spellsHtml += _renderSpellRow(charId, sp);
+    });
+    spellsHtml += '</div>';
+  }
+
+  // ---- Add-spell buttons ----
+  const catalogLoaded = (typeof SPELLS_2024 !== 'undefined');
+  const addRow = '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap">' +
+    (catalogLoaded
+      ? '<button onclick="openSpellPicker(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add from Catalog</button>'
+      : '') +
+    '<button onclick="addCustomSpellPrompt(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add Custom</button>' +
     '</div>';
-  });
+
   return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + sc.saveDC + ' · Atk ' + sheetFmtMod(sc.attackBonus) + '</div>' +
     '<div class="sheet-slots-row">' + slotHtml + '</div>' +
-    '<div class="sheet-spell-list">' + spellHtml + '</div></div>';
+    prepHtml +
+    '<div class="sheet-spell-list">' + spellsHtml + '</div>' +
+    addRow +
+    '</div>';
+}
+
+function _renderSpellRow(charId, sp) {
+  const isCantrip = sp.level === 0;
+  const canCast = isCantrip; // Cast button just triggers a toast; slot expenditure is manual via diamonds
+  let tagSpans = '';
+  if (sp.concentration) tagSpans += '<span class="spell-tag conc" title="Concentration">C</span>';
+  if (sp.ritual)        tagSpans += '<span class="spell-tag" title="Ritual">R</span>';
+  const schoolBadge = sp.school ? '<span style="font-size:9px;color:var(--parch4);text-transform:capitalize;letter-spacing:.5px;margin-left:.4rem">' + _sheetEscapeAttr(sp.school) + '</span>' : '';
+  const prepToggle = isCantrip
+    ? '<span style="font-size:9.5px;color:var(--parch4);font-style:italic;min-width:5ch;text-align:center">at will</span>'
+    : '<label style="display:inline-flex;align-items:center;gap:.25rem;font-size:10px;color:var(--parch3);font-family:\'Cinzel\',serif;letter-spacing:.5px;cursor:pointer" title="Prepared toggle"><input type="checkbox" ' + (sp.prepared ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSpellPrepared(\'' + charId + '\',\'' + sp.id + '\')"> prep</label>';
+  const upcastBtn = sp.atHigherLevels
+    ? '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Show upcast text">↑ Upcast</button>'
+    : '';
+  const removeBtn = '<button onclick="event.stopPropagation();removeSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Remove">✕</button>';
+  const preparedRow = (sp.level > 0 && !sp.prepared) ? ' style="opacity:.55"' : '';
+  return '<div class="sheet-spell-row"' + preparedRow + '>' +
+    '<div style="flex:1;cursor:pointer" onclick="toggleSpellDetail(\'' + sp.id + '\')">' +
+      '<div class="sheet-spell-name">' + _sheetEscapeAttr(sp.name) + tagSpans + schoolBadge + '</div>' +
+    '</div>' +
+    '<div style="display:inline-flex;align-items:center;gap:.35rem">' +
+      prepToggle + upcastBtn + removeBtn +
+    '</div>' +
+    '<div class="sheet-spell-detail" id="spell-detail-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(20,15,8,0.5);border-left:2px solid var(--gold2);font-size:11.5px;line-height:1.5;color:var(--parch2)">' +
+      '<div style="font-size:10px;color:var(--parch3);letter-spacing:.5px;margin-bottom:.3rem"><strong>' + (isCantrip ? 'Cantrip' : 'Level ' + sp.level) + ' · ' + _sheetEscapeAttr(sp.school || '—') + '</strong> · ' + _sheetEscapeAttr(sp.castingTime || 'Action') + ' · Range ' + _sheetEscapeAttr(sp.range || '—') + ' · ' + _sheetEscapeAttr(sp.duration || '') + '</div>' +
+      (sp.components ? '<div style="font-size:10px;color:var(--parch4);margin-bottom:.3rem"><em>Components:</em> ' + _sheetEscapeAttr(sp.components) + '</div>' : '') +
+      _sheetEscapeAttr(sp.description || '') +
+    '</div>' +
+    (sp.atHigherLevels
+      ? '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)"><strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) + '</div>'
+      : '') +
+    '</div>';
 }
 function renderEquipmentSection(char) {
   // Phase 4A: this section is now static reference only (Languages,
@@ -924,7 +1028,187 @@ function toggleCondition(charId, c) { withSheetState(charId, function(s) { if (s
 function setExhaustion(charId, n) { withSheetState(charId, function(s) { if (s.exhaustion === n) s.exhaustion = n - 1; else s.exhaustion = n; }); }
 function toggleInspiration(charId) { withSheetState(charId, function(s) { s.inspiration = !s.inspiration; }); }
 function setSheetNotes(charId, val) { const state = getSheetState(charId); state.notes = val; saveSheetState(charId, state); }
-function toggleSpellDetail(idx) { const el = document.getElementById('spell-detail-' + idx); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+function toggleSpellDetail(spellId) { const el = document.getElementById('spell-detail-' + spellId); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+function toggleUpcast(spellId) { const el = document.getElementById('spell-upcast-' + spellId); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+function toggleSpellPrepared(charId, spellId) {
+  withSheetState(charId, function(s) {
+    const sp = (s.spells || []).find(function(x) { return x.id === spellId; });
+    if (sp) sp.prepared = !sp.prepared;
+  });
+}
+function removeSpell(charId, spellId) {
+  withSheetState(charId, function(s) {
+    if (!s.spells) return;
+    const idx = s.spells.findIndex(function(x) { return x.id === spellId; });
+    if (idx < 0) return;
+    if (!confirm('Remove "' + (s.spells[idx].name || 'spell') + '" from your spells?')) return;
+    s.spells.splice(idx, 1);
+  });
+}
+function addSpellFromCatalog(charId, spellId) {
+  if (typeof SPELLS_BY_ID === 'undefined' || !SPELLS_BY_ID[spellId]) return;
+  const src = SPELLS_BY_ID[spellId];
+  withSheetState(charId, function(s) {
+    if (!s.spells) s.spells = [];
+    // Skip if already present (by sourceSpellId)
+    if (s.spells.some(function(x) { return x.sourceSpellId === spellId; })) {
+      showRollToast('Already in spellbook', src.name, '↻');
+      return;
+    }
+    s.spells.push({
+      id: 'spell_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      sourceSpellId: spellId,
+      name: src.name,
+      level: src.level,
+      school: src.school || '',
+      castingTime: src.castingTime || 'Action',
+      range: src.range || '—',
+      components: src.components || '',
+      duration: src.duration || '',
+      concentration: !!src.concentration,
+      ritual: !!src.ritual,
+      description: src.description || '',
+      atHigherLevels: src.atHigherLevels || null,
+      prepared: src.level === 0, // cantrips auto-prepared; higher levels default to unprepared
+      custom: false
+    });
+  });
+  closeSpellPicker();
+}
+function addCustomSpellPrompt(charId) {
+  const name = prompt('Spell name:');
+  if (!name || !name.trim()) return;
+  const lvlRaw = prompt('Spell level (0 = cantrip, 1-9):', '1');
+  if (lvlRaw === null) return;
+  const level = Math.max(0, Math.min(9, parseInt(lvlRaw, 10) || 0));
+  const school = prompt('School (e.g. evocation, illusion, necromancy):', '') || '';
+  const description = prompt('Description:', '') || '';
+  withSheetState(charId, function(s) {
+    if (!s.spells) s.spells = [];
+    s.spells.push({
+      id: 'custom_spell_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      sourceSpellId: null,
+      name: name.trim(),
+      level: level,
+      school: school.toLowerCase().trim(),
+      castingTime: 'Action',
+      range: '',
+      components: '',
+      duration: '',
+      concentration: false,
+      ritual: false,
+      description: description.trim(),
+      atHigherLevels: null,
+      prepared: level === 0,
+      custom: true
+    });
+  });
+}
+
+// ---- Spell picker modal (parallels the item picker) ----
+let _spellPickerCharId = null;
+let _spellPickerFilter = '';
+let _spellPickerLevel = 'all';    // 'all' or 0..9
+let _spellPickerClass = 'all';    // 'all' or class name (auto-defaulted to char's class)
+
+function openSpellPicker(charId) {
+  if (typeof SPELLS_2024 === 'undefined') {
+    alert('Spell catalog not loaded — falling back to custom entry.');
+    addCustomSpellPrompt(charId);
+    return;
+  }
+  _spellPickerCharId = charId;
+  _spellPickerFilter = '';
+  _spellPickerLevel = 'all';
+  const char = CHARACTERS[charId];
+  _spellPickerClass = char && char.className ? char.className.toLowerCase() : 'all';
+  let modal = document.getElementById('sheet-spell-picker');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'sheet-spell-picker';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:\'Crimson Pro\',Georgia,serif';
+    modal.addEventListener('click', function(e) { if (e.target === modal) closeSpellPicker(); });
+  }
+  const dialog = document.getElementById('sheet-dialog');
+  const desiredParent = (dialog && dialog.open) ? dialog : document.body;
+  if (modal.parentNode !== desiredParent) desiredParent.appendChild(modal);
+  modal.style.display = 'flex';
+  renderSpellPicker();
+}
+function closeSpellPicker() {
+  const modal = document.getElementById('sheet-spell-picker');
+  if (modal) modal.style.display = 'none';
+  _spellPickerCharId = null;
+}
+function setSpellPickerFilter(text) { _spellPickerFilter = text; renderSpellPicker(); }
+function setSpellPickerLevel(lvl)   { _spellPickerLevel = (lvl === 'all') ? 'all' : parseInt(lvl, 10); renderSpellPicker(); }
+function setSpellPickerClass(cls)   { _spellPickerClass = cls; renderSpellPicker(); }
+
+function renderSpellPicker() {
+  const modal = document.getElementById('sheet-spell-picker');
+  if (!modal || typeof SPELLS_2024 === 'undefined') return;
+  const filter = (_spellPickerFilter || '').toLowerCase();
+  const filtered = SPELLS_2024.filter(function(sp) {
+    if (_spellPickerLevel !== 'all' && sp.level !== _spellPickerLevel) return false;
+    if (_spellPickerClass !== 'all' && (sp.classes || []).indexOf(_spellPickerClass) === -1) return false;
+    if (!filter) return true;
+    return sp.name.toLowerCase().indexOf(filter) !== -1 ||
+           (sp.school || '').toLowerCase().indexOf(filter) !== -1;
+  }).sort(function(a, b) {
+    if (a.level !== b.level) return a.level - b.level;
+    return (a.name || '').localeCompare(b.name || '');
+  });
+
+  const levelBtns = ['all', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function(l) {
+    const active = _spellPickerLevel === l;
+    const label = (l === 'all') ? 'All' : (l === 0 ? 'Cant' : String(l));
+    const bg = active ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
+    const fg = active ? '#0d0a06' : 'var(--gold2)';
+    return '<button onclick="setSpellPickerLevel(\'' + l + '\')" style="background:' + bg + ';color:' + fg + ';border:1px solid var(--gold2);border-radius:2px;padding:.2rem .5rem;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;cursor:pointer">' + label + '</button>';
+  }).join(' ');
+  const classBtns = ['all', 'wizard', 'cleric', 'sorcerer', 'bard', 'druid', 'warlock', 'paladin', 'ranger', 'artificer'].map(function(c) {
+    const active = _spellPickerClass === c;
+    const bg = active ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
+    const fg = active ? '#0d0a06' : 'var(--gold2)';
+    const label = (c === 'all') ? 'All' : (c[0].toUpperCase() + c.slice(1, 4));
+    return '<button onclick="setSpellPickerClass(\'' + c + '\')" style="background:' + bg + ';color:' + fg + ';border:1px solid var(--gold2);border-radius:2px;padding:.2rem .5rem;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;cursor:pointer">' + label + '</button>';
+  }).join(' ');
+
+  const rows = filtered.slice(0, 200).map(function(sp) {
+    const tagSpans = (sp.concentration ? '<span style="background:rgba(160,32,32,0.6);color:#fff;padding:1px 5px;border-radius:2px;font-size:8px;margin-left:.3rem">C</span>' : '') +
+                     (sp.ritual ? '<span style="background:rgba(120,60,160,0.6);color:#fff;padding:1px 5px;border-radius:2px;font-size:8px;margin-left:.3rem">R</span>' : '');
+    return '<div style="padding:.5rem;border-bottom:1px solid rgba(160,128,64,0.15);cursor:pointer" onclick="addSpellFromCatalog(\'' + _spellPickerCharId + '\',\'' + sp.id + '\')" onmouseover="this.style.background=\'rgba(160,128,64,0.1)\'" onmouseout="this.style.background=\'transparent\'">' +
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.15rem">' +
+      '<strong style="font-family:\'Cinzel\',serif;color:var(--gold3);font-size:13px">' + _sheetEscapeAttr(sp.name) + tagSpans + '</strong>' +
+      '<span style="font-size:10px;color:var(--parch4);white-space:nowrap">' + (sp.level === 0 ? 'Cantrip' : 'Level ' + sp.level) + ' · ' + _sheetEscapeAttr(sp.school || '') + '</span>' +
+      '</div>' +
+      '<div style="font-size:10.5px;color:var(--parch3);margin-bottom:.2rem"><em>' + _sheetEscapeAttr(sp.castingTime || '') + ' · Range ' + _sheetEscapeAttr(sp.range || '—') + ' · ' + _sheetEscapeAttr(sp.duration || '') + '</em></div>' +
+      '<div style="font-size:11px;color:var(--parch2);line-height:1.4">' + _sheetEscapeAttr(sp.description || '') + '</div>' +
+      (sp.atHigherLevels ? '<div style="font-size:10px;color:var(--gold3);margin-top:.25rem;font-style:italic"><strong>Higher levels:</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) + '</div>' : '') +
+      '</div>';
+  }).join('');
+  const body = rows || '<div style="padding:2rem;text-align:center;color:var(--parch4);font-style:italic">No spells match. Use "Add Custom" for anything not in the catalog.</div>';
+
+  modal.innerHTML =
+    '<div style="background:#1a1208;border:1px solid var(--gold2);border-radius:4px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;color:var(--parch)">' +
+      '<div style="padding:.75rem 1rem;border-bottom:1px solid rgba(160,128,64,0.3);display:flex;justify-content:space-between;align-items:center;background:rgba(20,15,8,0.9)">' +
+        '<div style="font-family:\'Cinzel Decorative\',serif;color:var(--gold3);font-size:15px;letter-spacing:1.5px">Add Spell</div>' +
+        '<button onclick="closeSpellPicker()" style="background:transparent;border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:.2rem .6rem;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">✕ Close</button>' +
+      '</div>' +
+      '<div style="padding:.6rem 1rem;background:rgba(20,15,8,0.7);border-bottom:1px solid rgba(160,128,64,0.15)">' +
+        '<input type="text" id="sheet-spell-picker-search" value="' + _sheetEscapeAttr(_spellPickerFilter) + '" placeholder="Search spells…" oninput="setSpellPickerFilter(this.value)" style="width:100%;background:rgba(10,8,5,0.8);border:1px solid rgba(160,128,64,0.4);color:var(--parch);padding:.4rem .6rem;border-radius:2px;font-size:13px;margin-bottom:.4rem;font-family:inherit">' +
+        '<div style="display:flex;flex-wrap:wrap;gap:.2rem;margin-bottom:.3rem"><span style="font-size:10px;color:var(--parch4);align-self:center;margin-right:.2rem">Level:</span>' + levelBtns + '</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:.2rem"><span style="font-size:10px;color:var(--parch4);align-self:center;margin-right:.2rem">Class:</span>' + classBtns + '</div>' +
+      '</div>' +
+      '<div style="flex:1;overflow-y:auto">' + body + '</div>' +
+      '<div style="padding:.6rem 1rem;border-top:1px solid rgba(160,128,64,0.3);background:rgba(20,15,8,0.9);display:flex;justify-content:space-between;align-items:center">' +
+        '<span style="font-size:10px;color:var(--parch4)">' + filtered.length + ' spells' + (filtered.length > 200 ? ' (showing 200)' : '') + '</span>' +
+        '<button onclick="closeSpellPicker();addCustomSpellPrompt(\'' + _spellPickerCharId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">+ Add Custom Spell</button>' +
+      '</div>' +
+    '</div>';
+  const s = document.getElementById('sheet-spell-picker-search');
+  if (s) { s.focus(); const l = s.value.length; s.setSelectionRange(l, l); }
+}
 function shortRest(charId) {
   withSheetState(charId, function(s) {
     (CHARACTERS[charId].resources || []).forEach(function(r) { if (r.recharge === 'short') s.resources[r.id] = r.max; });
