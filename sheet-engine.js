@@ -159,16 +159,54 @@ function getSheetState(id) {
         description: sp.desc || '',
         atHigherLevels: sp.atHigherLevels || null,
         prepared: true,
+        alwaysPrepared: tags.indexOf('signature') >= 0 || tags.indexOf('mastery') >= 0,
+        alwaysPreparedReason: (tags.indexOf('signature') >= 0) ? 'Signature spell' :
+                              (tags.indexOf('mastery') >= 0)   ? 'Spell mastery'   : '',
         custom: true
       };
     });
   }
+  // Phase 4B rev: ensure alwaysPrepared field on every spell (for older seeded state)
+  (state.spells || []).forEach(function(sp) {
+    if (sp.alwaysPrepared === undefined) sp.alwaysPrepared = false;
+    if (sp.alwaysPreparedReason === undefined) sp.alwaysPreparedReason = '';
+  });
   return state;
 }
 
+// Class categorisation for spellcasting UX:
+//   'full-list'  — Cleric, Druid, Paladin. Prep from entire class list each long rest.
+//   'spellbook'  — Wizard. Prep from personal spellbook (state.spells).
+//   'fixed-swap' — Ranger, Artificer. Fixed known list; swap 1 per long rest.
+//   'known-only' — Sorcerer, Bard, Warlock. No prep; swap on level-up.
+//   'none'       — non-caster.
+function getSpellcastingCategory(char) {
+  if (!char || !char.spellcasting) return 'none';
+  const cls = (char.className || '').toLowerCase();
+  if (cls === 'cleric' || cls === 'druid' || cls === 'paladin') return 'full-list';
+  if (cls === 'wizard') return 'spellbook';
+  if (cls === 'ranger' || cls === 'artificer') return 'fixed-swap';
+  if (cls === 'sorcerer' || cls === 'bard' || cls === 'warlock') return 'known-only';
+  return 'none';
+}
+
+function hasPrepModal(char) {
+  const cat = getSpellcastingCategory(char);
+  return cat === 'spellbook' || cat === 'full-list' || cat === 'fixed-swap';
+}
+
+function getFullClassSpells(className) {
+  if (typeof SPELLS_2024 === 'undefined') return [];
+  const cls = (className || '').toLowerCase();
+  return SPELLS_2024.filter(function(s) {
+    return (s.classes || []).indexOf(cls) !== -1;
+  });
+}
+
 // Prepared spell max derived from class + ability mod + level. Returns null
-// for classes that don't prepare (Sorcerer / Bard / Warlock in 2024) so the
-// UI can hide the counter.
+// for classes with no daily-prep concept (Sorcerer / Bard / Warlock in 2024).
+// For Ranger: 2024 uses the class-table count, not a mod-based formula —
+// return null and let the sheet render the count from state.spells directly.
 function getPreparedMax(char) {
   const cls = (char.className || '').toLowerCase();
   const level = char.level || 1;
@@ -178,9 +216,8 @@ function getPreparedMax(char) {
   if (cls === 'cleric')    return Math.max(1, mod(abil.wis) + level);
   if (cls === 'druid')     return Math.max(1, mod(abil.wis) + level);
   if (cls === 'paladin')   return Math.max(1, mod(abil.cha) + Math.ceil(level / 2));
-  if (cls === 'ranger')    return Math.max(1, mod(abil.wis) + Math.ceil(level / 2));
   if (cls === 'artificer') return Math.max(1, mod(abil.int) + Math.ceil(level / 2));
-  return null; // sorcerer, bard, warlock don't prepare
+  return null; // ranger (table-based), sorcerer/bard/warlock (no prep)
 }
 function withSheetState(charId, fn) {
   const state = getSheetState(charId);
@@ -632,6 +669,12 @@ function renderSheet(charId) {
   if (!body) return;
   let html = '';
 
+  // Rest buttons at the very top of the sheet (Phase 4B rev — user preference)
+  html += '<div style="display:flex;justify-content:flex-end;gap:.5rem;padding:.3rem 0 .6rem;margin-bottom:.5rem;border-bottom:1px dashed rgba(160,128,64,0.25)">' +
+    '<button onclick="shortRest(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🛏 Short Rest</button>' +
+    '<button onclick="longRest(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🌙 Long Rest</button>' +
+    '</div>';
+
   html += '<div class="sheet-header">';
   html += '<div class="sheet-id-block">';
   html += '<div class="sheet-id-name">' + char.name + '</div>';
@@ -660,10 +703,7 @@ function renderSheet(charId) {
 
   html += '<div>';
   ['str','dex','con','int','wis','cha'].forEach(function(a) { html += renderAbilityCard(charId, char, a); });
-  html += '<div class="sheet-rest-row">';
-  html += '<button class="sheet-rest-btn" onclick="shortRest(\'' + charId + '\')">Short Rest</button>';
-  html += '<button class="sheet-rest-btn" onclick="longRest(\'' + charId + '\')">Long Rest</button>';
-  html += '</div>';
+  // Rest buttons now live at the top of the sheet (Phase 4B rev). No middle-column row.
   html += '</div>';
 
   html += '<div>';
@@ -840,6 +880,9 @@ function renderConditionsSection(charId, state) {
 }
 function renderSpellsSection(charId, char, state) {
   const sc = char.spellcasting;
+  const cat = getSpellcastingCategory(char);
+  const prepMax = getPreparedMax(char);
+
   // ---- Slot diamonds (unchanged) ----
   let slotHtml = '';
   for (let lvl = 1; lvl <= 9; lvl++) {
@@ -852,41 +895,96 @@ function renderSpellsSection(charId, char, state) {
     slotHtml += '<div class="sheet-slot-block"><div class="sheet-slot-level">L' + lvl + '</div><div class="sheet-slot-diamonds">' + diamonds + '</div><div class="sheet-slot-count">' + (max > 0 ? (max-expended) + '/' + max : '—') + '</div></div>';
   }
 
-  // ---- Prep counter ----
-  const prepMax = getPreparedMax(char);
   const spells = state.spells || [];
-  const preparedCount = spells.filter(function(sp) { return sp.level > 0 && sp.prepared; }).length;
-  let prepHtml = '';
-  if (prepMax !== null) {
+  const cantrips = spells.filter(function(sp) { return sp.level === 0; });
+  const alwaysPrepared = spells.filter(function(sp) { return sp.level > 0 && sp.alwaysPrepared; });
+
+  // What's shown as "the prepared list" depends on category:
+  // - full-list, spellbook, fixed-swap: only prepared:true (non-always)
+  // - known-only: show all non-cantrip spells (no prep concept)
+  let mainSpells;
+  if (cat === 'known-only' || cat === 'none') {
+    mainSpells = spells.filter(function(sp) { return sp.level > 0 && !sp.alwaysPrepared; });
+  } else {
+    mainSpells = spells.filter(function(sp) { return sp.level > 0 && sp.prepared && !sp.alwaysPrepared; });
+  }
+  const preparedCount = mainSpells.length; // always-prepared don't count
+
+  // ---- Prep counter + Prepare button ----
+  let headerRow = '';
+  if (prepMax !== null && cat !== 'known-only') {
     const over = preparedCount > prepMax;
-    prepHtml = '<div style="font-size:11px;font-family:\'Cinzel\',serif;letter-spacing:.5px;color:' + (over ? 'var(--red2)' : 'var(--parch3)') + ';margin-top:.3rem;margin-bottom:.4rem">' +
+    headerRow = '<div style="display:flex;justify-content:space-between;align-items:center;margin:.3rem 0 .5rem;padding:.3rem .5rem;background:rgba(20,15,8,0.4);border-radius:3px">' +
+      '<span style="font-size:11px;font-family:\'Cinzel\',serif;letter-spacing:.5px;color:' + (over ? 'var(--red2)' : 'var(--parch3)') + '">' +
       'Prepared: <strong style="color:' + (over ? 'var(--red2)' : 'var(--gold3)') + '">' + preparedCount + ' / ' + prepMax + '</strong>' +
       (over ? ' &nbsp;⚠ OVER LIMIT' : '') +
-      '&nbsp;<span style="font-style:italic;color:var(--parch4);font-size:10px">(cantrips always available; don\'t count)</span>' +
+      '</span>' +
+      '<button onclick="openPrepModal(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.3rem .7rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">Prepare Spells</button>' +
+      '</div>';
+  } else if (cat === 'fixed-swap') {
+    headerRow = '<div style="display:flex;justify-content:space-between;align-items:center;margin:.3rem 0 .5rem;padding:.3rem .5rem;background:rgba(20,15,8,0.4);border-radius:3px">' +
+      '<span style="font-size:11px;font-family:\'Cinzel\',serif;color:var(--parch3)">Prepared list — swap one per long rest</span>' +
+      '<button onclick="openPrepModal(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.3rem .7rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">Manage Spells</button>' +
       '</div>';
   }
 
-  // ---- Spells grouped by level ----
-  const byLevel = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
-  spells.forEach(function(sp) { if (byLevel[sp.level]) byLevel[sp.level].push(sp); });
-  // Alphabetise within each level
-  Object.keys(byLevel).forEach(function(k) { byLevel[k].sort(function(a, b) { return (a.name || '').localeCompare(b.name || ''); }); });
-
-  let spellsHtml = '';
-  for (let lvl = 0; lvl <= 9; lvl++) {
-    const list = byLevel[lvl];
-    if (list.length === 0) continue;
-    const label = (lvl === 0) ? 'Cantrips' : ('Level ' + lvl);
-    spellsHtml += '<div class="sheet-spell-level-group">' +
-      '<div class="sheet-spell-level-header">' + label + '</div>';
-    list.forEach(function(sp) {
-      spellsHtml += _renderSpellRow(charId, sp);
+  // ---- Cantrips ----
+  let cantripsHtml = '';
+  if (cantrips.length) {
+    cantripsHtml = '<div class="sheet-spell-level-group">' +
+      '<div class="sheet-spell-level-header">Cantrips <span style="font-size:9px;color:var(--parch4);font-style:italic;font-weight:normal;letter-spacing:0">— always available</span></div>';
+    cantrips.slice().sort(function(a, b) { return (a.name || '').localeCompare(b.name || ''); }).forEach(function(sp) {
+      cantripsHtml += _renderSpellRow(charId, sp, { showRemove: cat !== 'full-list' });
     });
-    spellsHtml += '</div>';
+    cantripsHtml += '</div>';
   }
 
-  // ---- Add-spell buttons ----
+  // ---- Always-prepared subsection ----
+  let alwaysHtml = '';
+  if (alwaysPrepared.length) {
+    alwaysHtml = '<div class="sheet-spell-level-group" style="border:1px dashed rgba(201,168,76,0.4);border-radius:3px;padding:.3rem .4rem;background:rgba(154,122,26,0.06)">' +
+      '<div class="sheet-spell-level-header" style="color:var(--gold3)">★ Always Prepared <span style="font-size:9px;color:var(--parch4);font-style:italic;font-weight:normal;letter-spacing:0">— granted by class / race / feature; don\'t count against prep limit</span></div>';
+    alwaysPrepared.slice().sort(function(a, b) { return a.level - b.level || (a.name || '').localeCompare(b.name || ''); }).forEach(function(sp) {
+      alwaysHtml += _renderSpellRow(charId, sp, { showRemove: true, alwaysBadge: true });
+    });
+    alwaysHtml += '</div>';
+  }
+
+  // ---- Main prepared list (grouped by level) ----
+  const byLevel = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
+  mainSpells.forEach(function(sp) { if (byLevel[sp.level]) byLevel[sp.level].push(sp); });
+  Object.keys(byLevel).forEach(function(k) { byLevel[k].sort(function(a, b) { return (a.name || '').localeCompare(b.name || ''); }); });
+  let mainHtml = '';
+  for (let lvl = 1; lvl <= 9; lvl++) {
+    const list = byLevel[lvl];
+    if (list.length === 0) continue;
+    mainHtml += '<div class="sheet-spell-level-group"><div class="sheet-spell-level-header">Level ' + lvl + '</div>';
+    list.forEach(function(sp) { mainHtml += _renderSpellRow(charId, sp, { showRemove: cat !== 'full-list' }); });
+    mainHtml += '</div>';
+  }
+  if (!mainHtml && !alwaysHtml && !cantripsHtml) {
+    mainHtml = '<div style="padding:.6rem;text-align:center;color:var(--parch4);font-style:italic;font-size:12px">' +
+      (cat === 'full-list' ? 'No spells prepared. Click <strong>Prepare Spells</strong> above to choose from the full ' + _sheetEscapeAttr(char.className) + ' list.'
+       : cat === 'spellbook' ? 'No spells known. Add spells to your spellbook using the buttons below, then click <strong>Prepare Spells</strong>.'
+       : 'No spells. Use the buttons below to add.') +
+      '</div>';
+  }
+
+  // ---- Category footer + Add buttons ----
   const catalogLoaded = (typeof SPELLS_2024 !== 'undefined');
+  let footerHtml = '';
+  if (cat === 'spellbook') {
+    // Wizard: show a collapsible spellbook (all known spells)
+    const knownCount = spells.filter(function(sp) { return sp.level > 0; }).length;
+    footerHtml = '<details style="margin-top:.6rem;border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.4rem .5rem;background:rgba(20,15,8,0.3)">' +
+      '<summary style="cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;color:var(--gold2)">📖 Spellbook — ' + knownCount + ' spells known (click to expand)</summary>' +
+      '<div style="margin-top:.5rem">' + _renderSpellbookList(charId, spells) + '</div>' +
+      '</details>';
+  } else if (cat === 'full-list') {
+    footerHtml = '<div style="margin-top:.5rem;padding:.4rem .6rem;background:rgba(20,15,8,0.3);border-radius:3px;font-size:11px;color:var(--parch3);font-style:italic">' +
+      _sheetEscapeAttr(char.className) + 's have access to their entire class spell list. Prepare from the full list via the button above. Custom (homebrew) spells you add via the buttons below are included in the prep modal too.' +
+      '</div>';
+  }
   const addRow = '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap">' +
     (catalogLoaded
       ? '<button onclick="openSpellPicker(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add from Catalog</button>'
@@ -896,34 +994,36 @@ function renderSpellsSection(charId, char, state) {
 
   return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + sc.saveDC + ' · Atk ' + sheetFmtMod(sc.attackBonus) + '</div>' +
     '<div class="sheet-slots-row">' + slotHtml + '</div>' +
-    prepHtml +
-    '<div class="sheet-spell-list">' + spellsHtml + '</div>' +
+    headerRow +
+    cantripsHtml +
+    alwaysHtml +
+    mainHtml +
+    footerHtml +
     addRow +
     '</div>';
 }
 
-function _renderSpellRow(charId, sp) {
+function _renderSpellRow(charId, sp, opts) {
+  opts = opts || {};
   const isCantrip = sp.level === 0;
-  const canCast = isCantrip; // Cast button just triggers a toast; slot expenditure is manual via diamonds
   let tagSpans = '';
   if (sp.concentration) tagSpans += '<span class="spell-tag conc" title="Concentration">C</span>';
   if (sp.ritual)        tagSpans += '<span class="spell-tag" title="Ritual">R</span>';
   const schoolBadge = sp.school ? '<span style="font-size:9px;color:var(--parch4);text-transform:capitalize;letter-spacing:.5px;margin-left:.4rem">' + _sheetEscapeAttr(sp.school) + '</span>' : '';
-  const prepToggle = isCantrip
-    ? '<span style="font-size:9.5px;color:var(--parch4);font-style:italic;min-width:5ch;text-align:center">at will</span>'
-    : '<label style="display:inline-flex;align-items:center;gap:.25rem;font-size:10px;color:var(--parch3);font-family:\'Cinzel\',serif;letter-spacing:.5px;cursor:pointer" title="Prepared toggle"><input type="checkbox" ' + (sp.prepared ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSpellPrepared(\'' + charId + '\',\'' + sp.id + '\')"> prep</label>';
+  const alwaysBadge = opts.alwaysBadge && sp.alwaysPreparedReason
+    ? '<span style="font-size:9px;color:var(--gold3);font-style:italic;letter-spacing:.3px;margin-left:.4rem">★ ' + _sheetEscapeAttr(sp.alwaysPreparedReason) + '</span>'
+    : '';
   const upcastBtn = sp.atHigherLevels
     ? '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Show upcast text">↑ Upcast</button>'
     : '';
-  const removeBtn = '<button onclick="event.stopPropagation();removeSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Remove">✕</button>';
-  const preparedRow = (sp.level > 0 && !sp.prepared) ? ' style="opacity:.55"' : '';
-  return '<div class="sheet-spell-row"' + preparedRow + '>' +
+  const removeBtn = opts.showRemove
+    ? '<button onclick="event.stopPropagation();removeSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Remove from spell list">✕</button>'
+    : '';
+  return '<div class="sheet-spell-row">' +
     '<div style="flex:1;cursor:pointer" onclick="toggleSpellDetail(\'' + sp.id + '\')">' +
-      '<div class="sheet-spell-name">' + _sheetEscapeAttr(sp.name) + tagSpans + schoolBadge + '</div>' +
+      '<div class="sheet-spell-name">' + _sheetEscapeAttr(sp.name) + tagSpans + schoolBadge + alwaysBadge + '</div>' +
     '</div>' +
-    '<div style="display:inline-flex;align-items:center;gap:.35rem">' +
-      prepToggle + upcastBtn + removeBtn +
-    '</div>' +
+    '<div style="display:inline-flex;align-items:center;gap:.35rem">' + upcastBtn + removeBtn + '</div>' +
     '<div class="sheet-spell-detail" id="spell-detail-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(20,15,8,0.5);border-left:2px solid var(--gold2);font-size:11.5px;line-height:1.5;color:var(--parch2)">' +
       '<div style="font-size:10px;color:var(--parch3);letter-spacing:.5px;margin-bottom:.3rem"><strong>' + (isCantrip ? 'Cantrip' : 'Level ' + sp.level) + ' · ' + _sheetEscapeAttr(sp.school || '—') + '</strong> · ' + _sheetEscapeAttr(sp.castingTime || 'Action') + ' · Range ' + _sheetEscapeAttr(sp.range || '—') + ' · ' + _sheetEscapeAttr(sp.duration || '') + '</div>' +
       (sp.components ? '<div style="font-size:10px;color:var(--parch4);margin-bottom:.3rem"><em>Components:</em> ' + _sheetEscapeAttr(sp.components) + '</div>' : '') +
@@ -933,6 +1033,245 @@ function _renderSpellRow(charId, sp) {
       ? '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)"><strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) + '</div>'
       : '') +
     '</div>';
+}
+
+// Spellbook list (Wizard's collapsible section) — flat list with always-prepared toggle
+function _renderSpellbookList(charId, spells) {
+  const nonCantrips = spells.filter(function(sp) { return sp.level > 0; })
+    .sort(function(a, b) { return a.level - b.level || (a.name || '').localeCompare(b.name || ''); });
+  if (nonCantrips.length === 0) return '<div style="font-size:11px;color:var(--parch4);font-style:italic">Spellbook empty. Add spells with the buttons below.</div>';
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
+    '<tr style="border-bottom:1px solid rgba(160,128,64,0.3)"><th style="text-align:left;font-family:\'Cinzel\',serif;font-size:9px;color:var(--gold2);padding:.2rem;letter-spacing:.5px">Spell</th><th style="width:4ch;font-family:\'Cinzel\',serif;font-size:9px;color:var(--gold2);padding:.2rem">Lvl</th><th style="width:6ch;font-family:\'Cinzel\',serif;font-size:9px;color:var(--gold2);padding:.2rem;text-align:center">Always</th><th style="width:3ch"></th></tr>';
+  nonCantrips.forEach(function(sp) {
+    html += '<tr style="border-bottom:1px dashed rgba(160,128,64,0.15)">' +
+      '<td style="padding:.2rem;color:var(--parch2)">' + _sheetEscapeAttr(sp.name) + (sp.prepared && !sp.alwaysPrepared ? ' <span style="font-size:9px;color:var(--gold3)">✓prep</span>' : '') + '</td>' +
+      '<td style="padding:.2rem;text-align:center;color:var(--parch3)">' + sp.level + '</td>' +
+      '<td style="padding:.2rem;text-align:center"><input type="checkbox" ' + (sp.alwaysPrepared ? 'checked' : '') + ' onchange="toggleAlwaysPrepared(\'' + charId + '\',\'' + sp.id + '\')"></td>' +
+      '<td style="padding:.2rem;text-align:center"><button onclick="removeSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:0 4px;cursor:pointer;font-size:9px">✕</button></td>' +
+      '</tr>';
+  });
+  html += '</table>';
+  return html;
+}
+
+function toggleAlwaysPrepared(charId, spellId) {
+  withSheetState(charId, function(s) {
+    const sp = (s.spells || []).find(function(x) { return x.id === spellId; });
+    if (!sp) return;
+    if (!sp.alwaysPrepared) {
+      const reason = prompt('Why is this always prepared? (e.g. "Chthonic Legacy", "Life Domain", "Robe of Bones")', sp.alwaysPreparedReason || '');
+      if (reason === null) return;
+      sp.alwaysPrepared = true;
+      sp.alwaysPreparedReason = reason.trim();
+      sp.prepared = true; // always-prepared implies prepared
+    } else {
+      sp.alwaysPrepared = false;
+      sp.alwaysPreparedReason = '';
+    }
+  });
+}
+
+// =====================================================================
+// PREP MODAL (Phase 4B rev)
+// Full-list casters (Cleric/Druid/Paladin): shows the entire class list
+// from SPELLS_2024 plus custom entries in state.spells. Toggling checks a
+// spell adds/updates the state.spells entry with prepared:true.
+//
+// Spellbook casters (Wizard): shows the spellbook (state.spells with level>0).
+//
+// Fixed-swap (Ranger, Artificer): shows their known list (state.spells).
+// =====================================================================
+let _prepModalCharId = null;
+let _prepModalFilter = '';
+let _prepModalLevel = 'all';
+
+function openPrepModal(charId) {
+  const char = CHARACTERS[charId];
+  if (!hasPrepModal(char)) { alert('This class does not use daily spell preparation.'); return; }
+  if (typeof SPELLS_2024 === 'undefined' && getSpellcastingCategory(char) === 'full-list') {
+    alert('Spell catalog not loaded — cannot open prep modal for full-list casters.');
+    return;
+  }
+  _prepModalCharId = charId;
+  _prepModalFilter = '';
+  _prepModalLevel = 'all';
+  let modal = document.getElementById('sheet-prep-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'sheet-prep-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:\'Crimson Pro\',Georgia,serif';
+    modal.addEventListener('click', function(e) { if (e.target === modal) closePrepModal(); });
+  }
+  const dialog = document.getElementById('sheet-dialog');
+  const desiredParent = (dialog && dialog.open) ? dialog : document.body;
+  if (modal.parentNode !== desiredParent) desiredParent.appendChild(modal);
+  modal.style.display = 'flex';
+  renderPrepModal();
+}
+function closePrepModal() {
+  const modal = document.getElementById('sheet-prep-modal');
+  if (modal) modal.style.display = 'none';
+  _prepModalCharId = null;
+}
+function setPrepModalFilter(text) { _prepModalFilter = text; renderPrepModal(); }
+function setPrepModalLevel(lvl)   { _prepModalLevel = (lvl === 'all') ? 'all' : parseInt(lvl, 10); renderPrepModal(); }
+
+// Called from checkbox onchange inside the prep modal.
+// spellKey is either 'stateId:<id>' (existing state entry) or 'catalog:<id>' (from SPELLS_2024, add on prep)
+function togglePrepFromModal(spellKey, checked) {
+  const charId = _prepModalCharId;
+  if (!charId) return;
+  withSheetState(charId, function(s) {
+    if (!s.spells) s.spells = [];
+    if (spellKey.indexOf('stateId:') === 0) {
+      const id = spellKey.slice(8);
+      const sp = s.spells.find(function(x) { return x.id === id; });
+      if (sp) sp.prepared = checked;
+    } else if (spellKey.indexOf('catalog:') === 0) {
+      const catalogId = spellKey.slice(8);
+      const src = SPELLS_BY_ID[catalogId];
+      if (!src) return;
+      const existing = s.spells.find(function(x) { return x.sourceSpellId === catalogId; });
+      if (existing) {
+        existing.prepared = checked;
+      } else if (checked) {
+        s.spells.push({
+          id: 'spell_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+          sourceSpellId: catalogId,
+          name: src.name,
+          level: src.level,
+          school: src.school || '',
+          castingTime: src.castingTime || 'Action',
+          range: src.range || '—',
+          components: src.components || '',
+          duration: src.duration || '',
+          concentration: !!src.concentration,
+          ritual: !!src.ritual,
+          description: src.description || '',
+          atHigherLevels: src.atHigherLevels || null,
+          prepared: true,
+          alwaysPrepared: false,
+          alwaysPreparedReason: '',
+          custom: false
+        });
+      }
+    }
+  });
+  renderPrepModal();
+}
+
+function renderPrepModal() {
+  const modal = document.getElementById('sheet-prep-modal');
+  if (!modal || !_prepModalCharId) return;
+  const charId = _prepModalCharId;
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  const cat = getSpellcastingCategory(char);
+  const prepMax = getPreparedMax(char);
+
+  // Build the union list of spells to show in the modal
+  const stateSpells = (state.spells || []).filter(function(sp) { return sp.level > 0; });
+  let entries = []; // { key, name, level, school, castingTime, description, atHigherLevels, prepared, alwaysPrepared, alwaysPreparedReason, source: 'state' | 'catalog' }
+  const seenCatalogIds = {};
+  stateSpells.forEach(function(sp) {
+    if (sp.sourceSpellId) seenCatalogIds[sp.sourceSpellId] = true;
+    entries.push({
+      key: 'stateId:' + sp.id,
+      name: sp.name, level: sp.level, school: sp.school,
+      castingTime: sp.castingTime, description: sp.description, atHigherLevels: sp.atHigherLevels,
+      prepared: !!sp.prepared, alwaysPrepared: !!sp.alwaysPrepared, alwaysPreparedReason: sp.alwaysPreparedReason || '',
+      source: 'state', custom: !!sp.custom
+    });
+  });
+  if (cat === 'full-list') {
+    // Add class list spells not already in state
+    const classSpells = getFullClassSpells(char.className);
+    classSpells.forEach(function(sp) {
+      if (sp.level === 0) return;
+      if (seenCatalogIds[sp.id]) return;
+      entries.push({
+        key: 'catalog:' + sp.id,
+        name: sp.name, level: sp.level, school: sp.school,
+        castingTime: sp.castingTime, description: sp.description, atHigherLevels: sp.atHigherLevels,
+        prepared: false, alwaysPrepared: false, alwaysPreparedReason: '',
+        source: 'catalog', custom: false
+      });
+    });
+  }
+
+  // Filter
+  const filter = (_prepModalFilter || '').toLowerCase();
+  const filtered = entries.filter(function(e) {
+    if (_prepModalLevel !== 'all' && e.level !== _prepModalLevel) return false;
+    if (!filter) return true;
+    return (e.name || '').toLowerCase().indexOf(filter) !== -1;
+  }).sort(function(a, b) { return a.level - b.level || (a.name || '').localeCompare(b.name || ''); });
+
+  // Prep count (excluding always-prepared)
+  const preparedCount = entries.filter(function(e) { return e.prepared && !e.alwaysPrepared; }).length;
+  const alwaysCount = entries.filter(function(e) { return e.alwaysPrepared; }).length;
+  const over = prepMax !== null && preparedCount > prepMax;
+
+  // Level filter buttons
+  const levels = ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const levelBtns = levels.map(function(l) {
+    const active = _prepModalLevel === l;
+    const bg = active ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
+    const fg = active ? '#0d0a06' : 'var(--gold2)';
+    const label = (l === 'all') ? 'All' : String(l);
+    return '<button onclick="setPrepModalLevel(\'' + l + '\')" style="background:' + bg + ';color:' + fg + ';border:1px solid var(--gold2);border-radius:2px;padding:.2rem .5rem;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;cursor:pointer">' + label + '</button>';
+  }).join(' ');
+
+  // Rows
+  let rowsHtml = '';
+  let currentLevel = -1;
+  filtered.forEach(function(e) {
+    if (e.level !== currentLevel) {
+      currentLevel = e.level;
+      rowsHtml += '<div style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3);padding:.4rem 0 .2rem;border-bottom:1px solid rgba(160,128,64,0.2);margin-top:.5rem">Level ' + currentLevel + '</div>';
+    }
+    const disabled = e.alwaysPrepared ? 'disabled' : '';
+    const badge = e.alwaysPrepared
+      ? '<span style="font-size:9px;color:var(--gold3);margin-left:.4rem">★ Always (' + _sheetEscapeAttr(e.alwaysPreparedReason) + ')</span>'
+      : (e.source === 'catalog' ? '<span style="font-size:9px;color:var(--parch4);margin-left:.4rem;font-style:italic">from class list</span>' : '');
+    rowsHtml += '<label style="display:flex;align-items:center;gap:.5rem;padding:.3rem .3rem;border-bottom:1px dashed rgba(160,128,64,0.1);cursor:pointer">' +
+      '<input type="checkbox" ' + (e.prepared || e.alwaysPrepared ? 'checked' : '') + ' ' + disabled + ' onchange="togglePrepFromModal(\'' + e.key + '\', this.checked)" style="cursor:pointer">' +
+      '<span style="flex:1;font-size:12px;color:var(--parch2)">' + _sheetEscapeAttr(e.name) + badge + '</span>' +
+      '<span style="font-size:10px;color:var(--parch4);text-transform:capitalize">' + _sheetEscapeAttr(e.school || '') + '</span>' +
+      '</label>';
+  });
+
+  const prepHeader = (prepMax !== null)
+    ? '<div style="font-size:12px;color:' + (over ? 'var(--red2)' : 'var(--parch)') + ';font-family:\'Cinzel\',serif;letter-spacing:.5px">Prepared: <strong style="color:' + (over ? 'var(--red2)' : 'var(--gold3)') + ';font-size:16px">' + preparedCount + ' / ' + prepMax + '</strong>' + (over ? ' ⚠ OVER LIMIT' : '') + (alwaysCount ? ' &nbsp;<span style="font-size:10px;color:var(--parch4)">+ ' + alwaysCount + ' always-prepared</span>' : '') + '</div>'
+    : '<div style="font-size:12px;color:var(--parch);font-family:\'Cinzel\',serif">Prepared: <strong style="color:var(--gold3);font-size:16px">' + preparedCount + '</strong>' + (alwaysCount ? ' &nbsp;<span style="font-size:10px;color:var(--parch4)">+ ' + alwaysCount + ' always-prepared</span>' : '') + '</div>';
+
+  const catNote = cat === 'full-list'
+    ? '<div style="font-size:10.5px;color:var(--parch3);font-style:italic;margin-top:.2rem">Showing the entire ' + _sheetEscapeAttr(char.className) + ' class list. Toggle to prepare for the day. Always-prepared spells (★) are locked.</div>'
+    : cat === 'spellbook'
+    ? '<div style="font-size:10.5px;color:var(--parch3);font-style:italic;margin-top:.2rem">Showing spells in your spellbook. Toggle to prepare for the day. Always-prepared spells (★) are locked.</div>'
+    : '<div style="font-size:10.5px;color:var(--parch3);font-style:italic;margin-top:.2rem">Showing your prepared list.</div>';
+
+  modal.innerHTML =
+    '<div style="background:#1a1208;border:1px solid var(--gold2);border-radius:4px;width:100%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;color:var(--parch)">' +
+      '<div style="padding:.75rem 1rem;border-bottom:1px solid rgba(160,128,64,0.3);background:rgba(20,15,8,0.9)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">' +
+          '<div style="font-family:\'Cinzel Decorative\',serif;color:var(--gold3);font-size:15px;letter-spacing:1.5px">Prepare Spells — ' + _sheetEscapeAttr(char.name) + '</div>' +
+          '<button onclick="closePrepModal()" style="background:transparent;border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:.2rem .6rem;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">✕ Done</button>' +
+        '</div>' +
+        prepHeader +
+        catNote +
+      '</div>' +
+      '<div style="padding:.5rem 1rem;background:rgba(20,15,8,0.7);border-bottom:1px solid rgba(160,128,64,0.15)">' +
+        '<input type="text" id="prep-modal-search" value="' + _sheetEscapeAttr(_prepModalFilter) + '" placeholder="Search spells…" oninput="setPrepModalFilter(this.value)" style="width:100%;background:rgba(10,8,5,0.8);border:1px solid rgba(160,128,64,0.4);color:var(--parch);padding:.35rem .55rem;border-radius:2px;font-size:13px;margin-bottom:.35rem;font-family:inherit">' +
+        '<div style="display:flex;flex-wrap:wrap;gap:.2rem"><span style="font-size:10px;color:var(--parch4);align-self:center;margin-right:.2rem">Level:</span>' + levelBtns + '</div>' +
+      '</div>' +
+      '<div style="flex:1;overflow-y:auto;padding:0 1rem .5rem">' + (rowsHtml || '<div style="padding:2rem;text-align:center;color:var(--parch4);font-style:italic">No spells match.</div>') + '</div>' +
+      '<div style="padding:.6rem 1rem;border-top:1px solid rgba(160,128,64,0.3);background:rgba(20,15,8,0.9);display:flex;justify-content:flex-end;align-items:center;gap:.5rem">' +
+        '<button onclick="closePrepModal()" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:.4rem 1rem;font-family:\'Cinzel\',serif;font-size:12px;letter-spacing:1.5px;cursor:pointer">Done</button>' +
+      '</div>' +
+    '</div>';
+  const s = document.getElementById('prep-modal-search');
+  if (s && !filter) { s.focus(); }
 }
 function renderEquipmentSection(char) {
   // Phase 4A: this section is now static reference only (Languages,
@@ -1210,6 +1549,7 @@ function renderSpellPicker() {
   if (s) { s.focus(); const l = s.value.length; s.setSelectionRange(l, l); }
 }
 function shortRest(charId) {
+  if (!confirm('Take a short rest?\n\nThis restores short-rest resources (Warlock slots, Fighter Second Wind, etc.). It does NOT restore HP or spell slots.')) return;
   withSheetState(charId, function(s) {
     (CHARACTERS[charId].resources || []).forEach(function(r) { if (r.recharge === 'short') s.resources[r.id] = r.max; });
   });
@@ -1217,6 +1557,7 @@ function shortRest(charId) {
 }
 function longRest(charId) {
   const char = CHARACTERS[charId];
+  if (!confirm('Take a long rest?\n\nThis restores HP, spell slots, per-rest resources, half your Hit Dice, and removes one level of exhaustion.')) return;
   withSheetState(charId, function(s) {
     s.hp.current = char.hpMax;
     s.hp.temp = 0;
@@ -1234,6 +1575,14 @@ function longRest(charId) {
     if (s.exhaustion > 0) s.exhaustion -= 1;
   });
   showRollToast('Long Rest', 'HP, slots, resources restored', '✦');
+  // If this character has a prep-modal flow, ask if they want to change prepared spells.
+  if (hasPrepModal(char)) {
+    setTimeout(function() {
+      if (confirm('Long rest complete.\n\nWould you like to change your prepared spells?')) {
+        openPrepModal(charId);
+      }
+    }, 120);
+  }
 }
 function rollHitDie(charId) {
   const char = CHARACTERS[charId];
