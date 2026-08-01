@@ -411,9 +411,171 @@ body {
   .npc-grid, .region-grid, .char-grid { grid-template-columns: 1fr; }
   .site-title { font-size: 22px; }
 }
+
+/* =====================================================================
+   PLAYER IDENTITY GATE (Phase 5)
+   ===================================================================== */
+#wayward-login-screen {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  background: var(--parch);
+  background-image: radial-gradient(circle at center, #f5eed5 0%, var(--parch) 60%, #d9ceb0 100%);
+  z-index: 500;
+  padding: 1rem;
+}
+#wayward-login-screen.on { display: flex; }
+.wayward-login-box {
+  background: rgba(20,15,8,0.03);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 2rem 2.5rem;
+  max-width: 480px; width: 92%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(138,106,16,0.15);
+}
+.wayward-login-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 26px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: .25rem;
+}
+.wayward-login-sub {
+  color: var(--ink3);
+  font-size: 13px;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+.wayward-identity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .6rem;
+  margin-bottom: 1rem;
+}
+.wayward-identity-btn {
+  background: rgba(138,106,16,0.05);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  padding: .8rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.wayward-identity-btn:hover, .wayward-identity-btn.active {
+  background: var(--gold);
+  color: #fff;
+}
+.wayward-password-row {
+  display: none;
+  margin-top: .75rem;
+}
+.wayward-password-row.on { display: block; }
+.wayward-password-input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: .55rem .75rem;
+  color: var(--ink);
+  font-family: 'Cinzel', monospace;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  outline: none;
+  margin-bottom: .5rem;
+}
+.wayward-password-input:focus { border-color: #6a4d10; box-shadow: 0 0 0 3px rgba(138,106,16,0.15); }
+.wayward-unlock-btn {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 2px;
+  padding: .55rem;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+.wayward-unlock-btn:hover { background: #6a4d10; }
+.wayward-login-err {
+  color: #a02020;
+  font-size: 12px;
+  margin-top: .5rem;
+  display: none;
+  font-style: italic;
+}
+.wayward-login-err.on { display: block; }
+
+/* Header chip — logged in as X · log out */
+.wayward-chip {
+  display: none;
+  align-items: center; gap: .5rem;
+  background: rgba(138,106,16,0.08);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: .35rem .8rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  position: fixed;
+  top: .6rem; right: .8rem;
+  z-index: 100;
+}
+.wayward-chip.on { display: inline-flex; }
+.wayward-chip .logout-link {
+  color: #a02020;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* Hide the main app until identity is set */
+#wayward-app {
+  display: none;
+}
+#wayward-app.ready {
+  display: block;
+}
 </style>
 </head>
 <body>
+
+<!-- =====================================================================
+     PHASE 5 — LOGIN GATE
+     ===================================================================== -->
+<div id="wayward-login-screen">
+  <div class="wayward-login-box">
+    <div class="wayward-login-title">The Wayward Company</div>
+    <div class="wayward-login-sub">Who are you?</div>
+    <div class="wayward-identity-grid">
+      <button class="wayward-identity-btn" data-identity="torren">Torren</button>
+      <button class="wayward-identity-btn" data-identity="sylas">Sylas</button>
+      <button class="wayward-identity-btn" data-identity="orin">Orin</button>
+      <button class="wayward-identity-btn" data-identity="dm">DM</button>
+    </div>
+    <div class="wayward-password-row" id="wayward-pw-row">
+      <input type="password" class="wayward-password-input" id="wayward-pw-input" placeholder="PASSPHRASE" autocomplete="off">
+      <button class="wayward-unlock-btn" id="wayward-pw-btn">Unlock</button>
+      <div class="wayward-login-err" id="wayward-pw-err">Incorrect passphrase. Try again.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Logged-in chip (top right) -->
+<div class="wayward-chip" id="wayward-chip">
+  <span>Logged in as <strong id="wayward-chip-name">—</strong></span>
+  <span class="logout-link" id="wayward-logout-link">Log out</span>
+</div>
+
+<!-- Main app content — hidden until identity is set -->
+<div id="wayward-app">
 
 <header class="site-header">
   <div class="header-ornament">⸻ ✦ ⸻</div>
@@ -921,6 +1083,100 @@ function updateSheetUI(charKey) {
     wrap.style.display = 'none';
   }
 }
+</script>
+
+</div><!-- /#wayward-app -->
+
+<!-- Phase 5 identity module + bootstrap -->
+<script src="players-auth.js"></script>
+<script>
+(function bootstrapPlayerIdentity() {
+  const loginScreen = document.getElementById('wayward-login-screen');
+  const pwRow = document.getElementById('wayward-pw-row');
+  const pwInput = document.getElementById('wayward-pw-input');
+  const pwBtn = document.getElementById('wayward-pw-btn');
+  const pwErr = document.getElementById('wayward-pw-err');
+  const chip = document.getElementById('wayward-chip');
+  const chipName = document.getElementById('wayward-chip-name');
+  const logoutLink = document.getElementById('wayward-logout-link');
+  const app = document.getElementById('wayward-app');
+  let selectedId = null;
+
+  function showApp(identity) {
+    loginScreen.classList.remove('on');
+    app.classList.add('ready');
+    chip.classList.add('on');
+    chipName.textContent = identity.label;
+    // Rewrite the "open my sheet" link (if any) to point at the identity's sheet.
+    if (identity.sheetId) {
+      document.querySelectorAll('[data-my-sheet]').forEach(function(a) {
+        a.setAttribute('href', 'sheet.html?id=' + encodeURIComponent(identity.sheetId));
+      });
+    }
+    // DM-only reveal (mirror of index.html dm-only pattern): unhide any .dm-only nodes.
+    if (identity.role === 'dm') {
+      document.body.classList.add('dm-viewing');
+    }
+  }
+
+  function showLogin() {
+    app.classList.remove('ready');
+    chip.classList.remove('on');
+    loginScreen.classList.add('on');
+    document.querySelectorAll('.wayward-identity-btn').forEach(function(b) { b.classList.remove('active'); });
+    pwRow.classList.remove('on');
+    pwErr.classList.remove('on');
+    pwInput.value = '';
+    selectedId = null;
+  }
+
+  // Identity button clicks — reveal password row for that identity.
+  document.querySelectorAll('.wayward-identity-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      selectedId = btn.getAttribute('data-identity');
+      document.querySelectorAll('.wayward-identity-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      pwErr.classList.remove('on');
+      pwRow.classList.add('on');
+      pwInput.value = '';
+      setTimeout(function() { pwInput.focus(); }, 40);
+    });
+  });
+
+  async function attemptLogin() {
+    if (!selectedId) return;
+    const pw = pwInput.value;
+    if (!pw) return;
+    pwBtn.disabled = true;
+    const ok = await checkPlayerPassword(selectedId, pw);
+    pwBtn.disabled = false;
+    if (ok) {
+      setPlayerIdentity(selectedId);
+      showApp(WAYWARD_IDENTITIES[selectedId]);
+    } else {
+      pwErr.classList.add('on');
+      pwInput.value = '';
+      pwInput.focus();
+    }
+  }
+  pwBtn.addEventListener('click', attemptLogin);
+  pwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') attemptLogin(); });
+  pwInput.addEventListener('input', function() { pwErr.classList.remove('on'); });
+
+  logoutLink.addEventListener('click', function() {
+    clearPlayerIdentity();
+    document.body.classList.remove('dm-viewing');
+    showLogin();
+  });
+
+  // On first paint: identity or login?
+  const existing = getCurrentIdentity();
+  if (existing) {
+    showApp(existing);
+  } else {
+    showLogin();
+  }
+})();
 </script>
 
 </body>

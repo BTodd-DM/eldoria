@@ -156,6 +156,7 @@ body {
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
 <script src="sheet-auth.js"></script>
+<script src="players-auth.js"></script>
 <script>
 // Read ?id=<charId> from URL and render that character.
 // Character IDs listed in SHEET_PASSWORDS require a passphrase; others render directly.
@@ -194,6 +195,17 @@ body {
   }
 
   function renderNow() { renderSheet(id); }
+
+  // Phase 5 — auto-unlock via player-site identity:
+  // If the visitor is logged in on the player site as this character (or as
+  // DM), skip the per-sheet password gate. DM identity unlocks any sheet.
+  // Other player identities only unlock their own sheet.
+  const currentIdentity = (typeof getCurrentIdentity === 'function') ? getCurrentIdentity() : null;
+  if (currentIdentity && (currentIdentity.role === 'dm' || currentIdentity.sheetId === id)) {
+    sheetMarkUnlocked(id); // persist so a refresh doesn't re-prompt
+    renderNow();
+    return;
+  }
 
   // Gate if this character has a password entry AND is not already unlocked
   if (sheetIsGated(id) && !sheetIsUnlocked(id)) {
