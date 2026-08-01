@@ -607,6 +607,7 @@ body {
   <button class="nav-btn" onclick="showPanel('players',this)">⚡ Players</button>
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
+  <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
@@ -1292,6 +1293,15 @@ body {
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
 </div>
 
+<!-- ============ NOTES (Phase 6) ============ -->
+<div id="panel-notes" class="panel">
+  <div class="sec-title">📝 Notes — DM view</div>
+  <div class="alert alert-info">
+    You see: <strong>your own notes</strong> (any scope), any player's <strong>DM-only</strong> notes, and any <strong>DM + Party</strong> notes. You do NOT see private notes or party-only notes (those are hidden from you by design). Real-time sync — new notes from players appear within a second.
+  </div>
+  <div id="notes-widget-container"></div>
+</div>
+
 <!-- ============ CLOCK ============ -->
 <div id="panel-clock" class="panel">
   <div class="sec-title">Instability Clock</div>
@@ -1791,6 +1801,8 @@ body {
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="firebase-sync.js"></script>
+<script src="notes-sync.js"></script>
+<script src="notes-ui.js"></script>
 <script src="items-2024.js"></script>
 <script src="sheet-data.js"></script>
 <script src="sheet-engine.js"></script>
@@ -1823,6 +1835,11 @@ function unlockApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); cal_init(); updateStatusBar();
+  // Phase 6 — Notes widget for DM (explicit DM identity, since index.html has no
+  // player-identity layer). Populates panel-notes when the DM opens that tab.
+  if (typeof initNotesWidget === 'function') {
+    initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
+  }
 }
 
 function checkAuth() {

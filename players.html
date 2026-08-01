@@ -927,11 +927,20 @@ body {
 
 <!-- ===== NOTES ===== -->
 <div id="panel-notes" class="panel">
-  <div class="sec-title">Your Notes</div>
-  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">Use this space to keep track of anything you want to remember — clues, names, theories, questions for the DM. Your notes are saved automatically to this browser.</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Four scopes: <strong>Private</strong> (only you), <strong>DM-only</strong> (you + DM), <strong>DM + Party</strong> (everyone), <strong>Party-only</strong> (players, hidden from DM). Notes sync live across all your devices.
+  </div>
 
-  <textarea class="notes-area" id="player-notes" placeholder="Write your notes here...&#10;&#10;Things we know...&#10;Things we suspect...&#10;People to talk to...&#10;Questions to ask next session..." onkeyup="savePlayerNotes()"></textarea>
-  <div class="note-saved" id="note-saved">✓ Saved</div>
+  <!-- Phase 6 notes widget — populated after login by initNotesWidget() -->
+  <div id="notes-widget-container"></div>
+
+  <details style="margin-top:1.5rem;color:var(--ink3);font-size:12px">
+    <summary style="cursor:pointer;font-style:italic">Legacy scratchpad (this browser only — pre-sync)</summary>
+    <div style="margin-top:.5rem">
+      <textarea class="notes-area" id="player-notes" placeholder="Old local-only notes are stored here. To sync across devices, copy into a Private note above." onkeyup="savePlayerNotes()"></textarea>
+      <div class="note-saved" id="note-saved">✓ Saved</div>
+    </div>
+  </details>
 
   <div class="divider"></div>
   <div class="sec-title">Quick Reference — Lyssandra's Warning</div>
@@ -1087,7 +1096,12 @@ function updateSheetUI(charKey) {
 
 </div><!-- /#wayward-app -->
 
-<!-- Phase 5 identity module + bootstrap -->
+<!-- Phase 5 identity module + Phase 6 notes system + bootstrap -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="notes-sync.js"></script>
+<script src="notes-ui.js"></script>
 <script src="players-auth.js"></script>
 <script>
 (function bootstrapPlayerIdentity() {
@@ -1116,6 +1130,10 @@ function updateSheetUI(charKey) {
     // DM-only reveal (mirror of index.html dm-only pattern): unhide any .dm-only nodes.
     if (identity.role === 'dm') {
       document.body.classList.add('dm-viewing');
+    }
+    // Phase 6 — bootstrap the notes widget for this identity.
+    if (typeof initNotesWidget === 'function') {
+      initNotesWidget('notes-widget-container', identity);
     }
   }
 
