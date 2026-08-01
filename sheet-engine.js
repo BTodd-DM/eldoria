@@ -1013,26 +1013,44 @@ function _renderSpellRow(charId, sp, opts) {
   const alwaysBadge = opts.alwaysBadge && sp.alwaysPreparedReason
     ? '<span style="font-size:9px;color:var(--gold3);font-style:italic;letter-spacing:.3px;margin-left:.4rem">★ ' + _sheetEscapeAttr(sp.alwaysPreparedReason) + '</span>'
     : '';
+  const castBtn = '<button onclick="event.stopPropagation();castSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:2px 10px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;font-weight:600" title="' + (isCantrip ? 'Cast (no slot expended)' : 'Cast at base level (' + sp.level + ') — expends a slot') + '">Cast</button>';
   const upcastBtn = sp.atHigherLevels
-    ? '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Show upcast text">↑ Upcast</button>'
-    : '';
-  const removeBtn = opts.showRemove
-    ? '<button onclick="event.stopPropagation();removeSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:9px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Remove from spell list">✕</button>'
+    ? '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:2px 10px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px" title="Show upcast text + cast at higher slot">Upcast</button>'
     : '';
   return '<div class="sheet-spell-row">' +
     '<div style="flex:1;cursor:pointer" onclick="toggleSpellDetail(\'' + sp.id + '\')">' +
       '<div class="sheet-spell-name">' + _sheetEscapeAttr(sp.name) + tagSpans + schoolBadge + alwaysBadge + '</div>' +
     '</div>' +
-    '<div style="display:inline-flex;align-items:center;gap:.35rem">' + upcastBtn + removeBtn + '</div>' +
+    '<div style="display:inline-flex;align-items:center;gap:.35rem">' + castBtn + upcastBtn + '</div>' +
     '<div class="sheet-spell-detail" id="spell-detail-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(20,15,8,0.5);border-left:2px solid var(--gold2);font-size:11.5px;line-height:1.5;color:var(--parch2)">' +
       '<div style="font-size:10px;color:var(--parch3);letter-spacing:.5px;margin-bottom:.3rem"><strong>' + (isCantrip ? 'Cantrip' : 'Level ' + sp.level) + ' · ' + _sheetEscapeAttr(sp.school || '—') + '</strong> · ' + _sheetEscapeAttr(sp.castingTime || 'Action') + ' · Range ' + _sheetEscapeAttr(sp.range || '—') + ' · ' + _sheetEscapeAttr(sp.duration || '') + '</div>' +
       (sp.components ? '<div style="font-size:10px;color:var(--parch4);margin-bottom:.3rem"><em>Components:</em> ' + _sheetEscapeAttr(sp.components) + '</div>' : '') +
       _sheetEscapeAttr(sp.description || '') +
     '</div>' +
     (sp.atHigherLevels
-      ? '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)"><strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) + '</div>'
+      ? '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)">' +
+        '<strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) +
+        _renderUpcastCastButtons(charId, sp) +
+        '</div>'
       : '') +
     '</div>';
+}
+
+// Render "Cast at L4 / L5 / …" buttons inside the upcast panel — only slot
+// levels the character actually has and that are higher than the spell's
+// base level.
+function _renderUpcastCastButtons(charId, sp) {
+  if (sp.level === 0) return ''; // cantrips can't upcast
+  const char = CHARACTERS[charId];
+  const slots = (char.spellcasting && char.spellcasting.slots) || [];
+  let btns = '';
+  for (let lvl = sp.level + 1; lvl <= 9; lvl++) {
+    const max = slots[lvl - 1] || 0;
+    if (max <= 0) continue;
+    btns += '<button onclick="castSpell(\'' + charId + '\',\'' + sp.id + '\',' + lvl + ')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:2px 8px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-right:.3rem">⚡ Cast at L' + lvl + '</button>';
+  }
+  if (!btns) return '';
+  return '<div style="margin-top:.4rem;display:flex;flex-wrap:wrap;gap:.2rem">' + btns + '</div>';
 }
 
 // Spellbook list (Wizard's collapsible section) — flat list with always-prepared toggle
@@ -1327,21 +1345,29 @@ function setHpCurrent(charId, val) { const n = parseInt(val); if (!isNaN(n)) wit
 function setHpTemp(charId, val) { const n = parseInt(val); if (!isNaN(n)) withSheetState(charId, function(s) { s.hp.temp = Math.max(0, n); }); }
 function toggleDeathSave(charId, kind, n) { withSheetState(charId, function(s) { if (s.deathSaves[kind] >= n) s.deathSaves[kind] = n - 1; else s.deathSaves[kind] = n; }); }
 function toggleSlot(charId, lvl, n) { withSheetState(charId, function(s) { if ((s.slots[lvl] || 0) >= n) s.slots[lvl] = n - 1; else s.slots[lvl] = n; }); }
-function castSpell(charId, idx) {
+// Cast a spell by state.spells id, optionally at an upcast level.
+// - Cantrips: no slot expended; just show a toast.
+// - Non-cantrips: expend a slot at castLvl (defaults to spell's base level).
+//   If no slot available at that level, alert and do nothing.
+function castSpell(charId, spellId, upcastLevel) {
   const char = CHARACTERS[charId];
-  const sp = char.spells[idx];
-  if (sp.level === 0) { showRollToast('Cantrip cast', sp.name, '✦'); return; }
-  const tags = sp.tags || [];
-  if (tags.indexOf('signature') >= 0 || tags.indexOf('mastery') >= 0) {
-    showRollToast('Cast (free use)', sp.name + ' — uses signature/mastery slot', '✦');
+  const state = getSheetState(charId);
+  const sp = (state.spells || []).find(function(x) { return x.id === spellId; });
+  if (!sp) return;
+  if (sp.level === 0) {
+    showRollToast('Cantrip', sp.name, '✦');
     return;
   }
-  const state = getSheetState(charId);
-  const max = char.spellcasting.slots[sp.level - 1] || 0;
-  const expended = state.slots[sp.level] || 0;
-  if (expended >= max) { alert('No L' + sp.level + ' slots remaining.'); return; }
-  withSheetState(charId, function(s) { s.slots[sp.level] = (s.slots[sp.level] || 0) + 1; });
-  showRollToast('Cast L' + sp.level, sp.name, '✦');
+  const castLvl = upcastLevel ? parseInt(upcastLevel, 10) : sp.level;
+  if (castLvl < sp.level) { alert('Cannot cast below the spell\'s base level.'); return; }
+  const slots = (char.spellcasting && char.spellcasting.slots) || [];
+  const max = slots[castLvl - 1] || 0;
+  const expended = state.slots[castLvl] || 0;
+  if (max <= 0) { alert('No L' + castLvl + ' slots exist for this character.'); return; }
+  if (expended >= max) { alert('No L' + castLvl + ' slots remaining.'); return; }
+  withSheetState(charId, function(s) { s.slots[castLvl] = (s.slots[castLvl] || 0) + 1; });
+  const label = (castLvl > sp.level) ? ('Upcast L' + castLvl) : ('Cast L' + castLvl);
+  showRollToast(label, sp.name, '✦');
 }
 function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
 function bumpResource(charId, rid, delta) {
