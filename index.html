@@ -1838,9 +1838,14 @@ function unlockApp() {
   initClock(); initLichClock(); loadNotes(); initCombat(); applyCharacterUrls(); cal_init(); updateStatusBar();
   // Phase 6 — Notes widget for DM (explicit DM identity, since index.html has no
   // player-identity layer). Populates panel-notes when the DM opens that tab.
-  if (typeof initNotesWidget === 'function') {
-    initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
-  }
+  // Wrapped so an error in the notes stack can't block anything else in unlockApp.
+  // Also re-triggered by showPanel() when the Notes tab is opened, so a failure
+  // here isn't fatal — the tab click will retry.
+  try {
+    if (typeof initNotesWidget === 'function') {
+      initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
+    }
+  } catch (e) { console.warn('initNotesWidget on unlock failed (will retry on tab open):', e); }
 }
 
 function checkAuth() {
@@ -1909,7 +1914,13 @@ function showPanel(id, btn) {
     if(id === 'clock') { renderClock(); renderLichClock(); }
     if(id === 'combat' && typeof renderCombat === 'function') renderCombat();
     if(id === 'sessions' && typeof cal_render === 'function') cal_render();
-  } catch(e) { /* don't let a re-render error break navigation */ }
+    // Notes: re-init the widget on every tab open. Belt and braces — if the
+    // first-load init in unlockApp was interrupted by an earlier JS error,
+    // this always runs and always succeeds.
+    if(id === 'notes' && typeof initNotesWidget === 'function') {
+      initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
+    }
+  } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
 // Helper for status-bar items: jump to a panel by id without needing the button reference.
 // Optional subId activates a sub-tab within that panel (e.g. 'now' / 'prep' / 'calendar' / 'recaps').
