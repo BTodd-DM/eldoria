@@ -459,6 +459,18 @@ CHARACTERS.sylas = {
     '**Eloin** — a friend Lyssandra grew up with. Referenced in Sylas\'s notes as a name to remember.',
     '**DM-visible thread — Vellaris curse-line.** Sylas\'s pale purple skin is the visible marker of an old Aurum noble house (House Vellaris) exiled three centuries ago. He does not know the house name. Vaeloran knows. Envoy Veris will recognise it in Session 6.'
   ],
+  // Spells that are always prepared for this character based on race, class,
+  // subclass, feat, background, or magic item. These are seeded into
+  // state.spells on load with alwaysPrepared:true and the given reason.
+  // They do NOT count against the prep limit. Names must match SPELLS_2024
+  // entries (case-insensitive) or they're silently skipped — add missing
+  // spells to spells-2024.js first.
+  alwaysPreparedSpells: [
+    { name: 'Chill Touch',         reason: 'Race: Chthonic Legacy (cantrip)' },
+    { name: 'Ray of Enfeeblement', reason: 'Race: Chthonic Legacy (from L3)' },
+    { name: 'False Life',          reason: 'Race: Chthonic Legacy (from L5)' },
+    { name: 'Shield',              reason: 'Feat: Magic Initiate (Wizard)' }
+  ],
   resources: [
     { id: 'arcane_recovery',   label: 'Arcane Recovery',                     max: 1, recharge: 'long',  note: 'After Short Rest, recover slots totaling ≤3, none higher than L5' },
     { id: 'shield_free',       label: 'Shield (Magic Initiate, free)',       max: 1, recharge: 'long' },

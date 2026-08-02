@@ -171,6 +171,77 @@ function getSheetState(id) {
     if (sp.alwaysPrepared === undefined) sp.alwaysPrepared = false;
     if (sp.alwaysPreparedReason === undefined) sp.alwaysPreparedReason = '';
   });
+  // Phase 4B rev: backfill from spell catalog by name-match.
+  // For any state.spells entry that has no atHigherLevels but whose name
+  // matches an entry in SPELLS_2024, pull the catalog's richer data
+  // (atHigherLevels, concentration, ritual, components, description if
+  // empty, school, castingTime, range, duration). Player doesn't need to
+  // re-add spells to get the Upcast button / detailed info.
+  if (typeof SPELLS_2024 !== 'undefined' && state.spells) {
+    const byNameLower = {};
+    SPELLS_2024.forEach(function(s) { byNameLower[(s.name || '').toLowerCase()] = s; });
+    state.spells.forEach(function(sp) {
+      const catalog = byNameLower[(sp.name || '').toLowerCase()];
+      if (!catalog) return;
+      if (!sp.sourceSpellId) sp.sourceSpellId = catalog.id;
+      if (!sp.atHigherLevels && catalog.atHigherLevels) sp.atHigherLevels = catalog.atHigherLevels;
+      if (sp.concentration === undefined || sp.concentration === false) sp.concentration = !!catalog.concentration;
+      if (sp.ritual === undefined || sp.ritual === false) sp.ritual = !!catalog.ritual;
+      if (!sp.components && catalog.components) sp.components = catalog.components;
+      if (!sp.duration && catalog.duration) sp.duration = catalog.duration;
+      if (!sp.range || sp.range === '—') sp.range = catalog.range || sp.range;
+      if (!sp.castingTime || sp.castingTime === 'Action') sp.castingTime = catalog.castingTime || sp.castingTime;
+      if (!sp.school && catalog.school) sp.school = catalog.school;
+      // Only overwrite description if empty (respect existing text)
+      if (!sp.description) sp.description = catalog.description || '';
+    });
+  }
+  // Phase 4B rev: seed alwaysPreparedSpells declared on the character.
+  // Each entry: { name: string, reason: string }. On first load (or when a
+  // new alwaysPrepared entry is added to sheet-data.js), we look it up in
+  // SPELLS_2024, add the full spell to state.spells with alwaysPrepared:true
+  // and the reason string. Skips entries already present (matched by name).
+  if (char && Array.isArray(char.alwaysPreparedSpells) && typeof SPELLS_2024 !== 'undefined') {
+    const byNameLower2 = {};
+    SPELLS_2024.forEach(function(s) { byNameLower2[(s.name || '').toLowerCase()] = s; });
+    if (!state.spells) state.spells = [];
+    const existingNames = {};
+    state.spells.forEach(function(sp) { existingNames[(sp.name || '').toLowerCase()] = sp; });
+    char.alwaysPreparedSpells.forEach(function(entry, i) {
+      const nameLower = (entry.name || '').toLowerCase();
+      const existing = existingNames[nameLower];
+      if (existing) {
+        // Already in state — just flag as alwaysPrepared with the reason.
+        if (!existing.alwaysPrepared) {
+          existing.alwaysPrepared = true;
+          existing.alwaysPreparedReason = entry.reason || existing.alwaysPreparedReason || '';
+          existing.prepared = true;
+        }
+        return;
+      }
+      const src = byNameLower2[nameLower];
+      if (!src) return; // spell not in catalog — silently skip (DM should add to spells-2024.js)
+      state.spells.push({
+        id: 'alwaysprep_seed_' + i + '_' + (src.id || 'x'),
+        sourceSpellId: src.id,
+        name: src.name,
+        level: src.level,
+        school: src.school || '',
+        castingTime: src.castingTime || 'Action',
+        range: src.range || '—',
+        components: src.components || '',
+        duration: src.duration || '',
+        concentration: !!src.concentration,
+        ritual: !!src.ritual,
+        description: src.description || '',
+        atHigherLevels: src.atHigherLevels || null,
+        prepared: true,
+        alwaysPrepared: true,
+        alwaysPreparedReason: entry.reason || '',
+        custom: false
+      });
+    });
+  }
   return state;
 }
 
@@ -1014,9 +1085,12 @@ function _renderSpellRow(charId, sp, opts) {
     ? '<span style="font-size:9px;color:var(--gold3);font-style:italic;letter-spacing:.3px;margin-left:.4rem">★ ' + _sheetEscapeAttr(sp.alwaysPreparedReason) + '</span>'
     : '';
   const castBtn = '<button onclick="event.stopPropagation();castSpell(\'' + charId + '\',\'' + sp.id + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:2px;padding:3px 12px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;font-weight:600;white-space:nowrap" title="' + (isCantrip ? 'Cast (no slot expended)' : 'Cast at base level (' + sp.level + ') — expends a slot') + '">Cast</button>';
-  const upcastBtn = sp.atHigherLevels
-    ? '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:3px 12px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;white-space:nowrap" title="Show upcast text + cast at higher slot">Upcast</button>'
-    : '';
+  // Upcast is always available for non-cantrips (any leveled spell can be cast
+  // from a higher slot, even without special upcast text — you might just be
+  // out of base-level slots). Cantrips can't be upcast.
+  const upcastBtn = isCantrip
+    ? ''
+    : '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:3px 12px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;white-space:nowrap" title="Cast at a higher slot level' + (sp.atHigherLevels ? ' — this spell scales' : '') + '">Upcast</button>';
   // Override the .sheet-spell-row grid (which expects 3 cells) with an explicit
   // flex layout: name/info on the left (flex:1), Cast + Upcast pinned right.
   return '<div class="sheet-spell-row" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;grid-template-columns:none">' +
@@ -1029,12 +1103,13 @@ function _renderSpellRow(charId, sp, opts) {
       (sp.components ? '<div style="font-size:10px;color:var(--parch4);margin-bottom:.3rem"><em>Components:</em> ' + _sheetEscapeAttr(sp.components) + '</div>' : '') +
       _sheetEscapeAttr(sp.description || '') +
     '</div>' +
-    (sp.atHigherLevels
-      ? '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)">' +
-        '<strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels) +
+    (isCantrip ? '' :
+      '<div class="sheet-spell-upcast" id="spell-upcast-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(154,122,26,0.15);border-left:2px solid var(--gold3);font-size:11.5px;line-height:1.5;color:var(--parch)">' +
+        (sp.atHigherLevels
+          ? '<strong style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;color:var(--gold3)">AT HIGHER LEVELS —</strong> ' + _sheetEscapeAttr(sp.atHigherLevels)
+          : '<em style="color:var(--parch3);font-size:10.5px">This spell has no additional scaling text at higher levels — casting from a higher slot still works if you\'re out of the base slot.</em>') +
         _renderUpcastCastButtons(charId, sp) +
-        '</div>'
-      : '') +
+        '</div>') +
     '</div>';
 }
 
@@ -1075,19 +1150,46 @@ function _renderSpellbookList(charId, spells) {
 }
 
 function toggleAlwaysPrepared(charId, spellId) {
+  const state = getSheetState(charId);
+  const sp = (state.spells || []).find(function(x) { return x.id === spellId; });
+  if (!sp) return;
+  if (sp.alwaysPrepared) {
+    // Unmark — no prompt needed.
+    withSheetState(charId, function(s) {
+      const t = (s.spells || []).find(function(x) { return x.id === spellId; });
+      if (t) { t.alwaysPrepared = false; t.alwaysPreparedReason = ''; }
+    });
+    return;
+  }
+  // Two-step prompt: category, then specific.
+  const catRaw = prompt(
+    'Why is this spell always prepared?\n\n' +
+    '1. Class feature (e.g. Domain, Oath, Subclass)\n' +
+    '2. Feat\n' +
+    '3. Race / Species\n' +
+    '4. Background\n' +
+    '5. Magic item\n' +
+    '6. Other\n\n' +
+    'Type 1-6:',
+    '1'
+  );
+  if (catRaw === null) return;
+  const catNum = parseInt(catRaw, 10);
+  const categories = ['Class feature', 'Feat', 'Race', 'Background', 'Magic item', 'Other'];
+  const category = (catNum >= 1 && catNum <= 6) ? categories[catNum - 1] : 'Other';
+  const detail = prompt(
+    category + ' — specific name?\n' +
+    '(e.g. "Life Domain", "Magic Initiate", "Chthonic Legacy", "Acolyte", "Wand of Web")',
+    ''
+  );
+  if (detail === null) return;
+  const reason = detail.trim() ? (category + ': ' + detail.trim()) : category;
   withSheetState(charId, function(s) {
-    const sp = (s.spells || []).find(function(x) { return x.id === spellId; });
-    if (!sp) return;
-    if (!sp.alwaysPrepared) {
-      const reason = prompt('Why is this always prepared? (e.g. "Chthonic Legacy", "Life Domain", "Robe of Bones")', sp.alwaysPreparedReason || '');
-      if (reason === null) return;
-      sp.alwaysPrepared = true;
-      sp.alwaysPreparedReason = reason.trim();
-      sp.prepared = true; // always-prepared implies prepared
-    } else {
-      sp.alwaysPrepared = false;
-      sp.alwaysPreparedReason = '';
-    }
+    const t = (s.spells || []).find(function(x) { return x.id === spellId; });
+    if (!t) return;
+    t.alwaysPrepared = true;
+    t.alwaysPreparedReason = reason;
+    t.prepared = true;
   });
 }
 
