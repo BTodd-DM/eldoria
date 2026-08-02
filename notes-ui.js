@@ -14,9 +14,17 @@ const NOTES_SCOPES = [
   { id: 'private',    label: 'Private',       hint: 'Only you can see this',                    color: '#8a5a1a' },
   { id: 'dm-only',    label: 'DM-only',       hint: 'You and the DM can see this',              color: '#7a1a1a' },
   { id: 'dm-party',   label: 'DM + Party',    hint: 'Everyone in the group can see this',       color: '#0d4a2a' },
-  { id: 'party-only', label: 'Party-only',    hint: 'Other players can see this — hidden from DM', color: '#2d5a7a' }
+  { id: 'party-only', label: 'Party-only',    hint: 'Other players can see this — hidden from DM', color: '#2d5a7a' },
+  { id: 'to-player',  label: '📮 To Player',  hint: 'DM handout to one specific player (letter, evidence, dream)', color: '#4a2d7a' }
 ];
 const NOTES_SCOPES_BY_ID = NOTES_SCOPES.reduce(function(m, s) { m[s.id] = s; return m; }, {});
+
+// Player identities available as handout recipients. Extend if a new player joins.
+const NOTES_PLAYER_RECIPIENTS = [
+  { id: 'torren', label: 'Torren' },
+  { id: 'sylas',  label: 'Sylas' },
+  { id: 'orin',   label: 'Orin' }
+];
 
 // Author labels (fall back to id if unknown).
 const NOTES_AUTHOR_LABELS = {
@@ -133,11 +141,12 @@ function _renderNotesWidget(allNotes) {
 }
 
 function _createableScopes(identity) {
-  // Party-only only makes sense for player identities (not DM — hidden from them).
   if (identity.role === 'dm') {
+    // DM: private, dm-only, dm-party, to-player (NOT party-only — hidden from DM).
     return NOTES_SCOPES.filter(function(s) { return s.id !== 'party-only'; });
   }
-  return NOTES_SCOPES.slice();
+  // Player: everything except to-player (DM-only handout scope).
+  return NOTES_SCOPES.filter(function(s) { return s.id !== 'to-player'; });
 }
 
 function _emptyMessage(state, totalCount, visibleCount) {
@@ -190,9 +199,24 @@ function _renderNoteCard(note, identity) {
     ? '<button class="wc-note-edit" onclick="notesWidgetStartEdit(\'' + note.id + '\')">Edit</button>' +
       '<button class="wc-note-del" onclick="notesWidgetDelete(\'' + note.id + '\')">Delete</button>'
     : '';
+  // Handout-specific decoration
+  let recipientBadge = '';
+  let handoutBanner = '';
+  if (note.scope === 'to-player' && note.recipient) {
+    const recLabel = NOTES_AUTHOR_LABELS[note.recipient] || note.recipient;
+    if (isAuthor) {
+      // DM viewing their own handout — show "→ To: <player>" badge
+      recipientBadge = '<span style="background:rgba(74,45,122,0.6);color:#fff;padding:2px 8px;border-radius:10px;font-size:9.5px;letter-spacing:1px;font-weight:600;margin-left:.3rem">→ To: ' + _notesEscape(recLabel) + '</span>';
+    } else if (identity.id === note.recipient) {
+      // Player viewing a handout addressed to them — prominent "From DM" banner
+      handoutBanner = '<div style="background:rgba(74,45,122,0.15);border:1px dashed rgba(74,45,122,0.6);border-radius:3px;padding:.35rem .5rem;margin-bottom:.4rem;color:#a48bd6;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">📮 <strong>From the DM — for your eyes only</strong></div>';
+    }
+  }
   return '<div class="wc-note-card" style="border-left-color:' + scope.color + '">' +
+    handoutBanner +
     '<div class="wc-note-head">' +
       '<span class="wc-note-scope" style="background:' + scope.color + '">' + _notesEscape(scope.label) + '</span>' +
+      recipientBadge +
       '<span class="wc-note-author">' + _notesEscape(authorLabel) + '</span>' +
       '<span class="wc-note-time">' + _notesFmtTime(note.updatedAt || note.createdAt) + '</span>' +
       '<span class="wc-note-actions">' + actions + '</span>' +
@@ -219,9 +243,16 @@ function _renderNoteForm(note, canCreate, label, saveHandler, cancelHandler) {
     const sel = s.id === note.scope ? ' selected' : '';
     scopeOpts += '<option value="' + s.id + '"' + sel + '>' + s.label + ' — ' + s.hint + '</option>';
   });
+  const recipientOptsArr = NOTES_PLAYER_RECIPIENTS.map(function(r) {
+    const sel = (note.recipient === r.id) ? ' selected' : '';
+    return '<option value="' + r.id + '"' + sel + '>' + r.label + '</option>';
+  });
+  const recipientOpts = recipientOptsArr.join('');
+  const recipientRowStyle = (note.scope === 'to-player') ? '' : 'display:none';
   return '<div class="wc-note-form">' +
     '<div class="wc-note-form-label">' + label + '</div>' +
-    '<label>Scope: <select id="wc-note-form-scope">' + scopeOpts + '</select></label>' +
+    '<label>Scope: <select id="wc-note-form-scope" onchange="_notesUpdateRecipientVisibility()">' + scopeOpts + '</select></label>' +
+    '<label id="wc-note-form-recipient-row" style="' + recipientRowStyle + '">📮 Send to: <select id="wc-note-form-recipient">' + recipientOpts + '</select></label>' +
     '<input type="text" id="wc-note-form-title" placeholder="Title (optional)" value="' + _notesEscape(note.title || '') + '" maxlength="200">' +
     '<textarea id="wc-note-form-body" placeholder="Write your note…" rows="6">' + _notesEscape(note.body || '') + '</textarea>' +
     '<div class="wc-note-form-actions">' +
@@ -229,6 +260,13 @@ function _renderNoteForm(note, canCreate, label, saveHandler, cancelHandler) {
       '<button class="wc-note-form-cancel" onclick="' + cancelHandler + '()">Cancel</button>' +
     '</div>' +
     '</div>';
+}
+
+function _notesUpdateRecipientVisibility() {
+  const scope = document.getElementById('wc-note-form-scope');
+  const row = document.getElementById('wc-note-form-recipient-row');
+  if (!scope || !row) return;
+  row.style.display = (scope.value === 'to-player') ? '' : 'none';
 }
 
 // -------- Handler functions (called from onclick) --------
@@ -242,7 +280,13 @@ function notesWidgetSaveCreate() {
   const body = document.getElementById('wc-note-form-body').value;
   if (!body.trim()) { alert('Note body is empty.'); return; }
   const identity = _notesWidgetState.identity;
-  NotesSync.create({ author: identity.id, scope: scope, title: title, body: body }).then(function() {
+  const payload = { author: identity.id, scope: scope, title: title, body: body };
+  if (scope === 'to-player') {
+    const rec = document.getElementById('wc-note-form-recipient');
+    if (!rec || !rec.value) { alert('Pick a recipient.'); return; }
+    payload.recipient = rec.value;
+  }
+  NotesSync.create(payload).then(function() {
     _notesWidgetState.creating = false;
     _rerender();
   }).catch(function(e) { alert('Create failed: ' + (e && e.message || e)); });
@@ -254,7 +298,15 @@ function notesWidgetSaveEdit(noteId) {
   const title = document.getElementById('wc-note-form-title').value;
   const body = document.getElementById('wc-note-form-body').value;
   if (!body.trim()) { alert('Note body is empty.'); return; }
-  NotesSync.update(noteId, { scope: scope, title: title, body: body }).then(function() {
+  const patch = { scope: scope, title: title, body: body };
+  if (scope === 'to-player') {
+    const rec = document.getElementById('wc-note-form-recipient');
+    if (!rec || !rec.value) { alert('Pick a recipient.'); return; }
+    patch.recipient = rec.value;
+  } else {
+    patch.recipient = null; // clear if scope changed away from to-player
+  }
+  NotesSync.update(noteId, patch).then(function() {
     _notesWidgetState.editingNoteId = null;
     _rerender();
   }).catch(function(e) { alert('Update failed: ' + (e && e.message || e)); });

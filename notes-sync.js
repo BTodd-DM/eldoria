@@ -30,7 +30,7 @@
   'use strict';
 
   const NOTES_PATH = 'notes';
-  const VALID_SCOPES = ['private', 'dm-only', 'dm-party', 'party-only'];
+  const VALID_SCOPES = ['private', 'dm-only', 'dm-party', 'party-only', 'to-player'];
 
   const NotesSync = {
     ready: false,
@@ -105,10 +105,14 @@
       if (!note || !note.author || VALID_SCOPES.indexOf(note.scope) === -1) {
         return Promise.reject(new Error('Note requires author + valid scope'));
       }
+      if (note.scope === 'to-player' && !note.recipient) {
+        return Promise.reject(new Error('to-player scope requires recipient'));
+      }
       const newRef = this._ref.push();
       const payload = {
         author: note.author,
         scope: note.scope,
+        recipient: note.recipient || null,
         title: String(note.title || '').slice(0, 200),
         body: String(note.body || ''),
         createdAt: firebase.database.ServerValue.TIMESTAMP,
@@ -127,6 +131,7 @@
         if (VALID_SCOPES.indexOf(patch.scope) === -1) return Promise.reject(new Error('invalid scope'));
         cleanPatch.scope = patch.scope;
       }
+      if (patch.recipient !== undefined) cleanPatch.recipient = patch.recipient || null;
       cleanPatch.updatedAt = firebase.database.ServerValue.TIMESTAMP;
       return this._ref.child(noteId).update(cleanPatch);
     },
@@ -148,6 +153,7 @@
         case 'dm-only':    return isAuthor || isDM;
         case 'dm-party':   return true;
         case 'party-only': return !isDM;
+        case 'to-player':  return isAuthor || identity.id === note.recipient;
         default:           return false;
       }
     },
