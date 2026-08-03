@@ -206,8 +206,10 @@ body {
   background: #0d0a06;
   border-bottom: 1px solid rgba(160,128,64,0.3);
   display: flex; flex-wrap: wrap;
+  justify-content: space-around;
   overflow-x: auto;
 }
+.main-nav .nav-btn { flex: 1 1 auto; text-align: center; }
 .nav-btn {
   padding: .75rem 1.25rem;
   background: none;
@@ -1032,7 +1034,10 @@ body {
   <div class="grid-3">
     <!-- TORREN -->
     <div class="card gold">
-      <div class="card-title">Torren</div>
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem">
+        <span>Torren</span>
+        <span title="Interactive sheet not built yet — placeholder" style="font-size:11px;letter-spacing:1px;color:var(--parch3);font-weight:400;border:1px dashed var(--parch3);padding:2px 8px;border-radius:3px;cursor:not-allowed;opacity:.7">📜 Sheet (soon)</span>
+      </div>
       <div class="card-sub">Halfling &nbsp;·&nbsp; Assassin Rogue &nbsp;·&nbsp; Level 6</div>
       <div class="hp-bar"><div class="hp-fill warn" style="width:75%"></div></div>
       <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Sneak Attack: 3d6</div>
@@ -1056,7 +1061,10 @@ body {
 
     <!-- SYLAS -->
     <div class="card purple">
-      <div class="card-title">Sylas</div>
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem">
+        <span>Sylas</span>
+        <a href="#" onclick="event.preventDefault();openCharacterSheet('sylas')" style="font-size:11px;letter-spacing:1px;color:var(--gold2);text-decoration:none;font-weight:400;border:1px solid var(--gold2);padding:2px 8px;border-radius:3px">📜 Sheet ↗</a>
+      </div>
       <div class="card-sub">Tiefling (Chthonic) &nbsp;·&nbsp; Illusionist Wizard &nbsp;·&nbsp; Level 6</div>
       <div class="hp-bar"><div class="hp-fill good" style="width:85%"></div></div>
       <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: 51 max &nbsp;·&nbsp; AC: 12 (15 w/ Mage Armor) &nbsp;·&nbsp; Spell Save DC: 16 &nbsp;·&nbsp; Spell Attack: +8 &nbsp;·&nbsp; Passive Investigation: 21</div>
@@ -1095,7 +1103,10 @@ body {
 
     <!-- ORIN -->
     <div class="card teal">
-      <div class="card-title">Orin</div>
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem">
+        <span>Orin</span>
+        <span title="Interactive sheet not built yet — placeholder" style="font-size:11px;letter-spacing:1px;color:var(--parch3);font-weight:400;border:1px dashed var(--parch3);padding:2px 8px;border-radius:3px;cursor:not-allowed;opacity:.7">📜 Sheet (soon)</span>
+      </div>
       <div class="card-sub">Goliath &nbsp;·&nbsp; Cleric of Luminos &nbsp;·&nbsp; Level 6</div>
       <div class="hp-bar"><div class="hp-fill good" style="width:90%"></div></div>
       <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Channel Divinity: 2/rest</div>
