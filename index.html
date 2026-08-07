@@ -610,6 +610,7 @@ body {
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
+  <button class="nav-btn" onclick="showPanel('lore',this)">📖 Lore</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
@@ -1304,6 +1305,15 @@ body {
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
 </div>
 
+<!-- ============ LORE (Update 3) ============ -->
+<div id="panel-lore" class="panel">
+  <div class="sec-title">📖 Known Lore — who knows what</div>
+  <div class="alert alert-info">
+    Grid of every tracked fact and which PC knows it. Click any cell to toggle. Facts marked <strong>hidden</strong> (red bar) haven't been revealed to the party yet — flip when they discover them in play. Players never see a fact until it's marked known for their identity.
+  </div>
+  <div id="lore-container"></div>
+</div>
+
 <!-- ============ NOTES (Phase 6) ============ -->
 <div id="panel-notes" class="panel">
   <div class="sec-title">📝 Notes — DM view</div>
@@ -1814,6 +1824,7 @@ body {
 <script src="firebase-sync.js"></script>
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
+<script src="lore-directory.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -1857,6 +1868,12 @@ function unlockApp() {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch (e) { console.warn('initNotesWidget on unlock failed (will retry on tab open):', e); }
+  // Update 3 — Known Lore grid (DM view).
+  try {
+    if (window.LoreDirectory && typeof LoreDirectory.init === 'function') {
+      LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
+    }
+  } catch (e) { console.warn('LoreDirectory init on unlock failed (will retry on tab open):', e); }
 }
 
 function checkAuth() {
@@ -1930,6 +1947,10 @@ function showPanel(id, btn) {
     // this always runs and always succeeds.
     if(id === 'notes' && typeof initNotesWidget === 'function') {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
+    }
+    // Update 3 — Lore grid: same belt-and-braces re-init on tab click.
+    if(id === 'lore' && window.LoreDirectory && typeof LoreDirectory.init === 'function') {
+      LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }

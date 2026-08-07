@@ -11,6 +11,14 @@
     "notes": {
       ".read": true,
       ".write": true
+    },
+    "npc-notes": {
+      ".read": true,
+      ".write": true
+    },
+    "lore-known": {
+      ".read": true,
+      ".write": true
     }
   }
 }

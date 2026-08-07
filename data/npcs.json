@@ -1,0 +1,252 @@
+{
+  "npcs": [
+    {
+      "id": "vaeloran-duskwhisper",
+      "name": "Vaeloran Duskwhisper",
+      "role": "Archmage · Your Patron",
+      "avatar": "VD",
+      "avatarBg": "",
+      "summary": "A respected and eccentric scholar-mage who serves the greater good of Aeloria. Known for funding libraries, sponsoring apprentices, and protecting the city from magical threats. He employed you and sent you to find Lyssandra. Calm, measured, and always seems to know more than he says.",
+      "badges": [
+        {
+          "text": "patron",
+          "color": "gold"
+        },
+        {
+          "text": "Spire of the Silver Eclipse",
+          "color": "grey"
+        }
+      ],
+      "order": 1
+    },
+    {
+      "id": "lyssandra-vale",
+      "name": "Lyssandra Vale",
+      "role": "Half-elf · Vaeloran's Apprentice",
+      "avatar": "LV",
+      "avatarBg": "#1a3a2a",
+      "summary": "Copper-haired, robes marked with faint scorch marks. She was sent to observe the meteor shard and never came back. When you found her, she tried to flee rather than return. She warned you before disappearing into the night. She is now back with Vaeloran and seems… well.",
+      "badges": [
+        {
+          "text": "returned to Vaeloran",
+          "color": "grey"
+        }
+      ],
+      "order": 2
+    },
+    {
+      "id": "taren-myles",
+      "name": "Taren Myles",
+      "role": "Human · Vaeloran's Researcher",
+      "avatar": "TM",
+      "avatarBg": "#2a2010",
+      "summary": "An older scholar found in Vaeloran's tower library, hair streaked with white, hands perpetually ink-stained. Rarely looks up from his runic charts. Polite when acknowledged but deeply focused on his work.",
+      "badges": [
+        {
+          "text": "Spire of the Silver Eclipse",
+          "color": "grey"
+        }
+      ],
+      "order": 3
+    },
+    {
+      "id": "vexa",
+      "name": "Vexa",
+      "role": "Apprentice mage · Road encounter",
+      "avatar": "VX",
+      "avatarBg": "#1a2010",
+      "summary": "Met on the road north of Aeloria, heading to the same meteor crash site with a group of escorts. You avoided confrontation through quick thinking and creative use of tarps. She works for another mage in the city.",
+      "badges": [
+        {
+          "text": "briefly encountered",
+          "color": "grey"
+        }
+      ],
+      "order": 4
+    },
+    {
+      "id": "oskar",
+      "name": "Oskar",
+      "role": "Goliath · Townmaster of Aeloria",
+      "avatar": "OS",
+      "avatarBg": "#2a1a08",
+      "summary": "A massive Goliath who carries a battle axe across his back. He hired you to deal with the gnoll threat to the southeastern farmlands. Direct, fair, and clearly protective of Aeloria and its people. Paid on delivery.",
+      "badges": [
+        {
+          "text": "civic authority",
+          "color": "teal"
+        },
+        {
+          "text": "paid the party",
+          "color": "grey"
+        }
+      ],
+      "order": 5
+    },
+    {
+      "id": "sarah",
+      "name": "Sarah",
+      "role": "Half-Orc · Wayfarer's Rest",
+      "avatar": "SR",
+      "avatarBg": "#2a1808",
+      "summary": "Broad-shouldered, tidy braid, dry sense of humour. Manages the Wayfarer's Rest — a calm, respectable inn in the inner trade ward. She pointed Orin toward the Pig's Head when he was asking questions that weren't quite the Wayfarer's type. Trustworthy, discreet, observant.",
+      "badges": [
+        {
+          "text": "ally-adjacent",
+          "color": "teal"
+        },
+        {
+          "text": "Wayfarer's Rest",
+          "color": "grey"
+        }
+      ],
+      "order": 6
+    },
+    {
+      "id": "gerald",
+      "name": "Gerald",
+      "role": "Human · Pig's Head Inn",
+      "avatar": "GR",
+      "avatarBg": "#1a0a08",
+      "summary": "Greying hair, stained vest, friendly smile, very sharp eyes. Owns the Pig's Head. Knows things. Observes carefully. Said \"Sarah doesn't send fools\" when you arrived. Offered you a job — finding a missing person. You haven't taken it yet. \"Careful. Walls here listen.\"",
+      "badges": [
+        {
+          "text": "Pig's Head",
+          "color": "grey"
+        },
+        {
+          "text": "has work available",
+          "color": "gold"
+        }
+      ],
+      "order": 7
+    },
+    {
+      "id": "dawnwarden-seraphine-vale",
+      "name": "Dawnwarden Seraphine Vale",
+      "role": "Human · Temple of Luminos",
+      "avatar": "DS",
+      "avatarBg": "#1a2a1a",
+      "summary": "Stern, disciplined, unwavering. Senior clergy at the Temple of Luminos. When Orin came seeking guidance about Merric, she listened. Her counsel — \"Faith is not comfort. It is commitment.\" She told Orin not to stop searching.",
+      "badges": [
+        {
+          "text": "Temple of Luminos",
+          "color": "teal"
+        },
+        {
+          "text": "guided Orin",
+          "color": "gold"
+        }
+      ],
+      "order": 8
+    },
+    {
+      "id": "merric-underbough",
+      "name": "Merric Underbough",
+      "role": "Halfling · Rulden Marr (revealed to be Merric)",
+      "avatar": "RM",
+      "avatarBg": "#2a2010",
+      "summary": "A calm, calculating figure with a reputation for competence and a network of contacts throughout Aeloria — publicly known as Rulden Marr. Torren gained access to meet him through the right channels. Orin has come to realise this is Merric Underbough, his adoptive father, thought lost for years. He sent Orin a warning letter — signed only 'R.' Keep to the light, Orin. It suits you better.",
+      "badges": [
+        {
+          "text": "Orin's adoptive father",
+          "color": "gold"
+        },
+        {
+          "text": "warned Orin off",
+          "color": "red"
+        },
+        {
+          "text": "back-room contact",
+          "color": "grey"
+        }
+      ],
+      "order": 9
+    },
+    {
+      "id": "kolt",
+      "name": "Kolt",
+      "role": "Human · Kolt's Depot",
+      "avatar": "KO",
+      "avatarBg": "#2a1808",
+      "summary": "Weathered older man, late 60s, skin like old leather and a pencil-stub permanently tucked behind one ear. Runs Kolt's Depot — the paper-and-manifest man for every caravan on the southern road. Signed the party on for the Ironhold escort.",
+      "badges": [
+        {
+          "text": "Kolt's Depot",
+          "color": "grey"
+        },
+        {
+          "text": "caravan work",
+          "color": "gold"
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "brenna-hartwell",
+      "name": "Brenna Hartwell",
+      "role": "Human · Caravan Master",
+      "avatar": "BH",
+      "avatarBg": "#2a2010",
+      "summary": "The caravan master who led the escort south to Ironhold. Practical, honest, well-prepared — carries a healing potion and a smoke brick in her kit. Kept her word after Vrass took the contract wagon: the promised 25gp per escort still stood, and she said she'd tell the merchants what happened once you reached Ironhold.",
+      "badges": [
+        {
+          "text": "caravan master",
+          "color": "grey"
+        },
+        {
+          "text": "kept her word",
+          "color": "teal"
+        }
+      ],
+      "order": 11
+    },
+    {
+      "id": "vrass",
+      "name": "Vrass",
+      "role": "Young Black Dragon",
+      "avatar": "VR",
+      "avatarBg": "#1a0a0a",
+      "summary": "Sleek black scales still slicked with old marsh water. Landed on the southern road and demanded the caravan. Took a wagon of cargo and Torren's lifetime service — sworn in exchange for the party's lives and safe passage. His parting words: \"We will speak soon.\" He calls Torren \"mine.\"",
+      "badges": [
+        {
+          "text": "dragon",
+          "color": "red"
+        },
+        {
+          "text": "Torren dark-bound",
+          "color": "red"
+        },
+        {
+          "text": "southern road",
+          "color": "grey"
+        }
+      ],
+      "order": 12
+    },
+    {
+      "id": "sera-vey",
+      "name": "Sera Vey",
+      "role": "Human · Farmer's wife from Stillbrook",
+      "avatar": "SV",
+      "avatarBg": "#1a2010",
+      "summary": "A wounded farmer's wife who approached the party at Stillbrook's well. Her sister Mira and Mira's two children were taken three days ago by a man called Halvor of Ironhold over a farming debt. Sera tried to intervene and was knocked down. Torren's Insight nat 20 confirmed her honesty. She rode hidden in the Wayward Company wagon south to Ironhold.",
+      "badges": [
+        {
+          "text": "honest",
+          "color": "teal"
+        },
+        {
+          "text": "sister taken by Halvor",
+          "color": "red"
+        },
+        {
+          "text": "Ironhold-bound",
+          "color": "grey"
+        }
+      ],
+      "order": 13
+    }
+  ],
+  "generated": true
+}
