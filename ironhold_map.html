@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironhold — DM Reference (Wayward Company)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0a06;--p1:#f4edd8;--p2:#ebe0c4;--p3:#d9ccaa;--p4:#a89873;
+  --gold:#8a6a1a;--gold2:#c9a84c;--red:#7a1a1a;--teal:#0d3d30;
+  --bord:#b8a070;--mut:#5a4820;
+}
+body{background:#0a0805;font-family:'Crimson Pro',Georgia,serif;color:var(--p1);min-height:100vh}
+
+/* ===== AUTH GATE (same shape/PW as index.html) ===== */
+#auth-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0805;background-image:radial-gradient(circle at center,#1a1208 0%,#0a0805 65%);z-index:500;padding:1rem}
+.auth-box{background:rgba(20,15,8,0.55);border:2px solid var(--gold);border-radius:6px;padding:2rem 2.5rem;max-width:480px;width:92%;text-align:center;box-shadow:0 10px 40px rgba(122,26,26,0.25)}
+.auth-title{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold2);letter-spacing:2.5px;margin-bottom:.15rem}
+.auth-sub{color:var(--p3);font-size:12px;font-style:italic;margin-bottom:1.25rem}
+.auth-input{width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--gold);border-radius:2px;padding:.55rem .75rem;color:var(--p1);font-family:'Cinzel',monospace;font-size:14px;letter-spacing:1.5px;text-align:center;outline:none;margin-bottom:.6rem}
+.auth-input:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(201,168,76,0.15)}
+.auth-btn{width:100%;background:var(--gold);border:none;border-radius:2px;padding:.55rem;color:#0a0805;font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;cursor:pointer;font-weight:700}
+.auth-btn:hover{background:var(--gold2)}
+.auth-err{color:#e0a0a0;font-size:12px;margin-top:.5rem;display:none;font-style:italic}
+.auth-err.on{display:block}
+#app{display:none}
+#app.ready{display:block}
+
+/* ===== HEADER ===== */
+.page-header{background:linear-gradient(180deg,#0d0a06,#1a1208);border-bottom:2px solid var(--gold2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;position:sticky;top:0;z-index:100}
+.page-title{font-family:'Cinzel Decorative',serif;color:var(--gold2);font-size:16px;letter-spacing:2px}
+.header-right{display:flex;align-items:center;gap:.6rem}
+.back-btn{color:var(--gold2);text-decoration:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;border:1px solid var(--gold2);padding:5px 12px;border-radius:2px;transition:all .2s}
+.back-btn:hover{background:var(--gold2);color:var(--ink)}
+.dm-badge{background:var(--red);color:#f4c4c4;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px}
+
+/* ===== CONTENT ===== */
+.wrap{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 3rem}
+
+.overview{background:linear-gradient(135deg,rgba(26,18,8,0.9),rgba(13,10,6,0.98));border:1px solid var(--bord);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.overview h1{font-family:'Cinzel Decorative',serif;color:var(--gold2);font-size:22px;letter-spacing:2px;margin-bottom:.4rem}
+.overview .sub{color:var(--p3);font-style:italic;font-size:13.5px;margin-bottom:.85rem}
+.overview p{font-size:13.5px;line-height:1.7;color:var(--p2);margin-bottom:.5rem}
+.stat-strip{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.75rem}
+.stat-chip{background:rgba(160,128,64,0.12);border:1px solid rgba(160,128,64,0.4);padding:.3rem .65rem;border-radius:2px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:var(--gold2)}
+
+.map-placeholder{background:rgba(40,30,15,0.4);border:2px dashed var(--bord);border-radius:4px;padding:2rem;margin-bottom:1.5rem;text-align:center;color:var(--p4);font-style:italic;font-size:13px}
+.map-placeholder strong{color:var(--gold2);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;display:block;margin-bottom:.4rem}
+
+/* Ring headers */
+.ring-header{font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:1.75rem 0 .75rem;padding-bottom:.4rem;border-bottom:1px solid rgba(160,128,64,0.3)}
+.ring-header .ring-note{font-family:'Crimson Pro',serif;font-size:11px;font-style:italic;color:var(--p4);letter-spacing:.5px;text-transform:none;margin-left:.75rem}
+
+/* District cards grid */
+.district-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1rem}
+.district-card{background:linear-gradient(135deg,rgba(26,18,8,0.9),rgba(13,10,6,0.98));border:1px solid var(--bord);border-radius:4px;padding:1rem 1.15rem;display:flex;flex-direction:column}
+.district-header{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;margin-bottom:.4rem;border-bottom:1px solid rgba(160,128,64,0.25);padding-bottom:.45rem}
+.district-name{font-family:'Cinzel',serif;color:var(--gold2);font-size:14px;font-weight:700}
+.district-num{font-family:'Cinzel',serif;color:var(--p4);font-size:11px;letter-spacing:1px}
+.district-desc{font-size:12.5px;line-height:1.6;color:var(--p2);margin-bottom:.65rem}
+
+.location-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.35rem}
+.location{background:rgba(0,0,0,0.25);border:1px solid rgba(160,128,64,0.2);border-radius:3px;padding:.55rem .7rem;transition:border-color .15s}
+.location:hover{border-color:rgba(160,128,64,0.5)}
+.loc-name{font-family:'Cinzel',serif;font-size:11.5px;color:var(--gold2);font-weight:600;letter-spacing:.5px;margin-bottom:.15rem}
+.loc-npc{font-size:11px;color:var(--p3);font-style:italic;margin-bottom:.25rem}
+.loc-body{font-size:12px;color:var(--p2);line-height:1.55}
+.loc-tags{margin-top:.35rem}
+.badge{display:inline-block;padding:2px 6px;border-radius:2px;font-size:9px;font-family:'Cinzel',serif;letter-spacing:.5px;margin:2px 3px 2px 0;font-weight:700;text-transform:uppercase}
+.b-red{background:rgba(122,26,26,0.7);color:#f4c4c4;border:1px solid rgba(122,26,26,0.4)}
+.b-gold{background:rgba(122,96,26,0.7);color:#f4e4a0;border:1px solid rgba(122,96,26,0.4)}
+.b-teal{background:rgba(13,61,48,0.7);color:#a0d4c4;border:1px solid rgba(13,61,48,0.4)}
+.b-grey{background:rgba(40,30,15,0.7);color:var(--p3);border:1px solid rgba(80,60,30,0.4)}
+.b-purple{background:rgba(45,26,74,0.7);color:#c4a0f4;border:1px solid rgba(45,26,74,0.4)}
+
+.dm-note{background:rgba(122,26,26,0.12);border:1px solid rgba(122,26,26,0.35);border-radius:3px;padding:.4rem .6rem;font-size:11.5px;font-style:italic;color:#f4c4c4;margin-top:.4rem;line-height:1.5}
+.dm-note strong{font-style:normal;color:#f4d4d4;letter-spacing:.5px}
+
+/* Party status banner */
+.party-status{background:rgba(13,61,48,0.15);border:1px solid rgba(13,61,48,0.5);border-left:4px solid var(--teal);border-radius:3px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:13px;color:var(--p2)}
+.party-status strong{color:#a0d4c4;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:.3rem}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH ===== -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-title">Ironhold — DM Reference</div>
+    <div class="auth-sub">DM Command Centre — Authorised Access Only</div>
+    <input type="password" id="pw-input" class="auth-input" placeholder="DM PASSPHRASE" autocomplete="off">
+    <button class="auth-btn" onclick="checkAuth()">Enter</button>
+    <div id="auth-err" class="auth-err">Incorrect passphrase.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+<header class="page-header">
+  <div class="page-title">Ironhold — DM Reference</div>
+  <div class="header-right">
+    <span class="dm-badge">DM ONLY</span>
+    <a class="back-btn" href="index.html">← DM Dashboard</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- OVERVIEW -->
+  <div class="overview">
+    <h1>Ironhold</h1>
+    <div class="sub">Walled forge-town · ~10,000 souls · Southern Aelorian Territories · Member city, Aelorian union</div>
+    <p><strong>Three concentric ringed wards</strong> around a central gold-domed civic core. <strong>Eight districts</strong>, <strong>two gates</strong>. Rocky foothills, four days south of Aeloria. Celestial Plateau visible on southern horizon on clear days.</p>
+    <p>Governed locally by the <strong>Forge Council</strong> — 9 seats, 7 guild masters + 2 civic. Represented on the Aelorian Council by dwarven envoy <strong>Vorik Stonestrong</strong> (resident in Aeloria for 6 years, has not visited Ironhold in that time).</p>
+    <p>Patron god: <strong>Korvain</strong>. Every home has a hearth-shrine. Every foundry has a full one.</p>
+    <div class="stat-strip">
+      <span class="stat-chip">Population ~10,000</span>
+      <span class="stat-chip">3 Rings · 8 Districts · 2 Gates</span>
+      <span class="stat-chip">Forge Council — 9 seats</span>
+      <span class="stat-chip">Guilded Veil cell — ~20 (in hiding)</span>
+      <span class="stat-chip">Aurum weapons vote — end of Session 7</span>
+    </div>
+  </div>
+
+  <!-- MAP PLACEHOLDER -->
+  <div class="map-placeholder">
+    <strong>Map art placeholder</strong>
+    Inkarnate map pending. Working reference file: <code>Maps/Ironhold Option 2.png</code>. Once art is ready, this section becomes an interactive hotspot overlay like Aeloria's map.
+  </div>
+
+  <!-- PARTY STATUS -->
+  <div class="party-status">
+    <strong>Party status (evergreen)</strong>
+    The Wayward Company arrives at the <strong>Northern Gate</strong> at Session 6 opening. Travelling with them: Brenna Hartwell (parting at the gate), Sera Vey (going to find her sister), Torren's zombies (Sylas's), Valor the draft horse. They are carrying the sealed <strong>Coin Cipher chest</strong> in Sylas's Bag of Holding. Torren is dark-bound to Vrass. First Vrass whisper timing planned for Session 6 night 1.
+  </div>
+
+  <!-- GATES -->
+  <div class="ring-header">Gates <span class="ring-note">outer wall — controlled entry</span></div>
+  <div class="district-grid">
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Northern Gate</div><div class="district-num">Session 6 arrival</div></div>
+      <div class="district-desc">Smaller, plainer, older than the Southern Gate. Faces the Aeloria road. Handles nearly all daily traffic — Aelorian merchants, refugees, and recently, the Aurum Dominion diplomatic party. Manned round the clock by the Ironhold Watch's professional guards.</div>
+      <div class="dm-note"><strong>DM:</strong> Party arrives here at dawn on Day 12 (25 Frostfall). Brenna parts ways here to reach the merchants and explain what happened to the caravan. Sera peels off toward her sister. The Watch gate captain is polite but curious about the wagon-loss story.</div>
+    </div>
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Southern Gate</div><div class="district-num">ceremonial · Celestium</div></div>
+      <div class="district-desc">The grand trade gate. Twin bastion towers, portcullis, ceremonial approach. Faces the road up to the Celestial Plateau. Celestium Clan dwarven caravans, southern mineral shipments, and ceremonial plateau delegations all enter here — the grandeur is a nod to the ancient dwarven connection.</div>
+      <div class="dm-note"><strong>DM:</strong> The party won't likely use this gate unless they travel south. If Halvor tries to flee Ironhold, this is one route.</div>
+    </div>
+  </div>
+
+  <!-- INNER RING -->
+  <div class="ring-header">Inner Ring <span class="ring-note">civic core · around the great central dome</span></div>
+  <div class="district-grid">
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Council Ward</div><div class="district-num">District 1</div></div>
+      <div class="district-desc">Noble compounds, guild-leader town-houses, and the great gold-domed Forge Council Hall at the town's heart. Envoy's Rest guesthouse serves visiting Aurum delegates.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">Forge Council Hall</div>
+          <div class="loc-body">Gold-domed civic centre. Nine-seat governing body of Ironhold. Meets in the great domed hall. Council vote on the Aurum weapons contract scheduled end of Session 7.</div>
+          <div class="loc-tags"><span class="badge b-gold">civic centre</span><span class="badge b-red">Aurum vote pending</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Envoy's Rest</div>
+          <div class="loc-npc">Currently hosting: Envoy Veris Caelthorn</div>
+          <div class="loc-body">Guesthouse for visiting dignitaries. Aurum delegations never stay in permanent embassies; they use Envoy's Rest for the duration of a posting.</div>
+          <div class="loc-tags"><span class="badge b-purple">Aurum Dominion</span><span class="badge b-grey">Envoy Veris</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Halvor's Compound</div>
+          <div class="loc-npc">Halvor · outer edge of the ward</div>
+          <div class="loc-body">Modest merchant compound: front house, small yard, back warehouse. The warehouse holds Sera's sister <strong>Mira</strong> and her two children. Halvor lives modestly for the ward — quietly slipping in prestige.</div>
+          <div class="loc-tags"><span class="badge b-red">hostage site</span><span class="badge b-red">Session 7 confrontation</span><span class="badge b-grey">Halvor thread</span></div>
+          <div class="dm-note"><strong>DM:</strong> Halvor is being coerced from above (fact 19 in Known Lore, hidden). Direct interrogation reveals the coercion; killing him closes the door on discovering who holds his leash.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Anvilhome Ward</div><div class="district-num">District 2</div></div>
+      <div class="district-desc">Smaller outer gold-domed building — the Anvilhome, temple to Korvain. Priests' quarters, civic archives, and the ceremonial forge where new Council members are inducted. Quieter than the Council Ward. Older.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">The Anvilhome</div>
+          <div class="loc-npc">Priestess Elisara · High Priestess of Korvain</div>
+          <div class="loc-body">Temple to Korvain. Ceremonial forge for Council inductions. Elisara is guardian of the <strong>Heart of Ironhold</strong>, held in a reliquary chamber under the dome. She wears the iron key to the chamber on a leather thong at all times.</div>
+          <div class="loc-tags"><span class="badge b-gold">Korvain temple</span><span class="badge b-red">Heart of Ironhold</span><span class="badge b-grey">Vrass wants this</span></div>
+          <div class="dm-note"><strong>DM:</strong> Vrass's ultimate ask on Torren may involve the Heart. Elisara is precise, disciplined, not naive. Not a warrior — will call on the Watch and the Council.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MIDDLE RING -->
+  <div class="ring-header">Middle Ring <span class="ring-note">working professional</span></div>
+  <div class="district-grid">
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Foundry Row</div><div class="district-num">District 3</div></div>
+      <div class="district-desc">The heart of Ironhold's industry. Rows of foundries, master smithies, finishing shops. Heaviest smoke plumes in the town. Streets slick with soot, quiet at midnight, roaring by dawn.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">The Grand Foundry</div>
+          <div class="loc-npc">Guildmaster Bryndis Ashveil · Blades guild</div>
+          <div class="loc-body">Bryndis's operation. The largest and most respected foundry in the row. Senior Council member, unofficial leader of the reformist faction. Refuses the Aurum contract. Losing the political battle to Drake.</div>
+          <div class="loc-tags"><span class="badge b-teal">reformist</span><span class="badge b-gold">Blades guild</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Drake's Furnace</div>
+          <div class="loc-npc">Corvan Drake · Ingots guild</div>
+          <div class="loc-body">Drake's operation. Younger, ambitious. Wants the Aurum contract — sees Ironhold's future in it. More energy and more money to spread than Bryndis. Framed Kellan for cult activity to remove a competitor's fixer.</div>
+          <div class="loc-tags"><span class="badge b-red">Drake faction</span><span class="badge b-red">framed Kellan</span></div>
+          <div class="dm-note"><strong>DM:</strong> Drake does not know Kellan is Guilded Veil. He thinks he framed an ambitious rival smith's fixer. He does not perceive the wider political consequences of the Aurum deal.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Merchants' Quarter</div><div class="district-num">District 4</div></div>
+      <div class="district-desc">Main markets, mercantile inns, guild halls, moneylenders' offices. Trade contracts signed here; most non-forge business happens here. Stays open late.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">The Grey Kettle</div>
+          <div class="loc-npc">Mother Hessa · 28 years running</div>
+          <div class="loc-body">Ironhold's premier merchant inn. Neutral ground. Clean rooms. Proper wine. Where contracts get signed and where the party would most naturally set up if they want to be seen.</div>
+          <div class="loc-tags"><span class="badge b-teal">neutral ground</span><span class="badge b-gold">merchant favoured</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Wesley's Public Office</div>
+          <div class="loc-npc">Wesley Halloran · cover-merchant</div>
+          <div class="loc-body">Wesley's public-facing office. He works here by day as an ordinary mid-tier trader. His Coin Cipher operations run out of Warehouse 14 in The Slag.</div>
+          <div class="loc-tags"><span class="badge b-grey">Coin Cipher cover</span></div>
+          <div class="dm-note"><strong>DM:</strong> Wesley was expecting the sealed chest. When it doesn't arrive he'll need to explain — first to his uplines, eventually to whoever paid for it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">The Stonecut Ward</div><div class="district-num">District 5</div></div>
+      <div class="district-desc">Ironhold's dwarven quarter — ~800 dwarves and half-dwarves, plus families. Cliff-face workshops carved into the western rocks. Runs to jewellery, mail, precision work, and stone.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">The Ashfall</div>
+          <div class="loc-npc">Grust · 91 years running</div>
+          <div class="loc-body">The Stonecut Ward's inn. Dwarven-favoured. Quiet. Deep cellar. Excellent ale. Outsiders welcome by introduction only. Dwarven-bread yeast, malt, hearth-stone — you can hear yourself think.</div>
+          <div class="loc-tags"><span class="badge b-grey">dwarven-favoured</span><span class="badge b-teal">quiet</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Stonecut shrine (Korvain)</div>
+          <div class="loc-body">Smaller shrine to Korvain. Governance flows through a dwarven advocate to the Forge Council rather than direct.</div>
+          <div class="loc-tags"><span class="badge b-gold">Korvain</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTER RING -->
+  <div class="ring-header">Outer Ring <span class="ring-note">labour · transient · poor</span></div>
+  <div class="district-grid">
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Rustpocket</div><div class="district-num">District 6</div></div>
+      <div class="district-desc">Residential for foundry workers, transient labourers, and everyone Ironhold needs but doesn't want to see. Timber tenements, narrow streets, cheap beer. Guilded Veil cell operates here (from a safehouse, currently sheltering Kellan).</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">The Broken Anvil</div>
+          <div class="loc-npc">Riven · 11 years running</div>
+          <div class="loc-body">Cheapest bed in town. Loudest crowd. Rough house rules applied evenly. If the party wants information nobody else will share, this is the place — but they'll be watched from the door onward.</div>
+          <div class="loc-tags"><span class="badge b-red">rough house</span><span class="badge b-grey">information</span></div>
+        </div>
+        <div class="location">
+          <div class="loc-name">Guilded Veil safehouse (Kellan)</div>
+          <div class="loc-npc">Kellan Bracewell · Ironhold Veilmaster · in hiding</div>
+          <div class="loc-body">Location DM-discretionary. Small cell (~20 people, mostly foundry workers by day). Focused on contract-adjacent smuggling and modest merchant tribute. Kept low to avoid Watch attention.</div>
+          <div class="loc-tags"><span class="badge b-red">framed by Drake</span><span class="badge b-teal">possible ally</span></div>
+          <div class="dm-note"><strong>DM:</strong> Kellan is a possible contact if Merric sends word ahead, or if the party investigates the Guilded Veil in Ironhold on their own initiative. She has been framed but not caught.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">The Slag</div><div class="district-num">District 7</div></div>
+      <div class="district-desc">The worst area of Ironhold. Fringe by the outer wall where the acid runoff drains, where the poorest live, where the town's problems are quietly dumped. The Watch doesn't patrol here after dark unless they must.</div>
+      <div class="location-list">
+        <div class="location">
+          <div class="loc-name">Warehouse #14</div>
+          <div class="loc-npc">Operated (secretly) by Wesley Halloran · Coin Cipher way-station</div>
+          <div class="loc-body">Officially a mid-tier merchant's bulk-goods storage. Actually a Coin Cipher way-station. <strong>The chest was supposed to arrive here.</strong> Wesley is expecting delivery.</div>
+          <div class="loc-tags"><span class="badge b-grey">Coin Cipher</span><span class="badge b-red">chest expected · won't arrive</span></div>
+          <div class="dm-note"><strong>DM:</strong> When the chest doesn't arrive, Wesley has to explain. Torren may realise the party's dragon problem intersects with his own network's expectations. The chest's contents in Sylas's Bag: sealed by eclipse mark (Coin Cipher), necromantic aura per Detect Magic — Sylas hasn't opened it.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTSIDE WALLS -->
+  <div class="ring-header">Outside the walls <span class="ring-note">agricultural</span></div>
+  <div class="district-grid">
+    <div class="district-card">
+      <div class="district-header"><div class="district-name">Farmhold Reach</div><div class="district-num">District 8</div></div>
+      <div class="district-desc">Patchwork farmland northeast of the town. Small tenant farms, animal pens, cottage smallholds. Feeds Ironhold. Not walled, not guarded — the Watch runs occasional patrols but the reach is effectively open. When Ironhold is anxious, farmhold families move inside the walls; the walls have not needed to close in living memory.</div>
+      <div class="loc-tags"><span class="badge b-grey">agricultural</span><span class="badge b-teal">refuge in a crisis</span></div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /#app -->
+
+<script>
+const PW = 'eldoria2dm';
+const AUTH_KEY = 'eldoria-dm-auth';
+const AUTH_DAYS = 30;
+
+function unlock() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').classList.add('ready');
+  document.getElementById('app').style.display = 'block';
+}
+
+function checkAuth() {
+  const v = document.getElementById('pw-input').value.toLowerCase().trim();
+  if (v === PW) {
+    try {
+      const expiry = Date.now() + AUTH_DAYS * 24 * 60 * 60 * 1000;
+      localStorage.setItem(AUTH_KEY, String(expiry));
+    } catch (e) {}
+    unlock();
+  } else {
+    document.getElementById('auth-err').classList.add('on');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+document.getElementById('pw-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkAuth(); });
+
+window.addEventListener('load', () => {
+  try {
+    const stored = localStorage.getItem(AUTH_KEY);
+    if (stored && Number(stored) > Date.now()) {
+      unlock();
+      return;
+    }
+  } catch (e) {}
+  document.getElementById('pw-input').focus();
+});
+</script>
+
+</body>
+</html>
