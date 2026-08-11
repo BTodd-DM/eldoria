@@ -611,6 +611,7 @@ body {
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="nav-btn" onclick="showPanel('lore',this)">📖 Lore</button>
+  <button class="nav-btn" onclick="showPanel('history',this)">🕰 History</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
@@ -1304,6 +1305,18 @@ body {
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 6 party currently at Ironhold — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, the Aurum Dominion push for the Ironhold weapons contract, or Vrass\'s dark bond on Torren')">Generate Side Quest Hooks ↗</button>
 </div>
 
+<!-- ============ HISTORY (Update 7) ============ -->
+<div id="panel-history" class="panel">
+  <div class="sec-title">🕰 Character History — restore any of the last 20 saves</div>
+  <div class="alert alert-info">
+    Every time a character sheet saves (HP, spells, inventory, anything), the previous state is snapshotted here. Keep last 20 per PC — older entries age out automatically. Restore is reversible (restore itself creates a snapshot). Zero token cost — client-side only.
+  </div>
+  <div style="margin-bottom:.75rem">
+    <button class="action-btn" onclick="if(window.SheetHistory) SheetHistory.refresh()">🔄 Refresh</button>
+  </div>
+  <div id="history-container"></div>
+</div>
+
 <!-- ============ LORE (Update 3) ============ -->
 <div id="panel-lore" class="panel">
   <div class="sec-title">📖 Known Lore — who knows what</div>
@@ -1826,6 +1839,7 @@ body {
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
 <script src="lore-directory.js"></script>
+<script src="sheet-history-ui.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -1952,6 +1966,10 @@ function showPanel(id, btn) {
     // Update 3 — Lore grid: same belt-and-braces re-init on tab click.
     if(id === 'lore' && window.LoreDirectory && typeof LoreDirectory.init === 'function') {
       LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
+    }
+    // Update 7 — Sheet history: refresh whenever the tab opens (so it always shows current snapshots).
+    if(id === 'history' && window.SheetHistory && typeof SheetHistory.init === 'function') {
+      SheetHistory.init('history-container');
     }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
