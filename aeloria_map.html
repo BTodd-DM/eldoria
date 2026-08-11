@@ -112,6 +112,7 @@ body.player-mode .player-only.npc-row{display:flex}
   <div class="legend-item" onclick="showLocation('wayfarers_rest')"><div class="legend-dot" style="background:#0a4a3a"></div>Wayfarer's Rest</div>
   <div class="legend-item" onclick="showLocation('pigs_head')"><div class="legend-dot" style="background:#6a1a1a"></div>Pig's Head Inn</div>
   <div class="legend-item" onclick="showLocation('vaelorans_tower')"><div class="legend-dot" style="background:#3a1a5a"></div>Spire of the Silver Eclipse</div>
+  <div class="legend-item" onclick="showLocation('scholars_circle')"><div class="legend-dot" style="background:#2a4a7a"></div>Scholars' Circle</div>
   <div class="legend-item" onclick="showLocation('temple_luminos')"><div class="legend-dot" style="background:#0a3a5a"></div>Temple of Luminos</div>
   <div class="legend-item" onclick="showLocation('oleary_stables')"><div class="legend-dot" style="background:#3a4a1a"></div>O'Leary's Stables</div>
   <div class="legend-item" onclick="showLocation('kolts_depot')"><div class="legend-dot" style="background:#5a3a10"></div>Kolt's Depot</div>
@@ -156,6 +157,11 @@ body.player-mode .player-only.npc-row{display:flex}
 
   <!-- Spire of the Silver Eclipse (NE corner) -->
   <div class="hotspot building" style="left:70%;top:11.2%;width:8.7%;height:11.7%" onclick="showLocation('vaelorans_tower')" title="Spire of the Silver Eclipse">
+  </div>
+
+  <!-- Scholars' Circle -->
+  <div class="hotspot building" style="left:60%;top:26%;width:6.5%;height:5%" onclick="showLocation('scholars_circle')" title="Scholars' Circle">
+    <div class="hotspot-label always-on" style="font-size:8px">Scholars' Circle</div>
   </div>
 
   <!-- O'Leary's Stables -->
@@ -523,6 +529,37 @@ body.player-mode .player-only.npc-row{display:flex}
         <div class="panel-section dm-only"><div class="section-label">Breaking In</div><div class="section-body">Arcana DC 18: detect ritual energy from street level. Stealth DC 20: avoid Alarm wards on entry. Lower levels: Arcane Lock DC 25 (Dispel Magic DC 18 to bypass). The ritual room: additional ward triggers if shard is touched without Vaeloran's amulet.</div></div>
         <div class="panel-section dm-only"><div class="section-label">What Can Be Found</div><div class="section-body">Taren Myles's research notes — fragments of Vaeloran's plan in coded form (Investigation DC 16 to understand). The Aurek correspondence — letters signed with the alias. The shard (Stage 3 phylactery component). Lyssandra — who does not know she needs saving.</div></div>
         <textarea class="notes-area dm-only" placeholder="DM notes for the Spire..." onchange="saveNote('vaelorans_tower',this.value)" id="note-vaelorans_tower"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHOLARS' CIRCLE -->
+  <div class="panel-card" id="loc-scholars_circle">
+    <div class="panel-header">
+      <div>
+        <div class="panel-name">The Scholars' Circle</div>
+        <div class="panel-sub player-only">High Spires District · Eldoria's most prestigious arcane institution · Sylas's alma mater</div>
+        <div class="panel-sub dm-only">High Spires District · Vaeloran's quiet base · Vaelith's post</div>
+      </div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Eldoria's most prestigious arcane institution — an independent society of scholars and practitioners of magic. The building itself is a modest stone hall by High Spires standards, its front doors flanked by two silver lanterns that never go out. Inside: reading rooms, lecture halls, the <em>Vellum Room</em> (senior members only), and workshops for the various sub-disciplines. Publicly collegial, privately competitive.</div></div>
+        <div class="panel-section"><div class="section-label">Character</div><div class="section-body">Fellows range from young scholarship students to elder mages who have not left the building in years. The Circle is fiercely proud of its independence — it holds no Council seat by choice, though the Aeloria Council has offered one repeatedly.</div></div>
+        <div class="panel-section player-only"><div class="section-label">Sylas's Connection</div><div class="section-body">Sylas earned his scholarship here and graduated top of his class. His mentor was Professor <strong>Vaelith Morgrave</strong> (Illusion). He remains an alumnus in good standing.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Notable Members</div><div class="section-body">
+          <div class="npc-row"><div class="npc-av" style="background:#2a2a4a">VM</div><div><div class="npc-name">Professor Vaelith Morgrave</div><div class="npc-body">Illusion. Sylas's former mentor. Quiet, meticulous, respected.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a1a5a">VD</div><div><div class="npc-name">Vaeloran Duskwhisper</div><div class="npc-body">Senior colleague. Has never accepted a Circle office. Modest presence, deep influence.</div></div></div>
+        </div></div>
+        <div class="panel-section dm-only"><div class="section-label">DM — What's Really Here</div>
+          <div class="dm-note">Vaeloran's quiet base. He sponsors four current apprenticeships, vouched for the admission of three more, and quietly funds two Applied-faction members. Every one of them owes him. The Circle does not know Aurek Voln Drowhiss exists or that he is Vaeloran — no member has ever seen the two names in the same document. <strong>Vaelith is the wild card:</strong> she noticed Vaeloran's interest in Sylas years ago and has begun to wonder whether she was too polite. Reaction-guide only; no discovery clock.</div>
+        </div>
+        <div class="panel-section dm-only"><div class="section-label">Fault Lines (DM)</div><div class="section-body">Four internal factions the DM can lean on: <strong>Applied</strong> (practical/political — Vaeloran's quiet stronghold), <strong>Pure Theory</strong>, <strong>Antiquarian</strong>, <strong>Ethics Council</strong>. Cross-faction tensions are the natural surface for any Circle plot beat.</div></div>
+        <div class="panel-section dm-only"><div class="section-label">When Party Returns from Ironhold</div><div class="section-body">Vaeloran plans to bring Sylas back into Circle social life — a returning alumnus warmly received. Salon invitations. Reconnection with the Applied-faction members Vaeloran owns. Sylas flattered and studied without realising it.</div></div>
+        <textarea class="notes-area dm-only" placeholder="DM notes for the Scholars' Circle..." onchange="saveNote('scholars_circle',this.value)" id="note-scholars_circle"></textarea>
       </div>
     </div>
   </div>
