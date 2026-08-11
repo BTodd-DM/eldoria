@@ -1,0 +1,160 @@
+{
+  "cues": [
+    {
+      "id": "brenna-hartwell",
+      "name": "Brenna Hartwell",
+      "role": "caravan master, ex-Watch",
+      "location": "Kolt's Depot (current); travels the southern road",
+      "voice": "Practical, plain, low-shine. Says what she means and stops.",
+      "opening": "This is where we part, then. I'll see the merchants — you have your business.",
+      "wants": "Make good on her promise (25gp per escort), tell the merchants what happened, get back to Aeloria.",
+      "secrets": [
+        "She saw more than she said about the chest sleight-of-hand. Chose not to notice.",
+        "Was paid extra by the sealed-chest client via Kolt — she doesn't know it's Coin Cipher.",
+        "Has done runs to Ironhold for twenty years. Knows who to trust in each ward."
+      ],
+      "exit": "Takes the party's names, wishes them well, walks toward the Merchants' Quarter. She'll be at the Grey Kettle by evening if they need her."
+    },
+    {
+      "id": "bryndis-ashveil",
+      "name": "Bryndis Ashveil",
+      "role": "Guildmaster of the Blades Guild; senior [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]] member; leader of the reformist faction",
+      "location": "Ironhold — the Grand Foundry (Foundry Row) or the Council Hall (Council Ward)",
+      "voice": "Quiet, spare, dwarven-measured. Never repeats herself. Long silences are not awkward to her.",
+      "opening": "Sit. Speak. I'll listen once — say what matters.",
+      "wants": "Defeat the Aurum contract vote. Find allies who understand what the contract really costs.",
+      "secrets": [
+        "She has watched three Aurum overtures come through Ironhold in her lifetime and refused all three.",
+        "She knows Drake framed someone but doesn't know who or why — she smells wrong there.",
+        "Would trust the party if Merric vouches for them — she served alongside a Luminar once.",
+        "She is aware she may lose this vote."
+      ],
+      "exit": "Nods once — the interview is over. If she liked them, she'll send word. If not, she won't."
+    },
+    {
+      "id": "corvan-drake",
+      "name": "Corvan Drake",
+      "role": "Guildmaster of the Ingots Guild; leading the [[Factions/Aurum Dominion|Aurum Dominion]] contract faction on the [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]]",
+      "location": "Ironhold — Drake's Furnace (Foundry Row) or the Council Hall (Council Ward)",
+      "voice": "Sharp, complete sentences. Finishes every one. Charming when it costs nothing.",
+      "opening": "The Wayward Company. I've heard the road story. Sit — you look like people who could use a drink.",
+      "wants": "Win the contract vote. Recruit useful allies. Look like a reformist while running a shakedown network.",
+      "secrets": [
+        "Framed Kellan Bracewell for cult activity. Doesn't know she's Guilded Veil — thinks he punished a rival's fixer.",
+        "He genuinely believes the Aurum contract is good for Ironhold. He is not a mustachio-twirler.",
+        "Quietly negotiating a personal cut with Envoy Veris — 3% of contract value, off the books."
+      ],
+      "exit": "Buys the round if it goes well. Leaves early if it doesn't — 'business, forgive me.' Will look them up later either way."
+    },
+    {
+      "id": "envoy-veris-caelthorn",
+      "name": "Envoy Veris Caelthorn",
+      "role": "Aurum Dominion diplomatic envoy; junior Kaelthorn cousin; wizard; Crystal Shards field operative; personal Coin Cipher client",
+      "location": "Ironhold — Envoy's Rest guesthouse, Council Ward (in town since one week before Session 6)",
+      "voice": "Soft-spoken, surgical, polished. Smiles often — never warmly. Long careful pauses.",
+      "opening": "Ah. New arrivals. I don't believe we've had the pleasure.",
+      "wants": "Secure the weapons contract (public). Assess useful contacts (private). Note Sylas's Vellaris curse-line if he sees it.",
+      "secrets": [
+        "He is a personal Coin Cipher client — collects necromantic curiosities via Aurek-branded shipments.",
+        "Reports to Princess Selene privately via the Crystal Shards network.",
+        "Does NOT know Aurek is Vaeloran.",
+        "Will recognise Sylas's light purple skin as the Vellaris curse-line marker. Won't surface it — will note it."
+      ],
+      "exit": "Bows precisely, offers his card at Envoy's Rest, disengages smoothly. Two Aurum Sentinels never more than ten paces away."
+    },
+    {
+      "id": "halvor",
+      "name": "Halvor",
+      "role": "Ironhold merchant, desperate debtor",
+      "location": "Ironhold (warehouse on edge of town)",
+      "voice": "Soft, hesitant. Voice cracks. Avoids eye contact. Apologises for things he shouldn't apologise for.",
+      "opening": "Please — I don't know what you want. This is a private compound. Please.",
+      "wants": "For this to end. For his family to be safe. He does not know what safe means anymore.",
+      "secrets": [
+        "He is being coerced from above — someone holds his own family (daughter Elsi and his wife).",
+        "He does not want to hurt Mira or the children. He has been feeding them properly.",
+        "He knows the person who holds his family only by voice. Would recognise it again.",
+        "Will break if pressed carefully. Will die before he breaks if pressed cruelly."
+      ],
+      "exit": "Collapses into a chair if things go well and asks for help. Runs for the back room if things go badly — where Mira is."
+    },
+    {
+      "id": "kellan-bracewell",
+      "name": "Kellan Bracewell",
+      "role": "[[Factions/Guilded Veil|Guilded Veil]] Veilmaster of the Ironhold cell",
+      "location": "Ironhold — currently in hiding (Rustpocket safehouse; specific location DM-discretionary)",
+      "voice": "Low, controlled, quietly angry. Chooses every word.",
+      "opening": "You came from Merric. Sit — quietly. And close that door.",
+      "wants": "Clear her name. Find who fed Drake the fake documents. Keep her cell intact.",
+      "secrets": [
+        "She knows Drake framed her. She does not know why yet.",
+        "She has three people in Drake's Furnace on her payroll — she can get eyes there.",
+        "Personal reason to hate the Naturus cult — a cousin fell to it two years ago.",
+        "Will help the party against Drake in exchange for their help clearing her."
+      ],
+      "exit": "Slips out the back through a Rustpocket rooftop route the party did not enter through. Sends word via a coded ash-mark on their door if she wants to meet again."
+    },
+    {
+      "id": "mother-hessa",
+      "name": "Mother Hessa",
+      "role": "Proprietor of the Grey Kettle inn, Merchants' Quarter",
+      "location": "Ironhold — the Grey Kettle (Merchants' Quarter)",
+      "voice": "Warm, measured, professionally hospitable. Uses first names once she's learned them.",
+      "opening": "You'll want food first, then rooms. I have both. Sit.",
+      "wants": "Fill her rooms with paying, well-behaved guests. Keep the Grey Kettle's reputation as neutral ground.",
+      "secrets": [
+        "She sees everything and knows most things. The Grey Kettle is where Ironhold's contracts get signed — including some that shouldn't.",
+        "She does not take sides in the Aurum contract fight but has private opinions.",
+        "She has quietly refused Corvan Drake's business twice this year — he doesn't know why."
+      ],
+      "exit": "Shows them to rooms. Available at the bar most evenings if they need to talk. Won't gossip but will listen."
+    },
+    {
+      "id": "sera-vey",
+      "name": "Sera Vey",
+      "role": "farmer's wife from Stillbrook, seeking to free her sister and nieces/nephews",
+      "location": "camped just outside Ironhold's northern gates with the party (post-Session 5); will leave the party at the gates in Session 6",
+      "voice": "Wounded, urgent, honest. Speaks quickly under stress.",
+      "opening": "I have to go now. Mira and the children — I can't wait any longer.",
+      "wants": "Get to Halvor's compound. Free her sister and nieces/nephews. Doesn't care about her own safety.",
+      "secrets": [
+        "She has no plan beyond 'find them'. Will act rashly if the party doesn't accompany her.",
+        "She saw Halvor's face when Mira was taken — would recognise him instantly.",
+        "She is prepared to die for her family and knows the odds."
+      ],
+      "exit": "Thanks the party formally if they help. If they don't, walks off alone toward the Council Ward outer edge — where Halvor's compound is."
+    },
+    {
+      "id": "gorren",
+      "name": "Sergeant Gorren",
+      "role": "Ironhold Watch — Sergeant of the Northern Gate",
+      "location": "Ironhold — Northern Gate (day shift, most days)",
+      "voice": "Deep, weathered, unhurried. Reads papers aloud slowly. Sighs before questions.",
+      "opening": "Papers. Business in Ironhold. Any goods to declare.",
+      "wants": "Get through the day. Process the party correctly. Warm his tea.",
+      "secrets": [
+        "Grew up in Rustpocket — family still lives there. Sympathetic to the poor if pressed.",
+        "His shift ends at dusk. Anyone arriving late gets processed by his less patient replacement.",
+        "Has heard rumours the Aurum envoy paid off the Southern Gate captain for smoother processing."
+      ],
+      "exit": "Waves them through with a tired 'welcome to Ironhold.' If suspicious, quietly signals the shift captain."
+    },
+    {
+      "id": "vrass",
+      "name": "Vrass",
+      "role": "dragon patron / dark bond holder",
+      "location": "rocky overhang lair, half a day south-east of the southern road (near a foul stream)",
+      "voice": "Cold, patient, hissed vowels drawn long. Sounds almost affectionate when pleased — worse than when angry.",
+      "opening": "*Torren. My Torren. Are you settled in your new town.*",
+      "wants": "First ask: the Heart of Ironhold. Or a preliminary step toward it — reconnaissance, a name, an access route.",
+      "secrets": [
+        "He is testing what Torren will do for him. This is a calibration, not the main ask yet.",
+        "Planning his return to the Frostwood Marsh — the Heart of Ironhold is a key piece.",
+        "Does not know about the Bog Hag threat, only that he was driven out.",
+        "The bond means Vrass can whisper from any distance; Torren can summon Vrass by speaking his name three times aloud in solitude."
+      ],
+      "exit": "Fades. No physical presence — this is inside Torren's head. Leaves a residual chill and the impression Vrass is listening still."
+    }
+  ],
+  "generated": true
+}

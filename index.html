@@ -612,6 +612,7 @@ body {
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="nav-btn" onclick="showPanel('lore',this)">📖 Lore</button>
   <button class="nav-btn" onclick="showPanel('history',this)">🕰 History</button>
+  <button class="nav-btn" onclick="showPanel('cues',this)">🎭 Cues</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
@@ -1305,6 +1306,18 @@ body {
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 6 party currently at Ironhold — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, the Aurum Dominion push for the Ironhold weapons contract, or Vrass\'s dark bond on Torren')">Generate Side Quest Hooks ↗</button>
 </div>
 
+<!-- ============ CUE CARDS (Update 8) ============ -->
+<div id="panel-cues" class="panel">
+  <div class="sec-title">🎭 NPC Cue Cards — pin who's on stage this session</div>
+  <div class="alert alert-info">
+    Quick-reference cards for named NPCs likely to speak — voice, opening line, wants, secrets, exit. Pin the NPCs active this session; pinned cards render big at the top so you can grab them mid-play. Pins sync across your devices.
+  </div>
+  <div style="margin-bottom:.75rem">
+    <button class="action-btn" onclick="if(window.CueCards) CueCards.refresh()">🔄 Refresh</button>
+  </div>
+  <div id="cue-container"></div>
+</div>
+
 <!-- ============ HISTORY (Update 7) ============ -->
 <div id="panel-history" class="panel">
   <div class="sec-title">🕰 Character History — restore any of the last 20 saves</div>
@@ -1840,6 +1853,7 @@ body {
 <script src="notes-ui.js"></script>
 <script src="lore-directory.js"></script>
 <script src="sheet-history-ui.js"></script>
+<script src="cue-cards.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -1970,6 +1984,10 @@ function showPanel(id, btn) {
     // Update 7 — Sheet history: refresh whenever the tab opens (so it always shows current snapshots).
     if(id === 'history' && window.SheetHistory && typeof SheetHistory.init === 'function') {
       SheetHistory.init('history-container');
+    }
+    // Update 8 — Cue cards: init on tab open.
+    if(id === 'cues' && window.CueCards && typeof CueCards.init === 'function') {
+      CueCards.init('cue-container');
     }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }

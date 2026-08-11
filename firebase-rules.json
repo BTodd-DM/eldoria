@@ -23,6 +23,10 @@
     "lore-known": {
       ".read": true,
       ".write": true
+    },
+    "cue-active": {
+      ".read": true,
+      ".write": true
     }
   }
 }
