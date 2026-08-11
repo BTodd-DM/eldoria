@@ -689,11 +689,11 @@ body {
 
   <div class="sec-title">Quick Session Tools</div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-    <button class="action-btn" onclick="sendPrompt('Design the Kolt\'s Depot caravan escort job for The Wayward Company — level 5 party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos), road to Ironhold, include a road encounter tied to the Naturus network and an NPC on the caravan with a secret')">Design Caravan Job ↗</button>
-    <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the The Wayward Company party is at Kolt\'s Depot? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 5) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in The Wayward Company — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Advance the The Wayward Company Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
-    <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the The Wayward Company party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design the Wayward Company\'s Session 6 arrival at Ironhold\'s northern gate — Torren (halfling assassin rogue), Sylas (tiefling illusionist wizard), Orin (cleric of Luminos), all level 6, dawn of Day 12. Include how Brenna parts ways, Sera\'s exit toward Halvor\'s compound, first impressions of the gate captain, and a subtle sign of the town\'s political tension')">Session 6 Arrival ↗</button>
+    <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the Wayward Company is camped outside Ironhold\'s northern gates? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 6) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in The Wayward Company — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Advance the Wayward Company Instability Clock by one segment — describe what event just happened in Aeloria, how the city reacts, and how Vaeloran quietly benefits')">Advance Clock ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Generate a random street encounter in Aeloria Crossroads for the Wayward Company party — tie it subtly to Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Random Encounter ↗</button>
   </div>
   </div>
 
@@ -859,19 +859,19 @@ body {
     <div class="card gold" style="margin-bottom:1rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
         <div class="card-title" style="margin:0">🟡 TORREN — Personal Arc</div>
-        <span class="badge b-grey">PENDING BACKSTORY</span>
+        <span class="badge b-red">DARK BOND ACTIVE</span>
       </div>
       <div class="grid-2" style="gap:.75rem">
         <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">WHAT WE KNOW</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Halfling Assassin Rogue, level 5. Wounded Lyssandra. Matilda (horse) escaped north. Backstory TBC from player.</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">CANON</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Halfling Assassin Rogue, level 6. Career Aelorian Territories Watch (Stonegate garrison, Capt. Vall) → publicly discharged → recruited by <strong>Wenzel "The Kite" Tosscobble</strong> into the <strong>Guilded Veil</strong>. Came south to Aeloria as inter-cell liaison. Sworn to lifetime service to <strong>Vrass</strong> (Session 5) — first ask arrives Session 6.</div>
         </div>
         <div>
-          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">HOOKS READY TO DEPLOY</div>
-          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)">Matilda's tracks lead north — toward Aurora Peaks. Could connect to Aurum Dominion or Valdris story. Awaiting backstory to build personal arc.</div>
+          <div style="font-size:11px;color:var(--gold2);letter-spacing:.8px;font-family:'Cinzel',serif;margin-bottom:.35rem">LIVE HOOKS</div>
+          <div style="font-size:12.5px;line-height:1.7;color:var(--parch2)"><strong>Vrass whisper</strong> — first ask Session 6 night 1. <strong>Matilda</strong> — tracks north (still open). <strong>Coin Cipher chest</strong> — Wesley expected it in Warehouse 14; when it doesn't arrive Torren's networks strain. <strong>Wary of magic-wielders</strong> (Sylas included) — Stonegate PTSD.</div>
         </div>
       </div>
-      <textarea class="editable-area" id="prep-torren" placeholder="Add Torren's backstory notes here when received..." onchange="saveNote('prep-torren',this.value)" style="height:70px;margin-top:.5rem"></textarea>
+      <textarea class="editable-area" id="prep-torren" placeholder="Torren notes for the next session..." onchange="saveNote('prep-torren',this.value)" style="height:70px;margin-top:.5rem"></textarea>
     </div>
 
     <!-- ORIN'S TRIBE -->
@@ -897,7 +897,7 @@ body {
 
   </div>
 
-  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of The Wayward Company — the party is level 5 at Kolt\'s Depot. Active threads: Naturus cult, Merric/Orin confrontation, caravan to Ironhold, Vaeloran\'s lich progress (Stage 3 shard attunement). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
+  <button class="action-btn gold" onclick="sendPrompt('Help me prep the next session of The Wayward Company — the party is level 6, camped outside Ironhold\'s northern gate, entering the town at Session 6 opening. Active threads: Halvor holds Sera\'s family; Aurum Dominion vs Bryndis on the weapons contract vote (Session 7); Kellan Bracewell framed by Drake and in hiding; Vrass\'s first whisper to Torren; Coin Cipher chest hidden in Sylas\'s Bag of Holding; Vaeloran\'s lich progress (Stage 3). Give me a structured session outline with opening scene, 3 key beats, possible player choices, and how to end on a cliffhanger.')">Full Session Prep ↗</button>
   </div>
 
   <div id="tab-calendar" style="display:none">
@@ -1005,7 +1005,6 @@ body {
 
   <div class="sec-title">Session Notes (DM Only)</div>
   <textarea class="editable-area" id="session-notes" placeholder="Add notes for your next session here..." onchange="saveNote('session-notes',this.value)" style="height:120px"></textarea>
-  <button class="action-btn" onclick="sendPrompt('Help me write the session recap for the next The Wayward Company session — the party is level 5 at Kolt\'s Depot considering a caravan escort to Ironhold while the Naturus network spreads and Merric awaits a reckoning')">Write Next Recap ↗</button>
 
   <hr class="divider">
   <div class="sec-title">Roll20 Maps</div>
@@ -1056,7 +1055,7 @@ body {
         </div>
       </div>
 
-      <button class="action-btn" onclick="sendPrompt('Suggest a backstory for Torren (halfling assassin rogue, level 5) in The Wayward Company that connects to the Aurora Peaks, Aurum Dominion, or the Guilded Veil — something that explains his skills and gives Vaeloran a personal hook')">Backstory Hook ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Torren swore lifetime service to Vrass (young black dragon) at the end of Session 5. Design Vrass\'s first whisper to Torren in Session 6 — the first ask Vrass makes of his sworn servant. Something small enough Torren might comply, large enough it costs him. Include how the whisper arrives (dream? waking impression? letter carried by carrion bird?), what Vrass asks for, and what the price of refusal is')">Torren's Vrass Dilemma ↗</button>
       <a href="https://www.dndbeyond.com/characters" target="_blank" data-dndb="torren" class="action-btn" style="display:inline-block;text-decoration:none">📜 D&amp;D Beyond Sheet ↗</a>
     </div>
 
@@ -1302,7 +1301,7 @@ body {
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Kolt's Depot — caravan escort to Ironhold (Session 5)</div><div class="card-body">Delivered Wagons 1 and 3 to Ironhold. Wagon 2 lost to Vrass. Brenna Hartwell's personally-promised 25 gp stands. Coin Cipher chest was <em>believed</em> lost but is in fact hidden in Sylas's Bag of Holding — this remains live as the Wesley Halloran inquiry.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>The gnoll threat</div><div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar. Shrine to Naturus discovered — opened new threads.</div></div>
   <div class="card"><div class="card-title"><span class="qdot qdot-done"></span>Find Lyssandra Vale</div><div class="card-body">Found, captured, returned to Vaeloran. At a cost the party doesn't yet understand.</div></div>
-  <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 5 party — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, or the Aurum Dominion\'s interest in Aeloria')">Generate Side Quest Hooks ↗</button>
+  <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 6 party currently at Ironhold — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, the Aurum Dominion push for the Ironhold weapons contract, or Vrass\'s dark bond on Torren')">Generate Side Quest Hooks ↗</button>
 </div>
 
 <!-- ============ LORE (Update 3) ============ -->
@@ -1371,7 +1370,7 @@ body {
     <div class="card-body">Location: arcane archive. A player rearranges letters idly. No roll required if they physically rearrange it. Skill-based: Investigation DC 20. When they confront Merric with this name, he freezes. That is the confirmation.<br><br>Merric eventually notices the anagram himself and panics. Options: tries to blackmail Vaeloran, tries to flee the city, confesses to Orin, or is assassinated — leaving an encoded note revealing the truth.</div>
   </div>
 
-  <button class="action-btn" onclick="sendPrompt('Advance the The Wayward Company Instability Clock by one segment — describe the specific event that just happened in Aeloria, the city\'s immediate reaction, and how Vaeloran Duskwhisper quietly exploits it to position himself as the solution')">Advance Clock ↗</button>
+  <button class="action-btn" onclick="sendPrompt('Advance the Wayward Company Instability Clock by one segment — describe the specific event that just happened in Aeloria, the city\'s immediate reaction, and how Vaeloran Duskwhisper quietly exploits it to position himself as the solution')">Advance Clock ↗</button>
 </div>
 
 <!-- ============ COMBAT ============ -->
@@ -1423,10 +1422,10 @@ body {
       <hr class="divider">
       <div class="sec-title">Encounter Builder</div>
       <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <button class="action-btn" onclick="sendPrompt('Build a challenging level 5 D&D 5e combat encounter for the The Wayward Company party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) on the road to Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Build a level 5 D&D 5e encounter for The Wayward Company in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter in the Pig\'s Head Inn back room for the The Wayward Company party — finding evidence connecting Kaelith\'s Naturus cult to the Guilded Veil without being caught')">Guild Infiltration ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Design a level 5 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Build a challenging level 6 D&D 5e combat encounter for the Wayward Company party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) inside or around Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives targeting the party. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Build a level 6 D&D 5e encounter for The Wayward Company in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter at Halvor\'s Compound in Ironhold for the Wayward Company party (level 6) — freeing Sera\'s sister Mira and her two children from the back warehouse without triggering the front-house guards or killing Halvor. Include skill DCs, guard placement, and complications.')">Halvor Rescue ↗</button>
+        <button class="action-btn" onclick="sendPrompt('Design a level 6 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
       </div>
     </div>
 
@@ -1541,7 +1540,7 @@ body {
         </div>
       </div>
     </div>
-    <button class="action-btn" onclick="sendPrompt('Based on the The Wayward Company world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold caravan? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Based on the Wayward Company world state, what would happen in each region over the next 3 sessions if the party completely ignores them and focuses only on the Ironhold arc? Give me specific consequences for: Aurum Dominion, Verdant Expanse, Serpent Isles, Stonemarked tribe, and the Instability Clock.')">World Consequences ↗</button>
   </div>
 
   <div id="tab-aeloria" style="display:none">
@@ -1645,7 +1644,7 @@ body {
       <div class="card-sub">City of constant change · Feywild</div>
       <div class="card-body">A city of constant change and artistic expression. Layout and architecture morph and shift as if guided by the city's own whims. Bridges of living vines connect treehouse-like structures. Enchanting lights dance like fireflies. Hub of creativity where Changelings and fey creatures celebrate art, music, and magic. Vibrant festivals blend reality and illusion. Residents take on multiple personas daily.</div>
     </div>
-    <button class="action-btn" onclick="sendPrompt('Design a Feywild encounter in or near Thalindel for the The Wayward Company campaign involving Queen Thessavaine — she wants something from the party that seems trivial but has significant political implications. Include her personality, her court, and a bargain she offers')">Design Feywild Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a Feywild encounter in or near Thalindel for the Wayward Company campaign involving Queen Thessavaine — she wants something from the party that seems trivial but has significant political implications. Include her personality, her court, and a bargain she offers')">Design Feywild Encounter ↗</button>
   </div>
 </div>
 
@@ -1791,7 +1790,7 @@ body {
       <div class="card-sub">Random scenes — all tied to your plot threads</div>
       <div class="gen-output" id="enc-out">Click to generate a scene...</div>
       <button class="action-btn" onclick="genEncounter()">Roll Scene</button>
-      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC encounter in Aeloria Crossroads for the The Wayward Company party — include name, race, appearance, what they want, a secret they are hiding, which Eldoria deity they worship, and a connection to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Full NPC ↗</button>
+      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC encounter in Aeloria Crossroads for the Wayward Company party — include name, race, appearance, what they want, a secret they are hiding, which Eldoria deity they worship, and a connection to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Full NPC ↗</button>
     </div>
   </div>
   <div class="grid-2" style="margin-top:.75rem">
