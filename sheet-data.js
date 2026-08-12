@@ -336,9 +336,7 @@ CHARACTERS.sylas = {
     arcana:        { proficient: true, modOverride: 8 },
     history:       { proficient: true, modOverride: 8 },
     investigation: { proficient: true, expertise: true, modOverride: 11 },
-    nature:        { proficient: true, modOverride: 5 },
-    perception:    { proficient: true, modOverride: 3 },
-    religion:      { proficient: true, modOverride: 5 }
+    perception:    { proficient: true, modOverride: 3 }
   },
   senses: 'Darkvision 60ft, passive Perception 13, passive Investigation 21, passive Insight 10',
   damageResist: ['Necrotic (Chthonic Legacy)'],
