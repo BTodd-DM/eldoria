@@ -341,7 +341,8 @@ CHARACTERS.sylas = {
   senses: 'Darkvision 60ft, passive Perception 13, passive Investigation 21, passive Insight 10',
   damageResist: ['Necrotic (Chthonic Legacy)'],
   weapons: [
-    { name: 'Dagger',        atk: 5, damage: '1d4+2 piercing',   notes: 'Simple, Finesse, Light, Thrown, Nick, Range 20/60' },
+    // Cantrips + always-available strikes live here (they aren't inventory items).
+    // Equipped inventory weapons render automatically underneath (see renderWeaponsSection).
     { name: 'Chill Touch (cantrip)', atk: 8, damage: '2d10 necrotic', notes: 'V/S · Range 120ft · Target can\'t regain HP until end of next turn. If Undead, disadv on attacks vs Sylas.' },
     { name: 'Unarmed Strike', atk: 2, damage: '0 bludgeoning',    notes: 'Fallback only' }
   ],

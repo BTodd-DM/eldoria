@@ -355,6 +355,34 @@ function updateCurrency(charId, denom, raw) {
 }
 
 // ---- Inventory section -----------------------------------------------
+// Update 18b — Attunement Box (3 slots, gated by equipped)
+function renderAttunementSection(charId, state) {
+  const items = state.equipment || [];
+  const attuned = items.filter(function(x) { return x.attuned; });
+  const count = attuned.length;
+  const bulletStyle = 'display:inline-block;width:9px;height:9px;border:1.5px solid #a070c0;border-radius:50%;margin-right:4px';
+  let bullets = '';
+  for (let i = 0; i < 3; i++) {
+    bullets += '<span style="' + bulletStyle + (i < count ? ';background:#a070c0' : '') + '"></span>';
+  }
+  let rows = '';
+  if (!count) {
+    rows = '<div style="padding:.4rem .6rem;color:var(--parch4);font-style:italic;font-size:12px">No items attuned. 3 slots available.</div>';
+  } else {
+    attuned.forEach(function(item) {
+      const equipped = !!item.equipped;
+      const badge = equipped
+        ? '<span style="background:rgba(13,61,48,0.4);color:#a0d4c4;border:1px solid rgba(13,61,48,0.5);font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;padding:1px 6px;border-radius:2px">✓ ACTIVE</span>'
+        : '<span style="background:rgba(122,26,26,0.3);color:#e0a0a0;border:1px solid rgba(122,26,26,0.5);font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;padding:1px 6px;border-radius:2px" title="Attuned but not equipped — bonuses not applied">⚠ UNEQUIPPED</span>';
+      rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.35rem .5rem;border-bottom:1px dashed rgba(160,128,64,0.15);gap:.5rem">' +
+        '<div style="flex:1;font-size:12.5px;color:var(--parch2)">◉ ' + _sheetEscapeAttr(item.name || 'Item') + '</div>' +
+        '<div>' + badge + '</div>' +
+        '</div>';
+    });
+  }
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Attunement <span style="float:right;color:var(--parch4);font-size:10px;font-weight:400">' + bullets + ' ' + count + '/3</span></div>' + rows + '</div>';
+}
+
 function renderInventorySection(charId, char, state) {
   // Inventory is always editable (no lock/unlock — per user preference).
   const editing = true;
@@ -381,20 +409,33 @@ function renderInventorySection(charId, char, state) {
         ? '<input type="text" value="' + _sheetEscapeAttr(item.notes || '') + '" onchange="updateInventoryItem(\'' + charId + '\',' + i + ',\'notes\',this.value)" placeholder="notes" style="width:100%;background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.3);color:var(--parch);padding:2px 4px;border-radius:2px;font-size:11px">'
         : (item.notes ? '<span style="font-style:italic;color:var(--parch3)">' + _sheetEscapeAttr(item.notes) + '</span>' : '');
       const removeCell = editing
-        ? '<td style="text-align:center;padding:.15rem"><button onclick="removeInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px" title="Remove">✕</button></td>'
+        ? '<button onclick="removeInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;margin-left:2px" title="Remove">✕</button>'
+        : '';
+      // Update 18a — equip toggle
+      const canEquip = isItemEquippable(item);
+      const equipBtn = canEquip
+        ? '<button onclick="toggleEquipped(\'' + charId + '\',' + i + ')" style="background:' + (item.equipped ? 'var(--gold2)' : 'transparent') + ';border:1px solid var(--gold2);color:' + (item.equipped ? '#0d0a06' : 'var(--gold2)') + ';border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="' + (item.equipped ? 'Currently equipped (click to unequip)' : 'Equip (1 free interaction/turn — more cost an action)') + '">' + (item.equipped ? '⚔ Equipped' : '⚔ Equip') + '</button>'
+        : '';
+      // Update 18b — attune toggle
+      const canAttune = isItemAttunable(item);
+      const attuneBtn = canAttune
+        ? '<button onclick="toggleAttuned(\'' + charId + '\',' + i + ')" style="background:' + (item.attuned ? '#5a2a7a' : 'transparent') + ';border:1px solid #a070c0;color:' + (item.attuned ? '#fff' : '#a070c0') + ';border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-left:2px" title="' + (item.attuned ? 'Attuned (click to break)' : 'Attune (needs Short Rest concentration; effects require Equipped too)') + '">' + (item.attuned ? '◉ Attuned' : '◉ Attune') + '</button>'
+        : '';
+      const actionCell = editing
+        ? '<td style="text-align:right;padding:.15rem;white-space:nowrap">' + equipBtn + attuneBtn + removeCell + '</td>'
         : '';
       rows += '<tr style="border-bottom:1px dashed rgba(160,128,64,0.1)">' +
         '<td style="font-size:12px;color:var(--parch2);padding:.2rem .3rem .2rem 0">' + nameHtml + '</td>' +
         '<td style="text-align:center;font-size:12px;color:var(--parch2);padding:.2rem;width:5ch">' + qty + '</td>' +
         '<td style="font-size:11px;color:var(--parch3);padding:.2rem">' + notes + '</td>' +
-        removeCell + '</tr>';
+        actionCell + '</tr>';
     });
   }
   const header = '<tr style="border-bottom:1px solid rgba(160,128,64,0.3)">' +
     '<th style="text-align:left;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem .3rem .2rem 0;letter-spacing:1px">Item</th>' +
     '<th style="text-align:center;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem;letter-spacing:1px">Qty</th>' +
     '<th style="text-align:left;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem;letter-spacing:1px">Notes</th>' +
-    (editing ? '<th style="width:3ch"></th>' : '') +
+    (editing ? '<th style="width:auto;text-align:right;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);padding:.2rem;letter-spacing:1px">Actions</th>' : '') +
     '</tr>';
   const addRow = editing
     ? '<div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap">' +
@@ -457,6 +498,74 @@ function removeInventoryItem(charId, idx) {
     if (!confirm('Remove "' + (s.equipment[idx].name || 'item') + '" from inventory?')) return;
     s.equipment.splice(idx, 1);
   });
+}
+
+// ---- Update 18a — Equip / Attune toggles ---------------------------
+function toggleEquipped(charId, idx) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    s.equipment[idx].equipped = !s.equipment[idx].equipped;
+  });
+}
+
+function toggleAttuned(charId, idx) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    const item = s.equipment[idx];
+    if (!item.attuned) {
+      const attunedCount = s.equipment.filter(function(x) { return x.attuned; }).length;
+      if (attunedCount >= 3) {
+        alert('Attunement slots full (3/3). Unattune another item first.');
+        return;
+      }
+      if (!confirm('Attune "' + (item.name || 'this item') + '"?\n\n2024 rule: requires a Short Rest of concentration on the item.\n\nAttunement persists once set, but its bonuses only apply while the item is also EQUIPPED.')) return;
+      item.attuned = true;
+    } else {
+      if (!confirm('Break attunement with "' + (item.name || 'this item') + '"?')) return;
+      item.attuned = false;
+    }
+  });
+}
+
+// Helper: does the catalog say this item is attunable?
+function isItemAttunable(item) {
+  if (!item) return false;
+  if (item.custom) return false;
+  if (typeof ITEMS_BY_ID === 'undefined') return false;
+  const catItem = ITEMS_BY_ID[item.sourceItemId];
+  return !!(catItem && catItem.attunement);
+}
+
+// Heuristic: is this item likely equippable? (weapon/armor/magic in the catalog,
+// or a custom item — we trust the user for custom entries.)
+function isItemEquippable(item) {
+  if (!item) return false;
+  if (item.custom) return true;
+  if (typeof ITEMS_BY_ID === 'undefined') return true;
+  const catItem = ITEMS_BY_ID[item.sourceItemId];
+  if (!catItem) return true;
+  const cat = String(catItem.category || '').toLowerCase();
+  return cat === 'weapon' || cat === 'armor' || cat === 'magic';
+}
+
+// Extract weapon combat info for an equipped inventory item (name, damage, notes).
+// Returns null if we can't get useful attack data.
+function inventoryItemToAttack(item) {
+  if (!item) return null;
+  let name = item.name || 'Item';
+  let damage = '—';
+  let notes = item.notes || '';
+  if (!item.custom && typeof ITEMS_BY_ID !== 'undefined') {
+    const catItem = ITEMS_BY_ID[item.sourceItemId];
+    if (catItem) {
+      if (catItem.damage) damage = catItem.damage;
+      if (catItem.properties && catItem.properties.length) {
+        notes = catItem.properties.join(', ') + (notes ? ' · ' + notes : '');
+      }
+      if (catItem.category !== 'weapon') return null; // armor equipped but not an attack
+    }
+  }
+  return { name: name, damage: damage, notes: notes };
 }
 
 // ---- Item picker modal ------------------------------------------------
@@ -786,6 +895,7 @@ function renderSheet(charId) {
 
   html += '<div>';
   if (char.spellcasting) html += renderSpellsSection(charId, char, state);
+  html += renderAttunementSection(charId, state);
   html += renderInventorySection(charId, char, state);
   html += renderCurrencySection(charId, state);
   html += renderEquipmentSection(char);
@@ -863,11 +973,25 @@ function renderAbilityCard(charId, char, abil) {
   return '<div class="sheet-ability"><div class="sheet-ability-head"><div class="sheet-ability-name">' + label + '</div><div class="sheet-ability-mod" onclick="rollAbility(\'' + charId + '\',\'' + abil + '\')" title="Roll ability check">' + sheetFmtMod(mod) + '</div><div class="sheet-ability-score">' + score + '</div></div><div class="sheet-ability-list">' + rows + '</div></div>';
 }
 function renderWeaponsSection(charId, char) {
+  const state = getSheetState(charId);
   let rows = '';
+  // 1. Curated weapons/cantrips from char definition (unarmed, damaging cantrips, class-feature attacks).
   (char.weapons || []).forEach(function(w, i) {
     rows += '<tr><td>' + w.name + '</td><td>' + sheetFmtMod(w.atk) + '</td><td>' + w.damage + '</td><td>' + (w.notes||'') + '</td><td><button class="sheet-weapon-roll" onclick="rollWeapon(\'' + charId + '\',' + i + ')">Roll</button></td></tr>';
   });
-  return '<div class="sheet-sub"><div class="sheet-sub-title">Weapons & Damage Cantrips</div><table class="sheet-weapon-table"><thead><tr><th>Name</th><th>Atk</th><th>Damage</th><th>Notes</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  // 2. Equipped inventory weapons (from state.equipment where equipped && weapon).
+  (state.equipment || []).forEach(function(item) {
+    if (!item.equipped) return;
+    const atk = inventoryItemToAttack(item);
+    if (!atk) return; // e.g., equipped armor — not an attack
+    rows += '<tr style="background:rgba(201,168,76,0.05)">' +
+      '<td>' + _sheetEscapeAttr(atk.name) + ' <span style="font-size:9px;color:var(--parch4);letter-spacing:.5px;font-family:\'Cinzel\',serif">⚔ EQ</span></td>' +
+      '<td style="font-style:italic;color:var(--parch3);font-size:11px">roll</td>' +
+      '<td>' + _sheetEscapeAttr(atk.damage) + '</td>' +
+      '<td style="font-size:11px">' + _sheetEscapeAttr(atk.notes) + '</td>' +
+      '<td></td></tr>';
+  });
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Attacks — Weapons, Cantrips &amp; Equipped Gear</div><table class="sheet-weapon-table"><thead><tr><th>Name</th><th>Atk</th><th>Damage</th><th>Notes</th><th></th></tr></thead><tbody>' + rows + '</tbody></table><div style="font-size:10px;color:var(--parch4);font-style:italic;margin-top:.35rem">Equipped inventory weapons appear here automatically. Drawing/stowing a weapon is 1 free interaction per turn; more cost an Action.</div></div>';
 }
 function renderFeaturesSection(char) {
   function buildList(items) {
@@ -1411,12 +1535,9 @@ function renderEquipmentSection(char) {
       '<strong style="font-family:\'Cinzel\',serif;color:var(--parch3);font-size:10px;letter-spacing:1px">TOOLS:</strong> ' + ((ep.tools||[]).length ? ep.tools.join(', ') : 'None') +
     '</div>';
   }
+  // Attunement is now live via renderAttunementSection (Update 18b) — the static list is retired.
   return '<div class="sheet-sub"><div class="sheet-sub-title">Languages</div><div style="font-size:12px;color:var(--parch2)">' + langs + '</div></div>' +
-    '<div class="sheet-sub"><div class="sheet-sub-title">Equipment Training & Proficiencies</div>' + trainHtml + '</div>' +
-    '<div class="sheet-sub"><div class="sheet-sub-title">Attunements (max 3)</div>' +
-      '<ul style="margin-left:1rem;color:var(--parch2);font-size:12px">' + attList + '</ul>' +
-      '<div style="font-size:10px;color:var(--parch4);font-style:italic;margin-top:.3rem">Attunement management arrives in a later update.</div>' +
-    '</div>';
+    '<div class="sheet-sub"><div class="sheet-sub-title">Equipment Training & Proficiencies</div>' + trainHtml + '</div>';
 }
 function renderBioSection(charId, char, state) {
   return '<div class="sheet-sub"><div class="sheet-sub-title">Appearance · Backstory · Personality</div><div style="font-size:12px;color:var(--parch2);line-height:1.5">' +
