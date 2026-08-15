@@ -594,7 +594,6 @@ body {
   <button class="nav-btn" onclick="show('characters',this)">Characters</button>
   <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
   <button class="nav-btn" onclick="show('locations',this)">🌍 World Map</button>
-  <button class="nav-btn" onclick="show('lore',this)">What You Know</button>
   <button class="nav-btn" onclick="show('notes',this)">Your Notes</button>
 </nav>
 
@@ -866,15 +865,6 @@ body {
   </details>
 </div>
 
-<!-- ===== LORE (What You Know) ===== -->
-<div id="panel-lore" class="panel">
-  <div class="sec-title">What You Know</div>
-  <div class="card-body" style="margin-bottom:.75rem;font-size:12.5px;color:var(--ink3);font-style:italic">
-    Facts your character has learned in play, grouped by topic. What you don't know isn't shown here.
-  </div>
-  <div id="lore-container"></div>
-</div>
-
 <!-- ===== NOTES ===== -->
 <div id="panel-notes" class="panel">
   <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
@@ -1053,7 +1043,6 @@ function updateSheetUI(charKey) {
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
 <script src="npc-directory.js"></script>
-<script src="lore-directory.js"></script>
 <script src="players-auth.js"></script>
 <script>
 (function bootstrapPlayerIdentity() {
@@ -1091,11 +1080,6 @@ function updateSheetUI(charKey) {
     if (window.NPCDirectory && typeof NPCDirectory.init === 'function') {
       try { NPCDirectory.init('npc-grid-container', identity); }
       catch (e) { console.warn('NPCDirectory init failed:', e); }
-    }
-    // Update 3 — bootstrap the lore directory ("What You Know") for this identity.
-    if (window.LoreDirectory && typeof LoreDirectory.init === 'function') {
-      try { LoreDirectory.init('lore-container', identity); }
-      catch (e) { console.warn('LoreDirectory init failed:', e); }
     }
   }
 
