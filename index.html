@@ -1141,16 +1141,6 @@ body {
 
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
-  <details style="margin-bottom:1.5rem;background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.85rem 1rem" open>
-    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">📇 Full NPC Directory (with your DM notes)</summary>
-    <div style="margin-top:.85rem">
-      <div class="alert alert-info" style="margin-bottom:.75rem">
-        Every NPC in the vault (visible + hidden), auto-generated. Click 📝 <strong>My notes</strong> under any card to jot private DM notes — synced across your devices via Firebase.
-      </div>
-      <div id="dm-npc-directory-container"></div>
-    </div>
-  </details>
-
   <div class="sec-title">Key NPCs</div>
 
   <div style="margin-bottom:1rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
@@ -1161,7 +1151,7 @@ body {
 
   <div class="npc-grid" id="npc-grid-root">
 
-    <div class="card red">
+    <div class="card red" data-npc-id="vaeloran-duskwhisper">
       <div class="npc-header">
         <div class="npc-avatar">VD</div>
         <div><div class="card-title" style="margin:0">Vaeloran Duskwhisper</div><div class="card-sub" style="margin:0">Archmage · Patron · Secret Villain</div></div>
@@ -1171,7 +1161,7 @@ body {
       <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon — lich tracker)</span>
     </div>
 
-    <div class="card teal">
+    <div class="card teal" data-npc-id="lyssandra-vale">
       <div class="npc-header">
         <div class="npc-avatar" style="background:var(--teal)">LV</div>
         <div><div class="card-title" style="margin:0">Lyssandra Vale</div><div class="card-sub" style="margin:0">Half-elf · Ex-apprentice · Memory wiped</div></div>
@@ -1180,7 +1170,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-red">in danger</span><span class="badge b-grey">memory wiped</span><span class="badge b-teal">key witness</span></div>
     </div>
 
-    <div class="card red">
+    <div class="card red" data-npc-id="merric-underbough">
       <div class="npc-header">
         <div class="npc-avatar" style="background:var(--purple)">MM</div>
         <div><div class="card-title" style="margin:0">Merric Underbough</div><div class="card-sub" style="margin:0">Halfling · "Rulden Marr" · Veilmaster</div></div>
@@ -1189,7 +1179,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-orange">Veilmaster</span><span class="badge b-gold">Orin's father</span><span class="badge b-grey">conflicted</span><span class="badge b-grey">doesn't know Aurek = Vaeloran</span></div>
     </div>
 
-    <div class="card red">
+    <div class="card red" data-npc-id="sister-kaelith">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#2a1a3a">SK</div>
         <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
@@ -1199,7 +1189,7 @@ body {
       <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon)</span>
     </div>
 
-    <div class="card gold">
+    <div class="card gold" data-npc-id="maelis-raventhorn">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#2a2010">MR</div>
         <div><div class="card-title" style="margin:0">Maelis Raventhorn</div><div class="card-sub" style="margin:0">Mage · Vaeloran's Rival · Red Herring</div></div>
@@ -1208,7 +1198,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-red">being framed</span><span class="badge b-grey">party hasn't met</span></div>
     </div>
 
-    <div class="card gold">
+    <div class="card gold" data-npc-id="gerald">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#3a2010">GR</div>
         <div><div class="card-title" style="margin:0">Gerald</div><div class="card-sub" style="margin:0">Human · Pig's Head Owner · Guild Fixer</div></div>
@@ -1217,7 +1207,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-orange">Guilded Veil</span><span class="badge b-grey">met by party</span></div>
     </div>
 
-    <div class="card teal">
+    <div class="card teal" data-npc-id="sarah">
       <div class="npc-header">
         <div class="npc-avatar" style="background:var(--teal)">SR</div>
         <div><div class="card-title" style="margin:0">Sarah</div><div class="card-sub" style="margin:0">Half-Orc · Wayfarer's Rest Manager</div></div>
@@ -1226,7 +1216,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-teal">ally-adjacent</span><span class="badge b-grey">met by party</span></div>
     </div>
 
-    <div class="card teal">
+    <div class="card teal" data-npc-id="oskar">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#1a3a2a">OS</div>
         <div><div class="card-title" style="margin:0">Oskar</div><div class="card-sub" style="margin:0">Goliath · Townmaster of Aeloria</div></div>
@@ -1235,7 +1225,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-teal">civic ally</span><span class="badge b-grey">met by party</span></div>
     </div>
 
-    <div class="card teal">
+    <div class="card teal" data-npc-id="brenna-hartwell">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#2a2010">BH</div>
         <div><div class="card-title" style="margin:0">Brenna Hartwell</div><div class="card-sub" style="margin:0">Human · Caravan Master · Ex-Watch sergeant</div></div>
@@ -1244,7 +1234,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-teal">caravan master</span><span class="badge b-grey">Session 5</span><span class="badge b-gold">recurring contact</span></div>
     </div>
 
-    <div class="card gold">
+    <div class="card gold" data-npc-id="sera-vey">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#3a1a08">SV</div>
         <div><div class="card-title" style="margin:0">Sera Vey</div><div class="card-sub" style="margin:0">Human · Farm wife from Stillbrook · Wounded</div></div>
@@ -1253,7 +1243,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-gold">moral grey</span><span class="badge b-grey">Session 5–7</span></div>
     </div>
 
-    <div class="card teal">
+    <div class="card teal" data-npc-id="high-priest-alric-dawnveil">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#1a2a3a">AD</div>
         <div><div class="card-title" style="margin:0">High Priest Alric Dawnveil</div><div class="card-sub" style="margin:0">Human · Temple of Luminos · Lightbearer</div></div>
@@ -1262,7 +1252,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-teal">major potential ally</span><span class="badge b-gold">Luminos faith</span></div>
     </div>
 
-    <div class="card gold">
+    <div class="card gold" data-npc-id="taren-myles">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#3a2010">TM</div>
         <div><div class="card-title" style="margin:0">Taren Myles</div><div class="card-sub" style="margin:0">Human · Vaeloran's Researcher</div></div>
@@ -1271,7 +1261,7 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-grey">ambiguous</span><span class="badge b-gold">Vaeloran's tower</span></div>
     </div>
 
-    <div class="card gold">
+    <div class="card gold" data-npc-id="vexa">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#3a2020">VX</div>
         <div><div class="card-title" style="margin:0">Vexa</div><div class="card-sub" style="margin:0">Maelis's Apprentice</div></div>
@@ -1864,7 +1854,7 @@ body {
 <script src="lore-directory.js"></script>
 <script src="sheet-history-ui.js"></script>
 <script src="cue-cards.js"></script>
-<script src="npc-directory.js"></script>
+<script src="dm-npc-notes.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -1914,12 +1904,10 @@ function unlockApp() {
       LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch (e) { console.warn('LoreDirectory init on unlock failed (will retry on tab open):', e); }
-  // Update 13 — DM NPC Directory (all NPCs + per-DM notes).
+  // Update 13 — Attach DM note areas to each existing NPC card.
   try {
-    if (window.NPCDirectory && typeof NPCDirectory.init === 'function') {
-      NPCDirectory.init('dm-npc-directory-container', { id: 'dm', role: 'dm', label: 'DM' }, { dm: true });
-    }
-  } catch (e) { console.warn('NPCDirectory (DM) init on unlock failed (will retry on tab open):', e); }
+    if (typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
+  } catch (e) { console.warn('attachDmNpcNotes on unlock failed:', e); }
 }
 
 function checkAuth() {
@@ -2006,10 +1994,8 @@ function showPanel(id, btn) {
     if(id === 'cues' && window.CueCards && typeof CueCards.init === 'function') {
       CueCards.init('cue-container');
     }
-    // Update 13 — DM NPC directory: re-init on NPCs tab open.
-    if(id === 'npcs' && window.NPCDirectory && typeof NPCDirectory.init === 'function') {
-      NPCDirectory.init('dm-npc-directory-container', { id: 'dm', role: 'dm', label: 'DM' }, { dm: true });
-    }
+    // Update 13 — Re-attach DM note areas when NPCs tab opens (belt-and-braces).
+    if(id === 'npcs' && typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
 // Helper for status-bar items: jump to a panel by id without needing the button reference.
