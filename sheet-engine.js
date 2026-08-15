@@ -1134,12 +1134,13 @@ function renderWeaponsSection(charId, char) {
     if (!item.equipped) return;
     const atk = inventoryItemToAttack(item);
     if (!atk) return; // e.g., equipped armor — not an attack
+    const bonus = computeInventoryAtkBonus(char, item);
     rows += '<tr style="background:rgba(201,168,76,0.05)">' +
       '<td>' + _sheetEscapeAttr(atk.name) + ' <span style="font-size:9px;color:var(--parch4);letter-spacing:.5px;font-family:\'Cinzel\',serif">⚔ EQ</span></td>' +
-      '<td style="font-style:italic;color:var(--parch3);font-size:11px">roll</td>' +
+      '<td>' + sheetFmtMod(bonus) + '</td>' +
       '<td>' + _sheetEscapeAttr(atk.damage) + '</td>' +
       '<td style="font-size:11px">' + _sheetEscapeAttr(atk.notes) + '</td>' +
-      '<td></td></tr>';
+      '<td><button class="sheet-weapon-roll" onclick="rollInventoryWeapon(\'' + charId + '\',\'' + _sheetEscapeAttr(item.id) + '\')">Roll</button></td></tr>';
   });
   return '<div class="sheet-sub"><div class="sheet-sub-title">Attacks — Weapons, Cantrips &amp; Equipped Gear</div><table class="sheet-weapon-table"><thead><tr><th>Name</th><th>Atk</th><th>Damage</th><th>Notes</th><th></th></tr></thead><tbody>' + rows + '</tbody></table><div style="font-size:10px;color:var(--parch4);font-style:italic;margin-top:.35rem">Equipped inventory weapons appear here automatically. Drawing/stowing a weapon is 1 free interaction per turn; more cost an Action.</div></div>';
 }
@@ -2032,6 +2033,55 @@ function rollInitiative(charId) {
   const total = roll + char.initiative;
   showRollToast('Initiative', 'd20 (' + roll + ') ' + sheetFmtMod(char.initiative), total, { crit: roll === 20, fumble: roll === 1 });
 }
+// Roll an equipped inventory weapon by its item id.
+// Computes attack bonus from char abilities + proficiency + weapon properties
+// (Finesse → best of STR/DEX; Ranged → DEX; default STR).
+function rollInventoryWeapon(charId, itemId) {
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  const item = (state.equipment || []).find(function(x) { return x.id === itemId; });
+  if (!item) return;
+  const catItem = (!item.custom && typeof ITEMS_BY_ID !== 'undefined') ? ITEMS_BY_ID[item.sourceItemId] : null;
+  const name = item.name || 'Weapon';
+  const damage = (catItem && catItem.damage) ? catItem.damage : (item.notes || '');
+  const properties = (catItem && catItem.properties) || [];
+  const isFinesse = properties.some(function(p) { return /finesse/i.test(p); });
+  const isRanged  = properties.some(function(p) { return /ranged|thrown|ammunition/i.test(p); });
+  const abils = char.abilities || {};
+  const strMod = Math.floor((abils.str - 10) / 2);
+  const dexMod = Math.floor((abils.dex - 10) / 2);
+  const abilityMod = isRanged ? dexMod : (isFinesse ? Math.max(strMod, dexMod) : strMod);
+  const profBonus = char.proficiencyBonus || 2;
+  const atkBonus = profBonus + abilityMod;
+  const atkRoll = sheetRollD20();
+  const atkTotal = atkRoll + atkBonus;
+  const dmgMatch = damage.match(/^(\d+)d(\d+)(.*)$/);
+  let dmgStr = damage || '—';
+  if (dmgMatch) {
+    const count = parseInt(dmgMatch[1], 10);
+    const sides = parseInt(dmgMatch[2], 10);
+    const rest = (dmgMatch[3] || '').trim();
+    const isCrit = atkRoll === 20;
+    const dmg = sheetRollDice(isCrit ? count * 2 : count, sides) + abilityMod;
+    dmgStr = dmg + ' ' + rest + (isCrit ? ' (crit doubled)' : '') + ' [+' + abilityMod + ' mod]';
+  }
+  showRollToast(name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(atkBonus) + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
+}
+
+// Compute attack bonus for display in the Attack table row.
+function computeInventoryAtkBonus(char, item) {
+  const catItem = (!item.custom && typeof ITEMS_BY_ID !== 'undefined') ? ITEMS_BY_ID[item.sourceItemId] : null;
+  const properties = (catItem && catItem.properties) || [];
+  const isFinesse = properties.some(function(p) { return /finesse/i.test(p); });
+  const isRanged  = properties.some(function(p) { return /ranged|thrown|ammunition/i.test(p); });
+  const abils = char.abilities || {};
+  const strMod = Math.floor((abils.str - 10) / 2);
+  const dexMod = Math.floor((abils.dex - 10) / 2);
+  const abilityMod = isRanged ? dexMod : (isFinesse ? Math.max(strMod, dexMod) : strMod);
+  const profBonus = char.proficiencyBonus || 2;
+  return profBonus + abilityMod;
+}
+
 function rollWeapon(charId, idx) {
   const char = CHARACTERS[charId];
   const w = char.weapons[idx];
