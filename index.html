@@ -615,7 +615,6 @@ body {
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
-  <button class="nav-btn" onclick="showPanel('history',this)">🕰 History</button>
   <button class="nav-btn" onclick="showPanel('cues',this)">🎭 Cues</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
@@ -1141,6 +1140,20 @@ body {
       <button class="action-btn" onclick="sendPrompt('Design the moment in The Wayward Company when Orin (Cleric of Luminos) discovers that Sylas (his party member) has been consuming souls through the Lich Initiate Soul Siphon ability — write the emotional confrontation, Orin\'s theological crisis, and how each character might respond')">Soul Reveal Scene ↗</button>
     </div>
   </div>
+
+  <!-- Sheet history — collapsible section under Players (moved from top-level History tab) -->
+  <details style="margin-top:1.5rem;background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.85rem 1rem">
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">🕰 Sheet History — restore any of the last 20 saves per PC</summary>
+    <div style="margin-top:.85rem">
+      <div class="alert alert-info" style="margin-bottom:.75rem">
+        Every time a character sheet saves (HP, spells, inventory, anything), the previous state is snapshotted here. Last 20 per PC; older ages out automatically. Restore is reversible.
+      </div>
+      <div style="margin-bottom:.75rem">
+        <button class="action-btn" onclick="if(window.SheetHistory) SheetHistory.refresh()">🔄 Refresh</button>
+      </div>
+      <div id="history-container"></div>
+    </div>
+  </details>
 </div>
 
 <!-- ============ NPCS ============ -->
@@ -1391,18 +1404,6 @@ body {
     <button class="action-btn" onclick="if(window.CueCards) CueCards.refresh()">🔄 Refresh</button>
   </div>
   <div id="cue-container"></div>
-</div>
-
-<!-- ============ HISTORY (Update 7) ============ -->
-<div id="panel-history" class="panel">
-  <div class="sec-title">🕰 Character History — restore any of the last 20 saves</div>
-  <div class="alert alert-info">
-    Every time a character sheet saves (HP, spells, inventory, anything), the previous state is snapshotted here. Keep last 20 per PC — older entries age out automatically. Restore is reversible (restore itself creates a snapshot). Zero token cost — client-side only.
-  </div>
-  <div style="margin-bottom:.75rem">
-    <button class="action-btn" onclick="if(window.SheetHistory) SheetHistory.refresh()">🔄 Refresh</button>
-  </div>
-  <div id="history-container"></div>
 </div>
 
 <!-- ============ NOTES (Phase 6) ============ -->
@@ -2165,8 +2166,8 @@ function showPanel(id, btn) {
     if(id === 'notes' && typeof initNotesWidget === 'function') {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
-    // Update 7 — Sheet history: refresh whenever the tab opens (so it always shows current snapshots).
-    if(id === 'history' && window.SheetHistory && typeof SheetHistory.init === 'function') {
+    // Update 7 — Sheet history is now nested under the Players panel (collapsible).
+    if(id === 'players' && window.SheetHistory && typeof SheetHistory.init === 'function') {
       SheetHistory.init('history-container');
     }
     // Update 8 — Cue cards: init on tab open.
