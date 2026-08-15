@@ -411,6 +411,8 @@ body {
 
 /* NPC GRID */
 .npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .75rem; }
+.npc-location-header { grid-column: 1 / -1; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold2); border-bottom: 1px solid rgba(160,128,64,0.35); padding: .5rem 0 .35rem; margin-top: .5rem; }
+.npc-location-header:first-child { margin-top: 0; }
 .npc-avatar {
   width: 36px; height: 36px;
   border-radius: 50%;
@@ -1151,6 +1153,9 @@ body {
 
   <div class="npc-grid" id="npc-grid-root">
 
+    <div class="npc-location-header" data-loc="aeloria">Aeloria Crossroads</div>
+
+
     <div class="card red" data-npc-id="vaeloran-duskwhisper">
       <div class="npc-header">
         <div class="npc-avatar">VD</div>
@@ -1177,16 +1182,6 @@ body {
       </div>
       <div class="card-body" style="font-size:12.5px">Orin's adoptive father. Former Luminar of Luminos who smuggled holy goods into the Aurum Dominion (where Luminos is suppressed). The Guilded Veil helped him — then owned him. Now Veilmaster. Sent Orin a cold warning but signed off "Keep to the light." He still cares. Does NOT know Vaeloran is using him through the Aurek alias. CR 5 skirmisher — throws smoke bombs and flees if confronted.</div>
       <div style="margin-top:.4rem"><span class="badge b-orange">Veilmaster</span><span class="badge b-gold">Orin's father</span><span class="badge b-grey">conflicted</span><span class="badge b-grey">doesn't know Aurek = Vaeloran</span></div>
-    </div>
-
-    <div class="card red" data-npc-id="sister-kaelith">
-      <div class="npc-header">
-        <div class="npc-avatar" style="background:#2a1a3a">SK</div>
-        <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
-      </div>
-      <div class="card-body" style="font-size:12.5px">Charmed the gnoll pack leader. "K" on the note that grants Pig's Head back room access. Cleric of Naturus (Pestilence Domain). Believes she serves a greater demon — actually being manipulated through whispers. AC 19, HP 83, Spell Save DC 17. Plague Blessing, Virulent Burst, Cloak of Displacement.</div>
-      <div style="margin-top:.4rem"><span class="badge b-red">active threat</span><span class="badge b-grey">Naturus cultist</span><span class="badge b-red">CR ~10</span></div>
-      <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon)</span>
     </div>
 
     <div class="card gold" data-npc-id="maelis-raventhorn">
@@ -1225,24 +1220,6 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-teal">civic ally</span><span class="badge b-grey">met by party</span></div>
     </div>
 
-    <div class="card teal" data-npc-id="brenna-hartwell">
-      <div class="npc-header">
-        <div class="npc-avatar" style="background:#2a2010">BH</div>
-        <div><div class="card-title" style="margin:0">Brenna Hartwell</div><div class="card-sub" style="margin:0">Human · Caravan Master · Ex-Watch sergeant</div></div>
-      </div>
-      <div class="card-body" style="font-size:12.5px">Early 40s, ash-blonde hair, leather armour she's maintained for years. Dry, direct, ex-soldier cadence. Twenty years in Aeloria City Watch under Captain Dane, retired at sergeant. Now runs caravans between Aeloria and the Aelorian Territories. Knows every league of the southern road. Doesn't ask about sealed crates. Carries one Potion of Superior Healing and one Smoke Brick — declared at start of any combat; use only when the worst happens. Will not engage Vrass directly.</div>
-      <div style="margin-top:.4rem"><span class="badge b-teal">caravan master</span><span class="badge b-grey">Session 5</span><span class="badge b-gold">recurring contact</span></div>
-    </div>
-
-    <div class="card gold" data-npc-id="sera-vey">
-      <div class="npc-header">
-        <div class="npc-avatar" style="background:#3a1a08">SV</div>
-        <div><div class="card-title" style="margin:0">Sera Vey</div><div class="card-sub" style="margin:0">Human · Farm wife from Stillbrook · Wounded</div></div>
-      </div>
-      <div class="card-body" style="font-size:12.5px">Late 20s. Bandaged shoulder, fresh wound. Approaches the caravan at the Stillbrook stop (Day 2). Husband Marcus owes 30 gp to Halvor; drought wiped their crop; couldn't pay. Halvor came to Stillbrook in person with a hired thug (Cor Brackin), took Mira (her sister-in-law) and the children, knocked Sera down when she tried to intervene. She doesn't know about Halvor's daughter Lis (held in Aeloria by Davos Hark). She doesn't know about the Aurum-Dominion creditor chain that's broken Halvor. <strong>Moral grey at Ironhold:</strong> pay the 30 gp, force release, negotiate full solution (best — opens Davos return-arc), or walk away (Stillbrook remembers).</div>
-      <div style="margin-top:.4rem"><span class="badge b-gold">moral grey</span><span class="badge b-grey">Session 5–7</span></div>
-    </div>
-
     <div class="card teal" data-npc-id="high-priest-alric-dawnveil">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#1a2a3a">AD</div>
@@ -1270,13 +1247,110 @@ body {
       <div style="margin-top:.4rem"><span class="badge b-grey">encountered</span></div>
     </div>
 
+
+    <div class="npc-location-header" data-loc="ironhold">Ironhold</div>
+
+    <div class="card gold" data-npc-id="bryndis-ashveil">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a2010">BA</div>
+        <div><div class="card-title" style="margin:0">Bryndis Ashveil</div><div class="card-sub" style="margin:0">Dwarf · Guildmaster of Blades · Forge Council senior</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Ironhold-born, mid-second-century. Six generations of Ashveil blades. Refuses the Aurum Dominion contract; unofficial leader of the reformist faction. Losing the vote — Drake has more energy and more money to spread. Would trust the party if Merric vouches. She has said in council: <em>"They will not need to conquer us. They will need only to change their minds."</em></div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">reformist</span><span class="badge b-gold">Forge Council</span><span class="badge b-grey">possible ally</span></div>
+    </div>
+
+    <div class="card red" data-npc-id="corvan-drake">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a1010">CD</div>
+        <div><div class="card-title" style="margin:0">Corvan Drake</div><div class="card-sub" style="margin:0">Human · Guildmaster of Ingots · Dominion faction</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">41. Tall for a smith, aggressive contract chaser. Wants the Aurum weapons contract. <strong>Framed Kellan Bracewell</strong> for cult activity — doesn't know she's Guilded Veil; thinks he punished a rival's fixer. Genuinely believes the contract is good for Ironhold. Not a mustachio-twirler. Quietly negotiating a personal 3% cut with Envoy Veris off the books.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">Dominion faction</span><span class="badge b-red">framed Kellan</span><span class="badge b-grey">session 6-7</span></div>
+    </div>
+
+    <div class="card orange" data-npc-id="kellan-bracewell">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a2010">KB</div>
+        <div><div class="card-title" style="margin:0">Kellan Bracewell</div><div class="card-sub" style="margin:0">Human · Guilded Veil Veilmaster · in hiding</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">38. Ironhold-born to Rustpocket, quiet, careful, ~20 operators in cell. Framed by Drake with forged Naturus documents; warned in time; in hiding for 19 days. Watch investigation stalled but accusation is out. Has 3 people planted in Drake's Furnace. Personal reason to hate Naturus (cousin fell to it). Would help against Drake in exchange for the party clearing her.</div>
+      <div style="margin-top:.4rem"><span class="badge b-orange">Guilded Veil</span><span class="badge b-teal">possible ally</span><span class="badge b-red">framed</span></div>
+    </div>
+
+    <div class="card gold" data-npc-id="halvor">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a08">HV</div>
+        <div><div class="card-title" style="margin:0">Halvor</div><div class="card-sub" style="margin:0">Human · Ironhold merchant · coerced</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Late 50s, soft-bellied, hands shake. <strong>Being coerced from above</strong> — someone holds his wife and daughter Elsi. Holds Sera's sister Mira and her two children as leverage he's been forced to apply. Does NOT want to hurt them; has been feeding them properly. Will break if pressed carefully; dies before breaking if pressed cruelly.</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">moral grey</span><span class="badge b-red">hostage-holder</span><span class="badge b-red">session 7</span></div>
+    </div>
+
+    <div class="card grey" data-npc-id="wesley-halloran">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a10">WH</div>
+        <div><div class="card-title" style="margin:0">Wesley Halloran</div><div class="card-sub" style="margin:0">Human · Coin Cipher agent · Ironhold end</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">47. Runs the Ironhold end of the Coin Cipher network. Public cover: mid-tier merchant with an office in the Merchants' Quarter. Real operation: Warehouse #14 in The Slag. <strong>Was expecting the sealed chest</strong> the party carried. When it doesn't arrive, his neck is on the line — he'll start his own quiet inquiry.</div>
+      <div style="margin-top:.4rem"><span class="badge b-grey">Coin Cipher</span><span class="badge b-gold">Warehouse #14</span><span class="badge b-red">chest owed</span></div>
+    </div>
+
+    <div class="card gold" data-npc-id="elisara">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a2a10">EL</div>
+        <div><div class="card-title" style="margin:0">Priestess Elisara</div><div class="card-sub" style="margin:0">Human · High Priestess of Korvain · Anvilhome</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">58. Silver-braided, wears a single iron key on a leather thong — the reliquary chamber key. Ceremonial guardian of the <strong>Heart of Ironhold</strong>. Ironhold-born, sixth generation of Korvain priestess. Not a warrior. Not naïve. Precise, disciplined, warm to those she chooses.</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">Korvain temple</span><span class="badge b-red">Heart of Ironhold</span><span class="badge b-grey">Vrass wants this</span></div>
+    </div>
+
+    <div class="card purple" data-npc-id="envoy-veris-caelthorn">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a4a">EV</div>
+        <div><div class="card-title" style="margin:0">Envoy Veris Caelthorn</div><div class="card-sub" style="margin:0">Human · Aurum Dominion envoy · junior Kaelthorn</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">32. Tall, slim, immaculate. Crystal-laced silver pin at throat. Junior cousin of Emperor Valerius. Officially: pushing the weapons contract. Privately: reports to Princess Selene via Crystal Shards. <strong>Personal Coin Cipher client via Aurek</strong> — collects necromantic curiosities. Does NOT know Aurek is Vaeloran. Will note Sylas's Vellaris curse-line marker if he sees it. Two Aurum Sentinels + four Watch escorts always nearby.</div>
+      <div style="margin-top:.4rem"><span class="badge b-purple">Aurum Dominion</span><span class="badge b-red">Selene's spy</span><span class="badge b-grey">Aurek client</span></div>
+    </div>
+
+    <div class="npc-location-header" data-loc="wilderness">Wilderness / On the Road</div>
+    <div class="card red" data-npc-id="sister-kaelith">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a3a">SK</div>
+        <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Charmed the gnoll pack leader. "K" on the note that grants Pig's Head back room access. Cleric of Naturus (Pestilence Domain). Believes she serves a greater demon — actually being manipulated through whispers. AC 19, HP 83, Spell Save DC 17. Plague Blessing, Virulent Burst, Cloak of Displacement.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">active threat</span><span class="badge b-grey">Naturus cultist</span><span class="badge b-red">CR ~10</span></div>
+      <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon)</span>
+    </div>
+
+    <div class="card teal" data-npc-id="brenna-hartwell">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a2010">BH</div>
+        <div><div class="card-title" style="margin:0">Brenna Hartwell</div><div class="card-sub" style="margin:0">Human · Caravan Master · Ex-Watch sergeant</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Early 40s, ash-blonde hair, leather armour she's maintained for years. Dry, direct, ex-soldier cadence. Twenty years in Aeloria City Watch under Captain Dane, retired at sergeant. Now runs caravans between Aeloria and the Aelorian Territories. Knows every league of the southern road. Doesn't ask about sealed crates. Carries one Potion of Superior Healing and one Smoke Brick — declared at start of any combat; use only when the worst happens. Will not engage Vrass directly.</div>
+      <div style="margin-top:.4rem"><span class="badge b-teal">caravan master</span><span class="badge b-grey">Session 5</span><span class="badge b-gold">recurring contact</span></div>
+    </div>
+
+    <div class="card gold" data-npc-id="sera-vey">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#3a1a08">SV</div>
+        <div><div class="card-title" style="margin:0">Sera Vey</div><div class="card-sub" style="margin:0">Human · Farm wife from Stillbrook · Wounded</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Late 20s. Bandaged shoulder, fresh wound. Approaches the caravan at the Stillbrook stop (Day 2). Husband Marcus owes 30 gp to Halvor; drought wiped their crop; couldn't pay. Halvor came to Stillbrook in person with a hired thug (Cor Brackin), took Mira (her sister-in-law) and the children, knocked Sera down when she tried to intervene. She doesn't know about Halvor's daughter Lis (held in Aeloria by Davos Hark). She doesn't know about the Aurum-Dominion creditor chain that's broken Halvor. <strong>Moral grey at Ironhold:</strong> pay the 30 gp, force release, negotiate full solution (best — opens Davos return-arc), or walk away (Stillbrook remembers).</div>
+      <div style="margin-top:.4rem"><span class="badge b-gold">moral grey</span><span class="badge b-grey">Session 5–7</span></div>
+    </div>
+
+    <div class="npc-location-header" data-loc="utility">Utility</div>
+
     <div class="card">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#1a3a20">+</div>
-        <div><div class="card-title" style="margin:0">Generate NPC</div><div class="card-sub" style="margin:0">New character for the campaign</div></div>
+        <div><div class="card-title" style="margin:0">Generate NPC</div><div class="card-sub" style="margin:0">On-the-fly NPC creation</div></div>
       </div>
       <div class="card-body" style="font-size:12.5px">Need a council member, guard captain, merchant, or street contact? Generate a fully fleshed NPC tied to the campaign.</div>
-      <button class="action-btn" onclick="sendPrompt('Generate a fully fleshed out NPC for Aeloria Crossroads in The Wayward Company — include name, race, appearance, personality, secret, which deity from the Eldoria pantheon they worship, and how they connect to either Vaeloran\'s network, the Naturus cult, or the Guilded Veil')">Generate NPC ↗</button>
+      <button class="action-btn" style="margin-top:.5rem" onclick="sendPrompt('Generate a fully fleshed out NPC for The Wayward Company — include name, race, appearance, personality, secret, which deity from the Eldoria pantheon they worship, and how they connect to either Vaeloran\'s network, the Naturus cult, the Guilded Veil, or the Aurum Dominion Ironhold arc')">Generate NPC ↗</button>
     </div>
 
   </div>
@@ -2802,6 +2876,17 @@ function filterNpcs(query) {
     const match = !q || text.includes(q);
     card.style.display = match ? '' : 'none';
     if (match) shown += 1;
+  });
+  // Hide location headers whose next-sibling cards are all hidden (i.e., empty section after filter).
+  const headers = grid.querySelectorAll(':scope > .npc-location-header');
+  headers.forEach(h => {
+    let el = h.nextElementSibling;
+    let hasVisible = false;
+    while (el && !el.classList.contains('npc-location-header')) {
+      if (el.classList.contains('card') && el.style.display !== 'none') { hasVisible = true; break; }
+      el = el.nextElementSibling;
+    }
+    h.style.display = hasVisible ? '' : 'none';
   });
   const counter = document.getElementById('npc-search-count');
   if (counter) {
