@@ -411,8 +411,11 @@ body {
 
 /* NPC GRID */
 .npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .75rem; }
-.npc-location-header { grid-column: 1 / -1; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold2); border-bottom: 1px solid rgba(160,128,64,0.35); padding: .5rem 0 .35rem; margin-top: .5rem; }
+.npc-location-header { grid-column: 1 / -1; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold2); border-bottom: 1px solid rgba(160,128,64,0.35); padding: .5rem 0 .35rem; margin-top: .5rem; cursor: pointer; user-select: none; display: flex; align-items: center; gap: .4rem; }
 .npc-location-header:first-child { margin-top: 0; }
+.npc-location-header::before { content: '▾'; font-size: 10px; color: var(--gold2); transition: transform .15s; display: inline-block; }
+.npc-location-header.collapsed::before { transform: rotate(-90deg); }
+.npc-location-header .npc-loc-count { margin-left: auto; font-size: 10px; letter-spacing: 1px; color: var(--parch3); font-weight: 400; }
 .npc-avatar {
   width: 36px; height: 36px;
   border-radius: 50%;
@@ -612,13 +615,12 @@ body {
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
-  <button class="nav-btn" onclick="showPanel('lore',this)">📖 Lore</button>
   <button class="nav-btn" onclick="showPanel('history',this)">🕰 History</button>
   <button class="nav-btn" onclick="showPanel('cues',this)">🎭 Cues</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
-  <button class="nav-btn" onclick="showPanel('pantheon',this)">✨ Pantheon</button>
+  <button class="nav-btn" onclick="showPanel('pantheon',this)">📖 Lore</button>
   <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
 </nav>
 
@@ -1404,15 +1406,6 @@ body {
   <div id="history-container"></div>
 </div>
 
-<!-- ============ LORE (Update 3) ============ -->
-<div id="panel-lore" class="panel">
-  <div class="sec-title">📖 Known Lore — who knows what</div>
-  <div class="alert alert-info">
-    Grid of every tracked fact and which PC knows it. Click any cell to toggle. Facts marked <strong>hidden</strong> (red bar) haven't been revealed to the party yet — flip when they discover them in play. Players never see a fact until it's marked known for their identity.
-  </div>
-  <div id="lore-container"></div>
-</div>
-
 <!-- ============ NOTES (Phase 6) ============ -->
 <div id="panel-notes" class="panel">
   <div class="sec-title">📝 Notes — DM view</div>
@@ -1864,6 +1857,126 @@ body {
       </div>
     </details>
 
+
+    <div class="sec-title" style="margin-top:1.5rem">Factions <span style="font-size:11px;color:var(--parch3);font-weight:400">— click any to expand</span></div>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Aeloria Council</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Vaeloran&#x27;s goal: Make all major decisions quietly require his approval — without anyone realising it has already happened.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Aeloria Council.md</div>
+    </details>
+    <details class="card red" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Aurek Network — DM EYES ONLY</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Not a faction the party knows exists. The hidden network Vaeloran runs under the alias Aurek Voln Drowhiss — an anagram of his own name.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Aurek Network.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Aurum Dominion</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The most organised external threat in the campaign — three simultaneous agendas.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Aurum Dominion.md</div>
+    </details>
+    <details class="card teal" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Celestium Clans</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Dwarves displaced from the Underpeak by the Aurum Dominion ~2,000 years ago during the Usurpation. Settled beneath the Celestial Plateau. Blended Dwarven craft with celestial magic. Regard themselves as stewards of cosmic equilibrium.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Celestium Clans.md</div>
+    </details>
+    <details class="card red" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Guilded Veil</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">A continent-adjacent thieves&#x27; network organised as six territorial cells across the Aelorian Territories, coordinated by a single hidden figure — The Gilded — whose identity is known only to the six Territorial Veilmasters.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Guilded Veil.md</div>
+    </details>
+    <details class="card" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Lethraliri (Ancient — Extinct)</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Second Age civilisation that thrived in the Frostwood Marsh. Skilled in ice and water magic. Now extinct as a civilisation — but two threads survive: the fenling carry fragments of the culture; the Six Wardens carry the seal.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Lethraliri.md</div>
+    </details>
+    <details class="card red" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Naturus Cult</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Rot and decay are natural processes that bring renewal. The world must be broken down to be reborn. The Divine Gate should be weakened to allow Naturus&#x27;s influence back into the material plane more directly.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Naturus Cult.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Nomads of the Ember Wastes</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Hardy, resilient desert people. Travel in sandship caravans. Oral tradition. Deep understanding of desert secrets.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Nomads of the Ember Wastes.md</div>
+    </details>
+    <details class="card teal" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Order of the Silver Crescent</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">1. Initiates (Aspirants) — entry level, fundamental teachings, gemstone connection beginning. 2. Novices (Duskwalkers) — apprentices to Enlightened Guardians, learn fine jewellery and celestial craft. 3. Silver Crescent Instructors (Sensei) — experienced monks, train Initiates and Novices. 4. Enlightened Guardians (Dawnbringers) — scholars and protectors, preserve ancient wisdom, lead ceremonies. 5. Gemstone Keepers — profound connection to the gemstone collection, mentors for meditation. 6.…</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Order of the Silver Crescent.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Pirate Confederacy</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Loose confederacy led by a Council of Captains — diverse, experienced, charismatic leaders. Decisions affect the whole confederacy&#x27;s operations and alliances.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Pirate Confederacy.md</div>
+    </details>
+    <details class="card teal" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Sylvarian Enclaves</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">(see vault file for detail)</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Sylvarian Enclaves.md</div>
+    </details>
+    <details class="card teal" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Temple of Luminos</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The faith of Luminos in Aeloria. The most morally grounded institution in the city.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Temple of Luminos.md</div>
+    </details>
+    <details class="card red" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Ashbound</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Rival goliath clan. Displaced from their own territory, now pressing south against the Stonemarked.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Ashbound.md</div>
+    </details>
+    <details class="card red" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Coin Cipher</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">A specialised criminal courier network in the Aelorian underworld. Moves high-value, sensitive cargo with absolute discretion. Their hidden Patron is Vaeloran — no member knows.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Coin Cipher.md</div>
+    </details>
+    <details class="card teal" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Stonemarked</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Goliath warrior clan in the Stonemarked Mountains. Orin&#x27;s tribe.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Stonemarked.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Watch</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The unified law-enforcement and small-military body of Aeloria and the Aelorian Territories.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Watch.md</div>
+    </details>
+
+    <div class="sec-title" style="margin-top:1.5rem">Lore & Legends <span style="font-size:11px;color:var(--parch3);font-weight:400">— click any to expand</span></div>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Calendar of Eldoria — *The Cycle of Lights*</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Year notation: `3E [year]` — Third Era, [year] since the Standardisation. Current campaign year: `3E 1247`.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Calendar of Eldoria.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">Myths and Folktales</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">Stories told across Eldoria. Not always true. Often partial.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 Myths and Folktales.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Dawnoak and the Sealing</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">⚠ DM ONLY. Common folk know nothing of any of this. Only the most senior scholars of the First Age — perhaps a handful of theologians at the highest temples, a handful of Sylvarian elders, and certainly the Creator Gods themselves — know the Dawnoak exists. The party should learn pieces of this only through investigation, discovery, dreams, or earned revelation. Never deliver this as exposition.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Dawnoak and the Sealing.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Divine Gate</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The seal that keeps the gods out of the material plane.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Divine Gate.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Fenling</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The last living cultural echo of the Lethraliri. Once scattered across the Frostwood Marsh&#x27;s high ground in dozens of small villages. Now reduced to a single settlement: Coldhearth.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Fenling.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Lethraliri and the First Age</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">The lost ice-magic civilisation of the Frostwood Marsh. Vanished. Ruins remain.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Lethraliri and the First Age.md</div>
+    </details>
+    <details class="card gold" style="margin-bottom:.5rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-weight:700;font-size:12.5px;letter-spacing:.5px">The Six Wardens</summary>
+      <div class="card-body" style="margin-top:.5rem;font-size:12.5px;line-height:1.55">⚠ DM ONLY. The party knows nothing of this. Piecing it together across multiple sessions is a major mid-to-late-campaign discovery. Never deliver as exposition. See Plot Threads/Vroth-Khorn Seal Clock for the tracker.</div>
+      <div style="margin-top:.35rem;font-size:10px;color:var(--parch4);font-style:italic">📄 The Six Wardens.md</div>
+    </details>
+
     <div class="alert alert-warn" style="margin-top:.75rem">
       <strong>DM NOTE — the campaign endgame.</strong> Vaeloran is collecting meteor shards to fuel his lichdom; he does not know they are fragments of Astronar's prison. Kaelith spreads Naturus's rot believing she's serving her god; she does not know her work weakens the Frostwood Marsh seal on Vroth-Khorn. The true campaign-ending threat is anyone who discovers the Dawnoak's true name — or who frees Vroth-Khorn, which would give Naturus a foothold in the material plane he has not had in 1,050 years.
     </div>
@@ -1925,7 +2038,6 @@ body {
 <script src="firebase-sync.js"></script>
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
-<script src="lore-directory.js"></script>
 <script src="sheet-history-ui.js"></script>
 <script src="cue-cards.js"></script>
 <script src="dm-npc-notes.js"></script>
@@ -1972,16 +2084,14 @@ function unlockApp() {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch (e) { console.warn('initNotesWidget on unlock failed (will retry on tab open):', e); }
-  // Update 3 — Known Lore grid (DM view).
-  try {
-    if (window.LoreDirectory && typeof LoreDirectory.init === 'function') {
-      LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
-    }
-  } catch (e) { console.warn('LoreDirectory init on unlock failed (will retry on tab open):', e); }
   // Update 13 — Attach DM note areas to each existing NPC card.
   try {
     if (typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
   } catch (e) { console.warn('attachDmNpcNotes on unlock failed:', e); }
+  // Collapsible NPC location sections
+  try {
+    if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
+  } catch (e) { console.warn('initNpcLocationCollapse on unlock failed:', e); }
 }
 
 function checkAuth() {
@@ -2055,10 +2165,6 @@ function showPanel(id, btn) {
     // this always runs and always succeeds.
     if(id === 'notes' && typeof initNotesWidget === 'function') {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
-    }
-    // Update 3 — Lore grid: same belt-and-braces re-init on tab click.
-    if(id === 'lore' && window.LoreDirectory && typeof LoreDirectory.init === 'function') {
-      LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
     // Update 7 — Sheet history: refresh whenever the tab opens (so it always shows current snapshots).
     if(id === 'history' && window.SheetHistory && typeof SheetHistory.init === 'function') {
@@ -2865,6 +2971,58 @@ function cal_init() {
 }
 
 // NPC SEARCH — live filter NPC grid cards by name/keyword
+const NPC_COLLAPSE_KEY = 'eldoria-npc-collapsed-locs';
+function getCollapsedNpcLocs() {
+  try { return JSON.parse(localStorage.getItem(NPC_COLLAPSE_KEY) || '{}'); } catch (e) { return {}; }
+}
+function setCollapsedNpcLocs(map) {
+  try { localStorage.setItem(NPC_COLLAPSE_KEY, JSON.stringify(map)); } catch (e) {}
+}
+function initNpcLocationCollapse() {
+  const grid = document.getElementById('npc-grid-root');
+  if (!grid) return;
+  const collapsed = getCollapsedNpcLocs();
+  const headers = grid.querySelectorAll(':scope > .npc-location-header');
+  headers.forEach(h => {
+    // Add count chip
+    if (!h.querySelector('.npc-loc-count')) {
+      let el = h.nextElementSibling;
+      let count = 0;
+      while (el && !el.classList.contains('npc-location-header')) {
+        if (el.classList.contains('card')) count++;
+        el = el.nextElementSibling;
+      }
+      const chip = document.createElement('span');
+      chip.className = 'npc-loc-count';
+      chip.textContent = count + ' NPC' + (count === 1 ? '' : 's');
+      h.appendChild(chip);
+    }
+    const loc = h.getAttribute('data-loc');
+    if (collapsed[loc]) applyNpcSectionState(h, true);
+    h.addEventListener('click', () => toggleNpcLocation(h));
+  });
+}
+function applyNpcSectionState(header, isCollapsed) {
+  header.classList.toggle('collapsed', isCollapsed);
+  let el = header.nextElementSibling;
+  while (el && !el.classList.contains('npc-location-header')) {
+    if (el.classList.contains('card')) {
+      el.dataset.locCollapsed = isCollapsed ? '1' : '';
+      el.style.display = isCollapsed ? 'none' : (el.style.display === 'none' && el.dataset.filterHidden === '1' ? 'none' : '');
+    }
+    el = el.nextElementSibling;
+  }
+}
+function toggleNpcLocation(header) {
+  const loc = header.getAttribute('data-loc');
+  const willCollapse = !header.classList.contains('collapsed');
+  applyNpcSectionState(header, willCollapse);
+  const collapsed = getCollapsedNpcLocs();
+  if (willCollapse) collapsed[loc] = true;
+  else delete collapsed[loc];
+  setCollapsedNpcLocs(collapsed);
+}
+
 function filterNpcs(query) {
   const grid = document.getElementById('npc-grid-root');
   if (!grid) return;
@@ -2874,19 +3032,22 @@ function filterNpcs(query) {
   cards.forEach(card => {
     const text = card.textContent.toLowerCase();
     const match = !q || text.includes(q);
-    card.style.display = match ? '' : 'none';
+    card.dataset.filterHidden = match ? '' : '1';
+    // Respect both filter and collapse: hidden if either is true
+    const isCollapsed = card.dataset.locCollapsed === '1';
+    card.style.display = (match && !isCollapsed) ? '' : 'none';
     if (match) shown += 1;
   });
-  // Hide location headers whose next-sibling cards are all hidden (i.e., empty section after filter).
+  // Hide location headers whose next-sibling cards are all filter-hidden.
   const headers = grid.querySelectorAll(':scope > .npc-location-header');
   headers.forEach(h => {
     let el = h.nextElementSibling;
-    let hasVisible = false;
+    let hasMatch = false;
     while (el && !el.classList.contains('npc-location-header')) {
-      if (el.classList.contains('card') && el.style.display !== 'none') { hasVisible = true; break; }
+      if (el.classList.contains('card') && el.dataset.filterHidden !== '1') { hasMatch = true; break; }
       el = el.nextElementSibling;
     }
-    h.style.display = hasVisible ? '' : 'none';
+    h.style.display = hasMatch ? '' : 'none';
   });
   const counter = document.getElementById('npc-search-count');
   if (counter) {
