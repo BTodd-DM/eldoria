@@ -1375,13 +1375,17 @@ function _renderSpellRow(charId, sp, opts) {
   const upcastBtn = isCantrip
     ? ''
     : '<button onclick="event.stopPropagation();toggleUpcast(\'' + sp.id + '\')" style="background:rgba(160,128,64,0.15);border:1px solid var(--gold2);color:var(--gold2);border-radius:2px;padding:3px 12px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;white-space:nowrap" title="Cast at a higher slot level' + (sp.atHigherLevels ? ' — this spell scales' : '') + '">Upcast</button>';
+  // Update 13 — Ritual button on ritual-tagged non-cantrips (cantrips can't be ritual).
+  const ritualBtn = (sp.ritual && !isCantrip)
+    ? '<button onclick="event.stopPropagation();ritualCast(\'' + charId + '\',\'' + sp.id + '\')" style="background:rgba(90,60,150,0.15);border:1px solid #a070c0;color:#c8a8e0;border-radius:2px;padding:3px 10px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:1px;white-space:nowrap" title="Ritual cast — no slot, +10 min casting time">📜 Ritual</button>'
+    : '';
   // Override the .sheet-spell-row grid (which expects 3 cells) with an explicit
   // flex layout: name/info on the left (flex:1), Cast + Upcast pinned right.
   return '<div class="sheet-spell-row" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;grid-template-columns:none">' +
     '<div style="flex:1;min-width:0;cursor:pointer" onclick="toggleSpellDetail(\'' + sp.id + '\')">' +
       '<div class="sheet-spell-name">' + _sheetEscapeAttr(sp.name) + tagSpans + schoolBadge + alwaysBadge + '</div>' +
     '</div>' +
-    '<div style="display:flex;align-items:center;gap:.35rem;flex-shrink:0">' + castBtn + upcastBtn + '</div>' +
+    '<div style="display:flex;align-items:center;gap:.35rem;flex-shrink:0">' + castBtn + upcastBtn + ritualBtn + '</div>' +
     '<div class="sheet-spell-detail" id="spell-detail-' + sp.id + '" style="display:none;flex-basis:100%;margin-top:.3rem;padding:.4rem .6rem;background:rgba(20,15,8,0.5);border-left:2px solid var(--gold2);font-size:11.5px;line-height:1.5;color:var(--parch2)">' +
       '<div style="font-size:10px;color:var(--parch3);letter-spacing:.5px;margin-bottom:.3rem"><strong>' + (isCantrip ? 'Cantrip' : 'Level ' + sp.level) + ' · ' + _sheetEscapeAttr(sp.school || '—') + '</strong> · ' + _sheetEscapeAttr(sp.castingTime || 'Action') + ' · Range ' + _sheetEscapeAttr(sp.range || '—') + ' · ' + _sheetEscapeAttr(sp.duration || '') + '</div>' +
       (sp.components ? '<div style="font-size:10px;color:var(--parch4);margin-bottom:.3rem"><em>Components:</em> ' + _sheetEscapeAttr(sp.components) + '</div>' : '') +
@@ -1772,6 +1776,18 @@ function castSpell(charId, spellId, upcastLevel) {
   }
   const label = (castLvl > sp.level) ? ('Upcast L' + castLvl) : ('Cast L' + castLvl);
   showRollToast(label, sp.name, '✦');
+}
+
+// Update 13 — Ritual cast (no slot expended, +10 min casting time)
+function ritualCast(charId, spellId) {
+  const state = getSheetState(charId);
+  const sp = (state.spells || []).find(function(x) { return x.id === spellId; });
+  if (!sp) return;
+  if (!sp.ritual) { alert('This spell does not have the Ritual tag.'); return; }
+  if (sp.level === 0) { alert('Cantrips cannot be ritual cast.'); return; }
+  // Ritual cast doesn't expend a slot. If concentration, still takes it.
+  if (sp.concentration) _setConcentration(charId, sp, sp.level);
+  showRollToast('Ritual cast', sp.name + ' (no slot, +10 min)', '📜');
 }
 
 // Update 12 — Concentration tracker

@@ -20,6 +20,7 @@
   'use strict';
 
   const NPC_JSON_URL = 'data/npcs.json';
+  const NPC_JSON_URL_DM = 'data/npcs-dm.json';
   const NPC_NOTES_PATH = 'npc-notes';
   const SAVE_DEBOUNCE_MS = 600;
 
@@ -30,8 +31,10 @@
     _notesRef: null,
     _notesCache: {},          // { npcId: { body, updatedAt } }
     _saveTimers: {},
+    _dmMode: false,
 
-    init: function(containerId, identity) {
+    // Update 13 — opts.dm = true fetches the full DM list (all NPCs incl. hidden).
+    init: function(containerId, identity, opts) {
       this._container = document.getElementById(containerId);
       if (!this._container) {
         console.warn('[NPCDirectory] Container not found:', containerId);
@@ -42,13 +45,15 @@
         return;
       }
       this._identity = identity;
+      this._dmMode = !!(opts && opts.dm);
       this._loadNPCs();
       this._initNotesSync();
     },
 
     _loadNPCs: function() {
       const self = this;
-      fetch(NPC_JSON_URL + '?_=' + Date.now())
+      const url = this._dmMode ? NPC_JSON_URL_DM : NPC_JSON_URL;
+      fetch(url + '?_=' + Date.now())
         .then(function(r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
         .then(function(data) {
           self._npcs = (data && data.npcs) || [];

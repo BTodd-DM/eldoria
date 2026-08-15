@@ -1,0 +1,640 @@
+{
+  "npcs": [
+    {
+      "id": "ana-kest",
+      "name": "Ana Kest",
+      "role": "Senior apprentice at the Grand Foundry; [[Characters/NPCs/Bryndis Ashveil|Bryndis]]'s protégée and probable successor",
+      "avatar": "AK",
+      "avatarBg": "",
+      "summary": "Senior apprentice at the Grand Foundry; [[Characters/NPCs/Bryndis Ashveil|Bryndis]]'s protégée and probable successor",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "bram",
+      "name": "Bram",
+      "role": "Apprentice at Drake's Furnace; quietly appalled; possible turncoat informant",
+      "avatar": "B",
+      "avatarBg": "",
+      "summary": "Apprentice at Drake's Furnace; quietly appalled; possible turncoat informant",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "brenna-hartwell",
+      "name": "Brenna Hartwell",
+      "role": "Human · Caravan Master",
+      "avatar": "BH",
+      "avatarBg": "#2a2010",
+      "summary": "The caravan master who led the escort south to Ironhold. Practical, honest, well-prepared — carries a healing potion and a smoke brick in her kit. Kept her word after Vrass took the contract wagon: the promised 25gp per escort still stood, and she said she'd tell the merchants what happened once you reached Ironhold.",
+      "badges": [
+        {
+          "text": "caravan master",
+          "color": "grey"
+        },
+        {
+          "text": "kept her word",
+          "color": "teal"
+        }
+      ],
+      "order": 11,
+      "visible": true
+    },
+    {
+      "id": "brother-daven-soltan",
+      "name": "Brother Daven Soltan",
+      "role": "Luminar of the small Temple of Luminos at Ironhold",
+      "avatar": "BD",
+      "avatarBg": "",
+      "summary": "Luminar of the small Temple of Luminos at Ironhold",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "bryndis-ashveil",
+      "name": "Bryndis Ashveil",
+      "role": "Guildmaster of the Blades Guild; senior [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]] member; leader of the reformist faction",
+      "avatar": "BA",
+      "avatarBg": "",
+      "summary": "Guildmaster of the Blades Guild; senior [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]] member; leader of the reformist faction",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "captain-rikhardt-vall",
+      "name": "Captain Rikhardt Vall",
+      "role": "Commander, Stonegate Watch Garrison",
+      "avatar": "CR",
+      "avatarBg": "",
+      "summary": "Commander, Stonegate Watch Garrison",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "cor-brackin",
+      "name": "Cor Brackin",
+      "role": "Hired thug in [[Characters/NPCs/Halvor|Halvor's]] employ",
+      "avatar": "CB",
+      "avatarBg": "",
+      "summary": "Hired thug in [[Characters/NPCs/Halvor|Halvor's]] employ",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "corvan-drake",
+      "name": "Corvan Drake",
+      "role": "Guildmaster of the Ingots Guild; leading the [[Factions/Aurum Dominion|Aurum Dominion]] contract faction on the [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]]",
+      "avatar": "CD",
+      "avatarBg": "",
+      "summary": "Guildmaster of the Ingots Guild; leading the [[Factions/Aurum Dominion|Aurum Dominion]] contract faction on the [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]]",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "davos-hark",
+      "name": "Davos Hark",
+      "role": "Aelorian moneylender, return-hook villain",
+      "avatar": "DH",
+      "avatarBg": "",
+      "summary": "Aelorian moneylender, return-hook villain",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "dawnwarden-seraphine-vale",
+      "name": "Dawnwarden Seraphine Vale",
+      "role": "Human · Temple of Luminos",
+      "avatar": "DS",
+      "avatarBg": "#1a2a1a",
+      "summary": "Stern, disciplined, unwavering. Senior clergy at the Temple of Luminos. When Orin came seeking guidance about Merric, she listened. Her counsel — \"Faith is not comfort. It is commitment.\" She told Orin not to stop searching.",
+      "badges": [
+        {
+          "text": "Temple of Luminos",
+          "color": "teal"
+        },
+        {
+          "text": "guided Orin",
+          "color": "gold"
+        }
+      ],
+      "order": 8,
+      "visible": true
+    },
+    {
+      "id": "drogan-scaleheart",
+      "name": "Drogan Scaleheart",
+      "role": "hunter and scout, mate of Nalara",
+      "avatar": "DS",
+      "avatarBg": "",
+      "summary": "hunter and scout, mate of Nalara",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "envoy-veris-caelthorn",
+      "name": "Envoy Veris Caelthorn",
+      "role": "Aurum Dominion diplomatic envoy; junior Kaelthorn cousin; wizard; Crystal Shards field operative; personal Coin Cipher client",
+      "avatar": "EV",
+      "avatarBg": "",
+      "summary": "Aurum Dominion diplomatic envoy; junior Kaelthorn cousin; wizard; Crystal Shards field operative; personal Coin Cipher client",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "gerald",
+      "name": "Gerald",
+      "role": "Human · Pig's Head Inn",
+      "avatar": "GR",
+      "avatarBg": "#1a0a08",
+      "summary": "Greying hair, stained vest, friendly smile, very sharp eyes. Owns the Pig's Head. Knows things. Observes carefully. Said \"Sarah doesn't send fools\" when you arrived. Offered you a job — finding a missing person. You haven't taken it yet. \"Careful. Walls here listen.\"",
+      "badges": [
+        {
+          "text": "Pig's Head",
+          "color": "grey"
+        },
+        {
+          "text": "has work available",
+          "color": "gold"
+        }
+      ],
+      "order": 7,
+      "visible": true
+    },
+    {
+      "id": "grust",
+      "name": "Grust",
+      "role": "Proprietor of the Ashfall inn, Stonecut Ward",
+      "avatar": "G",
+      "avatarBg": "",
+      "summary": "Proprietor of the Ashfall inn, Stonecut Ward",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "halvor",
+      "name": "Halvor",
+      "role": "Ironhold merchant, desperate debtor",
+      "avatar": "H",
+      "avatarBg": "",
+      "summary": "Ironhold merchant, desperate debtor",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "kellan-bracewell",
+      "name": "Kellan Bracewell",
+      "role": "[[Factions/Guilded Veil|Guilded Veil]] Veilmaster of the Ironhold cell",
+      "avatar": "KB",
+      "avatarBg": "",
+      "summary": "[[Factions/Guilded Veil|Guilded Veil]] Veilmaster of the Ironhold cell",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "kolt",
+      "name": "Kolt",
+      "role": "Human · Kolt's Depot",
+      "avatar": "KO",
+      "avatarBg": "#2a1808",
+      "summary": "Weathered older man, late 60s, skin like old leather and a pencil-stub permanently tucked behind one ear. Runs Kolt's Depot — the paper-and-manifest man for every caravan on the southern road. Signed the party on for the Ironhold escort.",
+      "badges": [
+        {
+          "text": "Kolt's Depot",
+          "color": "grey"
+        },
+        {
+          "text": "caravan work",
+          "color": "gold"
+        }
+      ],
+      "order": 10,
+      "visible": true
+    },
+    {
+      "id": "lyssandra-vale",
+      "name": "Lyssandra Vale",
+      "role": "Half-elf · Vaeloran's Apprentice",
+      "avatar": "LV",
+      "avatarBg": "#1a3a2a",
+      "summary": "Copper-haired, robes marked with faint scorch marks. She was sent to observe the meteor shard and never came back. When you found her, she tried to flee rather than return. She warned you before disappearing into the night. She is now back with Vaeloran and seems… well.",
+      "badges": [
+        {
+          "text": "returned to Vaeloran",
+          "color": "grey"
+        }
+      ],
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": "maelis-raventhorn",
+      "name": "Maelis Raventhorn",
+      "role": "independent mage, red herring",
+      "avatar": "MR",
+      "avatarBg": "",
+      "summary": "independent mage, red herring",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "mara-volk",
+      "name": "Mara Volk",
+      "role": "Merchants' Quarter fixer and information broker",
+      "avatar": "MV",
+      "avatarBg": "",
+      "summary": "Merchants' Quarter fixer and information broker",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "marius-vell",
+      "name": "Marius Vell",
+      "role": "\"wine merchant\" — Selene's spy",
+      "avatar": "MV",
+      "avatarBg": "",
+      "summary": "\"wine merchant\" — Selene's spy",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "merric-underbough",
+      "name": "Merric Underbough",
+      "role": "Halfling · Rulden Marr (revealed to be Merric)",
+      "avatar": "RM",
+      "avatarBg": "#2a2010",
+      "summary": "A calm, calculating figure with a reputation for competence and a network of contacts throughout Aeloria — publicly known as Rulden Marr. Torren gained access to meet him through the right channels. Orin has come to realise this is Merric Underbough, his adoptive father, thought lost for years. He sent Orin a warning letter — signed only 'R.' Keep to the light, Orin. It suits you better.",
+      "badges": [
+        {
+          "text": "Orin's adoptive father",
+          "color": "gold"
+        },
+        {
+          "text": "warned Orin off",
+          "color": "red"
+        },
+        {
+          "text": "back-room contact",
+          "color": "grey"
+        }
+      ],
+      "order": 9,
+      "visible": true
+    },
+    {
+      "id": "mother-hessa",
+      "name": "Mother Hessa",
+      "role": "Proprietor of the Grey Kettle inn, Merchants' Quarter",
+      "avatar": "MH",
+      "avatarBg": "",
+      "summary": "Proprietor of the Grey Kettle inn, Merchants' Quarter",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "nalara-scaleheart",
+      "name": "Nalara Scaleheart",
+      "role": "Matriarch of the Scaleheart Brood",
+      "avatar": "NS",
+      "avatarBg": "",
+      "summary": "Matriarch of the Scaleheart Brood",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "oskar",
+      "name": "Oskar",
+      "role": "Goliath · Townmaster of Aeloria",
+      "avatar": "OS",
+      "avatarBg": "#2a1a08",
+      "summary": "A massive Goliath who carries a battle axe across his back. He hired you to deal with the gnoll threat to the southeastern farmlands. Direct, fair, and clearly protective of Aeloria and its people. Paid on delivery.",
+      "badges": [
+        {
+          "text": "civic authority",
+          "color": "teal"
+        },
+        {
+          "text": "paid the party",
+          "color": "grey"
+        }
+      ],
+      "order": 5,
+      "visible": true
+    },
+    {
+      "id": "elisara",
+      "name": "Priestess Elisara",
+      "role": "High Priestess of Korvain at the Anvilhome",
+      "avatar": "PE",
+      "avatarBg": "",
+      "summary": "High Priestess of Korvain at the Anvilhome",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "princess-selene",
+      "name": "Princess Selene Kaelthorn",
+      "role": "Princess of the Aurum Dominion; head of the Crystal Shards (her personal intelligence network)",
+      "avatar": "PS",
+      "avatarBg": "",
+      "summary": "Princess of the Aurum Dominion; head of the Crystal Shards (her personal intelligence network)",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "queen-thessavaine",
+      "name": "Queen Thessavaine",
+      "role": "Queen of Thalindel",
+      "avatar": "QT",
+      "avatarBg": "",
+      "summary": "Queen of Thalindel",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "renwick",
+      "name": "Renwick",
+      "role": "Moneylender and small-bank operator, Merchants' Quarter",
+      "avatar": "R",
+      "avatarBg": "",
+      "summary": "Moneylender and small-bank operator, Merchants' Quarter",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "riven",
+      "name": "Riven",
+      "role": "Proprietor of the Broken Anvil inn, Rustpocket",
+      "avatar": "R",
+      "avatarBg": "",
+      "summary": "Proprietor of the Broken Anvil inn, Rustpocket",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "sarah",
+      "name": "Sarah",
+      "role": "Half-Orc · Wayfarer's Rest",
+      "avatar": "SR",
+      "avatarBg": "#2a1808",
+      "summary": "Broad-shouldered, tidy braid, dry sense of humour. Manages the Wayfarer's Rest — a calm, respectable inn in the inner trade ward. She pointed Orin toward the Pig's Head when he was asking questions that weren't quite the Wayfarer's type. Trustworthy, discreet, observant.",
+      "badges": [
+        {
+          "text": "ally-adjacent",
+          "color": "teal"
+        },
+        {
+          "text": "Wayfarer's Rest",
+          "color": "grey"
+        }
+      ],
+      "order": 6,
+      "visible": true
+    },
+    {
+      "id": "sera-vey",
+      "name": "Sera Vey",
+      "role": "Human · Farmer's wife from Stillbrook",
+      "avatar": "SV",
+      "avatarBg": "#1a2010",
+      "summary": "A wounded farmer's wife who approached the party at Stillbrook's well. Her sister Mira and Mira's two children were taken three days ago by a man called Halvor of Ironhold over a farming debt. Sera tried to intervene and was knocked down. Torren's Insight nat 20 confirmed her honesty. She rode hidden in the Wayward Company wagon south to Ironhold.",
+      "badges": [
+        {
+          "text": "honest",
+          "color": "teal"
+        },
+        {
+          "text": "sister taken by Halvor",
+          "color": "red"
+        },
+        {
+          "text": "Ironhold-bound",
+          "color": "grey"
+        }
+      ],
+      "order": 13,
+      "visible": true
+    },
+    {
+      "id": "gorren",
+      "name": "Sergeant Gorren",
+      "role": "Ironhold Watch — Sergeant of the Northern Gate",
+      "avatar": "SG",
+      "avatarBg": "",
+      "summary": "Ironhold Watch — Sergeant of the Northern Gate",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "sergeant-nell-vissen",
+      "name": "Sergeant Nell Vissen",
+      "role": "Sergeant, Stonegate Watch Garrison",
+      "avatar": "SN",
+      "avatarBg": "",
+      "summary": "Sergeant, Stonegate Watch Garrison",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "sister-kaelith",
+      "name": "Sister Kaelith",
+      "role": "Naturus cult operative",
+      "avatar": "SK",
+      "avatarBg": "",
+      "summary": "Naturus cult operative",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "taren-myles",
+      "name": "Taren Myles",
+      "role": "Human · Vaeloran's Researcher",
+      "avatar": "TM",
+      "avatarBg": "#2a2010",
+      "summary": "An older scholar found in Vaeloran's tower library, hair streaked with white, hands perpetually ink-stained. Rarely looks up from his runic charts. Polite when acknowledged but deeply focused on his work.",
+      "badges": [
+        {
+          "text": "Spire of the Silver Eclipse",
+          "color": "grey"
+        }
+      ],
+      "order": 3,
+      "visible": true
+    },
+    {
+      "id": "the-scarlet-wake",
+      "name": "The Scarlet Wake",
+      "role": "rising pirate lord",
+      "avatar": "TS",
+      "avatarBg": "",
+      "summary": "rising pirate lord",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "torvi",
+      "name": "Torvi",
+      "role": "Elder-advocate of the Stonecut Ward — the dwarven community's voice on the [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]]",
+      "avatar": "T",
+      "avatarBg": "",
+      "summary": "Elder-advocate of the Stonecut Ward — the dwarven community's voice on the [[Locations/Aelorian Territories/Ironhold#The Forge Council|Forge Council]]",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "vaelith-morgrave",
+      "name": "Vaelith Morgrave",
+      "role": "Professor at Aeloria's Scholars' Circle; Sylas's mentor",
+      "avatar": "VM",
+      "avatarBg": "",
+      "summary": "Professor at Aeloria's Scholars' Circle; Sylas's mentor",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "vaeloran-duskwhisper",
+      "name": "Vaeloran Duskwhisper",
+      "role": "Archmage · Your Patron",
+      "avatar": "VD",
+      "avatarBg": "",
+      "summary": "A respected and eccentric scholar-mage who serves the greater good of Aeloria. Known for funding libraries, sponsoring apprentices, and protecting the city from magical threats. He employed you and sent you to find Lyssandra. Calm, measured, and always seems to know more than he says.",
+      "badges": [
+        {
+          "text": "patron",
+          "color": "gold"
+        },
+        {
+          "text": "Spire of the Silver Eclipse",
+          "color": "grey"
+        }
+      ],
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": "valdris-the-pale-archivist",
+      "name": "Valdris the Pale Archivist",
+      "role": "ancient lich, Sylas's ancestral connection",
+      "avatar": "VT",
+      "avatarBg": "",
+      "summary": "ancient lich, Sylas's ancestral connection",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "vessara-blacktail",
+      "name": "Vessara Blacktail",
+      "role": "Matriarch of the Blacktail Clan",
+      "avatar": "VB",
+      "avatarBg": "",
+      "summary": "Matriarch of the Blacktail Clan",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "vexa",
+      "name": "Vexa",
+      "role": "Apprentice mage · Road encounter",
+      "avatar": "VX",
+      "avatarBg": "#1a2010",
+      "summary": "Met on the road north of Aeloria, heading to the same meteor crash site with a group of escorts. You avoided confrontation through quick thinking and creative use of tarps. She works for another mage in the city.",
+      "badges": [
+        {
+          "text": "briefly encountered",
+          "color": "grey"
+        }
+      ],
+      "order": 4,
+      "visible": true
+    },
+    {
+      "id": "vorik-stonestrong",
+      "name": "Vorik Stonestrong",
+      "role": "Aelorian Council representative for Ironhold",
+      "avatar": "VS",
+      "avatarBg": "",
+      "summary": "Aelorian Council representative for Ironhold",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "vrass",
+      "name": "Vrass",
+      "role": "Young Black Dragon",
+      "avatar": "VR",
+      "avatarBg": "#1a0a0a",
+      "summary": "Sleek black scales still slicked with old marsh water. Landed on the southern road and demanded the caravan. Took a wagon of cargo and Torren's lifetime service — sworn in exchange for the party's lives and safe passage. His parting words: \"We will speak soon.\" He calls Torren \"mine.\"",
+      "badges": [
+        {
+          "text": "dragon",
+          "color": "red"
+        },
+        {
+          "text": "Torren dark-bound",
+          "color": "red"
+        },
+        {
+          "text": "southern road",
+          "color": "grey"
+        }
+      ],
+      "order": 12,
+      "visible": true
+    },
+    {
+      "id": "wenzel-\"the-kite\"-tosscobble",
+      "name": "Wenzel \"The Kite\" Tosscobble",
+      "role": "Guilded Veil — Stonegate Cell Leader",
+      "avatar": "W\"",
+      "avatarBg": "",
+      "summary": "Guilded Veil — Stonegate Cell Leader",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    },
+    {
+      "id": "wesley-halloran",
+      "name": "Wesley Halloran",
+      "role": "[[Factions/The Coin Cipher|Coin Cipher]] mid-tier agent — Ironhold end",
+      "avatar": "WH",
+      "avatarBg": "",
+      "summary": "[[Factions/The Coin Cipher|Coin Cipher]] mid-tier agent — Ironhold end",
+      "badges": [],
+      "order": 999,
+      "visible": false
+    }
+  ],
+  "generated": true,
+  "dm": true
+}

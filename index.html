@@ -1141,6 +1141,16 @@ body {
 
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
+  <details style="margin-bottom:1.5rem;background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.85rem 1rem" open>
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">📇 Full NPC Directory (with your DM notes)</summary>
+    <div style="margin-top:.85rem">
+      <div class="alert alert-info" style="margin-bottom:.75rem">
+        Every NPC in the vault (visible + hidden), auto-generated. Click 📝 <strong>My notes</strong> under any card to jot private DM notes — synced across your devices via Firebase.
+      </div>
+      <div id="dm-npc-directory-container"></div>
+    </div>
+  </details>
+
   <div class="sec-title">Key NPCs</div>
 
   <div style="margin-bottom:1rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
@@ -1854,6 +1864,7 @@ body {
 <script src="lore-directory.js"></script>
 <script src="sheet-history-ui.js"></script>
 <script src="cue-cards.js"></script>
+<script src="npc-directory.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -1903,6 +1914,12 @@ function unlockApp() {
       LoreDirectory.init('lore-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch (e) { console.warn('LoreDirectory init on unlock failed (will retry on tab open):', e); }
+  // Update 13 — DM NPC Directory (all NPCs + per-DM notes).
+  try {
+    if (window.NPCDirectory && typeof NPCDirectory.init === 'function') {
+      NPCDirectory.init('dm-npc-directory-container', { id: 'dm', role: 'dm', label: 'DM' }, { dm: true });
+    }
+  } catch (e) { console.warn('NPCDirectory (DM) init on unlock failed (will retry on tab open):', e); }
 }
 
 function checkAuth() {
@@ -1988,6 +2005,10 @@ function showPanel(id, btn) {
     // Update 8 — Cue cards: init on tab open.
     if(id === 'cues' && window.CueCards && typeof CueCards.init === 'function') {
       CueCards.init('cue-container');
+    }
+    // Update 13 — DM NPC directory: re-init on NPCs tab open.
+    if(id === 'npcs' && window.NPCDirectory && typeof NPCDirectory.init === 'function') {
+      NPCDirectory.init('dm-npc-directory-container', { id: 'dm', role: 'dm', label: 'DM' }, { dm: true });
     }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
