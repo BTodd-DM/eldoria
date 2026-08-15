@@ -1157,20 +1157,9 @@ body {
 
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
-  <!-- Cue Cards — collapsible, live at the top so pinned NPCs are one glance away during play -->
-  <details style="margin-bottom:1.25rem;background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.85rem 1rem" open>
-    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">🎭 Cue Cards — pin who's on stage this session</summary>
-    <div style="margin-top:.85rem">
-      <div class="alert alert-info" style="margin-bottom:.75rem">
-        Quick-reference cards for named NPCs likely to speak — voice, opening line, wants, secrets, exit. Pin the NPCs active this session; pinned cards render big at the top. Pins sync across your devices.
-      </div>
-      <div style="margin-bottom:.75rem">
-        <button class="action-btn" onclick="if(window.CueCards) CueCards.refresh()">🔄 Refresh</button>
-      </div>
-      <div id="cue-container"></div>
-    </div>
-  </details>
-
+  <div class="alert alert-info" style="margin-bottom:.75rem;font-size:12px">
+    📌 Pin any NPC to lift them into the top "Session Active" area — if they have a cue card (voice/opening/wants/secrets/exit), it appears expanded. Pins sync across your devices.
+  </div>
   <div class="sec-title">Key NPCs</div>
 
   <div style="margin-bottom:1rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
@@ -2041,8 +2030,8 @@ body {
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
 <script src="sheet-history-ui.js"></script>
-<script src="cue-cards.js"></script>
 <script src="dm-npc-notes.js"></script>
+<script src="dm-npc-pin-cue.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -2090,6 +2079,10 @@ function unlockApp() {
   try {
     if (typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
   } catch (e) { console.warn('attachDmNpcNotes on unlock failed:', e); }
+  // Attach pin button + inline cue expansion to each NPC card.
+  try {
+    if (typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
+  } catch (e) { console.warn('attachDmNpcPinCue on unlock failed:', e); }
   // Collapsible NPC location sections
   try {
     if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
@@ -2172,10 +2165,8 @@ function showPanel(id, btn) {
     if(id === 'players' && window.SheetHistory && typeof SheetHistory.init === 'function') {
       SheetHistory.init('history-container');
     }
-    // Update 8 — Cue cards: now nested under NPCs panel; init on NPCs tab open.
-    if(id === 'npcs' && window.CueCards && typeof CueCards.init === 'function') {
-      CueCards.init('cue-container');
-    }
+    // Update 8 — Cue cards merged into NPC cards (pin + inline cue expansion).
+    if(id === 'npcs' && typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
     // Update 13 — Re-attach DM note areas when NPCs tab opens (belt-and-braces).
     if(id === 'npcs' && typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
     // NPC location collapse — re-init on tab open (guard-protected against re-wiring).
