@@ -136,6 +136,63 @@ function getSheetState(id) {
       return { id: 'seed_' + i, name: str, quantity: 1, notes: '', custom: true, sourceItemId: null };
     });
   }
+  // One-time Sylas inventory cleanup — replaces known-bad legacy seed items
+  // with properly-split entries and correct quantities. Only touches items
+  // that match legacy patterns exactly (so the user's own edits aren't harmed).
+  if (id === 'sylas' && !state._sylasInvMigrationV1 && state.equipment) {
+    const RULES = [
+      {
+        // "Poisonous Spider Fang (×2), Spider Venom Sacks (×2) — collected components"
+        match: /^Poisonous Spider Fang.*Venom Sac/i,
+        replaceWith: [
+          { name: 'Poisonous Spider Fang', quantity: 2, notes: 'collected component' },
+          { name: 'Spider Venom Sac',      quantity: 2, notes: 'collected component' }
+        ]
+      },
+      {
+        // "17 Spears (odd inventory quirk — noted on sheet)"
+        match: /^17 Spears?/i,
+        replaceWith: [{ name: 'Spear', quantity: 17, notes: 'inventory quirk' }]
+      },
+      {
+        // "17 Longbow (odd inventory quirk — noted on sheet)"
+        match: /^17 Longbow/i,
+        replaceWith: [{ name: 'Longbow', quantity: 17, notes: 'inventory quirk' }]
+      },
+      {
+        // Necklace / Spirit Jar with Vaeloran mention
+        match: /Necklace.*Spirit Jar.*Vaeloran/i,
+        replaceWith: [{ name: 'The Necklace / Spirit Jar', quantity: 1, notes: 'Lich Initiate focus.' }]
+      }
+    ];
+    const rebuilt = [];
+    const now = Date.now();
+    state.equipment.forEach(function(item, i) {
+      const name = item.name || '';
+      let matched = null;
+      for (let r = 0; r < RULES.length; r++) {
+        if (RULES[r].match.test(name)) { matched = RULES[r]; break; }
+      }
+      if (matched) {
+        matched.replaceWith.forEach(function(rep, j) {
+          rebuilt.push({
+            id: 'migrated_v1_' + now + '_' + i + '_' + j,
+            name: rep.name,
+            quantity: rep.quantity,
+            notes: rep.notes,
+            custom: true,
+            sourceItemId: null,
+            equipped: false,
+            attuned: false
+          });
+        });
+      } else {
+        rebuilt.push(item);
+      }
+    });
+    state.equipment = rebuilt;
+    state._sylasInvMigrationV1 = true;
+  }
   if (!state.currency) {
     state.currency = Object.assign({ cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }, char.coins || {});
   }
@@ -355,6 +412,32 @@ function updateCurrency(charId, denom, raw) {
 }
 
 // ---- Inventory section -----------------------------------------------
+// Inventory row expand-on-click state (client-only, one row expanded at a time).
+let _expandedInventoryItemId = null;
+function toggleInventoryDetail(charId, itemId) {
+  _expandedInventoryItemId = (_expandedInventoryItemId === itemId) ? null : itemId;
+  if (typeof refreshSheet === 'function') refreshSheet(charId);
+}
+function saveInventoryExpandedNotes(charId, idx, val) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    s.equipment[idx].notes = val;
+  });
+}
+function renameInventoryItem(charId, idx) {
+  const state = getSheetState(charId);
+  if (!state.equipment || !state.equipment[idx]) return;
+  const current = state.equipment[idx].name || '';
+  const next = prompt('Rename item:', current);
+  if (next === null) return;
+  const trimmed = next.trim();
+  if (!trimmed) return;
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    s.equipment[idx].name = trimmed;
+  });
+}
+
 // Update 18b — Attunement Box (3 slots, gated by equipped)
 function renderAttunementSection(charId, state) {
   const items = state.equipment || [];
@@ -395,19 +478,25 @@ function renderInventorySection(charId, char, state) {
       '</td></tr>';
   } else {
     items.forEach(function(item, i) {
-      let nameHtml;
+      const isExpanded = _expandedInventoryItemId === item.id;
+      const chevron = isExpanded ? '▾' : '▸';
+      const nameToggle = 'onclick="toggleInventoryDetail(\'' + charId + '\',\'' + _sheetEscapeAttr(item.id) + '\')"';
+      let nameInner;
       if (!item.custom && catalogLoaded && ITEMS_BY_ID[item.sourceItemId]) {
-        const catItem = ITEMS_BY_ID[item.sourceItemId];
-        nameHtml = '<span title="' + _sheetEscapeAttr(catItem.description + '\n\n' + (catItem.source || '')) + '" style="cursor:help;border-bottom:1px dotted var(--gold2)">' + _sheetEscapeAttr(item.name) + '</span>';
+        nameInner = _sheetEscapeAttr(item.name);
       } else {
-        nameHtml = _sheetEscapeAttr(item.name);
+        nameInner = _sheetEscapeAttr(item.name);
       }
+      const nameHtml = '<span style="cursor:pointer;user-select:none" ' + nameToggle + ' title="Click for details">' +
+        '<span style="color:var(--gold2);margin-right:.3rem;font-size:10px">' + chevron + '</span>' + nameInner + '</span>';
       const qty = editing
         ? '<input type="number" min="1" step="1" value="' + (item.quantity || 1) + '" onchange="updateInventoryItem(\'' + charId + '\',' + i + ',\'quantity\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()" style="width:5ch;text-align:center;background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.3);color:var(--parch);padding:2px;border-radius:2px;font-size:11px">'
         : String(item.quantity || 1);
-      const notes = editing
-        ? '<input type="text" value="' + _sheetEscapeAttr(item.notes || '') + '" onchange="updateInventoryItem(\'' + charId + '\',' + i + ',\'notes\',this.value)" placeholder="notes" style="width:100%;background:rgba(10,8,5,0.7);border:1px solid rgba(160,128,64,0.3);color:var(--parch);padding:2px 4px;border-radius:2px;font-size:11px">'
-        : (item.notes ? '<span style="font-style:italic;color:var(--parch3)">' + _sheetEscapeAttr(item.notes) + '</span>' : '');
+      // Notes preview only — full editing happens in the expanded panel.
+      const notesPreview = item.notes
+        ? '<span style="font-style:italic;color:var(--parch3);font-size:11px">' + _sheetEscapeAttr(item.notes.length > 60 ? item.notes.slice(0, 60) + '…' : item.notes) + '</span>'
+        : '<span style="color:var(--parch4);font-size:10.5px;font-style:italic">click for details</span>';
+      const notes = notesPreview;
       const removeCell = editing
         ? '<button onclick="removeInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;margin-left:2px" title="Remove">✕</button>'
         : '';
@@ -428,11 +517,31 @@ function renderInventorySection(charId, char, state) {
       const actionCell = editing
         ? '<td style="text-align:right;padding:.15rem;white-space:nowrap">' + equipBtn + attuneBtn + removeCell + '</td>'
         : '';
-      rows += '<tr style="border-bottom:1px dashed rgba(160,128,64,0.1)">' +
+      rows += '<tr style="border-bottom:' + (isExpanded ? 'none' : '1px dashed rgba(160,128,64,0.1)') + '">' +
         '<td style="font-size:12px;color:var(--parch2);padding:.2rem .3rem .2rem 0">' + nameHtml + '</td>' +
         '<td style="text-align:center;font-size:12px;color:var(--parch2);padding:.2rem;width:5ch">' + qty + '</td>' +
         '<td style="font-size:11px;color:var(--parch3);padding:.2rem">' + notes + '</td>' +
         actionCell + '</tr>';
+      if (isExpanded) {
+        // Detail panel — full description, big notes textarea, rename button.
+        let catDesc = '';
+        if (!item.custom && catalogLoaded && ITEMS_BY_ID[item.sourceItemId]) {
+          const catItem = ITEMS_BY_ID[item.sourceItemId];
+          const source = catItem.source ? '<div style="font-size:10px;color:var(--parch4);margin-top:.35rem;font-style:italic">' + _sheetEscapeAttr(catItem.source) + '</div>' : '';
+          catDesc = '<div style="font-size:11.5px;line-height:1.55;color:var(--parch2);margin-bottom:.5rem;padding:.5rem .65rem;background:rgba(0,0,0,0.2);border-left:2px solid var(--gold2);border-radius:2px">' +
+            _sheetEscapeAttr(catItem.description || '') + source +
+          '</div>';
+        }
+        const bigNotes = '<textarea onchange="saveInventoryExpandedNotes(\'' + charId + '\',' + i + ',this.value)" placeholder="Your notes on this item…" style="width:100%;min-height:70px;padding:.4rem .55rem;background:rgba(10,8,5,0.55);border:1px solid rgba(160,128,64,0.3);border-radius:2px;color:var(--parch1);font-family:\'Crimson Pro\',serif;font-size:12.5px;line-height:1.5;resize:vertical;outline:none">' + _sheetEscapeAttr(item.notes || '') + '</textarea>';
+        const renameBtn = '<button onclick="renameInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);border-radius:2px;padding:2px 8px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px;margin-top:.4rem">✎ Rename</button>';
+        rows += '<tr style="border-bottom:1px dashed rgba(160,128,64,0.15)">' +
+          '<td colspan="4" style="padding:.15rem .5rem .6rem 1.5rem">' +
+            catDesc +
+            '<div style="font-size:9px;color:var(--gold2);letter-spacing:1px;font-family:\'Cinzel\',serif;margin-bottom:.3rem">YOUR NOTES</div>' +
+            bigNotes +
+            renameBtn +
+          '</td></tr>';
+      }
     });
   }
   const header = '<tr style="border-bottom:1px solid rgba(160,128,64,0.3)">' +
