@@ -615,7 +615,6 @@ body {
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
   <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
-  <button class="nav-btn" onclick="showPanel('cues',this)">🎭 Cues</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
@@ -1158,6 +1157,20 @@ body {
 
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
+  <!-- Cue Cards — collapsible, live at the top so pinned NPCs are one glance away during play -->
+  <details style="margin-bottom:1.25rem;background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.3);border-radius:3px;padding:.85rem 1rem" open>
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">🎭 Cue Cards — pin who's on stage this session</summary>
+    <div style="margin-top:.85rem">
+      <div class="alert alert-info" style="margin-bottom:.75rem">
+        Quick-reference cards for named NPCs likely to speak — voice, opening line, wants, secrets, exit. Pin the NPCs active this session; pinned cards render big at the top. Pins sync across your devices.
+      </div>
+      <div style="margin-bottom:.75rem">
+        <button class="action-btn" onclick="if(window.CueCards) CueCards.refresh()">🔄 Refresh</button>
+      </div>
+      <div id="cue-container"></div>
+    </div>
+  </details>
+
   <div class="sec-title">Key NPCs</div>
 
   <div style="margin-bottom:1rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
@@ -1394,17 +1407,6 @@ body {
   <button class="action-btn" onclick="sendPrompt('Generate 3 new side quest hooks for The Wayward Company appropriate for a level 6 party currently at Ironhold — connect each one to a different thread: Vaeloran\'s instability plan, the Naturus cult, the Aurum Dominion push for the Ironhold weapons contract, or Vrass\'s dark bond on Torren')">Generate Side Quest Hooks ↗</button>
 </div>
 
-<!-- ============ CUE CARDS (Update 8) ============ -->
-<div id="panel-cues" class="panel">
-  <div class="sec-title">🎭 NPC Cue Cards — pin who's on stage this session</div>
-  <div class="alert alert-info">
-    Quick-reference cards for named NPCs likely to speak — voice, opening line, wants, secrets, exit. Pin the NPCs active this session; pinned cards render big at the top so you can grab them mid-play. Pins sync across your devices.
-  </div>
-  <div style="margin-bottom:.75rem">
-    <button class="action-btn" onclick="if(window.CueCards) CueCards.refresh()">🔄 Refresh</button>
-  </div>
-  <div id="cue-container"></div>
-</div>
 
 <!-- ============ NOTES (Phase 6) ============ -->
 <div id="panel-notes" class="panel">
@@ -2170,8 +2172,8 @@ function showPanel(id, btn) {
     if(id === 'players' && window.SheetHistory && typeof SheetHistory.init === 'function') {
       SheetHistory.init('history-container');
     }
-    // Update 8 — Cue cards: init on tab open.
-    if(id === 'cues' && window.CueCards && typeof CueCards.init === 'function') {
+    // Update 8 — Cue cards: now nested under NPCs panel; init on NPCs tab open.
+    if(id === 'npcs' && window.CueCards && typeof CueCards.init === 'function') {
       CueCards.init('cue-container');
     }
     // Update 13 — Re-attach DM note areas when NPCs tab opens (belt-and-braces).
