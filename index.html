@@ -1185,6 +1185,15 @@ body {
       <div class="card-body" style="font-size:12.5px">Orin's adoptive father. Former Luminar of Luminos who smuggled holy goods into the Aurum Dominion (where Luminos is suppressed). The Guilded Veil helped him — then owned him. Now Veilmaster. Sent Orin a cold warning but signed off "Keep to the light." He still cares. Does NOT know Vaeloran is using him through the Aurek alias. CR 5 skirmisher — throws smoke bombs and flees if confronted.</div>
       <div style="margin-top:.4rem"><span class="badge b-orange">Veilmaster</span><span class="badge b-gold">Orin's father</span><span class="badge b-grey">conflicted</span><span class="badge b-grey">doesn't know Aurek = Vaeloran</span></div>
     </div>
+    <div class="card red" data-npc-id="sister-kaelith">
+      <div class="npc-header">
+        <div class="npc-avatar" style="background:#2a1a3a">SK</div>
+        <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
+      </div>
+      <div class="card-body" style="font-size:12.5px">Charmed the gnoll pack leader. "K" on the note that grants Pig's Head back room access. Cleric of Naturus (Pestilence Domain). Believes she serves a greater demon — actually being manipulated through whispers. AC 19, HP 83, Spell Save DC 17. Plague Blessing, Virulent Burst, Cloak of Displacement.</div>
+      <div style="margin-top:.4rem"><span class="badge b-red">active threat</span><span class="badge b-grey">Naturus cultist</span><span class="badge b-red">CR ~10</span></div>
+      <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon)</span>
+    </div>
 
     <div class="card gold" data-npc-id="maelis-raventhorn">
       <div class="npc-header">
@@ -1316,16 +1325,6 @@ body {
     </div>
 
     <div class="npc-location-header" data-loc="wilderness">Wilderness / On the Road</div>
-    <div class="card red" data-npc-id="sister-kaelith">
-      <div class="npc-header">
-        <div class="npc-avatar" style="background:#2a1a3a">SK</div>
-        <div><div class="card-title" style="margin:0">Sister Kaelith</div><div class="card-sub" style="margin:0">Tiefling · Cleric 10 · Pestilence Domain</div></div>
-      </div>
-      <div class="card-body" style="font-size:12.5px">Charmed the gnoll pack leader. "K" on the note that grants Pig's Head back room access. Cleric of Naturus (Pestilence Domain). Believes she serves a greater demon — actually being manipulated through whispers. AC 19, HP 83, Spell Save DC 17. Plague Blessing, Virulent Burst, Cloak of Displacement.</div>
-      <div style="margin-top:.4rem"><span class="badge b-red">active threat</span><span class="badge b-grey">Naturus cultist</span><span class="badge b-red">CR ~10</span></div>
-      <span class="open-sheet-btn" title="NPC sheet not built yet — placeholder" style="display:inline-block;background:transparent;color:var(--parch3);border:1px dashed var(--parch3);padding:6px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:not-allowed;opacity:.7;margin-top:.5rem">📜 Sheet (soon)</span>
-    </div>
-
     <div class="card teal" data-npc-id="brenna-hartwell">
       <div class="npc-header">
         <div class="npc-avatar" style="background:#2a2010">BH</div>
@@ -2176,6 +2175,8 @@ function showPanel(id, btn) {
     }
     // Update 13 — Re-attach DM note areas when NPCs tab opens (belt-and-braces).
     if(id === 'npcs' && typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
+    // NPC location collapse — re-init on tab open (guard-protected against re-wiring).
+    if(id === 'npcs' && typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
 // Helper for status-bar items: jump to a panel by id without needing the button reference.
@@ -2984,6 +2985,9 @@ function initNpcLocationCollapse() {
   const collapsed = getCollapsedNpcLocs();
   const headers = grid.querySelectorAll(':scope > .npc-location-header');
   headers.forEach(h => {
+    // Guard: only wire once per header (prevents stacking listeners on re-init).
+    if (h.dataset.collapseWired === '1') return;
+    h.dataset.collapseWired = '1';
     // Add count chip
     if (!h.querySelector('.npc-loc-count')) {
       let el = h.nextElementSibling;
