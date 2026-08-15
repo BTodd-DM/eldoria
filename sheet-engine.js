@@ -1338,7 +1338,16 @@ function renderSpellsSection(charId, char, state) {
     '<button onclick="addCustomSpellPrompt(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .8rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">+ Add Custom</button>' +
     '</div>';
 
+  // Update 12 — Concentration badge
+  let concentrationBadge = '';
+  if (state.concentration) {
+    concentrationBadge = '<div style="margin:.4rem 0 .6rem;padding:.4rem .65rem;background:rgba(90,60,150,0.15);border:1px solid rgba(160,120,200,0.5);border-left:3px solid #a070c0;border-radius:3px;display:flex;justify-content:space-between;align-items:center;gap:.5rem">' +
+      '<div style="font-size:12.5px;color:#d0b8e8"><span style="font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1.5px;color:#a070c0;margin-right:.4rem">🌀 CONCENTRATING</span>' + _sheetEscapeAttr(state.concentration.spellName) + '</div>' +
+      '<button onclick="breakConcentration(\'' + charId + '\')" style="background:transparent;border:1px solid #a070c0;color:#a070c0;padding:2px 10px;border-radius:2px;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:.8px;cursor:pointer">Break</button>' +
+      '</div>';
+  }
   return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + sc.saveDC + ' · Atk ' + sheetFmtMod(sc.attackBonus) + '</div>' +
+    concentrationBadge +
     '<div class="sheet-slots-row">' + slotHtml + '</div>' +
     headerRow +
     cantripsHtml +
@@ -1704,6 +1713,7 @@ function renderBioSection(charId, char, state) {
 
 // ----- State mutators -----
 function hpDelta(charId, amt) {
+  const damageTaken = amt < 0 ? -amt : 0;
   withSheetState(charId, function(s) {
     const max = CHARACTERS[charId].hpMax;
     if (amt < 0 && s.hp.temp > 0) {
@@ -1712,12 +1722,22 @@ function hpDelta(charId, amt) {
     }
     s.hp.current = Math.max(0, Math.min(max, s.hp.current + amt));
   });
+  // Update 12 — Concentration check on damage (fires only if concentrating).
+  if (damageTaken > 0) _checkConcentrationOnDamage(charId, damageTaken);
 }
 function hpPrompt(charId, kind) {
   const amt = parseInt(prompt(kind === 'dmg' ? 'Damage amount?' : 'Healing amount?'));
   if (!isNaN(amt) && amt > 0) hpDelta(charId, kind === 'dmg' ? -amt : amt);
 }
-function setHpCurrent(charId, val) { const n = parseInt(val); if (!isNaN(n)) withSheetState(charId, function(s) { s.hp.current = Math.max(0, Math.min(CHARACTERS[charId].hpMax, n)); }); }
+function setHpCurrent(charId, val) {
+  const n = parseInt(val);
+  if (isNaN(n)) return;
+  const state = getSheetState(charId);
+  const prevHp = state.hp.current;
+  withSheetState(charId, function(s) { s.hp.current = Math.max(0, Math.min(CHARACTERS[charId].hpMax, n)); });
+  const damageTaken = Math.max(0, prevHp - n);
+  if (damageTaken > 0) _checkConcentrationOnDamage(charId, damageTaken);
+}
 function setHpTemp(charId, val) { const n = parseInt(val); if (!isNaN(n)) withSheetState(charId, function(s) { s.hp.temp = Math.max(0, n); }); }
 function toggleDeathSave(charId, kind, n) { withSheetState(charId, function(s) { if (s.deathSaves[kind] >= n) s.deathSaves[kind] = n - 1; else s.deathSaves[kind] = n; }); }
 function toggleSlot(charId, lvl, n) { withSheetState(charId, function(s) { if ((s.slots[lvl] || 0) >= n) s.slots[lvl] = n - 1; else s.slots[lvl] = n; }); }
@@ -1731,6 +1751,10 @@ function castSpell(charId, spellId, upcastLevel) {
   const sp = (state.spells || []).find(function(x) { return x.id === spellId; });
   if (!sp) return;
   if (sp.level === 0) {
+    // Update 12 — cantrips can still be concentration (Guidance, True Strike, etc.)
+    if (sp.concentration) {
+      _setConcentration(charId, sp, 0);
+    }
     showRollToast('Cantrip', sp.name, '✦');
     return;
   }
@@ -1742,8 +1766,58 @@ function castSpell(charId, spellId, upcastLevel) {
   if (max <= 0) { alert('No L' + castLvl + ' slots exist for this character.'); return; }
   if (expended >= max) { alert('No L' + castLvl + ' slots remaining.'); return; }
   withSheetState(charId, function(s) { s.slots[castLvl] = (s.slots[castLvl] || 0) + 1; });
+  // Update 12 — if this is a concentration spell, take it (dropping any prior).
+  if (sp.concentration) {
+    _setConcentration(charId, sp, castLvl);
+  }
   const label = (castLvl > sp.level) ? ('Upcast L' + castLvl) : ('Cast L' + castLvl);
   showRollToast(label, sp.name, '✦');
+}
+
+// Update 12 — Concentration tracker
+function _setConcentration(charId, spell, castLvl) {
+  const state = getSheetState(charId);
+  const prev = state.concentration;
+  if (prev && prev.spellId !== spell.id) {
+    showRollToast('Concentration dropped', prev.spellName + ' → ' + spell.name, '🌀');
+  }
+  withSheetState(charId, function(s) {
+    s.concentration = { spellId: spell.id, spellName: spell.name, castLvl: castLvl, at: Date.now() };
+  });
+}
+function breakConcentration(charId) {
+  const state = getSheetState(charId);
+  if (!state.concentration) return;
+  if (!confirm('Break concentration on ' + state.concentration.spellName + '?')) return;
+  withSheetState(charId, function(s) { s.concentration = null; });
+  showRollToast('Concentration', 'Broken manually', '🌀');
+}
+// Prompt a Con save when concentrating and damage is taken.
+// DC = max(10, floor(damage / 2)) per 2024 rule.
+function _checkConcentrationOnDamage(charId, damageAmount) {
+  const state = getSheetState(charId);
+  if (!state.concentration || damageAmount <= 0) return;
+  const dc = Math.max(10, Math.floor(damageAmount / 2));
+  const spellName = state.concentration.spellName;
+  // Non-blocking prompt: use setTimeout to let the HP change render first.
+  setTimeout(function() {
+    const rollResult = prompt(
+      '🌀 CONCENTRATION CHECK\n\n' +
+      'Concentrating on: ' + spellName + '\n' +
+      'Damage taken: ' + damageAmount + '\n' +
+      'DC: ' + dc + ' (higher of 10 or half damage)\n\n' +
+      'Roll a Constitution save. Enter your total (leave blank to skip):'
+    );
+    if (rollResult === null || rollResult.trim() === '') return;
+    const total = parseInt(rollResult, 10);
+    if (isNaN(total)) return;
+    if (total >= dc) {
+      showRollToast('Con save: PASS', spellName + ' held (' + total + ' vs DC ' + dc + ')', '✓');
+    } else {
+      withSheetState(charId, function(s) { s.concentration = null; });
+      showRollToast('Con save: FAIL', spellName + ' dropped (' + total + ' vs DC ' + dc + ')', '✗');
+    }
+  }, 150);
 }
 function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
 function bumpResource(charId, rid, delta) {
@@ -1975,6 +2049,8 @@ function longRest(charId) {
     const hdRecovered = Math.max(1, Math.floor(char.hitDice.max / 2));
     s.hitDiceSpent = Math.max(0, s.hitDiceSpent - hdRecovered);
     if (s.exhaustion > 0) s.exhaustion -= 1;
+    // Update 12 — concentration always ends on a long rest (unconscious for hours).
+    s.concentration = null;
   });
   showRollToast('Long Rest', 'HP, slots, resources restored', '✦');
   // If this character has a prep-modal flow, ask if they want to change prepared spells.
