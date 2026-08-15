@@ -411,11 +411,15 @@ function renderInventorySection(charId, char, state) {
       const removeCell = editing
         ? '<button onclick="removeInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;margin-left:2px" title="Remove">✕</button>'
         : '';
-      // Update 18a — equip toggle
-      const canEquip = isItemEquippable(item);
-      const equipBtn = canEquip
-        ? '<button onclick="toggleEquipped(\'' + charId + '\',' + i + ')" style="background:' + (item.equipped ? 'var(--gold2)' : 'transparent') + ';border:1px solid var(--gold2);color:' + (item.equipped ? '#0d0a06' : 'var(--gold2)') + ';border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="' + (item.equipped ? 'Currently equipped (click to unequip)' : 'Equip (1 free interaction/turn — more cost an action)') + '">' + (item.equipped ? '⚔ Equipped' : '⚔ Equip') + '</button>'
-        : '';
+      // Update 18a — primary action per item type (equip weapons/armor/worn magic, use consumables, nothing for gear)
+      const actionType = itemActionType(item);
+      let primaryBtn = '';
+      if (actionType === 'equip') {
+        primaryBtn = '<button onclick="toggleEquipped(\'' + charId + '\',' + i + ')" style="background:' + (item.equipped ? 'var(--gold2)' : 'transparent') + ';border:1px solid var(--gold2);color:' + (item.equipped ? '#0d0a06' : 'var(--gold2)') + ';border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="' + (item.equipped ? 'Currently equipped (click to unequip)' : 'Equip (1 free interaction/turn — more cost an action)') + '">' + (item.equipped ? '⚔ Equipped' : '⚔ Equip') + '</button>';
+      } else if (actionType === 'use') {
+        primaryBtn = '<button onclick="useInventoryItem(\'' + charId + '\',' + i + ')" style="background:transparent;border:1px solid #6ba46b;color:#6ba46b;border-radius:2px;padding:1px 6px;cursor:pointer;font-size:10px;font-family:\'Cinzel\',serif;letter-spacing:.5px" title="Use one (consume — quantity decrements)">✦ Use</button>';
+      }
+      const equipBtn = primaryBtn;
       // Update 18b — attune toggle
       const canAttune = isItemAttunable(item);
       const attuneBtn = canAttune
@@ -508,6 +512,21 @@ function toggleEquipped(charId, idx) {
   });
 }
 
+function useInventoryItem(charId, idx) {
+  withSheetState(charId, function(s) {
+    if (!s.equipment || !s.equipment[idx]) return;
+    const item = s.equipment[idx];
+    const qty = item.quantity || 1;
+    if (qty > 1) {
+      if (!confirm('Use one "' + (item.name || 'item') + '"?\nQuantity will drop to ' + (qty - 1) + '.')) return;
+      item.quantity = qty - 1;
+    } else {
+      if (!confirm('Use "' + (item.name || 'item') + '"?\nIt will be consumed and removed from inventory.')) return;
+      s.equipment.splice(idx, 1);
+    }
+  });
+}
+
 function toggleAttuned(charId, idx) {
   withSheetState(charId, function(s) {
     if (!s.equipment || !s.equipment[idx]) return;
@@ -536,17 +555,39 @@ function isItemAttunable(item) {
   return !!(catItem && catItem.attunement);
 }
 
-// Heuristic: is this item likely equippable? (weapon/armor/magic in the catalog,
-// or a custom item — we trust the user for custom entries.)
-function isItemEquippable(item) {
-  if (!item) return false;
-  if (item.custom) return true;
-  if (typeof ITEMS_BY_ID === 'undefined') return true;
-  const catItem = ITEMS_BY_ID[item.sourceItemId];
-  if (!catItem) return true;
-  const cat = String(catItem.category || '').toLowerCase();
-  return cat === 'weapon' || cat === 'armor' || cat === 'magic';
+// Which action button (if any) belongs on this inventory row?
+//   'equip'  → Equip toggle (weapons, armor, worn magic items)
+//   'use'    → Use button (consumables: potions, scrolls, ammo-esque one-shots)
+//   null     → no primary action (gear, tools, quest items, ambiguous custom items)
+//
+// Custom items get a heuristic based on the name (potion → use). Otherwise
+// they get no action button — user should re-add from the catalog for
+// proper linkage, or ignore.
+function itemActionType(item) {
+  if (!item) return null;
+  const nameLow = String(item.name || '').toLowerCase();
+  // Catalog-linked path
+  if (!item.custom && typeof ITEMS_BY_ID !== 'undefined') {
+    const catItem = ITEMS_BY_ID[item.sourceItemId];
+    if (catItem) {
+      const cat = String(catItem.category || '').toLowerCase();
+      const catName = String(catItem.name || '').toLowerCase();
+      if (cat === 'consumable') return 'use';
+      if (cat === 'weapon' || cat === 'armor') return 'equip';
+      if (cat === 'magic') {
+        if (catName.indexOf('potion') >= 0 || catName.indexOf('scroll') >= 0 || catName.indexOf('elixir') >= 0) return 'use';
+        return 'equip';
+      }
+      return null;
+    }
+  }
+  // Custom item heuristics — only strong signals
+  if (/^potion\b|\bpotion of\b|\belixir\b|\bscroll of\b/.test(nameLow)) return 'use';
+  return null;
 }
+
+// Legacy alias kept for backwards compat with the render row.
+function isItemEquippable(item) { return itemActionType(item) === 'equip'; }
 
 // Extract weapon combat info for an equipped inventory item (name, damage, notes).
 // Returns null if we can't get useful attack data.

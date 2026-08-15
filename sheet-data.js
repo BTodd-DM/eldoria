@@ -426,16 +426,17 @@ CHARACTERS.sylas = {
     'Dagger (×2)',
     'Quarterstaff',
     'Whip',
+    'Spear (×17) — inventory quirk',
+    'Longbow (×17) — inventory quirk',
     'Spellbook (personal, in the Backpack)',
     'Spellbook — necromantic lore volume gifted by a Scholars\' Circle professor',
     'Backpack, Bedroll, Mess Kit, Rations (10 days), Rope (Hempen, 50 ft), Waterskin',
     'Tinderbox (×2), Torch (×10), Lamp, Oil (×10)',
     'Ink Pen, Ink, Parchment (×10), Book',
     'Robe (scholar\'s robe)',
-    'Poisonous Spider Fang (×2), Spider Venom Sacks (×2) — collected components',
-    '17 Spears (odd inventory quirk — noted on sheet)',
-    '17 Longbow (odd inventory quirk — noted on sheet)',
-    '**The Necklace / Spirit Jar** — Lich Initiate focus. Vaeloran has been studying it during their spell sessions.'
+    'Poisonous Spider Fang (×2) — collected component',
+    'Spider Venom Sac (×2) — collected component',
+    '**The Necklace / Spirit Jar** — Lich Initiate focus.'
   ],
   attunements: [
     '— (attunement slot open)',
