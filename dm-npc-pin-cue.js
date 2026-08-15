@@ -127,8 +127,32 @@
     const pinned = !!_active[npcId];
     if (pinned) {
       card.style.boxShadow = '0 0 0 2px var(--gold2), 0 0 16px rgba(201,168,76,0.2)';
+      // Float pinned cards to the very top of the grid (before all location headers).
+      card.style.order = '-1';
     } else {
       card.style.boxShadow = '';
+      card.style.order = '';
+    }
+  }
+
+  // Show/hide the "Session Active" strip above pinned cards.
+  function renderSessionActiveStrip() {
+    const grid = document.getElementById('npc-grid-root');
+    if (!grid) return;
+    let strip = document.getElementById('session-active-strip');
+    const hasPinned = Object.keys(_active).some(function(k) { return _active[k]; });
+    if (hasPinned) {
+      if (!strip) {
+        strip = document.createElement('div');
+        strip.id = 'session-active-strip';
+        strip.className = 'npc-location-header';
+        strip.style.cssText = 'grid-column:1/-1;order:-2;color:var(--gold2);border-bottom:1px solid var(--gold2);cursor:default';
+        strip.innerHTML = '🎭 Session Active <span class="npc-loc-count">pinned</span>';
+        grid.insertBefore(strip, grid.firstChild);
+      }
+      strip.style.display = '';
+    } else if (strip) {
+      strip.style.display = 'none';
     }
   }
 
@@ -143,6 +167,7 @@
       renderCardBorder(card, npcId);
       renderCueBlock(card, npcId);
     });
+    renderSessionActiveStrip();
   }
 
   function attach() {
