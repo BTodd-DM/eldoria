@@ -9,6 +9,7 @@ HERE = Path(__file__).resolve().parent
 GENERATORS = [
     "generate_npcs.py",
     "generate_cues.py",
+    "generate_search_index.py",
 ]
 
 def main():

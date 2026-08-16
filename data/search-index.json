@@ -1,0 +1,2330 @@
+{
+  "entries": [
+    {
+      "id": "aeloria-council",
+      "title": "Aeloria Council",
+      "body": "Aeloria Council Vaeloran's goal: Make all major decisions quietly require his approval — without anyone realising it has already happened. The Five Seats Full member dossiers live at Characters/NPCs/Groups/Aeloria Council. - Seat 1 — Merchant Consortium: Councillor Dara Voss - Seat 2 — Artisans & Guilds: Councillor Bram Thatch - Seat 3 — Citizens' Assembly: Councillor Mira Ashford - Seat 4 — Scholars & Arcane Assembly: Councillor Halverin Thorne - Seat 5 — City Watch & Defence: Captain Merrow Dane Townmaster Characters/NPCs/Oskar — Goliath. Battle axe across his back. Practical civic authority. Hired the party for the gnoll job. Represents the kind of honest civic service Vaeloran is slowly hollowing out. Could be a significant ally later. Cross-references - Group:…",
+      "tags": [
+        "faction",
+        "civic",
+        "aeloria"
+      ],
+      "type": "faction",
+      "path": "Factions/Aeloria Council.md"
+    },
+    {
+      "id": "aurek-network",
+      "title": "Aurek Network — DM EYES ONLY",
+      "body": "Aurek Network — DM EYES ONLY Not a faction the party knows exists. The hidden network Vaeloran runs under the alias Aurek Voln Drowhiss — an anagram of his own name. What It Is A loose, deniable network of operatives and assets used to engineer instability. Vaeloran does not have employees in the conventional sense. He has people who believe they serve other patrons or other gods. Components - Factions/Naturus Cult / Kaelith — believes she serves Naturus. - Factions/Guilded Veil / Merric — believes he serves the city's balance. - *Factions/The Coin Cipher — Vaeloran's primary courier network for sensitive cargo. Founded 20 years ago through an intermediary. Even the Cipher's Mint doesn't know who founded them — they believe they serve a wealthy anonymous patron. - Compromised council…",
+      "tags": [
+        "faction",
+        "hidden",
+        "vaeloran",
+        "dm-only"
+      ],
+      "type": "faction",
+      "path": "Factions/Aurek Network.md"
+    },
+    {
+      "id": "aurum-dominion",
+      "title": "Aurum Dominion",
+      "body": "The Aurum Dominion The most organised external threat in the campaign — three simultaneous agendas. Three Active Agendas 1. Trade Dominance (immediate) Dominion envoys are in Aeloria pushing exclusive trade contracts with Ironhold's master smiths. Guildmaster Bryndis Ashveil refuses; younger smith Corvan Drake wants the deal. If Drake wins the political battle inside Ironhold, the Dominion gains military production leverage over the southern Aelorian Territories. 2. Valdris Search (ongoing) Aurum Sentinels quietly excavating beneath the Aurora Peaks searching for Valdris's sanctum. The Dominion has protected Valdris's phylactery location for 300 years in exchange for arcane consultation. They now believe Valdris may be moving (through Sylas) and want to understand what that means — or…",
+      "tags": [
+        "faction",
+        "empire",
+        "parallel-threat"
+      ],
+      "type": "faction",
+      "path": "Factions/Aurum Dominion.md"
+    },
+    {
+      "id": "celestium-clans",
+      "title": "Celestium Clans",
+      "body": "Celestium Clans Dwarves displaced from the Underpeak by the Aurum Dominion ~2,000 years ago during the Usurpation. Settled beneath the Celestial Plateau. Blended Dwarven craft with celestial magic. Regard themselves as stewards of cosmic equilibrium. Religion Revere Korvain (craftsmanship, dwarvenkind). Current Situation Tunnel excavation broke into a pre-historical chamber. Unknown material, unknown language, cosmic resonance. Council of Sages has sealed it and gone quiet. Aurum Dominion wants to know what they found. Valdris knew this chamber existed. Cross-references - Location: Locations/Celestial Plateau/_Celestial Plateau Overview - NPC: Characters/NPCs/Valdris the Pale Archivist - Lore: Lore and Legends/The Divine Gate - History: History/History of Eldoria",
+      "tags": [
+        "faction",
+        "dwarven",
+        "theocratic"
+      ],
+      "type": "faction",
+      "path": "Factions/Celestium Clans.md"
+    },
+    {
+      "id": "faction-relationship-map",
+      "title": "Faction Relationship Map",
+      "body": "Faction Relationship Map Who knows what. Who serves whom — knowingly or otherwise. Key Insights - Only Vaeloran sees the whole picture. Everyone else has at most a partial view. - Merric does not know Aurek = Vaeloran and won't connect the two names on his own. No scheduled reveal — only the party can bridge the identities, or a dramatic in-game event may force it. If it ever surfaces, see Merric's file for reaction paths. His scripted breaking point remains the Orin confrontation. - Kaelith does not know she's part of Vaeloran's network. She believes she serves Naturus directly. - The Aurum Dominion is not Vaeloran's ally — they're a parallel threat. Their interests occasionally converge (the Valdris search). - The Order of the Silver Crescent has not yet been activated. They're a…",
+      "tags": [
+        "faction",
+        "relationship",
+        "dm-eyes-only"
+      ],
+      "type": "faction",
+      "path": "Factions/Faction Relationship Map.md"
+    },
+    {
+      "id": "lethraliri",
+      "title": "Lethraliri (Ancient — Extinct)",
+      "body": "Lethraliri (Ancient — Extinct) Second Age civilisation that thrived in the Frostwood Marsh. Skilled in ice and water magic. Now extinct as a civilisation — but two threads survive: the fenling carry fragments of the culture; the Six Wardens carry the seal. Built stilt settlements with translucent ice sculptures and bioluminescent flora. At the end of the Second Age they were called on to help seal Vroth-Khorn beneath the marsh — and their civilisation ended in that act. What they left behind - The Frozen Spire and the ruins beneath the marsh. Physically intact. The Spire is the keystone of the seal on Vroth-Khorn. The frozen Lethraliri scholars inside form the volume of the seal. - The Six Wardens. Six Lethraliri elders who did not enter the freeze — instead took living or half-living…",
+      "tags": [
+        "faction",
+        "extinct",
+        "lore",
+        "second-age",
+        "seal",
+        "lethraliri"
+      ],
+      "type": "faction",
+      "path": "Factions/Lethraliri.md"
+    },
+    {
+      "id": "naturus-cult",
+      "title": "Naturus Cult",
+      "body": "The Naturus Cult What They Believe Rot and decay are natural processes that bring renewal. The world must be broken down to be reborn. The Divine Gate should be weakened to allow Naturus's influence back into the material plane more directly. What They're Actually Doing - Creating engineered unrest that feeds Vaeloran's Instability Clock. - Corrupting the farmlands and woods around Aeloria — the southeastern farmlands (gnoll attacks), the brook at Stillbrook on the southern road, scattered woodland patches. - Using Guilded Veil tunnel infrastructure beneath Aeloria for meetings. - Charming and controlling creatures (the gnoll pack leader; the deal with Vrass for caravan ambush) to create visible threats. - Establishing small shrines to Naturus in remote locations across the Aelorian…",
+      "tags": [
+        "faction",
+        "antagonist",
+        "religious",
+        "countdown"
+      ],
+      "type": "faction",
+      "path": "Factions/Naturus Cult.md"
+    },
+    {
+      "id": "nomads-of-the-ember-wastes",
+      "title": "Nomads of the Ember Wastes",
+      "body": "Nomads of the Ember Wastes Hardy, resilient desert people. Travel in sandship caravans. Oral tradition. Deep understanding of desert secrets. Current Situation Quiet. Will become relevant ~levels 10–12 when the party needs an unlikely alliance. Knowledge of ancient routes and hidden places. The Mor'nyx Tomb-Keepers Of the Crimson Desert. Have knowledge of death, undeath, and phylactery destruction — critical for a party trying to stop a lich. Cross-references - Location: Locations/Ember Wastes/_Ember Wastes Overview - Pantheon: Pantheon/Pantheon of Eldoria (Mor'nyx, Sylvana, Solara) - Plot: Plot Threads/Vaeloran Lich Progress (phylactery destruction)",
+      "tags": [
+        "faction",
+        "nomadic",
+        "late-campaign"
+      ],
+      "type": "faction",
+      "path": "Factions/Nomads of the Ember Wastes.md"
+    },
+    {
+      "id": "order-of-the-silver-crescent",
+      "title": "Order of the Silver Crescent",
+      "body": "Order of the Silver Crescent Structure (Ascending) 1. Initiates (Aspirants) — entry level, fundamental teachings, gemstone connection beginning. 2. Novices (Duskwalkers) — apprentices to Enlightened Guardians, learn fine jewellery and celestial craft. 3. Silver Crescent Instructors (Sensei) — experienced monks, train Initiates and Novices. 4. Enlightened Guardians (Dawnbringers) — scholars and protectors, preserve ancient wisdom, lead ceremonies. 5. Gemstone Keepers — profound connection to the gemstone collection, mentors for meditation. 6. Lunar Elders (High Masters) — highest rank, guide the monastery, teach the Silver Crescent Dance. The Silver Crescent Dance The order's signature martial arts technique. Combines graceful movements with precise strikes. Monks emulate the path of the…",
+      "tags": [
+        "faction",
+        "monastic",
+        "monks"
+      ],
+      "type": "faction",
+      "path": "Factions/Order of the Silver Crescent.md"
+    },
+    {
+      "id": "pirate-confederacy",
+      "title": "Pirate Confederacy",
+      "body": "The Pirate Confederacy Structure Loose confederacy led by a Council of Captains — diverse, experienced, charismatic leaders. Decisions affect the whole confederacy's operations and alliances. Free Ports - Port Blackfin — bustling haven, trade and recruitment hub. - Skullport — inside dormant volcano, secretive, powerful pirate lord in control. - Coral Cove — hidden harbour in treacherous reefs, refuge. - Serpent's Lair — ancient cave system, mythical significance, treasure rumours. Current Situation The Scarlet Wake is rising and destabilising the Council. Has seized three ships, demands a seat. Two captains want to negotiate; two want to fight; one has already defected. Countdown: 5 sessions ignored → controls the Council, Azure Sea trade routes taxed or blockaded, Vaeloran's Instability…",
+      "tags": [
+        "faction",
+        "pirates",
+        "countdown"
+      ],
+      "type": "faction",
+      "path": "Factions/Pirate Confederacy.md"
+    },
+    {
+      "id": "sylvarian-enclaves",
+      "title": "Sylvarian Enclaves",
+      "body": "Sylvarian Enclaves Major Settlements - Eldralor — built on the Eldorian Tree (largest tree in Verdant Expanse). Council of Elders. Cultural heart. - Celestia Glade — floating island. Levitation crystals. Mystical gardens. Rises during celestial events. - Silentwood — secretive, skilled assassins, shadow guardians. - Aurelia Haven — river settlement, arts and trade hub. Current Situation Naturus corruption (Sister Kaelith's operations) spreading into the forest edges. Sacred groves near Silentwood darkening. The old elf puritan faction sees it as punishment for allowing non-elves in. The multicultural faction looks desperately for an external cause. Countdown: 3 sessions ignored → Enclaves send emissary to Aeloria. Cross-references - Location: Locations/Verdant Expanse/_Verdant Expanse…",
+      "tags": [
+        "faction",
+        "sylvarian",
+        "elven",
+        "countdown"
+      ],
+      "type": "faction",
+      "path": "Factions/Sylvarian Enclaves.md"
+    },
+    {
+      "id": "temple-of-luminos",
+      "title": "Temple of Luminos",
+      "body": "Temple of Luminos The faith of Luminos in Aeloria. The most morally grounded institution in the city. Leadership See Characters/NPCs/Groups/Temple of Luminos Clergy for full clergy roster. - High Priest: Alric Dawnveil (Lightbearer of Aeloria). - Dawnwardens: Seraphine Vale, Halven Tor. - Luminars: Liora Sunfall, Tomas Eldrin, Kaelen Brightmere, Mira Solwen. - Acolyte: Eryn Feld. Current State - Concerned about unseen corruption in the city. Alric Dawnveil does not yet know about Vaeloran. - Naturus graffiti has appeared on the outer walls. Kaelen Brightmere is investigating quietly. - Mira Solwen has heard things in confession that deeply trouble her. Choosing silence — but not for much longer. - Acolyte Eryn Feld is asking questions about the symbols. May be in danger if the cult…",
+      "tags": [
+        "faction",
+        "religious",
+        "ally"
+      ],
+      "type": "faction",
+      "path": "Factions/Temple of Luminos.md"
+    },
+    {
+      "id": "the-ashbound",
+      "title": "The Ashbound",
+      "body": "The Ashbound Rival goliath clan. Displaced from their own territory, now pressing south against the Stonemarked. Limited information available. The Ashbound are themselves displaced — driven from their original lands by something further north (Aurum Dominion expansion? Naturus corruption? Their own internal conflict?). They are a desperate, militant clan, not a moustache-twirling enemy. TBD as the Stonemarked arc develops. Cross-references - Faction: The Stonemarked - Plot: Plot Threads/The Stonemarked - Location: Locations/Stonemarked Mountains/_Stonemarked Mountains Overview",
+      "tags": [
+        "faction",
+        "goliath",
+        "antagonist"
+      ],
+      "type": "faction",
+      "path": "Factions/The Ashbound.md"
+    },
+    {
+      "id": "the-coin-cipher",
+      "title": "The Coin Cipher",
+      "body": "The Coin Cipher A specialised criminal courier network in the Aelorian underworld. Moves high-value, sensitive cargo with absolute discretion. Their hidden Patron is Vaeloran — no member knows. What they do Transport and laundering of high-value, sensitive cargo. Goods other criminals won't touch — magical components, sealed correspondence, contraband too rare or too dangerous to move openly. \"If you can pay, we can move it. We don't ask what's in the box.\" Structure The Mint — the inner ring. About ten people. Coordinates all operations. Carriers — courier-level operatives. Move sealed packages between drops. Wear a small tattoo of a coin behind the right ear. Don't know what they carry. Maybe forty in total across Eldoria. Brokers — middlemen. Take orders from clients, set prices, never…",
+      "tags": [
+        "faction",
+        "criminal",
+        "courier",
+        "dm-eyes-only-patron"
+      ],
+      "type": "faction",
+      "path": "Factions/The Coin Cipher.md"
+    },
+    {
+      "id": "guilded-veil",
+      "title": "The Guilded Veil",
+      "body": "The Guilded Veil A continent-adjacent thieves' network organised as six territorial cells across the Aelorian Territories, coordinated by a single hidden figure — The Gilded — whose identity is known only to the six Territorial Veilmasters. Structure Three tiers. 1. The Gilded. Sits at the top. Wears a physical gilded veil — a gold-inlaid ceremonial mask that covers the entire face — at every appearance. Voice altered, gait deliberately unremarkable. Identity known only to the six Territorial Veilmasters, and even they know only that someone has held the veil for the last ten years; whether it has always been the same person, whether it is one of them, whether it is a group taking turns — nobody outside The Gilded is certain. See section below. 2. Six Territorial Veilmasters. Each runs a…",
+      "tags": [
+        "faction",
+        "thieves-guild",
+        "veil",
+        "territorial",
+        "aeloria",
+        "stonegate",
+        "ironhold"
+      ],
+      "type": "faction",
+      "path": "Factions/Guilded Veil.md"
+    },
+    {
+      "id": "the-stonemarked",
+      "title": "The Stonemarked",
+      "body": "The Stonemarked Goliath warrior clan in the Stonemarked Mountains. Orin's tribe. A proud people who value physical strength, endurance, and martial prowess above all else. Practice a coming-of-age trial — those who fail are cast out rather than killed. Beliefs - Weakness should be cut from the tribe for its survival. - Mercy in battle is weakness of spirit. - Strength of body and will is the highest virtue. Note for the campaign: Their belief that mercy is weakness is what got Orin exiled. It is also what Luminos sees as the beginning of wisdom. This contradiction is the heart of Orin's faith arc. Current Situation — URGENT Being squeezed from two sides simultaneously. Countdown: 5 sessions. See Locations/Stonemarked Mountains/_Stonemarked Mountains Overview for full details. - Naturus…",
+      "tags": [
+        "faction",
+        "goliath",
+        "orin-arc",
+        "countdown"
+      ],
+      "type": "faction",
+      "path": "Factions/The Stonemarked.md"
+    },
+    {
+      "id": "the-watch",
+      "title": "The Watch",
+      "body": "The Watch The unified law-enforcement and small-military body of Aeloria and the Aelorian Territories. Structure A single organisation operating at two scales: - The Aeloria City Watch — Aeloria-city policing, gate guards, council security, civic order. Captain Merrow Dane commands. Holds the fifth seat on the Council. - The Territorial Watch — patrols the wider Aelorian Territories. Local commanders in Ironhold, Stonegate, Duskmere, Silverbrook, and Crimson Outpost. Sworn to the same code, paid from the same treasury, accountable to the same Council. Local branches may be called \"the Watch out of Ironhold,\" \"the Watch at Stonegate,\" etc. — they all report up. Membership - Recruits drawn from across the Territories. Hard, fair selection. - Two-year minimum service. Most stay longer. -…",
+      "tags": [
+        "faction",
+        "civic",
+        "military",
+        "watch"
+      ],
+      "type": "faction",
+      "path": "Factions/The Watch.md"
+    },
+    {
+      "id": "history-of-eldoria",
+      "title": "The History of Eldoria",
+      "body": "The History of Eldoria Three Ages · the Usurpation · the Great Reclamation · the current era Contents - [Overview](#overview) - [First Age — Creation and Harmony](#first-age--creation-and-harmony) - [Second Age — Dark Reign](#second-age--dark-reign) - [The Great Reclamation](#the-great-reclamation) - [Third Age — Restoration and Renewal](#third-age--restoration-and-renewal) --- Overview Eldoria is a land dominated by a central continent surrounded by oceans. Magic is woven into the fabric of reality. Mythical creatures roam the wilderness. The gods are distant and enigmatic — sealed behind the Divine Gate — leaving mortals to navigate their own destinies. Its history is divided into Three Ages: the First Age of Creation and Harmony, the Second Age of Dark Reign, and the current Third Age…",
+      "tags": [
+        "history",
+        "three-ages",
+        "usurpation",
+        "great-reclamation",
+        "dawnoak",
+        "vroth-khorn"
+      ],
+      "type": "history",
+      "path": "History/History of Eldoria.md"
+    },
+    {
+      "id": "aurek-voln-drowhiss-correspondence",
+      "title": "Aurek Voln Drowhiss — Correspondence",
+      "body": "Aurek Voln Drowhiss — Correspondence Ciphered letters in the Spire of the Silver Eclipse. Signed by an alias the party doesn't yet recognise. What Reading It Reveals Aurek Voln Drowhiss = Vaeloran Duskwhisper. The anagram. The whole conspiracy hinges on this discovery. How the Party Could Find It - A player rearranges letters idly. No roll required if they physically rearrange it. - Investigation DC 20 if skill-based. - Taren Myles may surrender his coded research notes (Investigation DC 16) under the right circumstances. When They Confront Merric with This Name He freezes. That is the confirmation. Cross-references - NPC: Characters/NPCs/Vaeloran Duskwhisper · Characters/NPCs/Merric Underbough · Characters/NPCs/Taren Myles - Faction: Factions/Aurek Network - Plot: Plot Threads/Main Plot…",
+      "tags": [
+        "item",
+        "document",
+        "anagram",
+        "dm-eyes-only"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/Aurek Voln Drowhiss Correspondence.md"
+    },
+    {
+      "id": "matilda-the-horse",
+      "title": "Matilda the Horse",
+      "body": "Matilda the Horse Torren's horse. Purchased from O'Leary's Stables near the northwestern gate at the start of the campaign. Status Missing. Escaped from the party's cart when spooked by foxes. - Tracks lead north toward Aurora Peaks / Aurum Dominion territory. - Stablehands are searching (paid 5gp). The Breadcrumb Harry O'Leary noticed something: ALL the horses were spooked that night, not just Matilda. Three Aurum Dominion scouts were on the north road the same evening. Cross-references - NPC: Characters/Player Characters/Torren · Characters/NPCs/Groups/O'Leary Stables - Plot: Plot Threads/Torren - Personal Arc - Location: O'Leary's Stables",
+      "tags": [
+        "item",
+        "possession",
+        "torren",
+        "missing"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/Matilda the Horse.md"
+    },
+    {
+      "id": "merrics-warning-letter",
+      "title": "Merric's Warning Letter",
+      "body": "Merric's Warning Letter The cold warning letter Merric sent Orin after their meeting in the Pig's Head back room. Signed \"R\". Full Text Orin — You've been asking about a name that does not concern you. In this city, curiosity is a blade — useful in the right hands, dangerous in the wrong ones. You would do well to consider which you are. \"Merric\" is not a thread you want to keep pulling. Some things are left buried for a reason. You've been given the courtesy of a warning. Do not mistake it for weakness. Keep to the light, Orin. It suits you better. Let this be the last time your questions reach my ears. — R What It Reveals Merric still cares. He tried to suppress it. He couldn't fully. The closing line — \"Keep to the light, Orin. It suits you better.\" — is the crack in his armour.…",
+      "tags": [
+        "item",
+        "letter",
+        "merric",
+        "orin"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/Merric's Warning Letter.md"
+    },
+    {
+      "id": "sylass-necklace-(spirit-jar)",
+      "title": "Sylas's Necklace — Spirit Jar",
+      "body": "Sylas's Necklace — Spirit Jar The necklace Sylas wears. His soul anchor. Origin: Valdris. Mechanical Effect Spirit Jar for Sylas's Lich Initiate path: - AC = his spell save DC. - HP = spellcasting modifier + character level. - If destroyed: Sylas gains 2 Exhaustion levels and loses Soul Siphon until he creates a new one. True Nature — DM EYES ONLY Given to Sylas's family by Valdris himself. Designed to eventually house either Sylas's soul OR Valdris's. Its dual purpose is unknown to both Sylas and Vaeloran. Vaeloran is studying it during their \"spell sessions.\" Cross-references - NPC: Characters/Player Characters/Sylas · Characters/NPCs/Valdris the Pale Archivist · Characters/NPCs/Vaeloran Duskwhisper - Plot: Plot Threads/Sylas - Path of the Lich - House Rules: House Rules and…",
+      "tags": [
+        "item",
+        "artifact",
+        "sylas",
+        "lich-path",
+        "valdris"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/Sylas's Necklace (Spirit Jar).md"
+    },
+    {
+      "id": "the-coin-cipher-chest",
+      "title": "The Coin Cipher Chest",
+      "body": "The Coin Cipher Chest A sealed, magically warded chest carried by the Wayward Company's caravan through Session 5. Marked with the Coin Cipher eclipse seal. Shipped by Aurek (Vaeloran's underworld alias) via the Cipher network. Intended recipient: Envoy Veris Caelthorn in Ironhold. During the Vrass encounter, Sylas moved the chest into his Bag of Holding — it never reached Ironhold at all. Description Dark wood, iron banding. Hand-sized lock with no visible keyhole — opens by ward, not key. A wax seal bearing the stylised eclipse (sun half-eaten by shadow — the Coin Cipher's mark). The seal is layered with a faint necromantic warding sigil that shipping crews learn not to touch. Heavy. About the size of a small footlocker. How Torren spotted the seal (Session 5) When the party inspected…",
+      "tags": [
+        "item",
+        "chest",
+        "coin-cipher",
+        "aurek",
+        "veris",
+        "story-critical",
+        "foreshadowing"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/The Coin Cipher Chest.md"
+    },
+    {
+      "id": "the-heart-of-ironhold",
+      "title": "The Heart of Ironhold",
+      "body": "The Heart of Ironhold A fist-sized stone of dark, glittering ore, drawn from the earth at the founding of Ironhold three centuries ago and blessed by Korvain in the rites that followed. Ceremonial guardian: Priestess Elisara. Kept in the reliquary chamber beneath the Forge Council Hall's central dome. What Vrass wants Torren to steal in Session 6. Physical description Roughly the size of a large man's fist. Dark iron-black with a fine crystalline grain that catches lamplight and throws it back as small red-gold sparks — hence the local phrase \"the stone that glitters like fire.\" The stone is uncut on most sides — this is how it came from the earth. Only one face has been carefully polished, and on it is a small chiselled forge-mark: three descending lines converging on a small circle.…",
+      "tags": [
+        "item",
+        "ironhold",
+        "civic-relic",
+        "korvain",
+        "vrass-target",
+        "heart-of-ironhold"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/The Heart of Ironhold.md"
+    },
+    {
+      "id": "the-k-note",
+      "title": "The K Note",
+      "body": "The K Note A note signed \"K\". Grants back-room access at the Pig's Head without Gerald's screening. Origin Found referenced in the gnoll den writings during the gnoll job. What \"K\" Is Sister Kaelith. The party doesn't know this yet. Important Using the note flags the holder to Merric immediately. Merric will know someone walked past Gerald with K's authority. He hasn't shut these meetings down — but he's watching. Cross-references - NPC: Characters/NPCs/Sister Kaelith · Characters/NPCs/Gerald · Characters/NPCs/Merric Underbough - Faction: Factions/Naturus Cult · Factions/Guilded Veil - Location: The Pig's Head Inn",
+      "tags": [
+        "item",
+        "note",
+        "naturus-cult"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/The K Note.md"
+    },
+    {
+      "id": "the-meteor-shard",
+      "title": "The Meteor Shard",
+      "body": "The Meteor Shard A fragment of a meteor that struck a wooded clearing in the Aelorian Territories, about a day's travel north of Aeloria. Wild arcane energy. Possibly First Age origin. What It Is A meteor fragment carrying unusual arcane energy. Amplifies magic significantly. Possibly First Age origin. What It Actually Is — DM EYES ONLY Vaeloran's phylactery vessel. Stage 2 of his lich ritual was completed when the party delivered it. Current Status In Vaeloran's possession. Stage 3 attunement is currently in progress — a 30-day continuous ritual in the deepest chamber of the Spire. How to Disrupt - Destroy the shard: Vaeloran needs a new phylactery vessel entirely — significant setback. - Touch without his amulet: triggers ward (Stage 3 attunement protections). Cross-references - NPC:…",
+      "tags": [
+        "item",
+        "artifact",
+        "phylactery",
+        "story-critical"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/The Meteor Shard.md"
+    },
+    {
+      "id": "the-sealed-council-letters",
+      "title": "The Sealed Council Letters",
+      "body": "The Sealed Council Letters Sealed letters Vaeloran asked the party to deliver to council members. What the Party Believed A secondary task assigned by Vaeloran. Civic correspondence between the patron and the council. What They Actually Are — DM EYES ONLY Doctored. Designed to sow factional discord and drive wedges between guild leaders and council members. The party unknowingly delivered Vaeloran's chaos as a civic service. Status Delivered by someone else during the chaos of the chase for Lyssandra. The damage is already in motion. Cross-references - NPC: Characters/NPCs/Vaeloran Duskwhisper - Group: Characters/NPCs/Groups/Aeloria Council - Faction: Factions/Aeloria Council · Factions/Aurek Network - Plot: Plot Threads/Main Plot - Vaeloran Conspiracy",
+      "tags": [
+        "item",
+        "document",
+        "vaeloran-conspiracy"
+      ],
+      "type": "item",
+      "path": "Items and Artifacts/The Sealed Council Letters.md"
+    },
+    {
+      "id": "ashgate-slums",
+      "title": "Ashgate Slums (SW District)",
+      "body": "Ashgate Slums — Southwest District Roughest district. Cramped buildings lean on each other. Alleys twist unpredictably. Community feel — people who look out for their own and keep secrets. Not dangerous if you know how to carry yourself. Key Locations - The Pig's Head Inn — Guilded Veil front. Gerald runs it. Beneath the Slums A network of old drainage tunnels connects beneath the entire district — used by the Guilded Veil for discreet movement, and (unknown to Gerald) by the Naturus cult. Cross-references - District of: _Aeloria Overview - Faction: Factions/Guilded Veil · Factions/Naturus Cult - Plot: Plot Threads/Naturus Cult - Sister Kaelith",
+      "tags": [
+        "location",
+        "aeloria",
+        "district",
+        "guilded-veil"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Ashgate Slums.md"
+    },
+    {
+      "id": "city-centre",
+      "title": "City Centre",
+      "body": "City Centre The crossroads at the heart of Aeloria — where the four districts meet. Key Locations - City Hall — Council of Five and Townmaster's office. - Grand Bazaar — central market, twelve named shops. - Wayfarer's Rest — upper-middle inn run by Characters/NPCs/Sarah. - O'Leary's Horseshoe Stables — north gate. Cross-references - District of: _Aeloria Overview",
+      "tags": [
+        "location",
+        "aeloria",
+        "civic"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/City Centre.md"
+    },
+    {
+      "id": "city-hall",
+      "title": "City Hall",
+      "body": "City Hall The largest building in Aeloria. Grand stone structure at the exact crossroads of the city's main thoroughfares. Home to the Council of Five, administrative offices, public records, and Oskar's Townmaster office. All roads in Aeloria lead here — literally and politically. Cross-references - Faction: Factions/Aeloria Council - Group: Characters/NPCs/Groups/Aeloria Council - NPC: Characters/NPCs/Oskar",
+      "tags": [
+        "location",
+        "civic"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/City Hall.md"
+    },
+    {
+      "id": "coldhearth",
+      "title": "Coldhearth",
+      "body": "Coldhearth The last fenling village. Sits on the high ground of the Frostwood Marsh's south-eastern edge, roughly 8 hexes (four to five days on foot) west of Ironhold. Dying slowly — livestock born wrong, northern wells souring, children with strange dreams. Unknowingly the canary for the Vroth-Khorn seal. Position Coldhearth is built on a low hill on the south-eastern edge of the Frostwood Marsh, roughly 8 hexes (~96 miles, four to five days on foot) west of Ironhold — with each hex on the world map representing approximately 12 miles. From the village's northern edge you can see the mist rising off the marsh proper; from the southern edge, on a clear day, the far treeline of the Verdant Expanse. The village is not on any major trade road — a trapper's path west from a small waymarker on…",
+      "tags": [
+        "location",
+        "village",
+        "fenling",
+        "frostwood-marsh",
+        "seal-canary",
+        "coldhearth",
+        "dying"
+      ],
+      "type": "location",
+      "path": "Locations/Frostwood Marsh/Coldhearth.md"
+    },
+    {
+      "id": "copper-light-ward",
+      "title": "Copper Light Ward (SE District)",
+      "body": "Copper Light Ward — Southeast District Quieter, residential. Craftspeople, healers, clergy, ordinary citizens. Copper lanterns light the streets at night. Genuine community — neighbours who know each other, shared gardens. Key Locations - Temple of Luminos — most morally grounded location in Aeloria. Cross-references - District of: _Aeloria Overview - Faction: Factions/Temple of Luminos - NPC: Characters/NPCs/Groups/Temple of Luminos Clergy",
+      "tags": [
+        "location",
+        "aeloria",
+        "district"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Copper Light Ward.md"
+    },
+    {
+      "id": "crimson-outpost",
+      "title": "Crimson Outpost",
+      "body": "Crimson Outpost Along the border with the Crimson Desert. Vital trade caravan point. Buffer against desert threats.",
+      "tags": [
+        "location",
+        "outpost",
+        "border"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Crimson Outpost.md"
+    },
+    {
+      "id": "duskmere",
+      "title": "Duskmere",
+      "body": "Duskmere Coastal town. Fishing industry, vibrant harbour, seafood trade. Large pier running into the sea from centre of docks. - Mayor: Elara Stormrider. - High Priestess of Sirenna: Lorelai. Significance Where Merric found Orin — south of here, near the road, after Orin's exile from the Stonemarked. Merric was based around Duskmere when he was a Luminar of Luminos — before he fell in with the Guilded Veil. Cross-references - NPC: Characters/Player Characters/Orin · Characters/NPCs/Merric Underbough - Plot: Plot Threads/Merric and Orin",
+      "tags": [
+        "location",
+        "town",
+        "coastal",
+        "merric-origin"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Duskmere.md"
+    },
+    {
+      "id": "grand-bazaar",
+      "title": "Grand Bazaar",
+      "body": "Grand Bazaar Central district market. Sprawls across the inner market ring. Read-Aloud The Grand Bazaar sprawls across the central district in a riot of colour and sound. Canvas awnings stretch overhead, filtering sunlight into shifting patterns across cobbled streets. Merchants shout over one another, coins clink, fabrics ripple in the breeze, and the scent of spices, metal, and incense fills the air. If it can be bought, bartered, or stolen… it's here. The Twelve Shops Cross-references - District: City Centre - Faction: Factions/Guilded Veil (Edrin Vale's cover)",
+      "tags": [
+        "location",
+        "market"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Grand Bazaar.md"
+    },
+    {
+      "id": "halvors-compound",
+      "title": "Halvor's Compound",
+      "body": "Halvor's Compound Halvor's modest merchant compound on the outer edge of the Council Ward. Front house, small yard, back warehouse. The warehouse holds Sera's sister Mira and her two children. Position Outer edge of the Council Ward, one street back from the ring wall. The Council Ward's nicer streets are two blocks east; the Merchants' Quarter starts one block west. This is the ward's cheap frontier — technically prestigious, in practice a fringe. Halvor's neighbours are three other modest merchants and a widowed jeweller. None of them like each other. None of them dislike each other enough to intervene. Layout The front house. Two-storey timber townhouse, three rooms wide. Halvor and his household live here — a housekeeper (Nella, 51, has been with Halvor's family for twenty-two years),…",
+      "tags": [
+        "location",
+        "ironhold",
+        "council-ward",
+        "halvor-thread",
+        "hostage-site",
+        "session-7"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/Halvor's Compound.md"
+    },
+    {
+      "id": "high-spires-district",
+      "title": "High Spires District (NE District)",
+      "body": "High Spires District — Northeast District Most affluent quarter. Nobles, wealthy scholars, arcane practitioners. Well-maintained and privately guarded streets. The Spire of the Silver Eclipse dominates the skyline. Key Locations - Spire of the Silver Eclipse — Vaeloran's tower. Cross-references - District of: _Aeloria Overview - NPC: Characters/NPCs/Vaeloran Duskwhisper · Characters/NPCs/Lyssandra Vale · Characters/NPCs/Taren Myles",
+      "tags": [
+        "location",
+        "aeloria",
+        "district",
+        "vaeloran"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/High Spires District.md"
+    },
+    {
+      "id": "ironhold",
+      "title": "Ironhold",
+      "body": "Ironhold Walled forge-town in the southern Aelorian Territories. Member city of the united territories. Ten thousand souls. Home of the Forge Council. Currently in the middle of a political fight over an Aurum Dominion weapons contract that may reshape the town's future. Where Session 6 opens. Position Ironhold sits in rocky foothills roughly four days' hard ride south of Aeloria Crossroads, on the main southern trade road. The Celestial Plateau rises on the southern horizon on clear days — two days' travel further south by wagon. The plateau matters to Ironhold economically — the Celestium Clan dwarves send artisans and mineral caravans down that road for trade — but there are no aqueduct-lifts, no plateau-fed infrastructure. Trade with the plateau is by road, by wagon, by wagon-team,…",
+      "tags": [
+        "location",
+        "town",
+        "ironhold",
+        "forge-council",
+        "dominion-tension",
+        "guilded-veil-cell",
+        "session-06"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/Ironhold.md"
+    },
+    {
+      "id": "ironwell-forge",
+      "title": "Ironwell Forge",
+      "body": "Ironwell Forge Quality weapons, armour, shields, custom work. \"You want cheap? Go elsewhere. You want it to last? Stay.\" — Durnan Ironwell Refused Aurum Dominion exclusive contracts — hasn't told anyone. Cross-references - District: Merchants Rise - Faction: Factions/Aurum Dominion",
+      "tags": [
+        "location",
+        "smithy",
+        "dominion"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Ironwell Forge.md"
+    },
+    {
+      "id": "kolts-depot",
+      "title": "Kolt's Depot",
+      "body": "Kolt's Depot Where the party is now. Southern Aeloria. The last waypoint before the open southern road to Ironhold. Not a village — a single trading shed and a caravan yard, run by Characters/NPCs/Kolt. What it is Kolt's Depot is not a town. It is one man's operation. One low timber trading shed sits beside a staked-out caravan yard, at a bend in the southern road where northbound and southbound wagons naturally break their journey. That's it. No inn, no stables, no smithy, no watch post. Kolt lives in a small back room behind the shed; his one assistant, a taciturn woman named Ma Wenn, sleeps on a cot in the storeroom. The depot exists because the southern road has one full day of open country between the Aelorian Territories farms and the outskirts of Ironhold, and every caravan that…",
+      "tags": [
+        "location",
+        "current-party-location",
+        "depot",
+        "southern-road"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Kolt's Depot.md"
+    },
+    {
+      "id": "merchants-rise",
+      "title": "Merchants Rise (NW District)",
+      "body": "Merchants Rise — Northwest District Commercial heart of Aeloria. Wide cobbled streets, workshops, trading houses. The smell of hot metal from the Ironwell Forge drifts through the quarter. Merchants from across Eldoria maintain offices here. Key Locations - Ironwell Forge — Durnan Ironwell. Quality weapons, armour, shields, custom work. Refused Aurum Dominion exclusive contracts — hasn't told anyone. - Guilds Row — artisan workshops. - Caravan staging yards — north side near the gate. Political Notes Councillor Dara Voss (Seat 1, Merchant Consortium) has offices here. Her assistant is on the Guilded Veil's payroll. The Aurum Dominion has been approaching senior merchants about exclusive trade deals. Cross-references - District of: _Aeloria Overview - Faction tension: Factions/Aurum…",
+      "tags": [
+        "location",
+        "aeloria",
+        "district"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Merchants Rise.md"
+    },
+    {
+      "id": "meteor-crash-site",
+      "title": "Meteor Crash Site",
+      "body": "Meteor Crash Site A wooded clearing north of Aeloria, about a day's travel from the city walls. Where a meteor struck shortly before the campaign began. Where the party first found Lyssandra Vale. Description Mixed woodland of the Aelorian Territories — old oaks and pines, undergrowth thinning where the impact opened the canopy. A shallow crater perhaps thirty feet across at the centre of a small clearing, the soil glassy in places where the heat fused it. The trees ringing the crater are scorched on the impact side and dead. A lonely barn sits on the edge of the woods, half a mile from the crater, partly visible through the trees from the impact site. The clearing is unsettlingly quiet. Wildlife has either fled or been twisted by the residual shard energies. What happened here (campaign…",
+      "tags": [
+        "location",
+        "woods",
+        "meteor",
+        "lyssandra",
+        "party-visited"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Meteor Crash Site.md"
+    },
+    {
+      "id": "olearys-stables",
+      "title": "O'Leary's Horseshoe Stables",
+      "body": "O'Leary's Horseshoe Stables North gate. The party's stables. Steve, Jacob, and Harry O'Leary run it. Matilda (Torren's horse) went missing here. Harry noticed ALL horses were spooked that night — and three Aurum Dominion scouts were on the north road that same evening. Cross-references - Group: Characters/NPCs/Groups/O'Leary Stables - Plot: Plot Threads/Torren - Personal Arc - Item: Items and Artifacts/Matilda the Horse",
+      "tags": [
+        "location",
+        "stables",
+        "met",
+        "torren-arc"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/O'Leary's Stables.md"
+    },
+    {
+      "id": "scholars-circle",
+      "title": "Scholars' Circle",
+      "body": "The Scholars' Circle The Aurum Dominion's premier arcane institution. Sits in the Circle Ward of Auranova. Trains wizards, planar theorists, arcane historians, and the sorts of scholars the Crown would rather have inside a walled campus than out in the world unsupervised. What it is Chartered by the Crown in the second century of the current era. Officially: a research and teaching institution for the arcane arts, funded jointly by imperial appropriation and endowments from Dominion houses. Practically: the largest concentration of wizards under one roof in the Aurum Dominion, and the reason Auranova is a mage city. The Circle admits by examination. Class origin, species, and citizenship are (on paper) irrelevant; the entrance test is arcane aptitude and a written response to a set piece…",
+      "tags": [
+        "location",
+        "institution",
+        "auranova",
+        "aurum-dominion",
+        "arcane",
+        "scholars-circle"
+      ],
+      "type": "location",
+      "path": "Locations/Aurum Dominion/Auranova/Scholars' Circle.md"
+    },
+    {
+      "id": "scholars-circle-(aeloria)",
+      "title": "Scholars' Circle (Aeloria)",
+      "body": "The Scholars' Circle (Aeloria) *Aeloria's independent scholarly society — and the Scholars' Circle from Sylas's backstory. Not Crown-chartered — older than the Aurum Dominion itself. Presents as a collegial community of arcane researchers; runs, quietly, on a knife-fight for knowledge, patronage, and civic power. Sylas trained here on scholarship, graduated top of his class, and was mentored by Professor Vaelith Morgrave. Vaeloran Duskwhisper is one of the Circle's three most influential members without holding official title — and knew Sylas as a student before befriending him after graduation. Position The Circle occupies a walled compound on the eastern edge of the High Spires District, two streets from Vaeloran's Spire. Old red-brick halls surrounding a colonnaded central quadrangle.…",
+      "tags": [
+        "location",
+        "institution",
+        "aeloria",
+        "high-spires",
+        "arcane",
+        "scholars-circle-aeloria",
+        "vaeloran-influence",
+        "future-sylas-arc"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Scholars' Circle (Aeloria).md"
+    },
+    {
+      "id": "silverbrook",
+      "title": "Silverbrook",
+      "body": "Silverbrook Picturesque settlement, agriculture and vineyards. Some of the finest wines and food in the region.",
+      "tags": [
+        "location",
+        "town",
+        "agriculture"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Silverbrook.md"
+    },
+    {
+      "id": "spire-of-the-silver-eclipse",
+      "title": "Spire of the Silver Eclipse",
+      "body": "Spire of the Silver Eclipse Vaeloran's tower. One of Aeloria's most recognisable landmarks. Description Interior feels larger than exterior. Swirling orbs of light float between stacked tomes. Mechanical quills write without hands. Shelves slide to make way. Shimmering-dust hourglass flows upward. Layout — DM Eyes Only Breaking In - Arcana DC 18 to detect ritual energy from street. - All entry points: Alarm. - Lower levels: Arcane Lock DC 25 (Dispel Magic DC 18 to bypass). - Two Glyphs of Warding (dispelling + force). - Ritual room: additional ward triggers if the shard is touched without Vaeloran's amulet. What Can Be Found - Taren Myles's coded research notes (Investigation DC 16). - Aurek correspondence (sealed, cipher). - The meteor shard. - Lyssandra — who does not know she needs…",
+      "tags": [
+        "location",
+        "vaeloran",
+        "dungeon",
+        "infiltration"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Spire of the Silver Eclipse.md"
+    },
+    {
+      "id": "stillbrook",
+      "title": "Stillbrook",
+      "body": "Stillbrook A small farming village on the southern road, a half-day's caravan ride south of Kolt's Depot. Sera Vey's home village. Caravans heading to Ironhold pass through it. Description A cluster of perhaps forty houses along the slow-moving stream that gives the village its name — or used to. The stream is dark and murky now, the colour of old tea, and the locals have stopped drinking from it. They draw water from a well at the village edge, which is still mostly clean but tastes off. Wheat fields, a few sheep, two cows, an old water mill that doesn't work as well as it used to. The headman is Old Tomas. The villagers know each other; suspicion of strangers is muted but present. The corrupted water is recent — within the last month. Nobody can explain it. The crops have started to…",
+      "tags": [
+        "location",
+        "village",
+        "farming",
+        "sera-vey",
+        "naturus-corruption"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Stillbrook.md"
+    },
+    {
+      "id": "stonegate",
+      "title": "Stonegate",
+      "body": "Stonegate Fortified northern town. Main Watch garrison and training post for the northern Aelorian Territories. Where Torren served — and was discharged in disgrace. Position Stonegate sits in the hills roughly three days' hard ride north of Aeloria Crossroads. The town takes its name from the stone gate — a huge fortified pass-gate cut into the rock of a narrow defile in the hills, closing the only wagon-navigable route between the Aelorian farmlands and the wilder country to the north. The gate is old; older than the town beneath it. Nobody remembers who first cut it. The Watch keeps it. It is the reason Stonegate exists. What it is A working frontier town of roughly 2,000 souls built into and around the pass. The Watch garrison dominates the town in a way no other institution comes…",
+      "tags": [
+        "location",
+        "town",
+        "fortified",
+        "watch-garrison",
+        "northern-frontier",
+        "torren-past"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Stonegate.md"
+    },
+    {
+      "id": "temple-of-luminos",
+      "title": "Temple of Luminos",
+      "body": "Temple of Luminos White stone, veined with faint gold. Tall narrow windows. Peaceful, orderly, quietly watchful. The most morally grounded location in Aeloria. Read-Aloud White stone rises above the surrounding streets, polished smooth and veined with faint gold. Tall, narrow windows catch the sunlight, casting warm beams across the interior. The air smells faintly of incense and clean linen. It is quiet here — not empty, but peaceful. A place where the noise of the city feels… distant. DM Notes - Naturus graffiti (withered tree) appeared on the outer wall. Kaelen Brightmere has noticed and is quietly investigating. - Acolyte Eryn Feld is asking questions about the symbols — may be in danger. - Because of the Divine Gate, clergy do NOT have overwhelming divine presence. Faith here is…",
+      "tags": [
+        "location",
+        "temple",
+        "luminos",
+        "ally"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Temple of Luminos.md"
+    },
+    {
+      "id": "the-ashfall",
+      "title": "The Ashfall",
+      "body": "The Ashfall The Stonecut Ward's inn. Dwarven-favoured. Quiet. Deep cellar. Excellent ale. Outsiders welcome by introduction only. Run by Grust for the last ninety-one years. Position Northern edge of the Stonecut Ward, half-set into the western cliff-face. The front of the building is dwarven-cut stone worked to look almost timber; the back three rooms are literally carved into the rock. The name comes from the smoke-fall that drifts down from Foundry Row when the wind is right — the Ashfall gets an even coating of soot on its shutters twice a day, and Grust cleans it twice a day. The sign is a stone slab carved with three descending flakes; it does not need repainting. Layout Ground floor. A single central taproom, long and low-ceilinged. Dwarven-cut furniture (low benches, sturdy…",
+      "tags": [
+        "location",
+        "inn",
+        "ironhold",
+        "stonecut",
+        "dwarven-house",
+        "ashfall"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/The Ashfall.md"
+    },
+    {
+      "id": "the-broken-anvil",
+      "title": "The Broken Anvil",
+      "body": "The Broken Anvil The Rustpocket inn. Cheap. Loud. Runs on rough house rules applied evenly. Run by Riven for eleven years. Position Central Rustpocket, on the intersection where two narrow streets meet. Two storeys of soot-stained timber, sagging slightly toward the eastern wall. Above the door: an old sign showing a broken anvil, half the paint worn away. The current sign is the fourth in the inn's history; Riven claims one was stolen, one was burned, one collapsed of its own weight. Layout Ground floor. One large taproom that runs the length of the building — long bar down the left, mismatched tables and benches for perhaps eighty patrons at a squeeze. Broad rough hearth on the back wall, always burning. Kitchen behind the bar, more of a serving-hatch than a proper room. Rear door onto…",
+      "tags": [
+        "location",
+        "inn",
+        "ironhold",
+        "rustpocket",
+        "rough-house",
+        "broken-anvil"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/The Broken Anvil.md"
+    },
+    {
+      "id": "the-grey-kettle",
+      "title": "The Grey Kettle",
+      "body": "The Grey Kettle The Merchants' Quarter's premier inn. Merchant-favoured. Neutral ground. Clean rooms. Proper wine. Run by Mother Hessa for the last twenty-eight years. Position Central Merchants' Quarter, on the main east-west street two blocks from the Council Ward's outer gate. Timber-and-stone construction, three storeys plus attic quarters for staff. The name comes from a large grey enamelled kettle that hangs from a wrought-iron bracket over the front door — the same kettle since Hessa's husband hung it thirty years ago. Layout Ground floor. The taproom — long central room with the bar down the left wall, tables and benches for perhaps sixty patrons, a broad fireplace on the back wall. A private snug behind a curtained arch on the right (holds six comfortably, ten in a squeeze). The…",
+      "tags": [
+        "location",
+        "inn",
+        "ironhold",
+        "merchants-quarter",
+        "neutral-ground",
+        "grey-kettle"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/The Grey Kettle.md"
+    },
+    {
+      "id": "the-pigs-head-inn",
+      "title": "The Pig's Head Inn",
+      "body": "The Pig's Head Inn Loud, crowded, cheap ale, good gossip. Guilded Veil front. Layout Clientele: caravan guards, labourers, messengers, off-duty city watch. The \"K\" Note Grants back-room access without Gerald's screening. Using it flags the holder to Merric immediately. Read-Aloud (Interior) The taproom smells of woodsmoke, cheap tallow, and something fermented that never quite stopped. Every seat is filled. Three conversations are happening at once within arm's reach, none of them quiet. The barman — a heavy-jowled human with knowing eyes — is already watching you. Party History The party has been here. Torren gained back-room access. Met Merric (Rulden). Gerald offered a missing guild member job (still untouched). Cross-references - NPC: Characters/NPCs/Gerald · Characters/NPCs/Merric…",
+      "tags": [
+        "location",
+        "inn",
+        "guilded-veil"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/The Pig's Head Inn.md"
+    },
+    {
+      "id": "warehouse-14",
+      "title": "Warehouse",
+      "body": "Warehouse #14 A bulk-goods warehouse in The Slag. Officially: a mid-tier merchant's storage. Actually: Wesley Halloran's Coin Cipher way-station. Where the party's chest was supposed to arrive. Position Northern edge of The Slag, backing onto the outer wall. The Slag's numbered warehouses run from #1 (west end) to #22 (east end); Warehouse #14 sits about two-thirds of the way along, close enough to the Merchants' Quarter to be legitimately a bulk-storage building for goods in transit, far enough into the Slag that nobody who isn't going there passes it. The building has been Cipher-operated for approximately fifteen years — since well before Wesley's tenure. The paperwork is impeccable. The name on the lease belongs to a Merchants' Quarter cover-merchant who died of natural causes four…",
+      "tags": [
+        "location",
+        "ironhold",
+        "the-slag",
+        "coin-cipher",
+        "way-station",
+        "warehouse-14",
+        "session-6"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Ironhold/Warehouse 14.md"
+    },
+    {
+      "id": "wayfarers-rest",
+      "title": "Wayfarer's Rest",
+      "body": "Wayfarer's Rest Inner trade ward, east of City Hall. Polished dark wood, private booths with sound-dampening curtains, clean linens. Upper-middle clientele. Morally contrasts with the Pig's Head. Characters/NPCs/Sarah runs it with firm efficiency. Cross-references - NPC: Characters/NPCs/Sarah - District: City Centre",
+      "tags": [
+        "location",
+        "inn",
+        "met"
+      ],
+      "type": "location",
+      "path": "Locations/Aelorian Territories/Aeloria Crossroads/Notable Buildings/Wayfarer's Rest.md"
+    },
+    {
+      "id": "myths-and-folktales",
+      "title": "Myths and Folktales",
+      "body": "Myths and Folktales Stories told across Eldoria. Not always true. Often partial. The Eclipse and the Sun Tale of Astronar and Solara — explains why eclipses occur and why they are considered ill omens. \"When the Twilight Sovereign hides the Sun, all are reminded what was lost — and what was nearly lost forever.\" The Tree at the Roof of the World A legend whispered in the Verdant Expanse. Says the Eldorian Tree (on which Eldralor is built) sprouted from a tear shed by Yggdris during the Dark Reign. Druids dispute this — some say it predates the gods entirely. The Serpent and the Sea The lizardfolk clans of the Serpent Isles tell that they are descendants of an ancient Yuan-ti tribe that lived on the back of a titan sea serpent — and that the body of the serpent became the Serpent Isles…",
+      "tags": [
+        "lore",
+        "myths",
+        "folktales"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/Myths and Folktales.md"
+    },
+    {
+      "id": "calendar-of-eldoria",
+      "title": "The Calendar of Eldoria — \"The Cycle of Lights\"",
+      "body": "The Calendar of Eldoria — The Cycle of Lights The calendar used across most of Eldoria is called the Cycle of Lights, in reverence of the celestial movements that mark the turning year. It was reconstructed and standardised in the early Third Era after the collapse of the Lethraliri scholars, drawing on what survived of their astronomical record. Year notation: 3E [year] — Third Era, [year] since the Standardisation. Current campaign year: 3E 1247. --- Structure The 5 Sacred Days are when the boundary between planes is felt to be thinnest. Many cultures hold their most important observances on these days. --- The Twelve Months --- The Five Sacred Days These days sit between Iceflow (Year's End) and Greenwake (New Year's Dawn). They are outside the weekday cycle entirely — calendars simply…",
+      "tags": [
+        "lore",
+        "calendar",
+        "cosmology",
+        "festivals"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/Calendar of Eldoria.md"
+    },
+    {
+      "id": "the-dawnoak-and-the-sealing",
+      "title": "The Dawnoak and the Sealing of the Betrayer Gods",
+      "body": "The Dawnoak and the Sealing ⚠ DM ONLY. Common folk know nothing of any of this. Only the most senior scholars of the First Age — perhaps a handful of theologians at the highest temples, a handful of Sylvarian elders, and certainly the Creator Gods themselves — know the Dawnoak exists. The party should learn pieces of this only through investigation, discovery, dreams, or earned revelation. Never deliver this as exposition. What the Dawnoak Is At the end of the 2nd Age, after the Great Reclamation, Luminos and Veridania faced a problem: the Betrayer Gods could not be killed (gods cannot kill gods directly), but could not be left free either. The decision was made to seal them — behind the Divine Gate, on an outer plane apart from the material world, with no path back. The Divine Gate was…",
+      "tags": [
+        "lore",
+        "cosmology",
+        "dm-only",
+        "betrayer-gods",
+        "dawnoak"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/The Dawnoak and the Sealing.md"
+    },
+    {
+      "id": "the-divine-gate",
+      "title": "The Divine Gate",
+      "body": "The Divine Gate The seal that keeps the gods out of the material plane. After the Great Reclamation — at the end of the Second Age — all deities made a collective decision: to remove their physical forms from the material plane entirely, to prevent another usurpation. They sealed themselves behind the Divine Gate. This was a voluntary, collective sacrifice — not an imprisonment. Consequences for the Campaign - No divine miracles. Clergy do not have overwhelming divine presence — faith operates without direct divine intervention. - Slow corruption is dangerous. The Naturus cult's spread cannot be reversed by prayer alone. Communities must act. - No divine rescue is coming. The party is on their own. - The Gate may be a target. What People Believe Different cultures explain the Gate…",
+      "tags": [
+        "lore",
+        "divine-gate",
+        "religion",
+        "theology"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/The Divine Gate.md"
+    },
+    {
+      "id": "the-fenling",
+      "title": "The Fenling",
+      "body": "The Fenling The last living cultural echo of the Lethraliri. Once scattered across the Frostwood Marsh's high ground in dozens of small villages. Now reduced to a single settlement: Coldhearth. Who they are The fenling are not a race. They are a cultural people — mixed human, halfling, half-elf, and (rarely) firbolg stock, drawn together over two thousand years by a shared way of life on the border of the Frostwood Marsh. They call themselves fenling. Outsiders — Aelorians, Sylvarians, the Watch — use the same word because that is what the fenling say when asked. They are hunters, trappers, and traders of marsh-flora and rare herbs. They keep small livestock (goats, sheep, chickens) on the high ground. They fish the stream-outflows. They avoid the deep marsh with a kind of religious care…",
+      "tags": [
+        "lore",
+        "culture",
+        "fenling",
+        "frostwood-marsh",
+        "lethraliri-echo"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/The Fenling.md"
+    },
+    {
+      "id": "the-lethraliri-and-the-first-age",
+      "title": "The Lethraliri and the First Age",
+      "body": "The Lethraliri and the First Age The lost ice-magic civilisation of the Frostwood Marsh. Vanished. Ruins remain. Who They Were A civilisation that thrived during the Second Age while the rest of Eldoria suffered under the Dark Reign. Skilled in ice and water magic. Built stilt settlements above the marsh water with interconnected platforms and pathways. Their cities were known for translucent ice sculptures and bioluminescent flora. They communicated with the marsh's elemental spirits. What They Knew The Frozen Spire was their centre of magical research. It may contain First Age fragments of knowledge — possibly including information about the meteor shards that fell long after they vanished. Why They Vanished Publicly known (the scholar's surface) — cause unclear. Theories that…",
+      "tags": [
+        "lore",
+        "lethraliri",
+        "first-age",
+        "second-age",
+        "frostwood-marsh"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/The Lethraliri and the First Age.md"
+    },
+    {
+      "id": "the-six-wardens",
+      "title": "The Six Wardens",
+      "body": "The Six Wardens ⚠ DM ONLY. The party knows nothing of this. Piecing it together across multiple sessions is a major mid-to-late-campaign discovery. Never deliver as exposition. See Plot Threads/Vroth-Khorn Seal Clock for the tracker. What the six are At the end of the Second Age, when the Lethraliri sealed Vroth-Khorn beneath the Frostwood Marsh, they did not build a single container. They built a hexagonal binding: - A keystone — the Frozen Spire — holding Vroth-Khorn's core. - Interior nodes — the frozen Lethraliri scholars, whose bodies form the volume of the seal. - Six perimeter wardens — Lethraliri who did not enter the freeze, who instead took living or half-living forms at cardinal points around the marsh. They anchor the shape of the binding. Ice is hexagonal. Every serious…",
+      "tags": [
+        "lore",
+        "dm-only",
+        "cosmology",
+        "lethraliri",
+        "seal",
+        "wardens",
+        "vroth-khorn"
+      ],
+      "type": "lore",
+      "path": "Lore and Legends/The Six Wardens.md"
+    },
+    {
+      "id": "aurum-pressuring-ironhold",
+      "title": "Aurum Pressuring Ironhold",
+      "body": "Aurum Pressuring Ironhold The Aurum Dominion is pressuring Ironhold for exclusive weapon contracts. Bryndis refuses; Drake wants the deal. Topic: Ironhold Revealed: not yet Spoiler level: hidden Context Party learns this when Brenna, an Ironhold NPC, or a public rumour surfaces it. Initial known state - Torren: · - Sylas: · - Orin: · Related - Locations/Aelorian Territories/Ironhold/Ironhold - Factions/Aurum Dominion",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "ironhold"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Aurum Pressuring Ironhold.md"
+    },
+    {
+      "id": "coin-cipher-chest-hidden-in-sylas-bag",
+      "title": "Coin Cipher Chest Hidden in Sylas Bag",
+      "body": "Coin Cipher Chest Hidden in Sylas Bag Sylas moved the Coin Cipher chest into his Bag of Holding before Vrass took the caravan. Vrass is unaware the chest exists. Topic: Coin Cipher Revealed: Session 5 Spoiler level: revealed Context The sleight of hand happened while Torren negotiated with Vrass. Brenna also did not see it. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/Player Characters/Sylas - Characters/NPCs/Vrass - Factions/The Coin Cipher",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "coin-cipher"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Coin Cipher Chest Hidden in Sylas Bag.md"
+    },
+    {
+      "id": "gerald-offered-work-at-pigs-head",
+      "title": "Gerald Offered Work at Pigs Head",
+      "body": "Gerald Offered Work at Pigs Head Gerald at the Pig's Head offered work — finding someone missing who shouldn't be. Unclaimed. Topic: Gerald Revealed: Sessions 3-4 Spoiler level: revealed Context Still on the table. Party has not taken it. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Gerald",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "gerald"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Gerald Offered Work at Pigs Head.md"
+    },
+    {
+      "id": "halvor-coerced-from-above",
+      "title": "Halvor Coerced from Above",
+      "body": "Halvor Coerced from Above Halvor holds Sera's family under coercion from someone above him — he is himself being pressured. Topic: Halvor Revealed: not yet Spoiler level: hidden Context Halvor is doing a terrible thing because someone is doing it to him. Party discovers this if they interrogate him properly rather than immediately killing him. Initial known state - Torren: · - Sylas: · - Orin: · Related - Characters/NPCs/Halvor",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "halvor"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Halvor Coerced from Above.md"
+    },
+    {
+      "id": "k-is-kaelith",
+      "title": "K is Kaelith",
+      "body": "K is Kaelith The Naturus cult leader signed as 'K' is Sister Kaelith. Topic: Naturus Cult Revealed: not yet Spoiler level: hidden Context Party may connect the dots as they investigate the cult. No NPC will hand this to them. Initial known state - Torren: · - Sylas: · - Orin: · Related - Characters/NPCs/Sister Kaelith - Plot Threads/Naturus Cult - Sister Kaelith",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "naturus-cult"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/K is Kaelith.md"
+    },
+    {
+      "id": "lyssandra-returned-to-vaeloran",
+      "title": "Lyssandra Returned to Vaeloran",
+      "body": "Lyssandra Returned to Vaeloran Lyssandra was returned to Vaeloran, who says she is recovering. She seems… well. Topic: Vaeloran Revealed: Sessions 1-2 Spoiler level: revealed Context Vaeloran thanked the party warmly, said the shard had corrupted her mind, and that he would see to her recovery. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Lyssandra Vale - Characters/NPCs/Vaeloran Duskwhisper",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "vaeloran"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Lyssandra Returned to Vaeloran.md"
+    },
+    {
+      "id": "lyssandras-warning",
+      "title": "Lyssandras Warning",
+      "body": "Lyssandras Warning Before fleeing into the night, Lyssandra warned: \"He'll twist your good intentions like he did mine.\" Topic: Vaeloran Revealed: Sessions 1-2 Spoiler level: revealed Context She also said the meteor shard was 'not just a rock' — that 'he' had been studying fragments like it for years. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Lyssandra Vale - Characters/NPCs/Vaeloran Duskwhisper",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "vaeloran"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Lyssandras Warning.md"
+    },
+    {
+      "id": "matilda-fled-north",
+      "title": "Matilda Fled North",
+      "body": "Matilda Fled North Matilda ran away from O'Leary's Stables while the party was chasing Lyssandra — her tracks led north. Topic: Matilda Revealed: Sessions 3-4 Spoiler level: revealed Context Torren returned to O'Leary's after the gnoll den and found her gone. The stablehands were searching. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/Player Characters/Torren",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "matilda"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Matilda Fled North.md"
+    },
+    {
+      "id": "merric-r-warning-letter",
+      "title": "Merric R Warning Letter",
+      "body": "Merric R Warning Letter Merric sent Orin a warning letter, signed only 'R' — 'Keep to the light, Orin. It suits you better.' Topic: Merric Revealed: Sessions 3-4 Spoiler level: revealed Context The letter arrived cold and careful the morning after Orin met Rulden at the Pig's Head. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Merric Underbough - Characters/Player Characters/Orin",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "merric"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Merric R Warning Letter.md"
+    },
+    {
+      "id": "naturus-cult-in-aelorian-territories",
+      "title": "Naturus Cult in Aelorian Territories",
+      "body": "Naturus Cult in Aelorian Territories A Naturus cult operates in the Aelorian Territories. Topic: Naturus Cult Revealed: Sessions 3-4 Spoiler level: revealed Context Discovered inside the gnoll den — a shrine to Naturus and writings speaking of rot spreading through the land. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Plot Threads/Naturus Cult - Sister Kaelith",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "naturus-cult"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Naturus Cult in Aelorian Territories.md"
+    },
+    {
+      "id": "naturus-k-leader",
+      "title": "Naturus K Leader",
+      "body": "Naturus K Leader The Naturus shrine writings mention someone signed only 'K' as a leader. Topic: Naturus Cult Revealed: Sessions 3-4 Spoiler level: revealed Context Notes recovered from the gnoll den. Identity not yet known to the party. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Plot Threads/Naturus Cult - Sister Kaelith",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "naturus-cult"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Naturus K Leader.md"
+    },
+    {
+      "id": "pigs-head-named-as-naturus-meeting-point",
+      "title": "Pigs Head Named as Naturus Meeting Point",
+      "body": "Pigs Head Named as Naturus Meeting Point The Pig's Head Inn was named in the shrine writings as a meeting point for Naturus contacts. Topic: Naturus Cult Revealed: Sessions 3-4 Spoiler level: revealed Context One of the notes from the gnoll den named the location. Gerald has not been openly implicated. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Gerald",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "naturus-cult"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Pigs Head Named as Naturus Meeting Point.md"
+    },
+    {
+      "id": "rulden-is-merric",
+      "title": "Rulden is Merric",
+      "body": "Rulden is Merric Rulden Marr is Merric Underbough — Orin's adoptive father. Topic: Merric Revealed: Sessions 3-4 Spoiler level: revealed Context Torren gained access to Rulden through the right channels. Orin came to recognise him as his adoptive father, thought lost for years. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Merric Underbough",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "merric"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Rulden is Merric.md"
+    },
+    {
+      "id": "sera-family-taken-by-halvor",
+      "title": "Sera Family Taken by Halvor",
+      "body": "Sera Family Taken by Halvor Sera Vey's sister Mira and Mira's two children were taken by Halvor of Ironhold over a farming debt. Topic: Halvor Revealed: Session 5 Spoiler level: revealed Context Sera told the party at Stillbrook. Torren's Insight nat 20 (35) confirmed her honesty. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Sera Vey - Characters/NPCs/Halvor",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "halvor"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Sera Family Taken by Halvor.md"
+    },
+    {
+      "id": "someone-knows-sylas-necklace-is-his-soul",
+      "title": "Someone Knows Sylas Necklace is His Soul",
+      "body": "Someone Knows Sylas Necklace is His Soul Someone in Aeloria's magical circles knows Sylas's necklace holds his soul. Topic: Sylas Revealed: not yet Spoiler level: hidden Context Vaeloran has recognised the spirit jar. Party may discover this through Vaelith's concern or their own investigation. Initial known state - Torren: · - Sylas: · - Orin: · Related - Characters/Player Characters/Sylas - Characters/NPCs/Vaeloran Duskwhisper",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "sylas"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Someone Knows Sylas Necklace is His Soul.md"
+    },
+    {
+      "id": "torren-bound-to-vrass",
+      "title": "Torren Bound to Vrass",
+      "body": "Torren Bound to Vrass Torren swore lifetime service to Vrass in exchange for the party's safe passage. Topic: Vrass Revealed: Session 5 Spoiler level: revealed Context Persuasion natural 20 sealed the bargain. Vrass called Torren 'mine' and said 'we will speak soon.' Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Vrass - Characters/Player Characters/Torren",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "vrass"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Torren Bound to Vrass.md"
+    },
+    {
+      "id": "torren-is-guilded-veil",
+      "title": "Torren is Guilded Veil",
+      "body": "Torren is Guilded Veil Torren is a member of the Guilded Veil. Topic: Guilded Veil Revealed: Sessions 3-4 (party-side) Spoiler level: revealed Context Established via Torren's access to the Pig's Head back rooms and his handling of the Coin Cipher chest seal. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/Player Characters/Torren - Factions/Guilded Veil",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "guilded-veil"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Torren is Guilded Veil.md"
+    },
+    {
+      "id": "vaeloran-doctored-council-letters",
+      "title": "Vaeloran Doctored Council Letters",
+      "body": "Vaeloran Doctored Council Letters Vaeloran's Council letters were doctored to sow division between guild leaders and council members. Topic: Vaeloran Revealed: not yet Spoiler level: hidden Context The effects are already being felt in council tensions. Party would need to compare copies to see it. Initial known state - Torren: · - Sylas: · - Orin: · Related - Characters/NPCs/Vaeloran Duskwhisper - Groups/Aeloria Council",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "vaeloran"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Vaeloran Doctored Council Letters.md"
+    },
+    {
+      "id": "vaeloran-gave-the-party-council-letters",
+      "title": "Vaeloran Gave the Party Council Letters",
+      "body": "Vaeloran Gave the Party Council Letters Vaeloran gave the party sealed letters for Aeloria's Council. The party did not deliver them in time — the letters were handled separately. Topic: Vaeloran Revealed: Sessions 1-2 Spoiler level: revealed Context The party spent five days chasing Lyssandra north. The Council letters were delivered separately in the chaos. Initial known state - Torren: ✓ - Sylas: ✓ - Orin: ✓ Related - Characters/NPCs/Vaeloran Duskwhisper",
+      "tags": [
+        "lore-fact",
+        "revealed",
+        "vaeloran"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Vaeloran Gave the Party Council Letters.md"
+    },
+    {
+      "id": "vrass-exiled-by-bog-hag",
+      "title": "Vrass Exiled by Bog Hag",
+      "body": "Vrass Exiled by Bog Hag Vrass was exiled from the Frostwood Marsh by an ancient Bog Hag — the apex predator who drove him south. Topic: Vrass Revealed: not yet Spoiler level: hidden Context Explains why he's a young black dragon operating in the southern foothills instead of a marsh. Explains his ambition to return north. Initial known state - Torren: · - Sylas: · - Orin: · Related - Characters/NPCs/Vrass - Locations/Frostwood Marsh",
+      "tags": [
+        "lore-fact",
+        "hidden",
+        "vrass"
+      ],
+      "type": "lore-fact",
+      "path": "Lore Facts/Vrass Exiled by Bog Hag.md"
+    },
+    {
+      "id": "dm-working-notes",
+      "title": "DM Working Notes",
+      "body": "DM Working Notes This file is Claude's working memory across sessions. Ideas, deferred work, persistent rules, open questions, and technical context that would otherwise be lost when the conversation context resets. When starting a fresh session, Claude should read this file first to reconstruct where things stand. --- Active phase Nothing in-flight. Recent shipped fixes: - World map \"everything is Ember Wastes\" bug (second-round fix — skip clip-path override when no saved calibration; source styles stay intact). Pushed and confirmed working. - Aelorian Territories label ghost text-shadow (opacity-based fix). Pushed. - Region labels on world map now hidden entirely via CSS .hotspot.region .hotspot-label{display:none} — region names are already baked into the map image. City labels still…",
+      "tags": [
+        "dm",
+        "notes",
+        "working-memory",
+        "meta"
+      ],
+      "type": "meta",
+      "path": "Campaign Companion/DM Working Notes.md"
+    },
+    {
+      "id": "how_to_update",
+      "title": "How to update the website",
+      "body": "How to Update the Eldoria Companion Website Quick Updates (browser only — no GitHub needed) These save automatically to browser localStorage on the DM's device: - Instability Clock segments - Lich Progress Clock segments - Session notes - Session prep card notes - City map location notes Important: localStorage is per-browser. If you switch devices or clear cookies, this data is gone. Structural Updates (requires GitHub upload) When content needs to change — new NPCs, new locations, new plot developments, stat block updates, new tabs, etc.: 1. In CoWork or a Claude chat: Request the specific change needed. 2. Download the updated HTML file(s) provided. 3. Go to [github.com/BTodd-DM/eldoria](https://github.com/BTodd-DM/eldoria). 4. Click \"Add file\" → \"Upload files\". 5. Drag and drop the…",
+      "tags": [
+        "website",
+        "github",
+        "guide"
+      ],
+      "type": "meta",
+      "path": "Campaign Companion/HOW_TO_UPDATE.md"
+    },
+    {
+      "id": "aeloria_map.html.placeholder",
+      "title": "Placeholder for aeloria_map.html",
+      "body": "Placeholder for aeloria_map.html This is where the interactive city map HTML lives. Must stay in the same folder as aeloria_map.jpg. See _Website README and HOW-TO-UPDATE.",
+      "tags": [],
+      "type": "meta",
+      "path": "Campaign Companion/aeloria_map.html.placeholder.md"
+    },
+    {
+      "id": "aeloria_map.jpg.placeholder",
+      "title": "Placeholder for aeloria_map.jpg",
+      "body": "Placeholder for aeloria_map.jpg The Aeloria city map image. Must stay in the same folder as aeloria_map.html. If you have a local copy, drop the actual .jpg file here and delete this placeholder. See _Website README.",
+      "tags": [],
+      "type": "meta",
+      "path": "Campaign Companion/aeloria_map.jpg.placeholder.md"
+    },
+    {
+      "id": "index.html.placeholder",
+      "title": "Placeholder for index.html",
+      "body": "Placeholder for index.html This is where the live index.html (DM dashboard) should be saved when you have a local copy. When you drop index.html here, you can delete this placeholder file. Then drag-and-drop index.html to the GitHub repo to publish. See _Website README and HOW-TO-UPDATE.",
+      "tags": [],
+      "type": "meta",
+      "path": "Campaign Companion/index.html.placeholder.md"
+    },
+    {
+      "id": "players.html.placeholder",
+      "title": "Placeholder for players.html",
+      "body": "Placeholder for players.html This is where the live players.html (player-facing site) should be saved when you have a local copy. See _Website README and HOW-TO-UPDATE.",
+      "tags": [],
+      "type": "meta",
+      "path": "Campaign Companion/players.html.placeholder.md"
+    },
+    {
+      "id": "changelog",
+      "title": "Website Changelog",
+      "body": "Website Changelog Track changes to the GitHub Pages site here. Most recent on top. Format `` YYYY-MM-DD — Short title - Files changed: file1.html, file2.html - What changed: brief description. - Why: optional reason / source request. ` --- 2026-05 — Library migration - Files changed: none (vault-side only). - What changed: campaign content reorganised into structured Obsidian-friendly vault. The website remains the player-facing layer; this vault is now the DM's primary prep environment. 2026-05 — Initial state captured - Files in repo: index.html, players.html, aeloria_map.html, aeloria_map.jpg. Earlier (per the Original Chat archive) - Initial build — DM dashboard, player site (index.html, players.html). - Added Prep tab, enhanced combat tracker, Vaeloran stat block (index.html). -…",
+      "tags": [
+        "website",
+        "github",
+        "changelog"
+      ],
+      "type": "meta",
+      "path": "Campaign Companion/CHANGELOG.md"
+    },
+    {
+      "id": "charmed-gnoll-pack-leader",
+      "title": "Charmed Gnoll Pack Leader",
+      "body": "Charmed Gnoll Pack Leader The gnoll pack leader from the southeastern farmlands den. Charmed and marked by Sister Kaelith. What the Party Found A gnoll alpha showing signs of magical compulsion. Not natural pack behaviour. Detect Magic revealed structured dominance casting (Arcana DC 22). The pack leader was being used to draw attention to the southeastern farmlands — a deliberate destabilising act. Significance This was the first concrete evidence of the Naturus cult using charm magic to direct creatures toward chaos. The gnoll attack and the discovery of the Naturus shrine each ticked the Instability Clock +1. Cross-references - NPC: Characters/NPCs/Sister Kaelith - Faction: Factions/Naturus Cult - Plot: Plot Threads/Instability Clock · Plot Threads/Naturus Cult - Sister Kaelith -…",
+      "tags": [
+        "bestiary",
+        "gnoll",
+        "charmed",
+        "naturus-cult"
+      ],
+      "type": "monster",
+      "path": "Bestiary/Charmed Gnoll Pack Leader.md"
+    },
+    {
+      "id": "corruption-spiders",
+      "title": "Corruption Spiders",
+      "body": "Corruption Spiders Wildlife corrupted by the meteor shard's energy. Glowing blue eyes. Description Common spiders warped by exposure to shard energy. Larger, more aggressive, with eerie blue luminescence in their eyes. Their movements suggest they are being subtly directed — not just predatory but coordinated. First Encounter Sessions 01–02 — at the meteor impact site in the Frostwood Marsh. Defeated. Implications The shard's corruption affects nearby wildlife. Similar warped creatures may exist anywhere shard fragments fall. Cross-references - Item: Items and Artifacts/The Meteor Shard - Location: Locations/Frostwood Marsh/_Frostwood Marsh Overview - Session: Session Recaps/Session 01-02 - The Shard and the Letters",
+      "tags": [
+        "bestiary",
+        "corrupted",
+        "met"
+      ],
+      "type": "monster",
+      "path": "Bestiary/Corruption Spiders.md"
+    },
+    {
+      "id": "frostwood-marsh-creatures",
+      "title": "Frostwood Marsh Creatures",
+      "body": "Frostwood Marsh Creatures Creatures of the Frostwood Marsh. The party has not yet entered the marsh — this is reference for future arcs. The Bog Hag — dominant predator The marsh's apex threat. Ancient, jealous, territorial. She's lived in the marsh longer than anyone remembers — long enough that the Lethraliri may have known her when they still walked the stilt-cities. She claims the southern pools as her own; lesser predators that resist her either flee (as Vrass did, displaced south to the Aelorian Territories) or end up in her cookpot. Why this matters to the campaign: - The standing notice board warning in Aeloria — \"Danger in Frostwood Marsh\" — is, in part, about her. - Vrass left the marsh because of her. He won't go back. If pressed about her by the party, he hisses: \"I would not…",
+      "tags": [
+        "bestiary",
+        "regional",
+        "frostwood-marsh",
+        "bog-hag"
+      ],
+      "type": "monster",
+      "path": "Bestiary/Frostwood Marsh Creatures.md"
+    },
+    {
+      "id": "vrass",
+      "title": "Vrass",
+      "body": "",
+      "tags": [],
+      "type": "monster",
+      "path": "Bestiary/Vrass.md"
+    },
+    {
+      "id": "vrass---young-black-dragon",
+      "title": "Vrass — Young Black Dragon (Combat Reference)",
+      "body": "Vrass — Young Black Dragon Combat reference card. Full character details in Characters/NPCs/Vrass. Stat Block Use the Monster Manual's Young Black Dragon stat block verbatim. CR 7. Actions - Multiattack: One bite, two claws. - Bite: Melee, +7 to hit, reach 10 ft, one target. 2d10+4 piercing + 1d8 acid. - Claw: Melee, +7 to hit, reach 5 ft, one target. 2d6+4 slashing. - Acid Breath (Recharge 5–6): 30-ft line, 5 ft wide. DEX save DC 14, 14d8 acid damage, half on save. Suggested combat plan - Round 1: Strafing flyby acid breath on the lead wagon as he approaches. - Round 2: Land in front of the wagons. Opens dialogue or attacks. - Round 3: Bite and claws if cornered; recharges breath, uses again ASAP. - Flees at 30 HP. Wings south-east, retreats over the rocky scrub. Brenna's emergency kit…",
+      "tags": [
+        "bestiary",
+        "dragon",
+        "session-5",
+        "vrass"
+      ],
+      "type": "monster",
+      "path": "Bestiary/Vrass - Young Black Dragon.md"
+    },
+    {
+      "id": "vroth-khorn---the-withering",
+      "title": "Vroth-Khorn — The Withering",
+      "body": "Vroth-Khorn — The Withering ⚠ DM ONLY. Vroth-Khorn's existence is unknown to the world. Even the Naturus cult does not know its god has a child sealed in the material plane. Sister Kaelith does not know. What it is Vroth-Khorn is Naturus's unfinished child, hurled into the material plane at the Great Reclamation as the Betrayer was being bound within the Dawnoak. A primordial spawn of decay — not undead exactly, but neither alive nor dead in any way mortals understand. Its body is a vast, slow-writhing mass of decay-worms and pestilent breath, all coiled around a hollow core that exhales plague. True name (Lethraliri tongue): Vroth-Khorn — \"the Decay Bringer.\" Etymology: Vroth (decay) + Khorn (bringer / bearer) in the Lethraliri tongue. The same root that gives Mor'nyx its meaning — \"Mor\"…",
+      "tags": [
+        "bestiary",
+        "dm-only",
+        "primordial",
+        "naturus",
+        "frostwood-marsh",
+        "betrayer-spawn"
+      ],
+      "type": "monster",
+      "path": "Bestiary/Vroth-Khorn - The Withering.md"
+    },
+    {
+      "id": "aeloria-council",
+      "title": "Aeloria Council — The Five Seats",
+      "body": "Aeloria Council — The Five Seats The governing body of Aeloria. Five seats representing major power blocs. Vaeloran's goal: make all major decisions quietly require his approval — without anyone realising it has already happened. The party has not yet met any council member. --- Seat 1 — Councillor Dara Voss (Merchant Consortium) Human female, 55. Sharp, pragmatic, wealth-driven. Respects results, distrusts idealism. - Vaeloran's leverage: trade documents exposing tax irregularities she doesn't know he has. - Currently neutral but easily swayed by whoever seems most useful. - Would be first to support emergency powers if trade is threatened. - Her assistant is on the Guilded Veil's payroll — Vaeloran has two layers of access here. --- Seat 2 — Councillor Bram Thatch (Artisans & Guilds)…",
+      "tags": [
+        "npc",
+        "group",
+        "council",
+        "civic"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Groups/Aeloria Council.md"
+    },
+    {
+      "id": "ana-kest",
+      "title": "Ana Kest",
+      "body": "Ana Kest Senior apprentice at the Grand Foundry. Bryndis Ashveil's protégée. Twenty-six, brilliant at the forge, quietly disgusted by what she is beginning to understand about how Ironhold really works. Description Human, 26. Broad-shouldered, arms strong from ten years at the anvil. Dark hair kept short and practical. Ink stains on her forearms from the guild's political correspondence, which Bryndis has recently begun including her in. Wears her apron over the same well-cut wool tunic every day; the tunic was her mother's. Speaks fast when she is thinking and slowly when she is emotional. Background Aeloria-born. Family were mid-tier merchants. She showed early aptitude for smith-work, was apprenticed to a good Aeloria smith at eleven, and was noticed by Bryndis on a visit five years…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "blades-guild",
+        "apprentice",
+        "moral-compass",
+        "possible-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Ana Kest.md"
+    },
+    {
+      "id": "aurum-dominion-imperial-court",
+      "title": "Aurum Dominion — Imperial Court",
+      "body": "Aurum Dominion — Imperial Court The ruling court of the Aurum Dominion, based at the capital Auranova. Centralised monarchy with bureaucracy. Currently expansionist and pursuing three simultaneous agendas. The Royal Family Emperor Valerius Kaelthorn (52) — commanding, disciplined, ambitious. Skilled strategist. Respected, feared, envied. Empress Liora Kaelthorn (48) — elegant, politically savvy, influential behind the scenes. Crown Prince Valen Kaelthorn (26) — bold, charismatic, skilled warrior. Sometimes brash. Currently leading military exercises near the Aelorian border. The Kaelthorn tradition names sons with a V-initial; Valen and his younger brother Darius are both in this pattern, though Darius carries an older-house name from Empress Liora's line. Princess Selene Kaelthorn (22) —…",
+      "tags": [
+        "npc",
+        "group",
+        "royalty",
+        "dominion"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Groups/Aurum Dominion Imperial Court.md"
+    },
+    {
+      "id": "bram",
+      "title": "Bram",
+      "body": "Bram Half-orc apprentice at Drake's Furnace. Sees more than he says. Beginning to understand that his master is doing something he cannot live with. Ana Kest is quietly turning him. Description Half-orc, 22. Tall — 6'6\" — and lean rather than bulky, unusual for his heritage. Small tusks he keeps filed short out of professional courtesy. Ashen skin. Green eyes. Wears a scorched leather apron and a workman's linen shirt. Hair pulled back with a leather cord. Missing the tip of his left middle finger — an apprentice-year forge accident. Speaks softly and slightly slower than expected — he is thinking. Background Bram was raised in Rustpocket. His mother is human — a laundress, still alive, still working. His father was an orc contract-labourer who left when Bram was two; Bram does not…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "ingots-guild",
+        "apprentice",
+        "informant",
+        "moral-hook",
+        "half-orc"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Bram.md"
+    },
+    {
+      "id": "brenna-hartwell",
+      "title": "Brenna Hartwell",
+      "body": "Brenna Hartwell Caravan master. Ex-Watch sergeant. The party's employer for the Ironhold run. Description Human, early 40s, ash-blonde hair pulled tight at the nape. Leather armour she's clearly maintained for years. Carries a short sword on her left hip and a clipboard everywhere else. Lined face, level eyes. Speaks in the cadence of someone who has spent two decades giving and taking orders. Public Persona A professional. Quiet, direct, no nonsense. Respected on the southern road — drivers know her, Watch checkpoints wave her through. She takes care of her cargo, she pays on time, and she expects competence from anyone she hires. She has very little patience for stupid. Background Twenty years in the Aeloria City Watch under Captain Merrow Dane. Retired at sergeant. Took her pension…",
+      "tags": [
+        "npc",
+        "caravan",
+        "met",
+        "watch-veteran"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Brenna Hartwell.md"
+    },
+    {
+      "id": "brother-daven-soltan",
+      "title": "Brother Daven Soltan",
+      "body": "Brother Daven Soltan A Luminar of Luminos at Ironhold's small Temple. He knew Merric Underbough when Merric was still a Luminar based at Duskmere. Description Late 50s. Stooped slightly. White-streaked dark hair pulled back. Gentle eyes, calloused hands from years of writing and from helping at the local hospice. Wears the plain ash-grey robes of a Luminar (not the silver of a Dawnwarden). A man who has been kind for a very long time. What he knows He served alongside Merric Underbough in the Duskmere ministry forty years ago, before either of them rose. They were friends. He knows: - Merric was a kind man. Truly devoted to Luminos in his youth. - Merric began smuggling holy goods into the Aurum Dominion (where Luminos was suppressed) about thirty years ago. Daven helped him a few times.…",
+      "tags": [
+        "npc",
+        "luminar",
+        "orin-arc",
+        "merric-history"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Brother Daven Soltan.md"
+    },
+    {
+      "id": "bryndis-ashveil",
+      "title": "Bryndis Ashveil",
+      "body": "Bryndis Ashveil Master of the Ironhold Blades Guild. Senior voice on the Forge Council. Refuses the Aurum Dominion contract. Losing. Description Dwarven, mid-second-century. Shoulder-length grey-black hair kept in a single braid down her back, worked with a copper wire at the tail. Face lined more than her years should account for — dwarves who work the forge age slowly but not evenly. Wears a good leather apron even when she is not at the anvil, from habit. Hands like tree roots. Speaks quietly and never repeats herself. Background Ashveil is an old Ironhold surname; the Ashveils have been forging blades in this town for six generations. Bryndis inherited the Grand Foundry from her mother at ninety-two and has run it for eighty years. She sits on the Forge Council for the Blades Guild —…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "forge-council",
+        "reformist",
+        "possible-ally",
+        "dwarf",
+        "blades-guild"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Bryndis Ashveil.md"
+    },
+    {
+      "id": "captain-rikhardt-vall",
+      "title": "Captain Rikhardt Vall",
+      "body": "Captain Rikhardt Vall Commander of the Stonegate Watch garrison. Was Torren's lieutenant. Signed the paper that discharged him. Live tripwire if the party ever travels north. Description Human, mid-50s. Iron-grey hair kept short. Deep lines around the eyes from thirty years of squinting over ramparts. Broad-shouldered, upright posture, still fitter than most men fifteen years younger. Grey Watch cloak with the Captain's silver clasp at the throat. Speaks slowly and deliberately. Never raises his voice. Never has to. Background Career Watch. Enlisted as a boy, rose steadily through the ranks by unglamorous competence. Lieutenant when he served alongside Torren. Now commands the entire Stonegate garrison and is one of the senior regional commanders of the Territorial Watch — the northern…",
+      "tags": [
+        "npc",
+        "watch",
+        "stonegate",
+        "torren-past",
+        "live-tripwire"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Captain Rikhardt Vall.md"
+    },
+    {
+      "id": "cor-brackin",
+      "title": "Cor Brackin",
+      "body": "Cor Brackin Hired muscle. From Aeloria. Sleeps on duty. Drinks. Does not like the work. Will surrender if given a way out. Description Human, 34. Medium build, going soft. Broken nose that healed crookedly. Wears a leather jerkin over a stained linen shirt, and a short sword he does not draw often. Smells of stale beer and the small warehouse he sleeps in. Blond hair to his shoulders, unwashed. Blue eyes. Background Aeloria-born. Left home at seventeen. Failed at three trades (apprentice cooper, cart-driver, day-labourer at the docks) before drifting into hired-muscle work in his mid-twenties. Has done small enforcement jobs for minor loan-sharks, escort work for merchants who couldn't afford real guards, one stint as a bouncer at a Rustpocket-adjacent Aeloria tavern that closed under…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "thug",
+        "halvor-thread",
+        "aeloria-hired",
+        "low-morale"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Cor Brackin.md"
+    },
+    {
+      "id": "corvan-drake",
+      "title": "Corvan Drake",
+      "body": "Corvan Drake Younger ambitious smith. Guildmaster of the Ingots Guild. Wants the Aurum Dominion contract. Framed Kellan Bracewell for cult activity — he does not know she is Guilded Veil; he thinks he is punishing an ambitious rival's fixer. Description Human, 41. Tall for a smith, broad-shouldered in the way that comes from actual foundry work rather than the exercise-yard. Dark hair oiled back. Rings on both hands — one dwarven-work, one from a merchant contact in Aeloria, one from his mother. Clean-shaven and clean-clothed even at the end of a shift; when he leaves the forge he changes into fresh linen before crossing the street. Speaks in complete sentences and finishes them. Background Drake was not born to guild leadership. He is the son of a mid-tier ingot merchant who ran a modest…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "forge-council",
+        "dominion-faction",
+        "ambitious",
+        "framer"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Corvan Drake.md"
+    },
+    {
+      "id": "davos-hark",
+      "title": "Davos Hark",
+      "body": "Davos Hark Aelorian moneylender holding Halvor's daughter Lis as collateral. The party meets him when they return to Aeloria — if they've taken on Halvor's full deal. Description Late 50s, neat, well-fed, ledger-keeper's hands. The kind of man who looks reasonable until he calmly mentions what he's willing to do. What he is An Aelorian moneylender. Operates from a small but profitable counting-house in Merchants Rise district of Aeloria. Not a member of the Guilded Veil or the Coin Cipher — fully independent. Has been calling in old debts hard because his own creditors are squeezing him. He has two hired thugs (Thug stat block, MM) on his payroll. They guard the back-room apartment of the counting-house where Lis is held. Lis is fed, not abused, but kept locked away and constantly under…",
+      "tags": [
+        "npc",
+        "antagonist",
+        "return-hook",
+        "moneylender"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Davos Hark.md"
+    },
+    {
+      "id": "dawnwarden-seraphine-vale",
+      "title": "Dawnwarden Seraphine Vale",
+      "body": "Dawnwarden Seraphine Vale Senior clergy at the Temple of Luminos. Keeper of doctrine, suspicious of outsiders, unshakeable in her faith. Counselled Orin not to stop searching for Merric. Description Human woman, mid-fifties. Sun-weathered features, iron-grey hair worn in the traditional Dawnwarden shoulder-length cut. Robes of white and pale gold, cinched at the waist with a knotted rope of copper-thread. Speaks precisely, listens more than she speaks. Her gaze rarely wavers. Role - Dawnwarden rank — one of the Temple's senior officers. Oversees doctrine, novitiate instruction, and the temple's public counsel. - Not the presiding head of the temple, but among its most respected voices. - Manages the roster of Luminars sent out on assignment. Personality - Disciplined. Order matters.…",
+      "tags": [
+        "npc",
+        "met",
+        "luminos",
+        "temple",
+        "orin-thread",
+        "doctrine"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Dawnwarden Seraphine Vale.md"
+    },
+    {
+      "id": "drogan-scaleheart",
+      "title": "Drogan Scaleheart",
+      "body": "Drogan Scaleheart Nalara's mate. Forest green scales with bronze hints. Stoic, protective, fiercely loyal. Hunter and scout. Cross-references - NPC: Nalara Scaleheart - Location: Locations/Serpent Isles/_Serpent Isles Overview",
+      "tags": [
+        "npc",
+        "lizardfolk"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Drogan Scaleheart.md"
+    },
+    {
+      "id": "envoy-veris-caelthorn",
+      "title": "Envoy Veris Caelthorn",
+      "body": "Envoy Veris Caelthorn Junior cousin of Emperor Valerius. Diplomatic envoy dispatched officially by the Chancellery to secure the Ironhold weapons contract. Quietly reports personal observations to Princess Selene via her Crystal Shards network. Wizard, moderately trained. Private collector of necromantic curiosities via Aurek-branded Coin Cipher shipments — he does not know Aurek is Vaeloran. Has been in Ironhold for one week when Session 6 opens. Description Human, 32. Tall, slim, immaculate. Crystal-laced silver pin at the throat marks him as Aurum nobility. Soft-spoken, surgical in his diplomacy. Smiles often — not warmly, but in the polished way that makes mortals uncomfortable. Long fingers stained faintly at the tips with ink and, if you look closely, with something darker beneath…",
+      "tags": [
+        "npc",
+        "dominion",
+        "envoy",
+        "wizard",
+        "crystal-shards",
+        "coin-cipher-client",
+        "session-6",
+        "session-7"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Envoy Veris Caelthorn.md"
+    },
+    {
+      "id": "gerald",
+      "title": "Gerald",
+      "body": "Gerald Owner of the Pig's Head Inn. Senior Guilded Veil fixer. Greying hair, stained vest, soft build, friendly smile, sharp eyes. Public persona: loud, friendly, self-deprecating, complains about taxes. True role: screens newcomers, assigns low-risk jobs, moves information upward, identifies useful adventurers. Party History The party has met Gerald. He observed how they treated staff, tested them with half-truths, offered a missing guild member job (still untouched). \"Sarah doesn't send fools.\" \"You curious… or useful?\" \"Careful. Walls here listen.\" Back Room and Tunnels The Pig's Head has a private back room for guild meetings. The basement connects to old drainage tunnels running beneath the Slums — used by the Guilded Veil for discreet movement, and (unknown to Gerald) by the Naturus…",
+      "tags": [
+        "npc",
+        "veil",
+        "fixer",
+        "met"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Gerald.md"
+    },
+    {
+      "id": "grust",
+      "title": "Grust",
+      "body": "Grust Proprietor of the Ashfall — the Stonecut's inn. Dwarven-favoured, quiet, deep cellar. Excellent ale. Outsiders welcome by introduction only. Description Dwarf, 189. Rust-brown beard braided in two sections, iron-grey at the tips. Wears a leather apron over a working shirt and heavy dwarven-cut trousers. Face permanently faintly sooty from the shared hearth. Left ear pierced with three small iron rings — a Stonecut convention Grust maintains without particularly caring about. Speaks Common with a slow considered rhythm. Speaks Dwarven with everyone who will speak it back. Background Second-generation Ironhold Stonecut. His father Broll came from the Celestial Plateau three hundred years ago as part of a small trade delegation and stayed. Broll opened the Ashfall as a dwarven house…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "innkeeper",
+        "ashfall",
+        "stonecut",
+        "dwarven-inn",
+        "quiet"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Grust.md"
+    },
+    {
+      "id": "guilded-veil-captains",
+      "title": "Guilded Veil — Six Captains",
+      "body": "Guilded Veil — The Six Captains The cell leaders of the Guilded Veil. Each captain controls a network sector, specialises in a type of work, and assigns jobs to outsiders (like the party). The Veilmaster above them all is Merric Underbough (alias Rulden Marr). --- Groodmet (Dwarf Male) — \"The Ledger\" Speciality: Finance, extortion, debt collection. Blunt, practical, numbers-focused. --- Ambimar (Elf Female) — \"The Whisper\" Speciality: Espionage, secrets, manipulation. Calm, observant, always smiling slightly. --- Kargan Voss (Human Male) — \"The Hammer\" Speciality: Enforcement, muscle, intimidation. Direct, controlled aggression, respects strength. Broad, scarred face, speaks little. --- Selra \"Quickfingers\" (Halfling Female) — \"The Hand\" Speciality: Theft, infiltration, lockwork. Playful,…",
+      "tags": [
+        "npc",
+        "group",
+        "thieves-guild"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Groups/Guilded Veil Captains.md"
+    },
+    {
+      "id": "halvor",
+      "title": "Halvor",
+      "body": "Halvor A struggling Ironhold merchant doing a terrible thing because someone is doing it to him. Description Late 50s, soft-bellied, careful clothes that have been mended too many times. Hands that shake when he isn't watching them. Eyes that don't make contact for long. He used to look prosperous; now he looks tired in a way that has set in his bones. The situation He owes 30 gp to a Marcus family in Stillbrook for seed he loaned them 18 months ago. They can't pay (drought). Three to four days before the party arrives, Halvor travelled personally from Ironhold to Stillbrook with a hired thug named Cor Brackin. They seized Mira (Marcus's sister-in-law) and her two children as collateral. Sera tried to intervene; Brackin knocked her down with the flat of his sword. Halvor and Brackin then…",
+      "tags": [
+        "npc",
+        "moral-grey",
+        "ironhold-arc",
+        "halvor-thread"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Halvor.md"
+    },
+    {
+      "id": "high-priest-alric-dawnveil",
+      "title": "High Priest Alric Dawnveil",
+      "body": "High Priest Alric Dawnveil The public face of the Temple of Luminos in Aeloria. Silver hair, calm authority, late 60s. Senses that something is wrong in the city — cannot yet name it. A potential major ally when the truth about Vaeloran begins to surface. Description Human man, late 60s. Silver-white hair kept in the traditional Lightbearer cut — shoulder-length, uncut for twenty years since taking the highest orders. Wears the pale gold-and-white robes of a Lightbearer, cinched with a copper-thread cord. His voice is measured. He does not raise it. He does not need to. Position - Lightbearer — the highest active title in the Aelorian Temple of Luminos. Presides over major ceremonies, sits in on Council matters as spiritual counsel when invited, appointed the Dawnwardens under him…",
+      "tags": [
+        "npc",
+        "aeloria",
+        "luminos",
+        "temple",
+        "lightbearer",
+        "potential-major-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/High Priest Alric Dawnveil.md"
+    },
+    {
+      "id": "kellan-bracewell",
+      "title": "Kellan Bracewell",
+      "body": "Kellan Bracewell Veilmaster of the Ironhold Guilded Veil cell. Currently in hiding after Drake fed forged Naturus-cult documents to the Watch. She was warned in time. The Watch has not moved. Her cell is scared but functional. She is looking for a way to prove the framing false without surfacing herself. Description Human, 38. Short — 5'2\" — and unremarkable in every way she can arrange. Mousey brown hair kept in a plain braid. Grey-green eyes. Face people forget within an hour of meeting her. Dresses like a Merchants' Quarter clerk — clean but plain, mid-priced wool, the wardrobe of someone who is \"probably a bookkeeper\" on first glance. Speaks quietly. Listens more than she speaks. When she does speak, precisely. Background Ironhold-born to a Rustpocket household — mother a laundress,…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "guilded-veil",
+        "veilmaster",
+        "framed",
+        "in-hiding",
+        "possible-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Kellan Bracewell.md"
+    },
+    {
+      "id": "kolt",
+      "title": "Kolt",
+      "body": "Kolt Proprietor of Kolt's Depot. The paper-and-manifest man for every caravan on the southern road. First contact in Session 5. Description Weathered older man, late 60s. Skin like old leather, white stubble, a pencil-stub permanently tucked behind one ear. Bad knee that predicts weather. The posture of a man who has stood behind the same trading-shed counter for forty-plus years and is entirely at peace with that fact. Public persona Knows every regular caravaneer on the southern road by name and every irregular by face. Friendly when business is being done; brusque when it isn't. Honest scales, fair prices, no patience for haggling. \"I sold you the same beans for the same coin twenty years ago, the price hasn't changed and neither have I.\" Doesn't lie. Doesn't gossip in a way that hurts…",
+      "tags": [
+        "npc",
+        "met",
+        "depot",
+        "southern-road",
+        "session-5"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Kolt.md"
+    },
+    {
+      "id": "lyssandra-vale",
+      "title": "Lyssandra Vale",
+      "body": "Lyssandra Vale Vaeloran's apprentice. The only witness who can expose his full plans. Public Persona Copper-haired, robes marked with faint scorch marks. A talented young mage who served as Vaeloran's apprentice. Went missing when sent to observe a fallen meteor north of the city. Returned by the party to Vaeloran. True Nature — DM EYES ONLY Vaeloran has always kept his apprentices under subtle magical control. The shard's wild energy disrupted this control when Lyssandra first encountered it at the crash site north of Aeloria, allowing her to briefly break free and flee. She genuinely tried to warn the party. After fleeing the barn near the crash site, she ran north for five days through the Aelorian Territories wilds heading toward Stonegate. The party caught her in the open country…",
+      "tags": [
+        "npc",
+        "key-witness",
+        "captured"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Lyssandra Vale.md"
+    },
+    {
+      "id": "maelis-raventhorn",
+      "title": "Maelis Raventhorn",
+      "body": "Maelis Raventhorn The other major mage in Aeloria. Innocent. Vaeloran intends to frame her. Public Persona A powerful independent mage operating in Aeloria. Runs her own research and takes on apprentices. Her apprentice Vexa was at the meteor crash site with escorts. True Nature — DM EYES ONLY Vaeloran intends to frame Maelis for his own crimes. Sylas will receive a letter from the Aurum Dominion pointing toward her as the mage undermining Aeloria's political structure. This is a deliberate red herring — she is innocent. The party has not yet met Maelis. Vexa was encountered on the road and the party evaded her. If the party ever investigates Maelis properly, they will find: a busy, slightly paranoid mage who is aware that someone powerful is moving against her but doesn't know who. She…",
+      "tags": [
+        "npc",
+        "red-herring",
+        "possible-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Maelis Raventhorn.md"
+    },
+    {
+      "id": "mara-volk",
+      "title": "Mara Volk",
+      "body": "Mara Volk Fixer and information broker of the Ironhold Merchants' Quarter. Knows everyone. Owes nobody. Has the documents that would sink Drake if she chose to use them. Description Half-elf, 63. Silver-gilt hair kept short. Grey eyes that do not blink often. Dresses well but not richly — the sort of clothes people forget they saw. She looks about forty. She dresses like she looks about forty. She has been doing this for two decades. Background Born in the Ironhold Merchants' Quarter to a human father (a moderately successful trader who died of a chest fever) and a half-elf mother (a translator who left when Mara was twelve to return to her Sylvarian family). Mara stayed. Ran her father's stall at seventeen. Sold the stall at twenty-one. Bought the space above Renwick's counting-house at…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "merchants-quarter",
+        "information-broker",
+        "fixer",
+        "half-elf"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Mara Volk.md"
+    },
+    {
+      "id": "marius-vell",
+      "title": "Marius Vell",
+      "body": "Marius Vell A charming \"wine merchant\" in Ironhold who is actually an agent of Princess Selene's intelligence network. Description Mid-30s. Well-groomed. Lightly bearded. Dressed in the well-cut but unremarkable clothes of an Aelorian trade-class merchant. Friendly smile. Easy laugh. He looks like every wine merchant you've ever met. What he appears to be A travelling wine merchant out of Aeloria, in Ironhold this season to source iron-cellar wines (Ironhold has a small but respected wine tradition tied to its mineral soils). Friendly to everyone. Pays for rounds at the inn. Asks lots of questions in a charming way. Very curious about magic, magical bloodlines, and any travellers from outside the Aelorian Territories — \"I love a good story, you know. Wine and stories. They go together.\"…",
+      "tags": [
+        "npc",
+        "spy",
+        "dominion",
+        "ironhold",
+        "session-7"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Marius Vell.md"
+    },
+    {
+      "id": "merric-underbough",
+      "title": "Merric Underbough",
+      "body": "Merric Underbough Public alias: Rulden Marr. Veilmaster of the Guilded Veil. Orin's adoptive father. Public Persona Rulden Marr. Calm, calculating, respected. Commands loyalty through competence, not fear. Sees the city as a system to be balanced. The Guilded Veil's most capable leader in a generation. True Nature — DM EYES ONLY Real name: Merric Underbough. Orin's adoptive father. Former Luminar of Luminos. History Merric was a devout, well-regarded Luminar based around Duskmere. He ran a smuggling operation delivering Luminos religious goods into the Aurum Dominion (where Luminos worship is suppressed) — he saw it as an act of service, not crime. The Guilded Veil became aware of his network and offered help. Their routes, their contacts, their protection. At first Merric told himself it…",
+      "tags": [
+        "npc",
+        "emotional-arc",
+        "guilded-veil"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Merric Underbough.md"
+    },
+    {
+      "id": "mother-hessa",
+      "title": "Mother Hessa",
+      "body": "Mother Hessa Proprietor of the Grey Kettle — Ironhold's merchant-favoured inn in the Merchants' Quarter. Older, warm, sharp. Knows everyone. Does not gossip. Serves a very good spiced wine. Description Human, 62. Broad rather than tall. Grey hair kept in a practical bun with a wooden pin. A permanent flour smudge somewhere on her apron. Warm brown eyes. Hands that have been kneading dough for fifty years and still can. Wears a plain grey working dress and a clean white apron. Background Ironhold-born. Merchants' Quarter native. Married young to a mid-tier trader named Berit; they bought the Grey Kettle at thirty-four when it was a rougher house and rebuilt it into the town's cleanest merchant-favoured inn over the next fifteen years. Berit died of a chest fever at fifty-one. Hessa has run…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "innkeeper",
+        "grey-kettle",
+        "merchants-quarter",
+        "information-adjacent"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Mother Hessa.md"
+    },
+    {
+      "id": "nalara-scaleheart",
+      "title": "Nalara Scaleheart",
+      "body": "Nalara Scaleheart Matriarch and leader of the Scaleheart Brood. Scales a mix of vibrant greens and blues. Wise, protective, warm beneath a stoic exterior. Makes decisions for the family, mediates disputes, heals the sick. Cross-references - NPC: Drogan Scaleheart - Faction: Factions/Pirate Confederacy - Location: Locations/Serpent Isles/_Serpent Isles Overview",
+      "tags": [
+        "npc",
+        "lizardfolk",
+        "matriarch"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Nalara Scaleheart.md"
+    },
+    {
+      "id": "o_leary-stables",
+      "title": "O'Leary Family — Stables",
+      "body": "O'Leary Stables — The O'Leary Family O'Leary's Horseshoe Stables sits at the north gate. The O'Learys know everyone passing through. --- Steve O'Leary Owner. Practical, reliable. Knows everyone passing through the north gate. Good road intelligence source. Jacob O'Leary Steve's son. Stable boy. Eager, observant. Saw which direction Matilda went. Harry O'Leary Steve's son. Head trainer. Noticed that ALL horses were spooked the night Matilda disappeared — not just her. Three Aurum Dominion scouts were on the north road that same evening. This is the breadcrumb worth following. --- Cross-references - NPC: Characters/Player Characters/Torren - Plot: Plot Threads/Torren - Personal Arc - Location: O'Leary's Stables",
+      "tags": [
+        "npc",
+        "group",
+        "civilian",
+        "met"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Groups/O_Leary Stables.md"
+    },
+    {
+      "id": "oskar",
+      "title": "Oskar",
+      "body": "Oskar Townmaster of Aeloria. Battle axe across his back. Hired the party for the gnoll job. Paid on delivery. Civic authority — represents the independent council that Vaeloran is trying to undermine. Direct, fair, protective of Aeloria and its people. Could be a significant ally later. Cross-references - Group: Groups/Aeloria Council - Location: City Hall - Faction: Factions/Aeloria Council - Session: Session Recaps/Session 03-04 - The Gnoll Den and the Rot Beneath",
+      "tags": [
+        "npc",
+        "civic",
+        "possible-ally",
+        "met"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Oskar.md"
+    },
+    {
+      "id": "elisara",
+      "title": "Priestess Elisara",
+      "body": "Priestess Elisara High Priestess of Korvain at the Anvilhome. Ceremonial guardian of the Heart of Ironhold. Not a warrior. Not naïve. Description Human, 58. Silver-braided hair, worked in the traditional Korvain priestly pattern — a spiral pinned above the right ear with a small copper coal. Face weathered from decades of forge-heat rites. Wears a heavy grey robe with copper-thread embroidery at the hem, and a single heavy iron key on a leather thong around her neck. The key opens the reliquary chamber under the dome. Elisara does not take it off, ever. Background Ironhold-born. Entered the Anvilhome novitiate at fourteen. Ordained at twenty-two. Head priestess at forty-one. She has spent her adult life within a hundred yards of the Anvilhome and its ceremonial forge. Her family — a…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "anvilhome",
+        "korvain",
+        "priesthood",
+        "heart-guardian"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Elisara.md"
+    },
+    {
+      "id": "princess-selene",
+      "title": "Princess Selene Kaelthorn",
+      "body": "Princess Selene Kaelthorn Princess of the Aurum Dominion. Emperor Valerius's only daughter. Runs the Crystal Shards — her personal intelligence network, parallel to Master of Secrets Seraphin's official imperial apparatus. Rarely leaves the palace. Reaches across the continent through a network of envoys, scholars, and paid ears. Learns of Sylas via Veris's Session 6 report; does not send Veris to observe him — Veris recognises Sylas's curse-line by chance and reports back. Description Human, 22. Tall for her age — nearly six feet — with the pale-gold complexion the Aurum imperial family cultivates. Silver-blonde hair kept long and worked into elaborate braids by three attendants each morning. Grey-green eyes. Wears the imperial court's ceremonial robes (pale blue silk over silver…",
+      "tags": [
+        "npc",
+        "aurum-dominion",
+        "princess",
+        "crystal-shards",
+        "intelligence",
+        "sylas-thread",
+        "off-screen-threat"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Princess Selene.md"
+    },
+    {
+      "id": "queen-thessavaine",
+      "title": "Queen Thessavaine",
+      "body": "Queen Thessavaine Summer Court eladrin. Rules Thalindel through charisma, whim, and dramatic decree. Finds mortals endlessly amusing. Political stance toward Aeloria: deeply interested, occasionally meddlesome, entirely unpredictable. Neither ally nor enemy — does whatever delights her most. May send emissaries to Aeloria for reasons that seem trivial but carry hidden weight. Current Status A fey crossing near the Verdant Expanse border has become unstable — Naturus corruption warping the natural magic is destabilising it. Fey creatures bleeding into the material plane. Queen Thessavaine is aware and mildly entertained. Has not acted. Cross-references - Location: Locations/Thalindel (Feywild)/_Thalindel Overview - Plot: Plot Threads/Naturus Cult - Sister Kaelith",
+      "tags": [
+        "npc",
+        "fey",
+        "royalty",
+        "unpredictable"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Queen Thessavaine.md"
+    },
+    {
+      "id": "renwick",
+      "title": "Renwick",
+      "body": "Renwick Owner of Renwick & Sons counting-house. Ironhold's main moneylender for sums under 500 gp. Publicly neutral in the contract fight, privately wants Drake's win. Also Mara Volk's landlord. Description Human, 51. Balding, jowly, expensive but tasteful clothes. Manicured hands. A gold chain across the waistcoat with a small carved-jade pendant at the tail — a gift from his mother, and the only sentimental thing about him. Speaks precisely. Uses figures the way other men use adjectives. Background Renwick is a \"Sons\" by inheritance — the counting-house has been in the family three generations. His grandfather started it; his father built it; Renwick has, over thirty years, quietly professionalised it into the second-largest small-bank operation between Aeloria and the plateau. He…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "merchants-quarter",
+        "moneylender",
+        "informant",
+        "drake-aligned",
+        "mara-adjacent"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Renwick.md"
+    },
+    {
+      "id": "riven",
+      "title": "Riven",
+      "body": "Riven Proprietor of the Broken Anvil — cheap, loud, functional. Ex-foundry worker. Runs a rough house on the principle that some people need a rough house. Description Half-elf, 41. Shorter than most half-elves, stockier — his human side reads more strongly. Sandy hair going grey at the temples. A jagged forge-burn scar down his left forearm. Wears a rolled-sleeved linen shirt and a leather bar-apron with a stiletto in the front pocket. Missing his left ring-finger from the elbow-tip. Speaks fast and swears about every third sentence. Background Rustpocket-born. Foundry apprentice at fifteen, journeyman by twenty-two, forge accident at twenty-six that ended his working career (lost the finger; lost the mobility in the arm for two years). Took over the Broken Anvil at thirty when the…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "innkeeper",
+        "broken-anvil",
+        "rustpocket",
+        "rough-house"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Riven.md"
+    },
+    {
+      "id": "sarah",
+      "title": "Sarah",
+      "body": "Sarah Manager of the Wayfarer's Rest in Aeloria. Informal information node. Not to be confused with Sera Vey — the Stillbrook farmer's wife travelling with the party. Different person, different city. Broad-shouldered, tidy braid, dry humour. Keeps secrets. No violence tolerated. Remembers every face. Trustworthy, no-nonsense. Not criminal but understands the city's undercurrents. Never profits directly from crime. Party History The party has met Sarah. She directed them toward the Pig's Head when Orin's questions were the wrong type for her establishment. Orin used her as a contact point in the Merric search. Sample Dialogue \"The Wayfarer's Rest isn't the place for certain questions.\" \"If you need… flexible answers, the Pig's Head serves a different crowd.\" \"Ask for Gerald. He'll decide…",
+      "tags": [
+        "npc",
+        "information-node",
+        "met"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Sarah.md"
+    },
+    {
+      "id": "sera-vey",
+      "title": "Sera Vey",
+      "body": "Sera Vey A wounded farmer's wife from Stillbrook. Joined the Wayward Company at Stillbrook (Session 5). Torren's Insight nat 20 (35) confirmed she is entirely honest. Travelled with the party to Ironhold, hidden in the Wayward Company's own wagon. Will leave the party at the northern gates and lead them to Halvor's compound in Session 7. Not to be confused with Sarah (Wayfarer's Rest manager in Aeloria). Description Mid- to late twenties. Farm-worn travelling clothes, mud at the hem, a bloodstained wrap at her left shoulder that Meira the Herbwife would tut at (but Meira is not in Ironhold). Hair tied back roughly. Tired in a way that goes deeper than the journey. Speaks clearly but you can hear the cost of it. Married. Wedding band still on — she offered it as fare and Brenna refused.…",
+      "tags": [
+        "npc",
+        "met",
+        "ironhold-arc",
+        "halvor-thread",
+        "session-5-joined",
+        "wayward-company-adjacent",
+        "distinct-from-sarah"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Sera Vey.md"
+    },
+    {
+      "id": "gorren",
+      "title": "Sergeant Gorren",
+      "body": "Sergeant Gorren Ironhold Watch sergeant. The party's first face at Ironhold. Bored, thorough, honest. Will process them quickly if their papers are in order. Description Human, 44. Broad and slightly soft — a man who was hard once and has been at the same gate for eight years. Salt-and-pepper stubble. Wears the Ironhold Watch's grey-and-copper tabard over standard chain. Sits at a small wooden table with a lantern by his elbow. Has a mug of cold tea at his side that he has been meaning to warm up for two hours. Reads papers slowly and carefully. Background Local. Born and raised in Rustpocket. Enlisted at nineteen for the pay and the standing. Served eight years on patrol, took a spear wound to the leg that healed badly, was moved to gate duty at twenty-seven and has been there since. He…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "watch",
+        "north-gate",
+        "session-6-arrival",
+        "honest"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Gorren.md"
+    },
+    {
+      "id": "sergeant-nell-vissen",
+      "title": "Sergeant Nell Vissen",
+      "body": "Sergeant Nell Vissen Sergeant of the Stonegate garrison. Was Torren's closest comrade for eleven years. Spoke up for him at the hearing. Never got over it. Description Human, mid-40s. Wiry, corded muscle, a habit of leaning against walls with her arms folded. Dark hair, cut short and shot through with early grey. A vertical scar from her left cheekbone to her jaw — Stonemarked axe, twelve years ago, healed cleanly. Watch tabard usually untucked at one corner in a way that would irritate any officer who wasn't Vall. Doesn't wear a helmet unless she has to. Background Enlisted into the Territorial Watch at seventeen, drawn out of a farming family in the eastern Aelorian foothills who did not want her marrying local. Posted to Stonegate. Never left. Twenty-five years in the same garrison.…",
+      "tags": [
+        "npc",
+        "watch",
+        "stonegate",
+        "torren-past",
+        "potential-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Sergeant Nell Vissen.md"
+    },
+    {
+      "id": "sister-kaelith",
+      "title": "Sister Kaelith",
+      "body": "Sister Kaelith Naturus cult operative. Active threat. Known to the party only as \"K\". Post-Session 5: watching Vrass more closely than she has ever watched anything. Public persona Unknown to the party by name. Known only as \"K\" — the author of the note that grants back-room access to the Pig's Head Inn. True nature — DM eyes only Cleric of Naturus (Pestilence Domain). Charmed the gnoll pack leader that the party found in the den. Believes she serves a greater purpose — actually being manipulated on multiple levels, none of which she perceives (Naturus's whispers, Vaeloran's engineered instability, and — unknown to anyone alive — the Weeping Willow's corrupted song carried east on the wind). She is a true believer, not a cynical mercenary. She genuinely believes rot and decay are…",
+      "tags": [
+        "npc",
+        "antagonist",
+        "cleric",
+        "naturus-cult",
+        "full-stat-block",
+        "seal-adjacent",
+        "watches-vrass"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Sister Kaelith.md"
+    },
+    {
+      "id": "taren-myles",
+      "title": "Taren Myles",
+      "body": "Taren Myles Vaeloran's researcher. Loyalist or buried conscience? Deliberately ambiguous. Description Older human male. White streaks starting through chestnut hair. Hands perpetually ink-stained. Found in Vaeloran's library poring over runic charts, barely stopping to look up. True Nature — DM EYES ONLY Role is deliberately ambiguous — loyalist or buried conscience? Taren is increasingly uncomfortable with what he sees in the tower. He is not part of the ritual specifically, but he is aware more is happening than Vaeloran admits. He has not yet acted. He may be the crack in Vaeloran's inner circle — the one person who might help the party if approached with care. His coded research notes can be found in the Spire (Investigation DC 16). Cross-references - NPC: Vaeloran Duskwhisper -…",
+      "tags": [
+        "npc",
+        "ambiguous",
+        "possible-ally"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Taren Myles.md"
+    },
+    {
+      "id": "temple-of-luminos-clergy",
+      "title": "Temple of Luminos — Full Clergy",
+      "body": "Temple of Luminos — Clergy The clergy of the Temple of Luminos in Copper Light Ward. Devotees of Luminos. The most morally grounded location in Aeloria. Because of the Divine Gate, clergy do not have overwhelming divine presence. Faith here is belief and guidance, not miracles. --- High Priest Alric Dawnveil — Lightbearer of Aeloria Human male, late 60s. Silver hair, calm presence, speaks gently but with authority. Compassionate but discerning. Sees beyond surface-level truths. Deeply concerned about unseen corruption in the city — does NOT know about Vaeloran yet. Could become a major ally. \"Light does not blind, my friend… it reveals.\" --- Dawnwarden Seraphine Vale Human female. Stern, disciplined, unwavering. Keeper of doctrine. Suspicious of outsiders. Told Orin not to stop searching…",
+      "tags": [
+        "npc",
+        "group",
+        "clergy",
+        "temple"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Groups/Temple of Luminos Clergy.md"
+    },
+    {
+      "id": "the-scarlet-wake",
+      "title": "The Scarlet Wake",
+      "body": "The Scarlet Wake New pirate lord. Charismatic and brutal. Has seized three ships from rival captains and is demanding a Council seat. Real Agenda Consolidate the Pirate Confederacy under his flag and tax all Azure Sea trade routes — including Aeloria's. Countdown 5 sessions ignored → Scarlet Wake controls Council. Azure Sea trade to Aeloria taxed or blockaded. Feeds the Instability Clock. Current Position on the Council - Two captains want to negotiate. - Two captains want to fight. - One captain has already defected. Will call for a full Council vote within the next few sessions. Cross-references - Plot: Plot Threads/Pirate Confederacy - Scarlet Wake - Faction: Factions/Pirate Confederacy - Location: Locations/Serpent Isles/_Serpent Isles Overview",
+      "tags": [
+        "npc",
+        "antagonist",
+        "pirate",
+        "countdown"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/The Scarlet Wake.md"
+    },
+    {
+      "id": "torvi",
+      "title": "Torvi",
+      "body": "Torvi Elder-advocate of the Stonecut Ward. The dwarven community's quiet voice in Ironhold's politics. Has more influence than his title suggests and less than his family thinks he does. Description Dwarf, 268. Bald in the way old dwarves go bald — the top of the head as smooth as river stone; the beard long, braided, iron-grey. Wears the plain leather-and-linen of a working elder, no ornamentation. Left hand missing two fingers from a foundry accident sixty years ago. Speaks Common with the faint stone-cadence of dwarven speech underneath. Speaks Dwarven at home. Background Third generation Stonecut. Grandfather came to Ironhold from the Celestial Plateau seven generations ago; family have been jewellery-work and precision-craft dwarves for as long as anyone remembers. Torvi trained as a…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "stonecut",
+        "dwarf",
+        "elder",
+        "quiet-power"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Torvi.md"
+    },
+    {
+      "id": "vaelith-morgrave",
+      "title": "Vaelith Morgrave",
+      "body": "Vaelith Morgrave Sylas's mentor. Professor at the Scholars' Circle in Aeloria. Sixty-eight, still teaching, still sharp. Took Sylas as a scholarship student six years ago and mentored him openly and honestly through graduation. Gifted him a spellbook of necromantic lore as scholarly encouragement — not in secrecy, but as an invitation to understand the lineage he carried. Has not heard from him in over a year. Description Sixty-eight. Human. Silver-grey hair, cropped short — practical, not ceremonial. Circle scholar's robes with the Illusion faculty's dark-blue collar. Reading glasses on a chain that he loses twice a day. Hands ink-stained on the fingertips. Speaks quietly and lets silences work for him. Not warm on first meeting. Warm on the second. His students, past and present, would…",
+      "tags": [
+        "npc",
+        "aeloria",
+        "scholars-circle-aeloria",
+        "sylas-mentor",
+        "met-not-yet"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vaelith Morgrave.md"
+    },
+    {
+      "id": "vaeloran-duskwhisper",
+      "title": "Vaeloran Duskwhisper",
+      "body": "Vaeloran Duskwhisper The party's patron. The main villain. Public alias: Aurek Voln Drowhiss — an anagram of his own name. Public Persona A respected and eccentric scholar-mage who serves the greater good of Aeloria. Known for funding libraries, sponsoring apprentices, and protecting the city from magical threats. Calm, measured, always seems to know more than he says. His tower — the Spire of the Silver Eclipse — is one of Aeloria's most recognisable landmarks. True Nature — DM EYES ONLY Alias: Aurek Voln Drowhiss — an anagram of Vaeloran Duskwhisper. This identity exists only in ciphered letters, funds destabilisation, and is known to a select few. Has never appeared in public. True goal Control all of Eldoria — starting with Aeloria. Does not want to rule as a visible dictator. He…",
+      "tags": [
+        "npc",
+        "villain",
+        "main-plot",
+        "lich-path"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vaeloran Duskwhisper.md"
+    },
+    {
+      "id": "valdris-the-pale-archivist",
+      "title": "Valdris the Pale Archivist",
+      "body": "Valdris the Pale Archivist Ancient First Age lich. Sylas's ancestral connection through a generational pact. Background An ancient human wizard from the late First Age — before the Usurpation. The foremost scholar of celestial and arcane knowledge in what would become the Aurora Peaks. Sensed the coming darkness and became a lich to preserve himself and his knowledge. Survived the Usurpation and Dark Reign, but Astronar's influence twisted him — by the Great Reclamation he was a jealous hoarder of knowledge rather than a preserver. The Aurum Dominion Deal Not destroyed after the Reclamation. The Aurum Dominion made a deal — they protect the location of his phylactery and leave him undisturbed in his Aurora Peaks sanctum, in exchange for occasional arcane consultation. This deal has lasted…",
+      "tags": [
+        "npc",
+        "lich",
+        "first-age",
+        "sylas-arc",
+        "endgame"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Valdris the Pale Archivist.md"
+    },
+    {
+      "id": "vessara-blacktail",
+      "title": "Vessara Blacktail",
+      "body": "Matriarch Vessara Blacktail Leader of the Blacktail Clan (largest of the eleven lizardfolk clans). Midnight black scales with iridescence. Imposing, commanding, regal bearing. Spear made from giant serpent bone. Cross-references - Location: Locations/Serpent Isles/_Serpent Isles Overview - Faction: Factions/Pirate Confederacy",
+      "tags": [
+        "npc",
+        "lizardfolk",
+        "matriarch"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vessara Blacktail.md"
+    },
+    {
+      "id": "vexa",
+      "title": "Vexa",
+      "body": "Vexa Maelis Raventhorn's apprentice. The party encountered Vexa on the road to the Frostwood Marsh, heading to the same meteor site with a group of escorts. The party evaded confrontation through clever use of tarps. Loyal to Maelis. Cross-references - NPC: Maelis Raventhorn - Session: Session Recaps/Session 01-02 - The Shard and the Letters",
+      "tags": [
+        "npc",
+        "minor"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vexa.md"
+    },
+    {
+      "id": "vorik-stonestrong",
+      "title": "Vorik Stonestrong",
+      "body": "Vorik Stonestrong Dwarven representative for Ironhold on the Aelorian Council. Lives full-time in Aeloria Crossroads. Has not been to Ironhold in six years. Description Dwarf, 214. Broad, iron-grey beard braided in three sections, a small brass ring at each. Wears the plain grey robes of a Council seat with a single Ironhold copper pin — the only nod to the city he represents. Deep-voiced. Slow-moving. Sharp-eyed. Background Third-generation Stonestrong. Grandfather was a founding Council member of the united Aelorian Territories; father sat the same seat for eighty years; Vorik inherited it at 132. He has now sat the Ironhold seat for eighty-two years. He has been away from Ironhold longer than most Ironhold citizens have been alive. He has not gone back because he does not need to. His…",
+      "tags": [
+        "npc",
+        "dwarf",
+        "council",
+        "aeloria",
+        "ironhold-seat",
+        "absentee"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vorik Stonestrong.md"
+    },
+    {
+      "id": "vrass",
+      "title": "Vrass",
+      "body": "Vrass A young black dragon exiled from the Frostwood Marsh by an ancient Bog Hag. Took a caravan tip from Kaelith. Bargained the party's lives against Torren's lifetime service. Now holds a dark bond over Torren and is building toward his return north — a return that would, if it succeeds, tear a seal the world does not know is holding. Description Sleek black scales slicked with old marsh water — still, despite months in the dry Aelorian foothills. Horns curved back over a long snake-thin neck. Wings broad enough to shadow a wagon. About thirty feet long including tail. Wet-looking even when dry. Yellow eyes, slitted, patient. Arrogant, contemptuous of mortals, cunning enough to know his limits. His voice draws vowels out with a soft hiss, like water over stone. When he is pleased he…",
+      "tags": [
+        "npc",
+        "dragon",
+        "dark-bond",
+        "torren-bound",
+        "frostwood-arc",
+        "naturus-adjacent",
+        "vroth-khorn-seed"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Vrass.md"
+    },
+    {
+      "id": "wenzel-\"the-kite\"-tosscobble",
+      "title": "Wenzel \"The Kite\" Tosscobble",
+      "body": "Wenzel \"The Kite\" Tosscobble The Guilded Veil cell leader in Stonegate. Recruited Torren after his discharge. The person who taught him what he now is. Description Halfling, mid-60s. Small even by halfling standards. Silver hair gathered into a tight practical knot at the back of her head. Weathered hands that never quite stop moving — she gestures constantly when she talks, taps rhythms on tabletops when she doesn't. Dark, warm eyes that miss nothing. Wears sturdy but plain travel clothes; the money is hidden. Sits in a corner of the Broken Post four nights a week and does business without appearing to. Her nickname — the Kite — comes from her habit of watching everything from a small quiet distance and only descending when there is prey. Background Born in the Stonegate lower town to a…",
+      "tags": [
+        "npc",
+        "guilded-veil",
+        "stonegate",
+        "torren-past",
+        "cell-leader",
+        "halfling"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Wenzel \"The Kite\" Tosscobble.md"
+    },
+    {
+      "id": "wesley-halloran",
+      "title": "Wesley Halloran",
+      "body": "Wesley Halloran Mid-tier Coin Cipher agent. Runs the Ironhold end of the network. Was expecting the sealed chest through the party's caravan. Will hear the Vrass story in Session 6 and start his own quiet inquiry — because his neck is on the line. Description Human, 47. Compact, wiry, unremarkable — the archetypal middle-manager. Neatly trimmed sandy beard. Grey wool coat over merchant's clothes; pockets always with something in them (a small ledger, a coin-purse, a folded knife). Blue eyes that miss very little. Speaks with the mild lilt of a Merchants' Quarter native. Behind his left ear, tucked under the hairline: a small tattooed coin — the Cipher's private mark. Nobody sees it unless he wants them to. Background Ironhold-born Merchants' Quarter merchant. Ran a legitimate…",
+      "tags": [
+        "npc",
+        "ironhold",
+        "coin-cipher",
+        "mid-tier",
+        "warehouse-14",
+        "session-6-consequence"
+      ],
+      "type": "npc",
+      "path": "Characters/NPCs/Wesley Halloran.md"
+    },
+    {
+      "id": "pantheon-of-eldoria",
+      "title": "The Pantheon of Eldoria",
+      "body": "The Pantheon of Eldoria All thirteen deities · the Divine Gate · religion in practice Contents - [The Divine Gate](#the-divine-gate) - [Creator Gods](#creator-gods) - [The Children of Luminos and Veridania](#the-children-of-luminos-and-veridania) - [Betrayer Gods](#betrayer-gods) - [Religion in Practice](#religion-in-practice) --- The Divine Gate All gods sit above the Divine Gate. At the end of the 2nd Age, after the Great Reclamation, the deities collectively chose to remove their physical forms from the material plane entirely — to prevent another usurpation. The Divine Gate keeps gods out of the material plane. Faith now operates without direct divine presence. Consequences for the campaign - Clergy have no overwhelming divine presence — faith is belief and guidance, not miracles. -…",
+      "tags": [
+        "pantheon",
+        "deities",
+        "gods",
+        "divine-gate",
+        "dawnoak",
+        "religion"
+      ],
+      "type": "pantheon",
+      "path": "Pantheon/Pantheon of Eldoria.md"
+    },
+    {
+      "id": "orin",
+      "title": "Orin",
+      "body": "",
+      "tags": [],
+      "type": "pc",
+      "path": "Characters/Player Characters/Orin.md"
+    },
+    {
+      "id": "sylas",
+      "title": "Sylas",
+      "body": "",
+      "tags": [],
+      "type": "pc",
+      "path": "Characters/Player Characters/Sylas.md"
+    },
+    {
+      "id": "torren",
+      "title": "Torren",
+      "body": "Torren Halfling · Rogue (Assassin) · Level 6. Older. Ex-Watch soldier out of Stonegate. Discharged in disgrace. Guilded Veil. Sworn to lifetime service to Vrass as of Session 5. Backstory Torren is older than he looks and older than he acts. He spent most of his working life in the Aelorian Territories Watch, stationed at the Stonegate garrison on the northern frontier. He served under Captain Rikhardt Vall and alongside Nell Vissen. A solid soldier for most of it, competent, dependable. Somewhere along the way — quietly, unglamorously — he began taking coin from the wrong people. Small favours at first: turning a blind eye on a shipment, adjusting a patrol route, dropping a name to someone waiting for it. Payments were small. Then they weren't. The corruption was slow enough that he told…",
+      "tags": [
+        "pc",
+        "torren",
+        "halfling",
+        "rogue",
+        "assassin",
+        "ex-watch",
+        "guilded-veil",
+        "ptsd",
+        "vrass-bound"
+      ],
+      "type": "pc",
+      "path": "Characters/Player Characters/Torren.md"
+    },
+    {
+      "id": "caravan-to-ironhold",
+      "title": "Caravan to Ironhold",
+      "body": "Caravan to Ironhold Status: Active — this is the current arc, Sessions 5–7. The Job Escort two wagons of mixed cargo south from Kolt's Depot to Ironhold for a merchant consortium in Aeloria. 50 gp per head + 25 gp bonus from Brenna on delivery. Three to four days expected travel. Cargo manifest Twelve crates. Mixed: bolts of cloth, sealed wax-stamped foodstuffs (Silverbrook origin), finished metal goods bound for Ironhold's smithies. Wagon 2 holds a sealed locked chest marked with the Coin Cipher eclipse seal. Torren can recognise this (DC 15 Insight or History, advantage from Assassin background). The chest is part of the cargo Brenna delivers without question. See Items and Artifacts/The Coin Cipher Chest for full details and consequences if opened. Arc and sessions - Arc overview -…",
+      "tags": [
+        "plot",
+        "active",
+        "current-arc",
+        "caravan"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Caravan to Ironhold.md"
+    },
+    {
+      "id": "completed-quests",
+      "title": "Completed Quests",
+      "body": "Completed Quests Find Lyssandra Vale ✅ Complete — at a cost. Found, captured after a five-day chase across the Frostwood Marsh and wilds. Returned to Vaeloran. Her memory was wiped. She is now serving him willingly. See: Characters/NPCs/Lyssandra Vale · Session Recaps/Session 01-02 - The Shard and the Letters. Clear the Gnoll Threat ✅ Complete. Gnoll pack threatening southeastern farmlands eliminated. Den destroyed. Hired by Oskar the Townmaster. Discovery of the Naturus shrine opened new threads. See: Session Recaps/Session 03-04 - The Gnoll Den and the Rot Beneath. Cross-references - Plot: _Active Threads",
+      "tags": [
+        "plot",
+        "completed"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Completed Quests.md"
+    },
+    {
+      "id": "geralds-missing-guild-member",
+      "title": "Gerald's Missing Guild Member",
+      "body": "Gerald's Missing Guild Member — DM ONLY This was never a real job. It was a setup. What the players think Gerald at the Pig's Head offered the party work — a guild member who'd gone missing — that they could investigate if they wanted. They left it untouched. What it actually is A planned mugging. The \"missing guild member\" was Veil-staged bait. If the party had pursued it, they would have been led to a back-alley meeting at night, where two or three Veil enforcers would have demanded a \"test of trust\" — knock them down, take their coin and any visible valuables, \"now you're vetted.\" A bruising welcome to the Veil's lower circles. This was Merric's call — a way to either bond the party tighter to the Veil network (if they tested well and paid up) or sour them on it (if they fought back,…",
+      "tags": [
+        "plot",
+        "dm-trap",
+        "dropped",
+        "gerald"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Gerald's Missing Guild Member.md"
+    },
+    {
+      "id": "main-plot---vaeloran-conspiracy",
+      "title": "Main Plot — The Vaeloran Conspiracy",
+      "body": "Main Plot — The Vaeloran Conspiracy Status: Urgent. Party partially aware. What the Party Knows - Vaeloran is their patron. - Lyssandra warned them about something. - The gnoll den had a Naturus shrine. - Someone signed \"K\" is connected to the Pig's Head. What the Party Doesn't Know - Lyssandra's memory was wiped. - Vaeloran is Aurek Voln Drowhiss. - Stage 3 of the lich ritual is in progress right now. Next Beats 1. Caravan to Ironhold — something on the road connects to Vaeloran's network. 2. Return to Aeloria — shard attunement nearing completion (Stage 3 ends). 3. The anagram discovery — Aurek Voln Drowhiss = Vaeloran Duskwhisper. Clue Trail Gnoll den writings → Pig's Head → K note → Guilded Veil back room → Aurek correspondence → Anagram Discovery Checklist - [ ] The sealed letters…",
+      "tags": [
+        "plot",
+        "urgent",
+        "main-plot"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Main Plot - Vaeloran Conspiracy.md"
+    },
+    {
+      "id": "merric-and-orin",
+      "title": "Merric and Orin — Personal Arc",
+      "body": "Merric and Orin — Personal Arc Status: Active — emotionally live since the warning letter. Current State - Orin knows. - Merric has warned him off coldly. - But the letter ended with care he couldn't fully suppress. - Seraphine said not to stop. Emotional Beats to Hit 1. Merric still calls Orin by a childhood name or phrase that reveals who he really is. 2. He pushes Orin away but physically steps between him and danger. 3. The moment he realises Aurek = Vaeloran — he goes very quiet. 4. \"I thought I was choosing the city. I was choosing him.\" Faith Crisis Thread Orin's faith was built on Merric's example. If Merric is corrupt, what is Orin's faith built on? This should be a genuine question, not a fast-resolved crisis. After Merric Breaks — What Happens Cross-references - NPC:…",
+      "tags": [
+        "plot",
+        "active",
+        "personal-arc",
+        "orin",
+        "emotional"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Merric and Orin.md"
+    },
+    {
+      "id": "naturus-cult---sister-kaelith",
+      "title": "Naturus Cult — Sister Kaelith",
+      "body": "Naturus Cult — Sister Kaelith Status: Active threat. Operating in the Aelorian Territories — the farmlands, woods, and small villages around Aeloria itself. What the Party Knows - Naturus shrine in the gnoll den (southeastern farmlands). - Charmed gnoll pack leader. - Writings about \"rot spreading through the Aelorian territories guided by unseen hands.\" - Pig's Head is a meeting point. - Someone signed \"K\" is behind it. What the Party Doesn't Know - \"K\" is Sister Kaelith. - She's connected to Vaeloran (through the Aurek network — neither she nor Vaeloran sees the line directly). - Her operations are spread across the Aelorian Territories: gnoll den (already found), a corrupted brook at Stillbrook on the southern road, fingerprints in the woods east of Aeloria. - She made the deal with…",
+      "tags": [
+        "plot",
+        "active",
+        "naturus-cult"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Naturus Cult - Sister Kaelith.md"
+    },
+    {
+      "id": "pirate-confederacy---scarlet-wake",
+      "title": "Pirate Confederacy — The Scarlet Wake",
+      "body": "Pirate Confederacy — The Scarlet Wake Status: Simmering. Countdown: 5 sessions. Current Situation The Scarlet Wake consolidating power among defectors. Two captains still resisting. Will call for a full Council vote within the next few sessions. Countdown Outcome 5 sessions → Scarlet Wake controls Council. Azure Sea trade to Aeloria taxed or blockaded. Feeds Vaeloran's Instability Clock. Cross-references - NPC: Characters/NPCs/The Scarlet Wake · Characters/NPCs/Nalara Scaleheart · Characters/NPCs/Vessara Blacktail - Faction: Factions/Pirate Confederacy - Location: Locations/Serpent Isles/_Serpent Isles Overview",
+      "tags": [
+        "plot",
+        "simmering",
+        "pirates",
+        "countdown"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Pirate Confederacy - Scarlet Wake.md"
+    },
+    {
+      "id": "sylas---path-of-the-lich",
+      "title": "Sylas — Path of the Lich",
+      "body": "Sylas — Path of the Lich Status: Active. Party unaware. Current State - Lich Initiate taken (UA 2026 — see House Rules and Homebrew/Lich Initiate Feat). - Spirit jar = the necklace. - Soul Siphon active. - Vaeloran watching closely. Pending Beats - Dominion letter arrives (red herring pointing to Maelis). - Something in the Aurora Peaks calls to Sylas — the Valdris pact pulling him north. - Orin discovers Soul Siphon. When Does Orin Find Out? The Endgame Question Sylas must eventually choose — his own independent lichdom, or becoming Valdris's vessel. This choice defines what kind of lich — and what kind of person — he becomes. Vaeloran's Play May try to position himself as Sylas's mentor on the lich path. Keep him close, useful, and grateful. Cross-references - NPC: Characters/Player…",
+      "tags": [
+        "plot",
+        "active",
+        "sylas",
+        "lich",
+        "dm-eyes-only"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Sylas - Path of the Lich.md"
+    },
+    {
+      "id": "instability-clock",
+      "title": "The Instability Clock",
+      "body": "The Instability Clock Total segments: 8 · Current: 2 / 8. Effect When the clock fills, emergency powers are declared. Vaeloran positions himself as the only stabilising force. He benefits whether the clock fills or not. Thresholds - At 4 segments: Curfews declared. - At 6 segments: Emergency powers discussed. - At 8 segments: Power consolidation vote — Vaeloran's endgame becomes viable. Completed Triggers (+2 total) Available Trigger Events - Trade sabotage - Watch overreach - Council scandal - Public riot - Cult rumour spread - Violent unrest in Aeloria - Guild conflict - Merchant disappearances - Pirate disruption of Azure Sea trade routes - Sylvarian Enclave corruption becoming public knowledge The Three-Session Escalation Arc - Session 1 (complete): Gnoll incident, enchantment…",
+      "tags": [
+        "plot",
+        "urgent",
+        "dashboard",
+        "dm-eyes-only"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Instability Clock.md"
+    },
+    {
+      "id": "the-stonemarked",
+      "title": "The Stonemarked",
+      "body": "The Stonemarked Status: Simmering. Countdown: 5 sessions. Current Situation Orin's tribe being squeezed from two sides — Naturus corruption from the marsh below, the Ashbound rival clan from the north. Too proud to ask for help. How This Becomes Active A wounded Stonemarked warrior arrives in Aeloria. Finds Orin. Says: \"Your tribe is dying.\" Leaves. Countdown Outcome 5 sessions → Stonemarked broken, corruption claims the mountain passes, new Naturus shrine in the mountains. The Faith Resonance The \"weakness\" that got Orin exiled was actually Luminos's calling — his mercy in refusing the killing blow. His clan read it as failure of spirit. Orin returning to help the people who discarded him, purely because it is right, is the most powerful expression of his faith possible. Cross-references…",
+      "tags": [
+        "plot",
+        "simmering",
+        "orin",
+        "countdown"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/The Stonemarked.md"
+    },
+    {
+      "id": "torren---personal-arc",
+      "title": "Torren — Personal Arc",
+      "body": "Torren — Personal Arc Status: Active. Vrass servitude live as of Session 5. See Characters/Player Characters/Torren for full character notes. The shape of Torren's arc Older halfling. Ex-Watch corporal out of the Stonegate garrison. Slow moral decline into corruption; publicly discharged by his lieutenant, now Captain, Vall. Recruited by Wenzel \"The Kite\" Tosscobble into the Guilded Veil's Stonegate cell, where he sharpened into an assassin. Sent south to Aeloria roughly two years ago. Has not returned to Stonegate. His arc is about accountability — for what he did to the Watch, to Vall, to Nell who defended him, and (much later) to the Veil work he did under Wenzel. He is not looking for redemption. He is trying to build a different life while carrying the old one. As of Session 5, the…",
+      "tags": [
+        "plot",
+        "active",
+        "torren",
+        "stonegate",
+        "guilded-veil",
+        "aurum-dominion",
+        "vrass"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Torren - Personal Arc.md"
+    },
+    {
+      "id": "vaeloran-lich-progress",
+      "title": "Vaeloran's Lich Progress — 10 Stages",
+      "body": "Vaeloran's Lich Progress — 10 Stages Current: 2 of 10 complete · Stage 3 in progress at ~30%. Target: Lich Ascension (Stage 10) at PC level 12. Party is currently level 6, giving six party levels of runway across the remaining stages. Pacing is deliberately slow — the ritual timelines have been extended and several stages are rate-capped by external factors (soul count, Aurek network capacity, Valdris's cooperation). Progress Tracker Pacing target - Party level 6 (current): Stage 3 in progress at ~30%. - Party level 7–8: Stage 3 completes, Stage 4 auto-fires; Stage 5 (Divine Gate node) arcs begin. - Party level 9–10: Stages 5 and 6 progressing in parallel; Stage 7a (Valdris contact). - Party level 11: Stages 7b/c (Valdris negotiation and exchange) resolve. - Party level 12: Stage 8 (Dark…",
+      "tags": [
+        "plot",
+        "urgent",
+        "lich",
+        "vaeloran",
+        "dm-eyes-only"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Vaeloran Lich Progress.md"
+    },
+    {
+      "id": "vroth-khorn-seal-clock",
+      "title": "Vroth-Khorn Seal Clock",
+      "body": "Vroth-Khorn Seal Clock ⚠ DM ONLY. Live tracker for the state of the Lethraliri seal binding Vroth-Khorn beneath the Frostwood Marsh. Runs in parallel with the Instability Clock. Read Lore and Legends/The Six Wardens for the full warden roster. Current state 4 / 6 wardens functional. Effective count: 4. The Weeping Willow still holds her anchor point but leaks corruption. The Cairn-Bound is gone. What each state means 4 / 6 — current baseline - Marsh expanding slowly. Not fast enough to alarm outsiders. Fast enough that fenling elders remember when the northern wells were sweet. - Coldhearth is the canary. Livestock born wrong. Northern wells souring. Children on the northern edge of town dream \"a voice from the stones.\" The village has lost one influential family (the Vek-Kerrs) in the…",
+      "tags": [
+        "plot",
+        "dm-only",
+        "tracker",
+        "seal",
+        "vroth-khorn",
+        "wardens"
+      ],
+      "type": "plot",
+      "path": "Plot Threads/Vroth-Khorn Seal Clock.md"
+    },
+    {
+      "id": "arc-02---caravan-to-ironhold",
+      "title": "Arc 02 — The Caravan to Ironhold",
+      "body": "Arc 02 — The Caravan to Ironhold Sessions 5, 6, 7. Three sessions. Caravan job south, dragon attack, moral grey at Ironhold, political crisis at the Forge Council. Arc shape What the party knows going in - Caravan job to Ironhold from Kolt's Depot. Paid by an Aeloria merchant consortium. - Aeloria political situation is tense (Naturus shrine, Merric reveal, K-note). - They left Aeloria with several open threads at home. - They do not know about Vaeloran's lich progress, Aurek, the Coin Cipher's true patron, or Lis being held in Aeloria. Arc-level threats and threads 🔴 Live this arc: - Vaeloran's Stage 3 ritual — advances ~5–7 days during the arc. - Caravan job — primary plot. - The Coin Cipher chest is on Wagon 2 of their caravan. - Halvor / Sera / Mira / Davos / Lis — moral grey across…",
+      "tags": [
+        "arc",
+        "prep",
+        "ironhold",
+        "caravan"
+      ],
+      "type": "session-prep",
+      "path": "Session Planning/Arc 02 - Caravan to Ironhold.md"
+    },
+    {
+      "id": "next-session-prep---session-05",
+      "title": "Next Session Prep",
+      "body": "Next Session Prep — Session 05 The Caravan Out. 3 hours. Kolt's Depot → Day 1/2 travel → Sera intercepts → Vrass attacks → level up. Full prep: Session 05 - The Caravan Out Arc overview: Arc 02 - Caravan to Ironhold Opening hook Kolt's Depot. The wagons are loaded. Brenna is waiting. Kolt asks them to name the company. Live threads this session - [ ] Plot Threads/Caravan to Ironhold — primary plot - [ ] Plot Threads/Naturus Cult - Sister Kaelith — Vrass attack is connected (Kaelith directed him) - [ ] Plot Threads/Torren - Personal Arc — Torren spots the Coin Cipher seal on the chest Active NPCs Suggested beats (3-hour session) - Beat 1 (15 min): Kolt's Depot. Name the company. Spot the chest's seal. - Beat 2 (15 min): Day 1 travel montage. Yellow field, lone Watch rider, night camp. -…",
+      "tags": [
+        "session",
+        "prep",
+        "next"
+      ],
+      "type": "session-prep",
+      "path": "Session Planning/Archive/Next Session Prep - Session 05.md"
+    },
+    {
+      "id": "session-05---the-caravan-out",
+      "title": "Session 05 — The Caravan Out",
+      "body": "Session 05 — The Caravan Out 3 hours. Opening at Kolt's Depot. Travel Day 1 and Day 2. Sera intercepts. Vrass attacks. Level up. [Maps in Maps/ folder: encounter_05_kolts_depot.png, encounter_05_vrass_road.png] Beat-by-beat structure Total: ~135–155 min play + buffer. Fits a 3-hour session with handling time. --- Beat 1 — Opening at Kolt's Depot (15 min) Map: Maps/encounter_05_kolts_depot.png Flow: Arrive → see Brenna at wagons but she doesn't engage → speak to Kolt inside the trading shed → sign the contract (company-name moment lives here) → Kolt walks them out and introduces them to Brenna → Brenna takes over with cargo inspection (Coin Cipher seal) and road brief. 1a — Arrival Read-aloud: Kolt's Depot is small and dusty. One building — a low timber trading shed with a hand-painted…",
+      "tags": [
+        "session",
+        "prep",
+        "caravan",
+        "dragon",
+        "vrass"
+      ],
+      "type": "session-prep",
+      "path": "Session Planning/Archive/Session 05 - The Caravan Out.md"
+    },
+    {
+      "id": "session-06---approach-to-ironhold",
+      "title": "Session 06 — Approach to Ironhold",
+      "body": "a Session 06 — Approach to Ironhold The Wayward Company completes the caravan run into Ironhold, arrives at last light through the northern gate, meets Ironhold — and, after a long day, hears Vrass's first whisper. The Heart of Ironhold ask lands. Session 7 opens with the party deciding whether to try. Open state - Location: camped just outside Ironhold's northern gates. Day 4 morning of the caravan run. - Party level: 6. - Party name: The Wayward Company. - With them: Brenna Hartwell (caravan master), Sera Vey (hidden in the Wayward Company wagon), two zombies (Sylas's), Valor (draft horse). - Carrying: the sealed Coin Cipher chest hidden in Sylas's Bag of Holding. Everything else is visible. - Live bond: Torren is sworn to Vrass. Dark bond active. First whisper is coming. Session goals…",
+      "tags": [
+        "session",
+        "prep",
+        "caravan",
+        "ironhold",
+        "dominion",
+        "vrass-whisper",
+        "heart-of-ironhold"
+      ],
+      "type": "session-prep",
+      "path": "Session Planning/Session 06 - Approach to Ironhold.md"
+    },
+    {
+      "id": "session-07---ironhold-and-the-forge-council",
+      "title": "Session 07 — Ironhold and the Forge Council",
+      "body": "Session 07 — Ironhold and the Forge Council Outline only. Full prep after Session 6 plays. Beat structure (provisional) 1. Arrival in town. First impressions. The smelting fires. The Forge Council building. The Aurum Dominion delegation already established at the best inn. 2. Sera's sister: track down Halvor. Confront him at his warehouse. The full moral grey reveal — see structure below. 3. The Forge Council crisis. Bryndis Ashveil vs Corvan Drake. Veris Caelthorn's audience. The party can witness, intervene, take a side. 4. Brother Daven Soltan at the small Temple of Luminos — knew Merric. Orin's emotional beat. Optional. 5. Marius Vell — \"wine merchant,\" charming, asks too many questions. Player gets to enjoy clocking him (or not). 6. Investigate the chest delivery. The black carriage…",
+      "tags": [
+        "session",
+        "prep",
+        "ironhold",
+        "politics",
+        "halvor",
+        "bryndis-drake"
+      ],
+      "type": "session-prep",
+      "path": "Session Planning/Session 07 - Ironhold and the Forge Council.md"
+    },
+    {
+      "id": "session-00---campaign-pitch-and-setup",
+      "title": "Session 00 — Campaign Pitch and Setup",
+      "body": "Session 00 — Campaign Pitch and Setup Sunday 14 September 2025. Character creation and campaign foundations. Campaign Pitch (delivered to players) \"Welcome to Eldoria! This campaign will take place mostly in and around the city of Aeloria Crossroads — a powerful, independent city-state that thrives on trade, diplomacy, and freedom. Unlike the monarchies around it, Aeloria is governed by a council of guilds, city representatives, and elected populists. You'll begin as level 3 adventurers — skilled enough to be known, but still fresh to the world stage. The tone will be high fantasy, with a mix of political intrigue, exploration, and adventure. You'll be employed by a powerful wizard patron, who sends you on missions that seem altruistic and helpful… though his motives may be more…",
+      "tags": [
+        "session-recap",
+        "session-0",
+        "setup"
+      ],
+      "type": "session-recap",
+      "path": "Session Recaps/Session 00 - Campaign Pitch and Setup.md"
+    },
+    {
+      "id": "session-05---the-caravan-out",
+      "title": "Session 05 — The Caravan Out",
+      "body": "Session 05 — The Caravan Out The Wayward Company escorts a caravan south, meets a young black dragon, and does not fight it. Setup The party signed on with Kolt at Kolt's Depot as The Wayward Company. Twelve crates of mixed cargo split across Brenna's lead wagon and a second wagon, including a sealed iron-bound chest bearing the Coin Cipher eclipse seal. The party added a third wagon of their own — the Wayward Company's personal cart, driven by Orin, hauling Sylas's two zombies (and later Sera). Orin picked up a draft horse from O'Leary's Stables and named him Valor. No news on Matilda. Day 1 — the road south Torren spotted the Coin Cipher seal on the chest during the ride and recognised it. Sylas confirmed with Detect Magic that the chest carries a necromantic aura. Between the two of…",
+      "tags": [
+        "session-recap",
+        "session-05",
+        "vrass",
+        "wayward-company",
+        "coin-cipher",
+        "sera-vey"
+      ],
+      "type": "session-recap",
+      "path": "Session Recaps/Session 05 - The Caravan Out.md"
+    },
+    {
+      "id": "session-05---the-caravan-out-(player)",
+      "title": "Session 05 — The Caravan Out (Player Recap)",
+      "body": "Session 05 — The Caravan Out Player-facing recap. Safe to share. At Kolt's Depot you signed on with Kolt for a caravan escort south to Ironhold. You named yourselves The Wayward Company — three of you, one wagon of your own driven by Orin, hauling Sylas's two undead labourers and a fresh draft horse from O'Leary's that Orin christened Valor. Matilda was still missing, her tracks still leading north. Brenna Hartwell, the caravan master, walked you through the manifest — twelve crates of mixed cargo split across her lead wagon and a contract wagon — and one of those crates was a sealed iron-bound chest bearing an eclipse seal, sun half-eaten by shadow. Brenna would not say who it was for; she said only that sealed crates paid extra and that she did not ask what was inside. Torren looked at…",
+      "tags": [
+        "session-recap",
+        "player-facing",
+        "session-05",
+        "wayward-company"
+      ],
+      "type": "session-recap",
+      "path": "Session Recaps/Session 05 - The Caravan Out (Player).md"
+    },
+    {
+      "id": "session-01-02---the-shard-and-the-letters",
+      "title": "Sessions 01–02 — The Shard and the Letters",
+      "body": "Sessions 01–02 — The Shard and the Letters Sunday 5 October 2025. Aeloria Crossroads Adventures — Campaign Opening Arc. Opening Scene Party summoned to the Spire of the Silver Eclipse by Vaeloran Duskwhisper. Led through marble halls of his tower — the interior feels ancient yet alive, larger than the exterior. Swirling orbs of light, mechanical quills, shimmering-dust hourglass flowing upward. In the library: Taren Myles (older human, ink-stained hands) poring over runic charts. Lyssandra Vale (copper-haired half-elf, scorch-marked robes) notable by her absence. Vaeloran's Address Two tasks: 1. Find his missing apprentice Lyssandra (sent to observe a fallen meteor two nights ago, has not returned). 2. Deliver sealed political letters to council members. What Happened - Party chose to…",
+      "tags": [
+        "session-recap",
+        "session-01",
+        "session-02",
+        "lyssandra"
+      ],
+      "type": "session-recap",
+      "path": "Session Recaps/Session 01-02 - The Shard and the Letters.md"
+    },
+    {
+      "id": "session-03-04---the-gnoll-den-and-the-rot-beneath",
+      "title": "Sessions 03–04 — The Gnoll Den and the Rot Beneath",
+      "body": "Sessions 03–04 — The Gnoll Den and the Rot Beneath December 2025 / early 2026. The party gets pulled deeper. What Happened - Hired by Oskar (Goliath Townmaster) to deal with gnolls threatening southeastern farmlands. - Party hunted gnolls to their den and destroyed the pack. - Inside the den: a shrine to Naturus (the Betrayer God of rot and decay). - The gnoll pack leader was charmed and marked by an outside hand (Sister Kaelith's work). - Writings on the walls described a larger plan: \"rot spreading through the Aelorian territories guided by unseen hands.\" - A note pointed to the Pig's Head Inn as a meeting place. - Detect Magic: Arcana DC 18 reveals fading enchantment threads. Arcana DC 22: matches structured dominance casting. Back in Aeloria - Torren returned to O'Leary's Stables to…",
+      "tags": [
+        "session-recap",
+        "session-03",
+        "session-04",
+        "naturus",
+        "merric"
+      ],
+      "type": "session-recap",
+      "path": "Session Recaps/Session 03-04 - The Gnoll Den and the Rot Beneath.md"
+    }
+  ],
+  "generated": true
+}

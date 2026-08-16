@@ -575,7 +575,7 @@ body {
 <header class="site-header">
   <div>
     <div class="site-title">The Wayward Company</div>
-    <div class="site-meta">DM Command Centre</div>
+    <div class="site-meta">DM Command Centre <button onclick="if(window.DMSearch) DMSearch.open()" title="Global search (Cmd/Ctrl-K)" style="margin-left:1rem;background:transparent;border:1px solid var(--gold2);color:var(--gold2);padding:3px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;cursor:pointer">🔍 Search &nbsp;<span style="opacity:.6;font-size:9px">⌘K</span></button></div>
   </div>
   <div class="header-actions">
     <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-roll20">Roll20 ↗</a>
@@ -2045,6 +2045,7 @@ body {
 <script src="sheet-history-ui.js"></script>
 <script src="dm-npc-notes.js"></script>
 <script src="dm-npc-pin-cue.js"></script>
+<script src="dm-search.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -2096,6 +2097,10 @@ function unlockApp() {
   try {
     if (typeof renderPreSessionChecklist === 'function') renderPreSessionChecklist();
   } catch (e) { console.warn('pre-session render failed:', e); }
+  // Update 36 — Global DM Search (Cmd-K / Ctrl-K)
+  try {
+    if (window.DMSearch && typeof DMSearch.init === 'function') DMSearch.init();
+  } catch (e) { console.warn('DMSearch init failed:', e); }
   // Collapsible NPC location sections
   try {
     if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
