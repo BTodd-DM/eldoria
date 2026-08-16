@@ -75,8 +75,39 @@ def normalise_badges(raw) -> list:
     return [b for b in out if b["text"]]
 
 
+AELORIA_MARKERS = [
+    "aeloria", "spire of the silver eclipse", "silver eclipse",
+    "wayfarer's rest", "wayfarers rest", "pig's head", "pigs head",
+    "temple of luminos", "grand bazaar", "kolt's depot", "kolts depot",
+    "scholars' circle", "scholars circle", "high spires", "merchants rise",
+    "ashgate", "copper light", "city hall", "aelorian territories",
+]
+IRONHOLD_MARKERS = [
+    "ironhold", "grey kettle", "broken anvil", "ashfall", "envoy's rest",
+    "envoys rest", "anvilhome", "forge council", "foundry row",
+    "warehouse #14", "warehouse 14", "the slag", "rustpocket",
+    "council ward", "stonecut", "halvor's compound",
+]
+
+def bucket_location(loc: str) -> str:
+    """Bucket a free-form location string into a display region."""
+    low = (loc or "").lower()
+    if any(m in low for m in IRONHOLD_MARKERS): return "Ironhold"
+    if any(m in low for m in AELORIA_MARKERS):  return "Aeloria Crossroads"
+    if "aurum" in low or "auranova" in low or "aurora peaks" in low: return "Aurora Peaks"
+    if "frostwood" in low:     return "Frostwood Marsh"
+    if "verdant" in low or "sylvarian" in low: return "Verdant Expanse"
+    if "stonemarked" in low or "duskmere" in low: return "Northern Reaches"
+    if "ember" in low or "wastes" in low: return "Ember Wastes"
+    if "serpent" in low or "azure" in low: return "Serpent Isles"
+    if "celestial" in low:     return "Celestial Plateau"
+    if "stillbrook" in low:    return "On the Road"
+    return "On the Road"
+
+
 def extract_npc(path: Path, fm: dict) -> dict:
     name = fm.get("title") or path.stem
+    region = fm.get("player-region") or bucket_location(str(fm.get("location", "")))
     return {
         "id": path.stem.lower().replace(" ", "-").replace("'", ""),
         "name": name,
@@ -86,6 +117,7 @@ def extract_npc(path: Path, fm: dict) -> dict:
         "summary": fm.get("player-summary", ""),
         "badges": normalise_badges(fm.get("player-badges")),
         "order": fm.get("player-order", 999),
+        "region": region,
     }
 
 

@@ -128,15 +128,23 @@
         const matchSearch = !q || text.indexOf(q) >= 0;
         card.style.display = matchSearch ? '' : 'none';
         card.style.order = pinned ? '-1' : '';
-        // Update pin-button visual state
         const pinBtn = card.querySelector('.npc-pin-btn');
         if (pinBtn) {
           pinBtn.textContent = pinned ? '📌 pinned' : '📌 pin';
           pinBtn.classList.toggle('pinned', pinned);
         }
-        // Card border reflects pinned
         card.style.boxShadow = pinned ? '0 0 0 2px var(--gold2)' : '';
         if (matchSearch) visible++;
+      });
+      // Hide region headers whose cards are all filter-hidden.
+      container.querySelectorAll('.npc-region-header').forEach(function(h) {
+        let el = h.nextElementSibling;
+        let hasVisible = false;
+        while (el && !el.classList.contains('npc-region-header')) {
+          if (el.classList.contains('card') && el.style.display !== 'none') { hasVisible = true; break; }
+          el = el.nextElementSibling;
+        }
+        h.style.display = hasVisible ? '' : 'none';
       });
       const counter = document.getElementById('npc-search-count-player');
       if (counter) counter.textContent = q ? (visible + ' of ' + self._npcs.length) : (self._npcs.length + ' NPCs');
@@ -186,22 +194,39 @@
         return;
       }
       const self = this;
-      // Search bar at the top; card grid below.
+      // Prominent top search bar — centered, wide, big.
       const searchBar =
-        '<div class="npc-search-row" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.85rem">' +
-          '<input type="text" id="npc-search-player" placeholder="🔍 Search NPCs by name, role, or keyword…" ' +
-            'oninput="if(window.NPCDirectory) NPCDirectory._onSearchInput(this.value)" ' +
-            'style="flex:1;min-width:220px;padding:.5rem .7rem;background:var(--bg2);border:1px solid var(--border2);border-radius:3px;color:var(--ink);font-family:\'Crimson Pro\',serif;font-size:13px;outline:none">' +
-          '<button onclick="document.getElementById(\'npc-search-player\').value=\'\';if(window.NPCDirectory) NPCDirectory._onSearchInput(\'\')" ' +
-            'style="background:transparent;color:var(--ink3);border:1px solid var(--border2);border-radius:3px;padding:.4rem .75rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">✕ Clear</button>' +
-          '<span id="npc-search-count-player" style="font-size:11px;color:var(--ink3);font-style:italic">' + this._npcs.length + ' NPCs</span>' +
+        '<div class="npc-search-hero" style="max-width:640px;margin:0 auto 1.5rem;text-align:center">' +
+          '<div style="display:flex;gap:.5rem;align-items:stretch">' +
+            '<input type="text" id="npc-search-player" placeholder="🔍  Search NPCs by name, role, keyword…" ' +
+              'oninput="if(window.NPCDirectory) NPCDirectory._onSearchInput(this.value)" ' +
+              'style="flex:1;padding:.7rem 1rem;background:#fff8e8;border:2px solid var(--border);border-radius:4px;color:var(--ink);font-family:\'Crimson Pro\',serif;font-size:16px;outline:none;box-shadow:0 2px 8px rgba(138,106,16,0.1)">' +
+            '<button onclick="document.getElementById(\'npc-search-player\').value=\'\';if(window.NPCDirectory) NPCDirectory._onSearchInput(\'\')" ' +
+              'style="background:transparent;color:var(--ink3);border:2px solid var(--border);border-radius:4px;padding:.4rem 1rem;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:1px;cursor:pointer">✕ Clear</button>' +
+          '</div>' +
+          '<div id="npc-search-count-player" style="font-size:11px;color:var(--ink3);font-style:italic;margin-top:.4rem">' + this._npcs.length + ' NPCs</div>' +
         '</div>';
-      const cards = '<div class="npc-grid-inner" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem">' +
-        this._npcs.map(function(npc) { return self._renderCard(npc); }).join('') +
-      '</div>';
-      this._container.innerHTML = searchBar + cards;
 
-      // Wire up textareas + pin buttons
+      // Group by region.
+      const REGION_ORDER = ['Aeloria Crossroads', 'Ironhold', 'On the Road', 'Aurora Peaks', 'Frostwood Marsh', 'Verdant Expanse', 'Northern Reaches', 'Ember Wastes', 'Serpent Isles', 'Celestial Plateau'];
+      const buckets = {};
+      this._npcs.forEach(function(n) {
+        const r = n.region || 'On the Road';
+        (buckets[r] = buckets[r] || []).push(n);
+      });
+
+      let cardsHtml = '<div class="npc-grid-inner">';
+      REGION_ORDER.forEach(function(region) {
+        const list = buckets[region];
+        if (!list || !list.length) return;
+        cardsHtml += '<div class="npc-region-header" data-region="' + escapeAttr(region) + '">' + escapeHtml(region) + ' <span style="font-size:11px;color:var(--ink3);font-weight:400;margin-left:.4rem">' + list.length + ' NPC' + (list.length === 1 ? '' : 's') + '</span></div>';
+        list.forEach(function(npc) { cardsHtml += self._renderCard(npc); });
+      });
+      cardsHtml += '</div>';
+
+      this._container.innerHTML = searchBar + cardsHtml;
+
+      // Wire up textareas
       this._npcs.forEach(function(npc) {
         const ta = document.getElementById('npc-note-' + npc.id);
         if (ta) {
@@ -213,7 +238,6 @@
           ta.addEventListener('input', function() { self._saveNote(npc.id, ta.value); });
         }
       });
-      // Apply initial pin/filter state
       this._applyPinAndFilter();
     },
 
@@ -270,7 +294,12 @@
       '.npc-note-saved { font-size:11px; color:var(--teal,#0d3d30); font-style:italic; margin-top:.25rem; min-height:14px; }',
       '.npc-empty { padding:1.5rem; text-align:center; color:var(--ink3,#5a4020); font-style:italic; }',
       '.npc-pin-btn:hover { background:rgba(138,106,16,0.1); color:var(--gold); border-color:var(--gold); }',
-      '.npc-pin-btn.pinned { background:rgba(138,106,16,0.25); color:var(--gold); border-color:var(--gold); }'
+      '.npc-pin-btn.pinned { background:rgba(138,106,16,0.25); color:var(--gold); border-color:var(--gold); }',
+      '.npc-grid-inner { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:.75rem; }',
+      '.npc-region-header { grid-column:1/-1; font-family:\'Cinzel\',serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--border2); padding:.6rem 0 .35rem; margin-top:.5rem; }',
+      '.npc-region-header:first-child { margin-top:0; }',
+      '@media (min-width:1000px) { .npc-grid-inner { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); } }',
+      '@media (max-width:600px)  { .npc-grid-inner { grid-template-columns:1fr; } }'
     ].join('\n');
     document.head.appendChild(style);
   }
