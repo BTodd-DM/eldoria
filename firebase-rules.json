@@ -20,6 +20,10 @@
       ".read": true,
       ".write": true
     },
+    "npc-pinned": {
+      ".read": true,
+      ".write": true
+    },
     "cue-active": {
       ".read": true,
       ".write": true
