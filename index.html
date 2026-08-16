@@ -2046,6 +2046,7 @@ body {
 <script src="dm-npc-notes.js"></script>
 <script src="dm-npc-pin-cue.js"></script>
 <script src="dm-search.js"></script>
+<script src="dm-wiki-tooltips.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -2105,6 +2106,10 @@ function unlockApp() {
   try {
     if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
   } catch (e) { console.warn('initNpcLocationCollapse on unlock failed:', e); }
+  // Update 42 — Wiki-link tooltips on hover
+  try {
+    if (window.DMWikiTips && typeof DMWikiTips.init === 'function') DMWikiTips.init();
+  } catch (e) { console.warn('DMWikiTips init failed:', e); }
 }
 
 function checkAuth() {
@@ -2187,6 +2192,11 @@ function showPanel(id, btn) {
     if(id === 'npcs') {
       if (typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
       if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
+    }
+    // Rescan wiki-tooltips for newly-rendered content in this panel.
+    if (window.DMWikiTips && typeof DMWikiTips.scan === 'function') {
+      const panel = document.getElementById('panel-' + id);
+      if (panel) setTimeout(function() { DMWikiTips.scan(panel); }, 100);
     }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
