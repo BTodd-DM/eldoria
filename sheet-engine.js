@@ -1346,7 +1346,17 @@ function renderSpellsSection(charId, char, state) {
       '<button onclick="breakConcentration(\'' + charId + '\')" style="background:transparent;border:1px solid #a070c0;color:#a070c0;padding:2px 10px;border-radius:2px;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:.8px;cursor:pointer">Break</button>' +
       '</div>';
   }
-  return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + sc.saveDC + ' · Atk ' + sheetFmtMod(sc.attackBonus) + '</div>' +
+  // Update 16 — Effective Save DC + spell attack when exhausted (2024: −2 per level).
+  const exhPenalty = (state.exhaustion || 0) * 2;
+  const effDC = sc.saveDC - exhPenalty;
+  const effAtk = sc.attackBonus - exhPenalty;
+  const dcDisplay = exhPenalty > 0
+    ? sc.saveDC + ' <span style="color:#e0a0a0;font-size:10px">(effective ' + effDC + ' · exh −' + exhPenalty + ')</span>'
+    : String(sc.saveDC);
+  const atkDisplay = exhPenalty > 0
+    ? sheetFmtMod(sc.attackBonus) + ' <span style="color:#e0a0a0;font-size:10px">(eff ' + sheetFmtMod(effAtk) + ')</span>'
+    : sheetFmtMod(sc.attackBonus);
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Spellcasting — ' + sc.ability + ' · Save DC ' + dcDisplay + ' · Atk ' + atkDisplay + '</div>' +
     concentrationBadge +
     '<div class="sheet-slots-row">' + slotHtml + '</div>' +
     headerRow +
@@ -2094,36 +2104,45 @@ function rollHitDie(charId) {
 }
 
 // ----- Roll handlers -----
+// Update 16 — Exhaustion penalty helper. 2024 rule: -2 to d20 tests and
+// save DCs per level of exhaustion (cumulative). Returns { penalty, label }.
+function exhPen(charId) {
+  const exh = (getSheetState(charId).exhaustion || 0);
+  const penalty = exh * 2;
+  return { penalty: penalty, label: penalty ? ' − ' + penalty + ' (exh ' + exh + ')' : '' };
+}
+
 function rollAbility(charId, abil) {
   const char = CHARACTERS[charId];
   const mod = sheetAbilityMod(char.abilities[abil]);
-  const exh = getSheetState(charId).exhaustion || 0;
+  const e = exhPen(charId);
   const roll = sheetRollD20();
-  const total = roll + mod - exh;
+  const total = roll + mod - e.penalty;
   const label = { str:'Strength', dex:'Dexterity', con:'Constitution', int:'Intelligence', wis:'Wisdom', cha:'Charisma' }[abil] + ' Check';
-  showRollToast(label, 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+  showRollToast(label, 'd20 (' + roll + ') ' + sheetFmtMod(mod) + e.label, total, { crit: roll === 20, fumble: roll === 1 });
 }
 function rollSave(charId, abil) {
   const char = CHARACTERS[charId];
   const mod = sheetGetSaveMod(char, abil);
-  const exh = getSheetState(charId).exhaustion || 0;
+  const e = exhPen(charId);
   const roll = sheetRollD20();
-  const total = roll + mod - exh;
-  showRollToast(abil.toUpperCase() + ' Saving Throw', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+  const total = roll + mod - e.penalty;
+  showRollToast(abil.toUpperCase() + ' Saving Throw', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + e.label, total, { crit: roll === 20, fumble: roll === 1 });
 }
 function rollSkill(charId, sk) {
   const char = CHARACTERS[charId];
   const mod = sheetGetSkillMod(char, sk);
-  const exh = getSheetState(charId).exhaustion || 0;
+  const e = exhPen(charId);
   const roll = sheetRollD20();
-  const total = roll + mod - exh;
-  showRollToast(SHEET_SKILL_LABELS[sk] + ' Check', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + (exh ? ' − ' + exh + ' exh' : ''), total, { crit: roll === 20, fumble: roll === 1 });
+  const total = roll + mod - e.penalty;
+  showRollToast(SHEET_SKILL_LABELS[sk] + ' Check', 'd20 (' + roll + ') ' + sheetFmtMod(mod) + e.label, total, { crit: roll === 20, fumble: roll === 1 });
 }
 function rollInitiative(charId) {
   const char = CHARACTERS[charId];
+  const e = exhPen(charId);
   const roll = sheetRollD20();
-  const total = roll + char.initiative;
-  showRollToast('Initiative', 'd20 (' + roll + ') ' + sheetFmtMod(char.initiative), total, { crit: roll === 20, fumble: roll === 1 });
+  const total = roll + char.initiative - e.penalty;
+  showRollToast('Initiative', 'd20 (' + roll + ') ' + sheetFmtMod(char.initiative) + e.label, total, { crit: roll === 20, fumble: roll === 1 });
 }
 // Roll an equipped inventory weapon by its item id.
 // Computes attack bonus from char abilities + proficiency + weapon properties
@@ -2145,8 +2164,9 @@ function rollInventoryWeapon(charId, itemId) {
   const abilityMod = isRanged ? dexMod : (isFinesse ? Math.max(strMod, dexMod) : strMod);
   const profBonus = char.proficiencyBonus || 2;
   const atkBonus = profBonus + abilityMod;
+  const e = exhPen(charId);
   const atkRoll = sheetRollD20();
-  const atkTotal = atkRoll + atkBonus;
+  const atkTotal = atkRoll + atkBonus - e.penalty;
   const dmgMatch = damage.match(/^(\d+)d(\d+)(.*)$/);
   let dmgStr = damage || '—';
   if (dmgMatch) {
@@ -2157,7 +2177,7 @@ function rollInventoryWeapon(charId, itemId) {
     const dmg = sheetRollDice(isCrit ? count * 2 : count, sides) + abilityMod;
     dmgStr = dmg + ' ' + rest + (isCrit ? ' (crit doubled)' : '') + ' [+' + abilityMod + ' mod]';
   }
-  showRollToast(name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(atkBonus) + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
+  showRollToast(name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(atkBonus) + e.label + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
 }
 
 // Compute attack bonus for display in the Attack table row.
@@ -2177,8 +2197,9 @@ function computeInventoryAtkBonus(char, item) {
 function rollWeapon(charId, idx) {
   const char = CHARACTERS[charId];
   const w = char.weapons[idx];
+  const e = exhPen(charId);
   const atkRoll = sheetRollD20();
-  const atkTotal = atkRoll + w.atk;
+  const atkTotal = atkRoll + w.atk - e.penalty;
   const dmgMatch = w.damage.match(/^(\d+)d(\d+)(?:\s*\+\s*(\d+))?(.*)$/);
   let dmgStr = w.damage;
   if (dmgMatch) {
@@ -2190,5 +2211,5 @@ function rollWeapon(charId, idx) {
     const dmg = sheetRollDice(isCrit ? count * 2 : count, sides) + bonus;
     dmgStr = dmg + ' ' + rest + (isCrit ? ' (crit doubled)' : '');
   }
-  showRollToast(w.name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(w.atk) + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
+  showRollToast(w.name + ' Attack', 'Atk d20 (' + atkRoll + ') ' + sheetFmtMod(w.atk) + e.label + ' = ' + atkTotal + ' · Dmg: ' + dmgStr, atkTotal + ' hit / ' + dmgStr, { crit: atkRoll === 20, fumble: atkRoll === 1 });
 }

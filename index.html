@@ -2075,11 +2075,7 @@ function unlockApp() {
       initNotesWidget('notes-widget-container', { id: 'dm', role: 'dm', label: 'DM' });
     }
   } catch (e) { console.warn('initNotesWidget on unlock failed (will retry on tab open):', e); }
-  // Update 13 — Attach DM note areas to each existing NPC card.
-  try {
-    if (typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
-  } catch (e) { console.warn('attachDmNpcNotes on unlock failed:', e); }
-  // Attach pin button + inline cue expansion to each NPC card.
+  // NPC card enhancers — pin/cue + DM notes (combined pass).
   try {
     if (typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
   } catch (e) { console.warn('attachDmNpcPinCue on unlock failed:', e); }
@@ -2165,12 +2161,11 @@ function showPanel(id, btn) {
     if(id === 'players' && window.SheetHistory && typeof SheetHistory.init === 'function') {
       SheetHistory.init('history-container');
     }
-    // Update 8 — Cue cards merged into NPC cards (pin + inline cue expansion).
-    if(id === 'npcs' && typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
-    // Update 13 — Re-attach DM note areas when NPCs tab opens (belt-and-braces).
-    if(id === 'npcs' && typeof attachDmNpcNotes === 'function') attachDmNpcNotes();
-    // NPC location collapse — re-init on tab open (guard-protected against re-wiring).
-    if(id === 'npcs' && typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
+    // NPC card enhancer: pin/cue + DM notes (combined). Also handles location collapse re-init.
+    if(id === 'npcs') {
+      if (typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
+      if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
+    }
   } catch(e) { /* don't let a re-render error break navigation */ console.warn('showPanel re-render error:', e); }
 }
 // Helper for status-bar items: jump to a panel by id without needing the button reference.

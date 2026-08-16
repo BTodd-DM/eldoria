@@ -174,6 +174,10 @@
     ensureSync();
     ensureCues(function() {
       renderAll();
+      // Also run notes attach in the same pass — one enhancement flow for cards.
+      if (typeof window.attachDmNpcNotes === 'function') {
+        try { window.attachDmNpcNotes(); } catch (e) { console.warn('attachDmNpcNotes failed:', e); }
+      }
     });
   }
 

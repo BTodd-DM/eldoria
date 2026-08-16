@@ -438,11 +438,8 @@ CHARACTERS.sylas = {
     'Spider Venom Sac (×2) — collected component',
     '**The Necklace / Spirit Jar** — Lich Initiate focus.'
   ],
-  attunements: [
-    '— (attunement slot open)',
-    '— (attunement slot open)',
-    '— (attunement slot open)'
-  ],
+  // attunements array retired — dynamic Attunement box (Update 18b) reads from state.equipment
+
   coins: { cp: 0, sp: 6, ep: 0, gp: 6, pp: 0 },
   backstory: 'Born in a quiet village nestled within the Aurora Peaks, your character was the unexpected child of two humble human parents. His Tiefling heritage, a result of a recessive pact made generations ago with a lich, marked him from birth—his eyes glowed faintly in the dark, and whispers of necrotic energy clung to his presence.\n\nFrom a young age, he showed an extraordinary affinity for magic, especially illusions. Despite his brilliance, the local school treated him as an outcast, fearing his lineage and the eerie manifestations of his power. Yet, he persevered—graduating top of his class, driven by a hunger for knowledge and a quiet defiance of those who doubted him.\n\nHis talents earned him a scholarship to the Scholars\' Circle, Eldoria\'s most prestigious arcane institution, located in the Aelorian Territories. There, he quickly rose through the ranks, impressing mentors and peers alike with his mastery of illusion and his curiosity about the undead.\n\nOne professor, intrigued by his magical lineage and academic promise, offered insight into his Cthonic ancestry and gifted him a spellbook containing necromantic lore. This gesture wasn\'t born of secrecy or taboo, but of scholarly encouragement—an invitation to explore the forces that shaped him and to understand the legacy he carried.\n\nNow, he has left the safety of academia to gain life experience, collect rare spells, and test his theories in the real world. Whether he seeks redemption, mastery, or something darker remains to be seen.',
   personality: '(Personality traits/ideals/bonds/flaws left open on his sheet — for the player to develop through play.)',
