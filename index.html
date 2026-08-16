@@ -702,6 +702,19 @@ body {
   </div>
 
   <div id="tab-prep" style="display:none">
+
+  <!-- Pre-Session Checklist (Update 44) -->
+  <details style="margin-bottom:1.25rem;background:rgba(20,15,8,0.6);border:1px solid var(--gold2);border-radius:4px;padding:.85rem 1rem" open>
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:13px;letter-spacing:1.5px;text-transform:uppercase">✅ Pre-Session Checklist <span id="pre-session-progress" style="font-weight:400;font-size:11px;color:var(--parch3);margin-left:.6rem"></span></summary>
+    <div style="margin-top:.85rem">
+      <div id="pre-session-checklist" style="display:flex;flex-direction:column;gap:.4rem"></div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="action-btn" onclick="resetPreSessionChecklist()" title="Clear all ticks — use before your next session">🔄 Reset for new session</button>
+        <button class="action-btn" onclick="editPreSessionTemplate()" title="Add or remove checklist items">✎ Edit template</button>
+      </div>
+    </div>
+  </details>
+
   <div class="grid-2" style="gap:1rem;align-items:start">
     <!-- Session Overview -->
     <div>
@@ -2079,6 +2092,10 @@ function unlockApp() {
   try {
     if (typeof attachDmNpcPinCue === 'function') attachDmNpcPinCue();
   } catch (e) { console.warn('attachDmNpcPinCue on unlock failed:', e); }
+  // Pre-session checklist (Update 44)
+  try {
+    if (typeof renderPreSessionChecklist === 'function') renderPreSessionChecklist();
+  } catch (e) { console.warn('pre-session render failed:', e); }
   // Collapsible NPC location sections
   try {
     if (typeof initNpcLocationCollapse === 'function') initNpcLocationCollapse();
@@ -3047,6 +3064,80 @@ function filterNpcs(query) {
     if (!q) counter.textContent = `Showing all ${cards.length} NPCs`;
     else counter.textContent = `Showing ${shown} of ${cards.length} NPCs`;
   }
+}
+
+// Update 44 — Pre-session checklist (per-DM device localStorage).
+const PRESESSION_TEMPLATE_KEY = 'eldoria-presession-template-v1';
+const PRESESSION_STATE_KEY    = 'eldoria-presession-state-v1';
+const DEFAULT_PRESESSION_ITEMS = [
+  'Party location + date confirmed on the DM dashboard',
+  'Session synopsis (data/synopsis.json) updated for next session',
+  'NPCs for this session pinned on the NPCs panel',
+  'Cue cards reviewed for pinned NPCs',
+  'Handouts drafted (to-player notes ready to send)',
+  'Combat encounters prepped (stat blocks or monster picks ready)',
+  'Session prep file reviewed and open in Obsidian',
+  'Firebase rules published (if any repo changes)',
+  'Repo pushed to GitHub',
+  'Roll20 (or virtual tabletop) prepared',
+  'Snacks / drinks / voice ready'
+];
+function getPreSessionTemplate() {
+  try {
+    const raw = localStorage.getItem(PRESESSION_TEMPLATE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return DEFAULT_PRESESSION_ITEMS.slice();
+}
+function setPreSessionTemplate(arr) {
+  try { localStorage.setItem(PRESESSION_TEMPLATE_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+function getPreSessionState() {
+  try {
+    const raw = localStorage.getItem(PRESESSION_STATE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {};
+}
+function setPreSessionState(map) {
+  try { localStorage.setItem(PRESESSION_STATE_KEY, JSON.stringify(map)); } catch (e) {}
+}
+function renderPreSessionChecklist() {
+  const container = document.getElementById('pre-session-checklist');
+  if (!container) return;
+  const template = getPreSessionTemplate();
+  const state = getPreSessionState();
+  let done = 0;
+  container.innerHTML = template.map((item, i) => {
+    const checked = !!state[item];
+    if (checked) done++;
+    const style = 'display:flex;align-items:flex-start;gap:.55rem;padding:.4rem .55rem;background:' + (checked ? 'rgba(90,180,120,0.08)' : 'rgba(0,0,0,0.15)') + ';border:1px solid ' + (checked ? 'rgba(90,180,120,0.35)' : 'rgba(160,128,64,0.18)') + ';border-radius:3px;cursor:pointer;font-size:13px;color:var(--parch1);' + (checked ? 'text-decoration:line-through;opacity:.65' : '');
+    return '<label style="' + style + '"><input type="checkbox" ' + (checked?'checked':'') + ' onchange="togglePreSessionItem(this, ' + JSON.stringify(item).replace(/"/g,'&quot;') + ')" style="margin-top:2px;flex-shrink:0"><span>' + escapePreItem(item) + '</span></label>';
+  }).join('');
+  const progress = document.getElementById('pre-session-progress');
+  if (progress) progress.textContent = done + ' / ' + template.length + ' done';
+}
+function escapePreItem(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function togglePreSessionItem(input, item) {
+  const state = getPreSessionState();
+  if (input.checked) state[item] = true;
+  else delete state[item];
+  setPreSessionState(state);
+  renderPreSessionChecklist();
+}
+function resetPreSessionChecklist() {
+  if (!confirm('Clear all ticks and start fresh for a new session?')) return;
+  setPreSessionState({});
+  renderPreSessionChecklist();
+}
+function editPreSessionTemplate() {
+  const current = getPreSessionTemplate();
+  const edited = prompt('Edit checklist items — one per line:', current.join('\n'));
+  if (edited === null) return;
+  const items = edited.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!items.length) { alert('At least one item required.'); return; }
+  setPreSessionTemplate(items);
+  renderPreSessionChecklist();
 }
 
 // NOTES

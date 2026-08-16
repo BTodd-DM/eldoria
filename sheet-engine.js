@@ -457,9 +457,27 @@ function renderAttunementSection(charId, state) {
       const badge = equipped
         ? '<span style="background:rgba(13,61,48,0.4);color:#a0d4c4;border:1px solid rgba(13,61,48,0.5);font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;padding:1px 6px;border-radius:2px">✓ ACTIVE</span>'
         : '<span style="background:rgba(122,26,26,0.3);color:#e0a0a0;border:1px solid rgba(122,26,26,0.5);font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.5px;padding:1px 6px;border-radius:2px" title="Attuned but not equipped — bonuses not applied">⚠ UNEQUIPPED</span>';
-      rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.35rem .5rem;border-bottom:1px dashed rgba(160,128,64,0.15);gap:.5rem">' +
-        '<div style="flex:1;font-size:12.5px;color:var(--parch2)">◉ ' + _sheetEscapeAttr(item.name || 'Item') + '</div>' +
-        '<div>' + badge + '</div>' +
+      // Update: pull effect summary from catalog if present (first ~110 chars of description).
+      let effect = '';
+      if (!item.custom && typeof ITEMS_BY_ID !== 'undefined') {
+        const catItem = ITEMS_BY_ID[item.sourceItemId];
+        if (catItem && catItem.description) {
+          const raw = String(catItem.description);
+          if (raw.length > 110) {
+            const cut = raw.slice(0, 110);
+            const lastSpace = cut.lastIndexOf(' ');
+            effect = (lastSpace > 0 ? cut.slice(0, lastSpace) : cut) + '…';
+          } else {
+            effect = raw;
+          }
+        }
+      }
+      rows += '<div style="padding:.4rem .5rem;border-bottom:1px dashed rgba(160,128,64,0.15)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem">' +
+          '<div style="flex:1;font-size:12.5px;color:var(--parch2)">◉ ' + _sheetEscapeAttr(item.name || 'Item') + '</div>' +
+          '<div>' + badge + '</div>' +
+        '</div>' +
+        (effect ? '<div style="font-size:11px;color:var(--parch3);font-style:italic;margin-top:.2rem;line-height:1.4">' + _sheetEscapeAttr(effect) + '</div>' : '') +
         '</div>';
     });
   }
@@ -1000,8 +1018,14 @@ function renderSheet(charId) {
   let html = '';
 
   // Rest buttons at the very top of the sheet (Phase 4B rev — user preference)
-  html += '<div style="display:flex;justify-content:flex-end;gap:.5rem;padding:.3rem 0 .6rem;margin-bottom:.5rem;border-bottom:1px dashed rgba(160,128,64,0.25)">' +
+  // Update 15: Arcane Recovery button appears for characters whose classFeatures include it.
+  const hasArcaneRecovery = (char.classFeatures || []).some(f => /arcane recovery/i.test(f.name));
+  const recoveryBtn = hasArcaneRecovery
+    ? '<button onclick="arcaneRecovery(\'' + charId + '\')" style="background:rgba(90,60,150,0.2);color:#c8a8e0;border:1px solid #a070c0;border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer" title="Wizard Arcane Recovery — after Short Rest, recover slots totalling ½ Wizard level (rounded up), no L6+, once per Long Rest">🔮 Arcane Recovery</button>'
+    : '';
+  html += '<div style="display:flex;justify-content:flex-end;gap:.5rem;padding:.3rem 0 .6rem;margin-bottom:.5rem;border-bottom:1px dashed rgba(160,128,64,0.25);flex-wrap:wrap">' +
     '<button onclick="shortRest(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🛏 Short Rest</button>' +
+    recoveryBtn +
     '<button onclick="longRest(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🌙 Long Rest</button>' +
     '</div>';
 
@@ -1374,6 +1398,8 @@ function _renderSpellRow(charId, sp, opts) {
   let tagSpans = '';
   if (sp.concentration) tagSpans += '<span class="spell-tag conc" title="Concentration">C</span>';
   if (sp.ritual)        tagSpans += '<span class="spell-tag" title="Ritual">R</span>';
+  // Update 14 — Reaction spells: any spell whose casting time contains "reaction"
+  if (sp.castingTime && /reaction/i.test(sp.castingTime)) tagSpans += '<span class="spell-tag" style="background:rgba(122,26,26,0.4);color:#f4c4c4;border:1px solid #a04040" title="Reaction — cast on trigger, not your turn">⚡R</span>';
   const schoolBadge = sp.school ? '<span style="font-size:9px;color:var(--parch4);text-transform:capitalize;letter-spacing:.5px;margin-left:.4rem">' + _sheetEscapeAttr(sp.school) + '</span>' : '';
   const alwaysBadge = opts.alwaysBadge && sp.alwaysPreparedReason
     ? '<span style="font-size:9px;color:var(--gold3);font-style:italic;letter-spacing:.3px;margin-left:.4rem">★ ' + _sheetEscapeAttr(sp.alwaysPreparedReason) + '</span>'
@@ -2050,6 +2076,45 @@ function renderSpellPicker() {
   const s = document.getElementById('sheet-spell-picker-search');
   if (s) { s.focus(); const l = s.value.length; s.setSelectionRange(l, l); }
 }
+// Update 15 — Wizard Arcane Recovery. Once per Long Rest, after a Short Rest.
+// Recovers slots totalling half Wizard level rounded up. No level 6+ slots.
+function arcaneRecovery(charId) {
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  if (state.arcaneRecoveryUsed) {
+    alert('Arcane Recovery already used this Long Rest. Take a Long Rest to reset it.');
+    return;
+  }
+  const wizLevel = char.level || 1;
+  const budget = Math.ceil(wizLevel / 2);
+  let remaining = budget;
+  const slots = (char.spellcasting && char.spellcasting.slots) || [];
+  const restored = {};
+  while (remaining > 0) {
+    const answer = prompt(
+      '🔮 ARCANE RECOVERY\n\n' +
+      'Budget: ' + budget + ' point(s) total (½ Wizard level, rounded up).\n' +
+      'Points remaining: ' + remaining + '\n' +
+      'Rule: no slot of level 6 or higher.\n\n' +
+      'Which slot level to restore? (enter 1–5, or leave blank to finish)'
+    );
+    if (answer === null || answer.trim() === '') break;
+    const lvl = parseInt(answer, 10);
+    if (!lvl || lvl < 1 || lvl > 5) { alert('Invalid — must be 1 through 5.'); continue; }
+    if (lvl > remaining) { alert('You only have ' + remaining + ' point(s) left; can\'t restore an L' + lvl + ' slot.'); continue; }
+    const maxAtLevel = slots[lvl - 1] || 0;
+    if (maxAtLevel <= 0) { alert('You don\'t have any L' + lvl + ' slots at all.'); continue; }
+    const expended = state.slots[lvl] || 0;
+    if (expended <= 0) { alert('No L' + lvl + ' slots are currently expended.'); continue; }
+    withSheetState(charId, function(s) { s.slots[lvl] = Math.max(0, (s.slots[lvl] || 0) - 1); });
+    restored[lvl] = (restored[lvl] || 0) + 1;
+    remaining -= lvl;
+  }
+  const summary = Object.keys(restored).sort().map(l => restored[l] + '× L' + l).join(' + ') || '(nothing)';
+  withSheetState(charId, function(s) { s.arcaneRecoveryUsed = true; });
+  showRollToast('Arcane Recovery', 'Restored: ' + summary, '🔮');
+}
+
 function shortRest(charId) {
   if (!confirm('Take a short rest?\n\nThis restores short-rest resources (Warlock slots, Fighter Second Wind, etc.). It does NOT restore HP or spell slots.')) return;
   withSheetState(charId, function(s) {
@@ -2077,6 +2142,8 @@ function longRest(charId) {
     if (s.exhaustion > 0) s.exhaustion -= 1;
     // Update 12 — concentration always ends on a long rest (unconscious for hours).
     s.concentration = null;
+    // Update 15 — Arcane Recovery resets on long rest.
+    s.arcaneRecoveryUsed = false;
   });
   showRollToast('Long Rest', 'HP, slots, resources restored', '✦');
   // If this character has a prep-modal flow, ask if they want to change prepared spells.

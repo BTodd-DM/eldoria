@@ -47,6 +47,21 @@
       "exit": "Buys the round if it goes well. Leaves early if it doesn't — 'business, forgive me.' Will look them up later either way."
     },
     {
+      "id": "dawnwarden-seraphine-vale",
+      "name": "Dawnwarden Seraphine Vale",
+      "role": "senior Luminos clergy, keeper of doctrine",
+      "location": "Temple of Luminos, Aeloria Crossroads",
+      "voice": "Quiet, precise, calm. Every word considered. Never raises volume. Never repeats herself.",
+      "opening": "You came to ask about Merric. Sit. Speak plainly.",
+      "wants": "For Orin to walk a truthful path. For the Temple's counsel to be taken seriously. To watch, not to intervene — unless she must.",
+      "secrets": [
+        "Served alongside Merric decades ago; strongly suspects he took an underworld second life but has never confirmed and never spoken it aloud.",
+        "Reports her exchanges up the chain to Alric in general terms; he knows Orin exists.",
+        "Privately reserves judgment about Vaeloran — he is too widely liked for a man who volunteers so little of himself."
+      ],
+      "exit": "'Faith is not comfort. It is commitment. Go with the light.' Turns back to her work; interview is over."
+    },
+    {
       "id": "envoy-veris-caelthorn",
       "name": "Envoy Veris Caelthorn",
       "role": "Aurum Dominion diplomatic envoy; junior Kaelthorn cousin; wizard; Crystal Shards field operative; personal Coin Cipher client",
@@ -61,6 +76,22 @@
         "Will recognise Sylas's light purple skin as the Vellaris curse-line marker. Won't surface it — will note it."
       ],
       "exit": "Bows precisely, offers his card at Envoy's Rest, disengages smoothly. Two Aurum Sentinels never more than ten paces away."
+    },
+    {
+      "id": "gerald",
+      "name": "Gerald",
+      "role": "owner of the Pig's Head Inn, senior Veil fixer",
+      "location": "Pig's Head Inn, Ashgate Slums",
+      "voice": "Rough, warm, ever-so-slightly slurred at the end of long shifts. Friendly volume. Watches while talking.",
+      "opening": "You'll be the party Sarah mentioned. Come round the counter. Careful — walls here listen.",
+      "wants": "The Pig's Head to keep running. To move information upward for the right price. To gauge whether this party is Guilded Veil material or a passing storm.",
+      "secrets": [
+        "Senior fixer for the Guilded Veil — screens newcomers, assigns low-risk jobs, moves info upward.",
+        "The 'K' note (from the gnoll shrine) grants Pig's Head back-room access — he knows what it means; the party doesn't fully yet.",
+        "The back room connects to old tunnels under Aeloria.",
+        "His missing-guild-member job is genuine — the man vanished with something someone above Gerald wants back."
+      ],
+      "exit": "Slides them a cheap ale and a friendly reminder to keep their voices down. If pressed: 'Careful.' Doesn't say the word twice."
     },
     {
       "id": "halvor",
@@ -79,6 +110,22 @@
       "exit": "Collapses into a chair if things go well and asks for help. Runs for the back room if things go badly — where Mira is."
     },
     {
+      "id": "high-priest-alric-dawnveil",
+      "name": "High Priest Alric Dawnveil",
+      "role": "High Priest of Luminos, Aeloria Temple",
+      "location": "Temple of Luminos, Aeloria Crossroads",
+      "voice": "Old, unhurried, resonant. Slow half-second pause before answering anything of substance. Precise diction.",
+      "opening": "So. The Wayward Company. Seraphine has spoken of one of you.",
+      "wants": "Truthful accounting of what the party actually knows and can prove. To decide whether the Temple should be engaged, or whether he should keep watching.",
+      "secrets": [
+        "Senses something is deeply wrong in Aeloria; cannot yet name it.",
+        "Has quietly noticed Vaeloran is more central to more matters than an eccentric scholar-mage should be — no proof yet.",
+        "Will not act on rumour. Needs something demonstrable (document, witness, Lyssandra lucid, Aurek surfaced).",
+        "When he does move, he moves the Temple, the Watch (through Council request), and public statement in one week."
+      ],
+      "exit": "Blesses them formally. If he takes an interest, sends a follow-up messenger within days. If not, the door quietly closes."
+    },
+    {
       "id": "kellan-bracewell",
       "name": "Kellan Bracewell",
       "role": "[[Factions/Guilded Veil|Guilded Veil]] Veilmaster of the Ironhold cell",
@@ -95,6 +142,38 @@
       "exit": "Slips out the back through a Rustpocket rooftop route the party did not enter through. Sends word via a coded ash-mark on their door if she wants to meet again."
     },
     {
+      "id": "lyssandra-vale",
+      "name": "Lyssandra Vale",
+      "role": "key witness",
+      "location": "Spire of the Silver Eclipse (in Vaeloran's custody)",
+      "voice": "Careful, thoughtful, warm. Half-elf lilt. Recently — slightly delayed as if hearing something faint under the room.",
+      "opening": "The party. I remember you. Vaeloran said you'd return one day.",
+      "wants": "To be a good apprentice. To finish her research. To please Vaeloran. (Publicly.) Underneath: something is wrong and she cannot name it.",
+      "secrets": [
+        "Was always under Vaeloran's subtle mental influence; the meteor shard temporarily disrupted it, letting her flee.",
+        "Now restored and memory-wiped — genuinely believes she serves him willingly.",
+        "Is the single witness who can expose Vaeloran if she is ever fully restored.",
+        "Her warning to the party ('He'll twist your good intentions') was true; she doesn't remember saying it."
+      ],
+      "exit": "Polite, warm. Retreats to Vaeloran's study when the exchange ends. If pressed on odd questions: momentary confusion, then Vaeloran's voice from another room, then normal Lyssandra again."
+    },
+    {
+      "id": "merric-underbough",
+      "name": "Merric Underbough",
+      "role": "Veilmaster, Orin's adoptive father",
+      "location": "Pig's Head Inn back rooms, Ashgate Slums",
+      "voice": "Calm, measured, halfling-warm. Never rushes a sentence. Uses old Luminar phrasings when tired or when Orin's in the room.",
+      "opening": "Sit down, boy. The chair to your left. Don't make me look up.",
+      "wants": "For Orin to walk away safely. For his own past to stay buried a little longer. Failing that — for Orin to know he never stopped loving him.",
+      "secrets": [
+        "Was a Luminar of Luminos who smuggled holy goods into the Aurum Dominion; the Guilded Veil helped him, then owned him.",
+        "Does NOT know Vaeloran is Aurek — he thinks Aurek is a peer.",
+        "Sent the 'Keep to the light, Orin' letter deliberately — he wanted Orin to know the door isn't locked.",
+        "Has three ways out of any Aeloria room he's in; used them once each in the last decade."
+      ],
+      "exit": "Vanishes via the back-room passages. Leaves a small token (copper coin, folded paper) if the exchange went well — nothing if it didn't."
+    },
+    {
       "id": "mother-hessa",
       "name": "Mother Hessa",
       "role": "Proprietor of the Grey Kettle inn, Merchants' Quarter",
@@ -108,6 +187,22 @@
         "She has quietly refused Corvan Drake's business twice this year — he doesn't know why."
       ],
       "exit": "Shows them to rooms. Available at the bar most evenings if they need to talk. Won't gossip but will listen."
+    },
+    {
+      "id": "sarah",
+      "name": "Sarah",
+      "role": "manager of the Wayfarer's Rest",
+      "location": "Wayfarer's Rest, inner trade ward",
+      "voice": "Dry, low-shine, deep half-orc register. Says what she means. Uses names once she's earned them.",
+      "opening": "You look like people who need somewhere quiet. I have quiet.",
+      "wants": "The Wayfarer's Rest to keep its reputation as neutral ground. To help without picking sides. To know the party isn't bringing trouble to her door.",
+      "secrets": [
+        "Refers people to Gerald / the Pig's Head only when their questions are 'not Wayfarer's type' — she has a mental threshold.",
+        "Knows most of Aeloria's mid-tier undercurrents but does not trade in them. Ever.",
+        "Was a caravan guard for eleven years before she took over the Wayfarer's; still carries a hidden dagger.",
+        "Actively dislikes Drake (Ironhold contact via one of her regulars) — won't say why."
+      ],
+      "exit": "Nods once, points to a table or a door, moves on to the next thing. Available at the bar most evenings if the party wants to circle back."
     },
     {
       "id": "sera-vey",
@@ -138,6 +233,55 @@
         "Has heard rumours the Aurum envoy paid off the Southern Gate captain for smoother processing."
       ],
       "exit": "Waves them through with a tired 'welcome to Ironhold.' If suspicious, quietly signals the shift captain."
+    },
+    {
+      "id": "taren-myles",
+      "name": "Taren Myles",
+      "role": "Vaeloran's researcher",
+      "location": "Spire of the Silver Eclipse",
+      "voice": "Distracted, gentle. Doesn't look up from his charts until you press. Long thoughtful pauses. Guarded warmth.",
+      "opening": "One moment. This line of… yes. What do you need?",
+      "wants": "To finish his research. To find a way out of his mounting discomfort about what he sees in Vaeloran's tower.",
+      "secrets": [
+        "Increasingly uncomfortable with what he observes in the Spire but has not acted.",
+        "May be the crack in Vaeloran's inner circle — the one person who might help the party if approached with care.",
+        "His coded research notes could break the Vaeloran conspiracy open (Investigation DC 16 to understand).",
+        "Vaeloran likes him. Taren knows Vaeloran likes him. This complicates leaving."
+      ],
+      "exit": "Excuses himself back to his charts. If the exchange planted a seed, may seek the party out later — quietly, alone, at the Wayfarer's Rest."
+    },
+    {
+      "id": "vaeloran-duskwhisper",
+      "name": "Vaeloran Duskwhisper",
+      "role": "villain",
+      "location": "Spire of the Silver Eclipse, High Spires District, Aeloria",
+      "voice": "Warm, avuncular, delicately precise. Every word chosen. Long thoughtful pauses. Chuckles at his own scholarly asides.",
+      "opening": "Ah, my friends. Come in. Taren has some tea somewhere — Taren?",
+      "wants": "The party's continued trust while he assembles Stage 3 of the lich ritual. To be seen as the reasonable centre of Aeloria's politics. To study Sylas.",
+      "secrets": [
+        "Is Aurek Voln Drowhiss (anagram); runs the Aurek Network.",
+        "Meteor shard is a phylactery component; the party recovered it for him via Lyssandra.",
+        "Their 'spell study sessions' with Sylas are observation of the Lich Initiate path + the necklace-as-spirit-jar.",
+        "Recognises Sylas's Vellaris curse-line marker (light purple skin) but has never surfaced it.",
+        "Has doctored council letters. Has leverage on every Council member in varying degrees."
+      ],
+      "exit": "Warm dismissal, an invitation to return, offers refreshment. If tension rises: recasts himself as concerned patron and gently redirects."
+    },
+    {
+      "id": "vexa",
+      "name": "Vexa",
+      "role": "Maelis Raventhorn's apprentice",
+      "location": "Aeloria",
+      "voice": "Sharp, quick, faintly amused. Speaks fast when nervous; slow and cutting when angry.",
+      "opening": "You're the ones who used tarps. I've heard about the tarps.",
+      "wants": "To do good work for Maelis. To be taken seriously as a mage in her own right. To not get pulled into whatever the party's tangled with.",
+      "secrets": [
+        "Loyal to Maelis Raventhorn (her mentor).",
+        "Was at the meteor site; the party evaded her via clever use of tarps.",
+        "Not part of any faction's plot — she is simply competent and Maelis-adjacent.",
+        "Could be persuaded to help investigate Maelis's framing (Vaeloran's red herring) if the party ever raises it."
+      ],
+      "exit": "Nods, straps her satchel, walks on. If left on good terms she'll take a message back to Maelis; if not, she'll take the story back either way."
     },
     {
       "id": "vrass",
