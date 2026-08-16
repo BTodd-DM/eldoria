@@ -599,6 +599,11 @@ body {
 
 <!-- ===== RECAPS ===== -->
 <div id="panel-recaps" class="panel active">
+  <!-- Session Synopsis card — "Where you are, what just happened". Auto-expands
+       whenever the underlying data/synopsis.json version bumps; per-device
+       dismiss via localStorage. -->
+  <div id="synopsis-card" style="display:none"></div>
+
   <div class="ornament">✦ ✦ ✦</div>
   <div class="sec-title">The Story So Far <span style="font-size:11px;color:var(--parch3);font-weight:400">— most recent first</span></div>
 
@@ -950,7 +955,43 @@ window.addEventListener('load', () => {
   const saved = localStorage.getItem('eldoria-player-notes');
   if(saved) document.getElementById('player-notes').value = saved;
   ['torren','sylas','orin'].forEach(updateSheetUI);
+  loadSynopsis();
 });
+
+// Update 35 — Session Synopsis card
+// Data lives at data/synopsis.json with a `version` int and body text.
+// Per-device dismiss via localStorage. When the version bumps (new
+// session), previously-dismissed users see the new synopsis auto-open.
+function loadSynopsis() {
+  fetch('data/synopsis.json?_=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data) return;
+      const dismissedVersion = parseInt(localStorage.getItem('eldoria-synopsis-dismissed-version') || '-1', 10);
+      const shouldShow = data.version > dismissedVersion;
+      const card = document.getElementById('synopsis-card');
+      if (!card) return;
+      card.innerHTML =
+        '<div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid var(--gold2);border-left:5px solid var(--gold2);border-radius:4px;padding:1.1rem 1.35rem;margin-bottom:1.25rem;box-shadow:0 4px 18px rgba(138,106,16,0.15);position:relative">' +
+          '<button aria-label="Dismiss" onclick="dismissSynopsis()" style="position:absolute;top:8px;right:12px;background:transparent;border:none;color:var(--ink3);font-size:18px;cursor:pointer;line-height:1">×</button>' +
+          '<div style="font-family:\'Cinzel Decorative\',serif;font-size:14px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:.15rem">Where you are</div>' +
+          '<div style="font-family:\'Cinzel\',serif;font-size:11.5px;letter-spacing:1px;color:var(--ink3);margin-bottom:.5rem">' + escSyn(data.sessionLabel || '') + (data.date ? ' &nbsp;·&nbsp; ' + escSyn(data.date) : '') + '</div>' +
+          (data.location ? '<div style="font-size:13px;font-style:italic;color:var(--ink2);margin-bottom:.55rem">📍 ' + escSyn(data.location) + '</div>' : '') +
+          '<div style="font-size:14.5px;line-height:1.65;color:var(--ink)">' + escSyn(data.body || '') + '</div>' +
+        '</div>';
+      card.style.display = shouldShow ? '' : 'none';
+      window._synopsisVersion = data.version;
+    })
+    .catch(err => console.warn('[Synopsis] Load failed:', err));
+}
+function dismissSynopsis() {
+  if (typeof window._synopsisVersion !== 'undefined') {
+    localStorage.setItem('eldoria-synopsis-dismissed-version', String(window._synopsisVersion));
+  }
+  const card = document.getElementById('synopsis-card');
+  if (card) card.style.display = 'none';
+}
+function escSyn(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // Character sheet uploads — stored in localStorage as a data URL.
 // 4 MB cap (localStorage commonly tops out around 5 MB per origin).
