@@ -28,6 +28,8 @@
   'use strict';
 
   const COMBAT_PATH = 'combat';
+  const PRESETS_PATH = 'encounter-presets';
+  const ENCOUNTERS_JSON = 'data/encounters.json';
   const PC_IDS = ['torren', 'sylas', 'orin'];
   const CONDITIONS_2024 = [
     'blinded', 'charmed', 'deafened', 'frightened', 'grappled',
@@ -39,14 +41,36 @@
     _container: null,
     _ref: null,
     _state: null,
+    _presetsRef: null,
+    _presets: {},         // { presetId: { name, description, monsters:[], notes } }
+    _vaultEncounters: [], // loaded from data/encounters.json
 
     init: function(containerId) {
       this._container = document.getElementById(containerId);
       if (!this._container) return;
-      // Render the empty-state ⚔ Start combat button immediately so the UI
-      // is functional even if Firebase sync is blocked or slow to fire.
       this._render();
       this._initSync();
+      this._loadVaultEncounters();
+      this._initPresetsSync();
+    },
+
+    _loadVaultEncounters: function() {
+      const self = this;
+      fetch(ENCOUNTERS_JSON + '?_=' + Date.now())
+        .then(r => r.ok ? r.json() : { encounters: [] })
+        .then(data => { self._vaultEncounters = data.encounters || []; })
+        .catch(function() {});
+    },
+
+    _initPresetsSync: function() {
+      if (typeof firebase === 'undefined' || !firebase.database) return;
+      const self = this;
+      try {
+        this._presetsRef = firebase.database().ref(PRESETS_PATH);
+        this._presetsRef.on('value', function(snap) {
+          self._presets = snap.val() || {};
+        });
+      } catch (e) { console.warn('[CombatTracker] Presets sync failed:', e); }
     },
 
     refresh: function() { this._render(); },
@@ -319,6 +343,215 @@
       });
     },
 
+    // -------------------- Encounter Presets --------------------
+    _openEncountersModal: function() {
+      const dlg = document.getElementById('ct-encounters-dialog');
+      if (!dlg) return;
+      this._renderEncountersList();
+      if (dlg.showModal) dlg.showModal();
+      else dlg.setAttribute('open', '');
+    },
+
+    _renderEncountersList: function() {
+      const listEl = document.getElementById('ct-encounters-list');
+      if (!listEl) return;
+      const self = this;
+      const vault = this._vaultEncounters || [];
+      const presetIds = Object.keys(this._presets || {}).sort();
+      const monsterName = function(mid) {
+        return (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[mid])
+          ? MONSTERS_BY_ID[mid].name : mid;
+      };
+      const renderCard = function(e, source, opts) {
+        opts = opts || {};
+        const monsterList = (e.monsters || []).map(function(m) {
+          return (m.count || 1) + '× ' + escapeHtml(monsterName(m.id));
+        }).join(', ') || '(no monsters)';
+        const editBtn = source === 'preset'
+          ? '<button class="ct-preset-edit" data-pid="' + escapeAttr(opts.presetId) + '" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:2px 8px;border-radius:2px;font-size:10px;font-family:\'Cinzel\',serif;cursor:pointer;margin-right:4px">✎ Edit</button>' +
+            '<button class="ct-preset-delete" data-pid="' + escapeAttr(opts.presetId) + '" style="background:transparent;border:1px solid #a04040;color:#e0a0a0;padding:2px 8px;border-radius:2px;font-size:10px;font-family:\'Cinzel\',serif;cursor:pointer;margin-right:4px">✕ Delete</button>'
+          : '';
+        const cr = e.cr ? ' · CR ' + escapeHtml(String(e.cr)) : '';
+        const diff = e.difficulty ? ' · ' + escapeHtml(e.difficulty) : '';
+        return '<div class="ct-encounter-card" style="padding:.7rem .85rem;border:1px solid rgba(160,128,64,0.25);border-radius:3px;margin-bottom:.5rem;background:rgba(0,0,0,0.15)">' +
+          '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:.5rem">' +
+            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:13px;font-weight:600">' + escapeHtml(e.title) + '</div>' +
+            '<div style="font-size:10px;color:var(--parch3);font-family:\'Cinzel\',serif;letter-spacing:1px">' + escapeHtml(source.toUpperCase()) + cr + diff + '</div>' +
+          '</div>' +
+          (e.description ? '<div style="font-size:12px;color:var(--parch3);font-style:italic;margin:.2rem 0">' + escapeHtml(e.description) + '</div>' : '') +
+          '<div style="font-size:12px;color:var(--parch2);margin-top:.3rem">' + monsterList + '</div>' +
+          '<div style="margin-top:.5rem;display:flex;gap:.4rem;justify-content:flex-end;align-items:center">' +
+            editBtn +
+            '<button class="ct-encounter-load" data-src="' + source + '" data-key="' + escapeAttr(opts.presetId || e.id) + '" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 12px;border-radius:2px;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">📥 Load</button>' +
+          '</div>' +
+        '</div>';
+      };
+      let html = '';
+      html += '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem">📚 Prepared (vault) — ' + vault.length + '</div>';
+      if (!vault.length) {
+        html += '<div style="padding:.5rem;color:var(--parch4);font-style:italic;font-size:12px">No vault encounters. Add .md files to <code>Session Planning/Encounters/</code> and regenerate.</div>';
+      } else {
+        vault.forEach(function(e) { html += renderCard(e, 'vault'); });
+      }
+      html += '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin:1rem 0 .4rem">🗂 My Presets (site-created) — ' + presetIds.length + '</div>';
+      if (!presetIds.length) {
+        html += '<div style="padding:.5rem;color:var(--parch4);font-style:italic;font-size:12px">No saved presets yet. Use "+ Create new" below to make one.</div>';
+      } else {
+        presetIds.forEach(function(pid) {
+          const p = self._presets[pid];
+          if (p) html += renderCard(p, 'preset', { presetId: pid });
+        });
+      }
+      listEl.innerHTML = html;
+      listEl.querySelectorAll('.ct-encounter-load').forEach(function(b) {
+        b.addEventListener('click', function() {
+          const src = b.getAttribute('data-src');
+          const key = b.getAttribute('data-key');
+          self._loadEncounter(src, key);
+        });
+      });
+      listEl.querySelectorAll('.ct-preset-edit').forEach(function(b) {
+        b.addEventListener('click', function() { self._openPresetEditor(b.getAttribute('data-pid')); });
+      });
+      listEl.querySelectorAll('.ct-preset-delete').forEach(function(b) {
+        b.addEventListener('click', function() {
+          const pid = b.getAttribute('data-pid');
+          const p = self._presets[pid];
+          if (!p) return;
+          if (!confirm('Delete preset "' + (p.name || pid) + '"?')) return;
+          if (self._presetsRef) self._presetsRef.child(pid).remove().then(function() { self._renderEncountersList(); });
+        });
+      });
+    },
+
+    _loadEncounter: function(source, key) {
+      const encounter = source === 'vault'
+        ? (this._vaultEncounters || []).find(function(e) { return e.id === key; })
+        : this._presets[key];
+      if (!encounter) return;
+      // If no active combat, start one first (auto-adds PCs)
+      const self = this;
+      const doAdd = function() {
+        (encounter.monsters || []).forEach(function(m) {
+          self._addMonsterFromCatalog(m.id, m.count || 1);
+        });
+        const dlg = document.getElementById('ct-encounters-dialog');
+        if (dlg) dlg.close();
+      };
+      if (!this._state || !this._state.active) {
+        this._startCombat();
+        // Wait for Firebase to settle before adding monsters
+        setTimeout(doAdd, 400);
+      } else {
+        doAdd();
+      }
+    },
+
+    _openPresetEditor: function(presetIdOrNull) {
+      const dlg = document.getElementById('ct-preset-editor');
+      if (!dlg) return;
+      const existing = presetIdOrNull ? this._presets[presetIdOrNull] : null;
+      document.getElementById('ct-preset-editor-title').textContent = existing ? 'Edit Preset' : 'Create Preset';
+      document.getElementById('ct-preset-id').value = presetIdOrNull || '';
+      document.getElementById('ct-preset-name').value = existing ? (existing.name || '') : '';
+      document.getElementById('ct-preset-desc').value = existing ? (existing.description || '') : '';
+      document.getElementById('ct-preset-notes').value = existing ? (existing.notes || '') : '';
+      this._presetEditorMonsters = existing ? (existing.monsters || []).slice() : [];
+      this._renderPresetEditorMonsters();
+      if (dlg.showModal) dlg.showModal();
+      else dlg.setAttribute('open', '');
+    },
+
+    _renderPresetEditorMonsters: function() {
+      const listEl = document.getElementById('ct-preset-monster-list');
+      if (!listEl) return;
+      const self = this;
+      const rows = (this._presetEditorMonsters || []).map(function(m, i) {
+        const name = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[m.id])
+          ? MONSTERS_BY_ID[m.id].name : m.id;
+        return '<div style="display:flex;gap:.4rem;align-items:center;padding:.3rem 0;border-bottom:1px dashed rgba(160,128,64,0.15)">' +
+          '<div style="flex:1;font-size:12.5px;color:var(--parch2)">' + escapeHtml(name) + '</div>' +
+          '<input type="number" min="1" value="' + (m.count || 1) + '" data-pm-idx="' + i + '" style="width:60px;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.35);color:var(--parch);padding:2px 4px;border-radius:2px;text-align:center;font-size:12px">' +
+          '<button data-pm-remove="' + i + '" style="background:transparent;border:1px solid #a04040;color:#e0a0a0;padding:2px 6px;border-radius:2px;font-size:10px;cursor:pointer">✕</button>' +
+          '</div>';
+      }).join('');
+      listEl.innerHTML = rows || '<div style="padding:.4rem;color:var(--parch4);font-style:italic;font-size:12px">No monsters. Click "+ Add monster" below.</div>';
+      listEl.querySelectorAll('[data-pm-idx]').forEach(function(el) {
+        el.addEventListener('change', function() {
+          const idx = parseInt(el.getAttribute('data-pm-idx'), 10);
+          const n = parseInt(el.value, 10) || 1;
+          if (self._presetEditorMonsters[idx]) self._presetEditorMonsters[idx].count = n;
+        });
+      });
+      listEl.querySelectorAll('[data-pm-remove]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          const idx = parseInt(el.getAttribute('data-pm-remove'), 10);
+          self._presetEditorMonsters.splice(idx, 1);
+          self._renderPresetEditorMonsters();
+        });
+      });
+    },
+
+    _addMonsterToPresetEditor: function() {
+      if (typeof MONSTERS_2024 === 'undefined') { alert('Monster catalog not loaded.'); return; }
+      const names = MONSTERS_2024.map(function(m, i) { return (i + 1) + '. ' + m.name + ' (CR ' + m.cr + ')'; }).join('\n');
+      const answer = prompt('Add monster — enter number:\n\n' + names);
+      if (!answer) return;
+      const n = parseInt(answer, 10);
+      if (isNaN(n) || n < 1 || n > MONSTERS_2024.length) return;
+      const m = MONSTERS_2024[n - 1];
+      const countRaw = prompt('Count?', '1');
+      const count = Math.max(1, parseInt(countRaw, 10) || 1);
+      this._presetEditorMonsters = this._presetEditorMonsters || [];
+      this._presetEditorMonsters.push({ id: m.id, count: count });
+      this._renderPresetEditorMonsters();
+    },
+
+    _savePreset: function() {
+      const name = document.getElementById('ct-preset-name').value.trim();
+      if (!name) { alert('Name required.'); return; }
+      const id = document.getElementById('ct-preset-id').value || ('preset-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
+      const preset = {
+        name: name,
+        description: document.getElementById('ct-preset-desc').value.trim(),
+        notes: document.getElementById('ct-preset-notes').value.trim(),
+        monsters: this._presetEditorMonsters || [],
+        updatedAt: Date.now()
+      };
+      if (!this._presets[id]) preset.createdAt = Date.now();
+      if (!this._presetsRef) { alert('Firebase not ready.'); return; }
+      const self = this;
+      this._presetsRef.child(id).set(preset).then(function() {
+        const dlg = document.getElementById('ct-preset-editor');
+        if (dlg) dlg.close();
+        self._renderEncountersList();
+      }).catch(function(e) {
+        alert('Save failed: ' + (e && e.message));
+      });
+    },
+
+    _saveCurrentAsPreset: function() {
+      if (!this._state || !this._state.active) { alert('No active encounter to save.'); return; }
+      const monsters = {};
+      (this._state.combatants || []).forEach(function(c) {
+        if (c.kind !== 'monster' || !c.monsterId) return; // skip PCs + ad-hoc (no catalog id)
+        monsters[c.monsterId] = (monsters[c.monsterId] || 0) + 1;
+      });
+      const monsterArr = Object.keys(monsters).map(function(id) { return { id: id, count: monsters[id] }; });
+      if (!monsterArr.length) { alert('No catalog monsters in the current encounter (only PCs / ad-hoc). Add from catalog first.'); return; }
+      this._presetEditorMonsters = monsterArr;
+      // Open editor with current encounter as starting state
+      const dlg = document.getElementById('ct-preset-editor');
+      document.getElementById('ct-preset-editor-title').textContent = 'Save Current Encounter as Preset';
+      document.getElementById('ct-preset-id').value = '';
+      document.getElementById('ct-preset-name').value = '';
+      document.getElementById('ct-preset-desc').value = '';
+      document.getElementById('ct-preset-notes').value = '';
+      this._renderPresetEditorMonsters();
+      if (dlg.showModal) dlg.showModal();
+      else dlg.setAttribute('open', '');
+    },
+
     _openStatBlock: function(monsterId) {
       const m = MONSTERS_BY_ID[monsterId];
       if (!m) return;
@@ -357,8 +590,11 @@
       const s = this._state;
       if (!s || !s.active) {
         this._container.innerHTML =
-          '<div class="alert alert-info">No active encounter. Click "Start combat" to auto-add the party and begin.</div>' +
-          '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._startCombat()">⚔ Start combat</button>' +
+          '<div class="alert alert-info">No active encounter. Start from scratch (auto-adds the party) or load a prepared encounter.</div>' +
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+            '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._startCombat()">⚔ Start combat</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Encounter presets</button>' +
+          '</div>' +
           (s && s.log && s.log.length ? this._renderLog(s) : '');
         this._ensureDialogs();
         return;
@@ -371,7 +607,9 @@
           '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:14px">Round ' + (s.round || 1) + ' &nbsp;·&nbsp; ' + combatants.length + ' combatant' + (combatants.length === 1 ? '' : 's') + '</div>' +
           '<div style="display:flex;gap:.4rem;flex-wrap:wrap">' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterPicker()">📖 Add from catalog</button>' +
-            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addAdhocMonster()">+ Ad-hoc monster</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addAdhocMonster()">+ Ad-hoc</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Presets</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._advanceTurn()">⏭ Next turn</button>' +
             '<button class="action-btn" style="border-color:#a02020;color:#e0a0a0" onclick="if(window.CombatTracker) CombatTracker._endCombat()">End combat</button>' +
           '</div>' +
@@ -483,6 +721,49 @@
           '<div id="ct-picker-list" style="overflow-y:auto;max-height:60vh"></div>';
         document.body.appendChild(d1);
         d1.addEventListener('click', function(e) { if (e.target === d1) d1.close(); });
+      }
+      if (!document.getElementById('ct-encounters-dialog')) {
+        const d3 = document.createElement('dialog');
+        d3.id = 'ct-encounters-dialog';
+        d3.style.cssText = 'max-width:720px;width:92vw;max-height:85vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
+        d3.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center">' +
+            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">📋 Encounter Presets</div>' +
+            '<div style="display:flex;gap:.4rem">' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._openPresetEditor(null)" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">+ Create new</button>' +
+              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+            '</div>' +
+          '</div>' +
+          '<div id="ct-encounters-list" style="overflow-y:auto;max-height:75vh;padding:1rem"></div>';
+        document.body.appendChild(d3);
+        d3.addEventListener('click', function(e) { if (e.target === d3) d3.close(); });
+      }
+      if (!document.getElementById('ct-preset-editor')) {
+        const d4 = document.createElement('dialog');
+        d4.id = 'ct-preset-editor';
+        d4.style.cssText = 'max-width:560px;width:92vw;max-height:85vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
+        d4.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center">' +
+            '<div id="ct-preset-editor-title" style="font-family:\'Cinzel\',serif;color:var(--gold2)">Create Preset</div>' +
+            '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+          '</div>' +
+          '<div style="padding:1rem;overflow-y:auto;max-height:75vh">' +
+            '<input type="hidden" id="ct-preset-id">' +
+            '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin-bottom:.2rem">NAME</label>' +
+            '<input id="ct-preset-name" type="text" style="width:100%;padding:.4rem .6rem;background:rgba(10,8,5,0.6);border:1px solid var(--gold2);color:var(--parch);border-radius:2px;font-size:13px;margin-bottom:.75rem">' +
+            '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin-bottom:.2rem">DESCRIPTION</label>' +
+            '<input id="ct-preset-desc" type="text" placeholder="Short description of when this triggers" style="width:100%;padding:.4rem .6rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.35);color:var(--parch);border-radius:2px;font-size:13px;margin-bottom:.75rem">' +
+            '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin-bottom:.2rem">MONSTERS</label>' +
+            '<div id="ct-preset-monster-list" style="margin-bottom:.5rem"></div>' +
+            '<button onclick="if(window.CombatTracker) CombatTracker._addMonsterToPresetEditor()" style="background:rgba(201,168,76,0.15);border:1px dashed var(--gold2);color:var(--gold2);padding:.4rem .8rem;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;margin-bottom:.75rem">+ Add monster</button>' +
+            '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin-bottom:.2rem">NOTES (tactics, terrain, adjustments)</label>' +
+            '<textarea id="ct-preset-notes" style="width:100%;min-height:100px;padding:.5rem .6rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.35);color:var(--parch);border-radius:2px;font-family:\'Crimson Pro\',serif;font-size:12.5px;resize:vertical"></textarea>' +
+            '<div style="margin-top:1rem;text-align:right">' +
+              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:5px 14px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;margin-right:.5rem">Cancel</button>' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._savePreset()" style="background:var(--gold);color:#0d0a06;border:none;padding:5px 16px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">💾 Save</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(d4);
       }
       if (!document.getElementById('ct-statblock-dialog')) {
         const d2 = document.createElement('dialog');

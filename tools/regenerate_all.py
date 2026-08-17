@@ -10,6 +10,7 @@ GENERATORS = [
     "generate_npcs.py",
     "generate_cues.py",
     "generate_search_index.py",
+    "generate_encounters.py",
 ]
 
 def main():

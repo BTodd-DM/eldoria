@@ -1,0 +1,92 @@
+{
+  "encounters": [
+    {
+      "id": "halvor-compound-ambush",
+      "title": "Halvor Compound Ambush",
+      "description": "Guards respond in force if the party goes loud during Mira's rescue.",
+      "cr": "5",
+      "difficulty": "hard-medium (party level 6)",
+      "tags": [
+        "encounter",
+        "ironhold",
+        "halvor-thread",
+        "session-7"
+      ],
+      "monsters": [
+        {
+          "id": "bandit_captain",
+          "count": 1,
+          "label": "Captain of the compound guard"
+        },
+        {
+          "id": "thug",
+          "count": 4,
+          "label": "Compound guards"
+        },
+        {
+          "id": "guard",
+          "count": 2,
+          "label": "Watch (external — arrive round 3)"
+        }
+      ],
+      "body": "# Halvor Compound Ambush\n\n## When this triggers\nThe party enters Halvor's compound violently — Mira's rescue by force. Silent infiltration avoids this entirely. Negotiation defuses it (Halvor himself appears at round 2 — see his cue card).\n\n## Tactics\n- **Bandit Captain** stays back and directs — issues *Parry* reactions to protect the front line. Retreats through the back door if reduced below 20 HP.\n- **Thugs** engage front line, use Pack Tactics — try to keep pairs adjacent to the same PC.\n- **Watch guards** (arrive turn 3) enter through the front — noise from the compound has reached the street. They're not Halvor's — they're the real Ironhold Watch. If the party surrenders to them, this is de-escalation, not defeat.\n\n## Terrain\nCompound courtyard: 40×40 ft, cover along the walls, a well at the centre, the back warehouse door (locked, DC 15 to bash). Mira and children in the warehouse — DO NOT let a stray AoE hit that door.\n\n## Adjustments\n- If party goes stealth-first: skip Captain + Thugs, only the guards arrive if noise breaks out.\n- If Halvor appears in negotiation: replace Captain's turn with Halvor pleading. See his cue card."
+    },
+    {
+      "id": "naturus-cult-cell-ambush",
+      "title": "Naturus Cult Cell Ambush",
+      "description": "A cell of Kaelith's followers moves against the party — cultists, a Fanatic, and one wight-touched leader.",
+      "cr": "6",
+      "difficulty": "hard (party level 6)",
+      "tags": [
+        "encounter",
+        "naturus-cult",
+        "kaelith",
+        "ironhold-or-aeloria"
+      ],
+      "monsters": [
+        {
+          "id": "cultist",
+          "count": 6,
+          "label": "Naturus cultists (rank and file)"
+        },
+        {
+          "id": "cult_fanatic",
+          "count": 1,
+          "label": "Cell leader — spellcasting"
+        },
+        {
+          "id": "wight",
+          "count": 1,
+          "label": "Wight-touched champion (Kaelith's gift)"
+        }
+      ],
+      "body": "# Naturus Cult Cell Ambush\n\n## When this triggers\nKaelith learns the party is investigating her network too closely. She sends a cell to make an example. Works as a night ambush at their inn, or a street daylight strike (with Watch reactions incoming).\n\n## Tactics\n- **Wight** leads. Uses **Life Drain** on the highest-visible-HP target, tries to force PC HP-max reduction. Killed PCs rise as zombies on the next midnight (Kaelith's design — a spare Naturus recruit).\n- **Cult Fanatic** stays in the second rank, casts Hold Person on the biggest melee threat (Orin), then Spiritual Weapon.\n- **Cultists** swarm in pairs. Break morale if the Fanatic drops (DC 12 Wis, or flee).\n\n## Terrain\nAdjustable. Street version: cramped alley + rooftops for a Scout ambusher. Inn version: common room, tables as cover, upper floor for the Fanatic.\n\n## Adjustments\n- Party level 5: swap the Wight for a Ghoul, drop 2 cultists.\n- Party level 7+: add one Ghast and one more Fanatic."
+    },
+    {
+      "id": "wilderness---wolf-pack-+-dire-alpha",
+      "title": "Wilderness — Wolf Pack + Dire Alpha",
+      "description": "A wolf pack led by a dire wolf. Standard travel-day threat.",
+      "cr": "3",
+      "difficulty": "easy-medium (party level 6)",
+      "tags": [
+        "encounter",
+        "wilderness",
+        "travel"
+      ],
+      "monsters": [
+        {
+          "id": "dire_wolf",
+          "count": 1,
+          "label": "Alpha"
+        },
+        {
+          "id": "wolf",
+          "count": 4,
+          "label": "Pack"
+        }
+      ],
+      "body": "# Wolf Pack + Dire Alpha\n\n## When this triggers\nAny wilderness travel day. Random encounter. Filler / breathing space between plot beats.\n\n## Tactics\n- **Dire Wolf** leads a Pack Tactics charge on the most isolated PC.\n- **Wolves** work in pairs — one engages, one flanks.\n- All wolves flee at 25% health of the pack (i.e., when 3 of 4 wolves + the dire wolf are wounded or dropped).\n\n## Terrain\nForest edge or open ground. If forest: cover for both sides. If open: PCs get first shot from ranged; wolves close hard."
+    }
+  ],
+  "generated": true
+}
