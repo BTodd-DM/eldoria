@@ -149,7 +149,20 @@ def main():
             print(f"  ⚠  HARD-BLOCKED: {md_path.name} (Aurek alias detected)")
             skipped_blocked += 1
             continue
-        npcs.append(extract_npc(md_path, fm))
+        # Only show NPCs the party has actually met or heard about.
+        # Accept either tag `met` / `heard-of` or explicit frontmatter
+        # `player-status: met|heard-of` (heard-of shown with a note badge).
+        tags = [str(t).lower() for t in (fm.get("tags") or [])]
+        status = str(fm.get("player-status") or "").lower()
+        has_met = "met" in tags or status == "met"
+        has_heard = "heard-of" in tags or "heard_of" in tags or status in ("heard-of", "heard_of")
+        if not (has_met or has_heard):
+            skipped_hidden += 1
+            continue
+        npc = extract_npc(md_path, fm)
+        if has_heard and not has_met:
+            npc.setdefault("badges", []).insert(0, {"text": "heard about", "color": "grey"})
+        npcs.append(npc)
 
     npcs.sort(key=lambda n: (n["order"], n["name"].lower()))
 

@@ -1,74 +1,6 @@
 {
   "npcs": [
     {
-      "id": "vaeloran-duskwhisper",
-      "name": "Vaeloran Duskwhisper",
-      "role": "Archmage · Your Patron",
-      "avatar": "VD",
-      "avatarBg": "",
-      "summary": "A respected and eccentric scholar-mage who serves the greater good of Aeloria. Known for funding libraries, sponsoring apprentices, and protecting the city from magical threats. He employed you and sent you to find Lyssandra. Calm, measured, and always seems to know more than he says.",
-      "badges": [
-        {
-          "text": "patron",
-          "color": "gold"
-        },
-        {
-          "text": "Spire of the Silver Eclipse",
-          "color": "grey"
-        }
-      ],
-      "order": 1,
-      "region": "Aeloria Crossroads"
-    },
-    {
-      "id": "lyssandra-vale",
-      "name": "Lyssandra Vale",
-      "role": "Half-elf · Vaeloran's Apprentice",
-      "avatar": "LV",
-      "avatarBg": "#1a3a2a",
-      "summary": "Copper-haired, robes marked with faint scorch marks. She was sent to observe the meteor shard and never came back. When you found her, she tried to flee rather than return. She warned you before disappearing into the night. She is now back with Vaeloran and seems… well.",
-      "badges": [
-        {
-          "text": "returned to Vaeloran",
-          "color": "grey"
-        }
-      ],
-      "order": 2,
-      "region": "Aeloria Crossroads"
-    },
-    {
-      "id": "taren-myles",
-      "name": "Taren Myles",
-      "role": "Human · Vaeloran's Researcher",
-      "avatar": "TM",
-      "avatarBg": "#2a2010",
-      "summary": "An older scholar found in Vaeloran's tower library, hair streaked with white, hands perpetually ink-stained. Rarely looks up from his runic charts. Polite when acknowledged but deeply focused on his work.",
-      "badges": [
-        {
-          "text": "Spire of the Silver Eclipse",
-          "color": "grey"
-        }
-      ],
-      "order": 3,
-      "region": "Aeloria Crossroads"
-    },
-    {
-      "id": "vexa",
-      "name": "Vexa",
-      "role": "Apprentice mage · Road encounter",
-      "avatar": "VX",
-      "avatarBg": "#1a2010",
-      "summary": "Met on the road north of Aeloria, heading to the same meteor crash site with a group of escorts. You avoided confrontation through quick thinking and creative use of tarps. She works for another mage in the city.",
-      "badges": [
-        {
-          "text": "briefly encountered",
-          "color": "grey"
-        }
-      ],
-      "order": 4,
-      "region": "Aeloria Crossroads"
-    },
-    {
       "id": "oskar",
       "name": "Oskar",
       "role": "Goliath · Townmaster of Aeloria",
@@ -149,30 +81,6 @@
       "region": "Aeloria Crossroads"
     },
     {
-      "id": "merric-underbough",
-      "name": "Merric Underbough",
-      "role": "Halfling · Rulden Marr (revealed to be Merric)",
-      "avatar": "RM",
-      "avatarBg": "#2a2010",
-      "summary": "A calm, calculating figure with a reputation for competence and a network of contacts throughout Aeloria — publicly known as Rulden Marr. Torren gained access to meet him through the right channels. Orin has come to realise this is Merric Underbough, his adoptive father, thought lost for years. He sent Orin a warning letter — signed only 'R.' Keep to the light, Orin. It suits you better.",
-      "badges": [
-        {
-          "text": "Orin's adoptive father",
-          "color": "gold"
-        },
-        {
-          "text": "warned Orin off",
-          "color": "red"
-        },
-        {
-          "text": "back-room contact",
-          "color": "grey"
-        }
-      ],
-      "order": 9,
-      "region": "Aeloria Crossroads"
-    },
-    {
       "id": "kolt",
       "name": "Kolt",
       "role": "Human · Kolt's Depot",
@@ -211,30 +119,6 @@
       ],
       "order": 11,
       "region": "Aeloria Crossroads"
-    },
-    {
-      "id": "vrass",
-      "name": "Vrass",
-      "role": "Young Black Dragon",
-      "avatar": "VR",
-      "avatarBg": "#1a0a0a",
-      "summary": "Sleek black scales still slicked with old marsh water. Landed on the southern road and demanded the caravan. Took a wagon of cargo and Torren's lifetime service — sworn in exchange for the party's lives and safe passage. His parting words: \"We will speak soon.\" He calls Torren \"mine.\"",
-      "badges": [
-        {
-          "text": "dragon",
-          "color": "red"
-        },
-        {
-          "text": "Torren dark-bound",
-          "color": "red"
-        },
-        {
-          "text": "southern road",
-          "color": "grey"
-        }
-      ],
-      "order": 12,
-      "region": "On the Road"
     },
     {
       "id": "sera-vey",
