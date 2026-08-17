@@ -363,19 +363,41 @@
       const m = MONSTERS_BY_ID[monsterId];
       if (!m) return;
       const self = this;
+      const dexMod = Math.floor(((m.dex || 10) - 10) / 2);
       this._mutate(function(s) {
         s.combatants = s.combatants || [];
         for (let i = 1; i <= count; i++) {
           const suffix = count > 1 ? ' #' + i : '';
+          const roll = Math.floor(Math.random() * 20) + 1;
+          const init = roll + dexMod;
           s.combatants.push({
             id: 'monster-' + monsterId + '-' + Date.now() + '-' + i,
             kind: 'monster', name: m.name + suffix,
             monsterId: monsterId,
-            initiative: 0, ac: m.ac, hp: m.hp, hpMax: m.hp, tempHp: 0,
+            initiative: init, ac: m.ac, hp: m.hp, hpMax: m.hp, tempHp: 0,
             conditions: {}, concentrating: '', dead: false
           });
         }
-        self._log(s, '+ ' + count + '× ' + m.name);
+        self._log(s, '+ ' + count + '× ' + m.name + ' (init auto-rolled)');
+      });
+    },
+
+    _rollMonsterInit: function() {
+      const self = this;
+      this._mutate(function(s) {
+        if (!s.combatants) return;
+        const rolls = [];
+        s.combatants.forEach(function(c) {
+          if (c.kind !== 'monster') return;
+          let dexMod = 0;
+          if (c.monsterId && typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[c.monsterId]) {
+            dexMod = Math.floor(((MONSTERS_BY_ID[c.monsterId].dex || 10) - 10) / 2);
+          }
+          const roll = Math.floor(Math.random() * 20) + 1;
+          c.initiative = roll + dexMod;
+          rolls.push(c.name + ' ' + c.initiative + ' (d20=' + roll + (dexMod ? (dexMod > 0 ? '+' : '') + dexMod : '') + ')');
+        });
+        if (rolls.length) self._log(s, '🎲 Monster init: ' + rolls.join(', '));
       });
     },
 
@@ -647,6 +669,7 @@
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Presets</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._syncPCsFromSheets()" title="Re-pull HP/AC from each PC sheet (use after long rest or manual sheet edit)">🔄 Sync PCs</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollMonsterInit()" title="Reroll initiative for every monster (PCs untouched — you enter theirs manually)">🎲 Roll monster init</button>' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._advanceTurn()">⏭ Next turn</button>' +
             '<button class="action-btn" style="border-color:#a02020;color:#e0a0a0" onclick="if(window.CombatTracker) CombatTracker._endCombat()">End combat</button>' +
           '</div>' +
