@@ -170,12 +170,15 @@
 
     _endCombat: function() {
       if (!confirm('End the current encounter?\n\nA log summary will remain visible until you start a new one.')) return;
-      this._write({ active: false, round: this._state ? this._state.round : 0, combatants: this._state ? this._state.combatants : [], log: this._state ? this._state.log : [], endedAt: Date.now() });
+      const s = this._state || {};
+      this._write({ active: false, round: s.round || 0, combatants: s.combatants || [], log: s.log || [], endedAt: Date.now() });
     },
 
     _write: function(state) {
-      if (!this._ref) { this._state = state; this._render(); return; }
-      this._ref.set(state).catch(function(e) { console.warn('[CombatTracker] Write failed:', e); });
+      // Firebase rejects undefined. Round-trip through JSON to strip any.
+      const clean = JSON.parse(JSON.stringify(state));
+      if (!this._ref) { this._state = clean; this._render(); return; }
+      this._ref.set(clean).catch(function(e) { console.warn('[CombatTracker] Write failed:', e); });
     },
 
     _mutate: function(fn) {
