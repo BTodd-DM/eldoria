@@ -105,7 +105,7 @@
       const combatants = [];
       // Auto-add all three PCs
       PC_IDS.forEach(function(pcId) {
-        const char = window.CHARACTERS ? CHARACTERS[pcId] : null;
+        const char = (typeof CHARACTERS !== 'undefined') ? CHARACTERS[pcId] : null;
         if (!char) {
           // Placeholder card if sheet not built
           combatants.push({
