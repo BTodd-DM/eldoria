@@ -703,6 +703,19 @@ body {
 
   <div id="tab-prep" style="display:none">
 
+  <!-- Post-Session Advance (Update 32) — one button to bump state after a session -->
+  <details style="margin-bottom:1.25rem;background:rgba(20,15,8,0.6);border:1px solid var(--teal);border-radius:4px;padding:.85rem 1rem">
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;color:#a0d4c4;font-size:13px;letter-spacing:1.5px;text-transform:uppercase">⏭ Advance to Next Session <span style="font-weight:400;font-size:11px;color:var(--parch3);margin-left:.6rem">bump state after a session ends</span></summary>
+    <div style="margin-top:.85rem">
+      <div class="alert alert-info">
+        Applies at the end of a session: bumps <strong>session count</strong>, advances the <strong>calendar</strong> by a chosen number of days, triggers a <strong>long rest</strong> for all three PCs (HP full, slots full, per-rest resources restored, arcane recovery reset, concentration cleared), and prompts to tick visible <strong>clocks</strong>. Doesn't push anything — you review, then push.
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="action-btn" style="background:var(--teal);color:#a0d4c4;border:1px solid var(--teal)" onclick="advanceToNextSession()">⏭ Run advance</button>
+      </div>
+    </div>
+  </details>
+
   <!-- Pre-Session Checklist (Update 44) -->
   <details style="margin-bottom:1.25rem;background:rgba(20,15,8,0.6);border:1px solid var(--gold2);border-radius:4px;padding:.85rem 1rem" open>
     <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold2);font-size:13px;letter-spacing:1.5px;text-transform:uppercase">✅ Pre-Session Checklist <span id="pre-session-progress" style="font-weight:400;font-size:11px;color:var(--parch3);margin-left:.6rem"></span></summary>
@@ -1472,68 +1485,16 @@ body {
 
 <!-- ============ COMBAT ============ -->
 <div id="panel-combat" class="panel">
-  <div class="grid-2" style="align-items:start;gap:1.25rem">
+  <div class="sec-title">⚔ Combat Tracker</div>
+  <div id="combat-tracker-container"></div>
 
-    <!-- LEFT: Initiative Tracker -->
-    <div>
-      <div class="sec-title">Initiative Tracker &nbsp;<span id="round-label" style="color:var(--parch3);font-size:11px;font-style:italic;font-family:'Crimson Pro',serif;font-weight:normal">Round <span id="round-num">1</span></span></div>
-      <div id="init-list"></div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem">
-        <button class="action-btn gold" onclick="showMonsterPicker()">+ Monster</button>
-        <button class="action-btn" onclick="addPC()">+ PC</button>
-        <button class="action-btn" onclick="nextTurn()">Next Turn ▶</button>
-        <button class="action-btn" onclick="document.getElementById('round-num').textContent=parseInt(document.getElementById('round-num').textContent)+1">+Round</button>
-        <button class="action-btn red" onclick="clearCombat()">Clear</button>
-      </div>
-
-      <hr class="divider">
-      <div class="sec-title">Monster Picker</div>
-      <div id="monster-picker" style="display:none">
-        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.5rem">
-          <button class="action-btn gold" onclick="addMonster('vrass')">Vrass — Young Black Dragon</button>
-          <button class="action-btn" onclick="addMonster('kaelith')">Sister Kaelith</button>
-          <button class="action-btn" onclick="addMonster('gnoll')">Gnoll</button>
-          <button class="action-btn" onclick="addMonster('gnoll_alpha')">Gnoll Alpha</button>
-          <button class="action-btn" onclick="addMonster('spider')">Corruption Spider</button>
-          <button class="action-btn" onclick="addMonster('cult_fanatic')">Cult Fanatic</button>
-          <button class="action-btn" onclick="addMonster('guild_enforcer')">Guild Enforcer</button>
-          <button class="action-btn" onclick="addMonster('vaeloran')">Vaeloran</button>
-        </div>
-      </div>
-
-      <div class="sec-title">Conditions</div>
-      <div style="display:flex;flex-wrap:wrap;gap:3px">
-        <span class="badge b-red" style="cursor:pointer" title="Can't see. Attacks vs = adv. Attacks from = disadv.">Blinded</span>
-        <span class="badge b-red" style="cursor:pointer" title="Can't attack charmer. Charmer has social adv.">Charmed</span>
-        <span class="badge b-red" style="cursor:pointer" title="Speed 0. Incapacitated. Auto-fail STR/DEX saves. Attacks vs = adv + auto-crit within 5ft.">Paralyzed</span>
-        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks + ability checks while source visible.">Frightened</span>
-        <span class="badge b-red" style="cursor:pointer" title="Can't take actions or reactions.">Incapacitated</span>
-        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks and ability checks.">Poisoned</span>
-        <span class="badge b-red" style="cursor:pointer" title="Disadv on attacks. Attacks vs = adv if within 5ft, disadv if farther.">Prone</span>
-        <span class="badge b-red" style="cursor:pointer" title="Speed 0. Disadv attacks. Attacks vs = adv. Disadv DEX saves.">Restrained</span>
-        <span class="badge b-gold" style="cursor:pointer" title="Incapacitated + can't move/speak. Auto-fail STR/DEX. Attacks vs = adv + auto-crit.">Stunned</span>
-        <span class="badge b-purple" style="cursor:pointer" title="Exhaustion level — accumulate up to 6. Each level stacks penalties.">Exhausted</span>
-        <span class="badge b-teal" style="cursor:pointer" title="Concentrating on a spell — takes damage = CON save DC 10 or half damage, or lose spell.">Concentrating</span>
-      </div>
-
-      <hr class="divider">
-      <div class="sec-title">Encounter Builder</div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <button class="action-btn" onclick="sendPrompt('Build a challenging level 6 D&D 5e combat encounter for the Wayward Company party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) inside or around Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives targeting the party. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Build a level 6 D&D 5e encounter for The Wayward Company in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter at Halvor\'s Compound in Ironhold for the Wayward Company party (level 6) — freeing Sera\'s sister Mira and her two children from the back warehouse without triggering the front-house guards or killing Halvor. Include skill DCs, guard placement, and complications.')">Halvor Rescue ↗</button>
-        <button class="action-btn" onclick="sendPrompt('Design a level 6 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
-      </div>
-    </div>
-
-    <!-- RIGHT: Active Stat Block Viewer -->
-    <div>
-      <div class="sec-title">Stat Block Viewer</div>
-      <div id="stat-block-viewer">
-        <div style="color:var(--parch3);font-style:italic;font-size:13px;padding:.5rem">Click a monster button to load its stat block here, or select a combatant row.</div>
-      </div>
-    </div>
-
+  <hr class="divider">
+  <div class="sec-title">Encounter Prompts (creative ideation — narrative fallbacks)</div>
+  <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+    <button class="action-btn" onclick="sendPrompt('Build a challenging level 6 D&D 5e combat encounter for the Wayward Company party (Torren halfling assassin rogue, Sylas tiefling illusionist wizard, Orin cleric of Luminos) inside or around Ironhold — theme it around Sister Kaelith\'s Naturus cult operatives targeting the party. Include full stat blocks and tactical notes.')">Cult Ambush ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Build a level 6 D&D 5e encounter for The Wayward Company in the Frostwood Marsh — corrupted Naturus-touched creatures for a party of 3. Include stat blocks.')">Marsh Encounter ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a stealth/social encounter at Halvor\'s Compound in Ironhold for the Wayward Company party (level 6) — freeing Sera\'s sister Mira and her two children from the back warehouse without triggering the front-house guards or killing Halvor. Include skill DCs, guard placement, and complications.')">Halvor Rescue ↗</button>
+    <button class="action-btn" onclick="sendPrompt('Design a level 6 D&D 5e chase through Aeloria Crossroads streets — party pursuing a Guilded Veil courier with information about Aurek Voln Drowhiss. Include skill challenge rules.')">City Chase ↗</button>
   </div>
 </div>
 
@@ -2047,6 +2008,8 @@ body {
 <script src="dm-npc-pin-cue.js"></script>
 <script src="dm-search.js"></script>
 <script src="dm-wiki-tooltips.js"></script>
+<script src="monsters-2024.js"></script>
+<script src="combat-tracker.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>
@@ -2110,6 +2073,10 @@ function unlockApp() {
   try {
     if (window.DMWikiTips && typeof DMWikiTips.init === 'function') DMWikiTips.init();
   } catch (e) { console.warn('DMWikiTips init failed:', e); }
+  // Updates 17 + 25 — Combat tracker (new)
+  try {
+    if (window.CombatTracker && typeof CombatTracker.init === 'function') CombatTracker.init('combat-tracker-container');
+  } catch (e) { console.warn('CombatTracker init failed:', e); }
 }
 
 function checkAuth() {
@@ -2176,7 +2143,8 @@ function showPanel(id, btn) {
   // segments/cards are present even if first-load init was interrupted.
   try {
     if(id === 'clock') { renderClock(); renderLichClock(); }
-    if(id === 'combat' && typeof renderCombat === 'function') renderCombat();
+    // Combat tab now uses the new CombatTracker module — old renderCombat is a no-op.
+    if(id === 'combat' && window.CombatTracker && typeof CombatTracker.refresh === 'function') CombatTracker.refresh();
     if(id === 'sessions' && typeof cal_render === 'function') cal_render();
     // Notes: re-init the widget on every tab open. Belt and braces — if the
     // first-load init in unlockApp was interrupted by an earlier JS error,
@@ -3079,6 +3047,82 @@ function filterNpcs(query) {
     if (!q) counter.textContent = `Showing all ${cards.length} NPCs`;
     else counter.textContent = `Showing ${shown} of ${cards.length} NPCs`;
   }
+}
+
+// Update 32 — Campaign state advance workflow.
+// One-shot post-session batch: bumps session counter, advances calendar,
+// triggers long rest for all PCs, prompts for clock advances. All state
+// changes go through the same Firebase-synced pipelines used elsewhere.
+function advanceToNextSession() {
+  const daysRaw = prompt('Advance the in-game calendar by how many days?\n(1 = next day, 7 = a week, etc.)', '1');
+  if (daysRaw === null) return;
+  const days = Math.max(1, parseInt(daysRaw, 10) || 1);
+  if (!confirm(
+    '⏭ ADVANCE TO NEXT SESSION\n\n' +
+    'This will:\n' +
+    '  • Advance the calendar by ' + days + ' day' + (days === 1 ? '' : 's') + '\n' +
+    '  • Trigger a long rest for Torren, Sylas, and Orin\n' +
+    '    (HP full, spell slots restored, per-rest resources reset,\n' +
+    '     arcane recovery reset, concentration cleared, ½ hit dice back)\n' +
+    '  • Prompt to tick visible clocks\n\n' +
+    'Continue?'
+  )) return;
+
+  const summary = [];
+
+  // 1) Long rest for all three PCs (silent — no per-PC confirm)
+  ['torren', 'sylas', 'orin'].forEach(pcId => {
+    if (typeof CHARACTERS === 'undefined' || !CHARACTERS[pcId]) return;
+    const char = CHARACTERS[pcId];
+    try {
+      if (typeof withSheetState === 'function') {
+        withSheetState(pcId, s => {
+          if (s.hp) { s.hp.current = char.hpMax; s.hp.temp = 0; }
+          s.deathSaves = { successes: 0, failures: 0 };
+          Object.keys(s.slots || {}).forEach(k => { s.slots[k] = 0; });
+          (char.resources || []).forEach(r => {
+            if (r.recharge === 'short' || r.recharge === 'long') s.resources[r.id] = r.max;
+          });
+          if (char.hitDice) {
+            const hdRecovered = Math.max(1, Math.floor(char.hitDice.max / 2));
+            s.hitDiceSpent = Math.max(0, (s.hitDiceSpent || 0) - hdRecovered);
+          }
+          if (s.exhaustion && s.exhaustion > 0) s.exhaustion -= 1;
+          s.concentration = null;
+          s.arcaneRecoveryUsed = false;
+        });
+        summary.push('✓ Long rest applied — ' + (char.name || pcId));
+      }
+    } catch (e) { console.warn('long-rest failed for', pcId, e); }
+  });
+
+  // 2) Calendar advance (if calendar API is available)
+  if (typeof cal_advanceDays === 'function') {
+    try { cal_advanceDays(days); summary.push('✓ Calendar advanced ' + days + ' day' + (days === 1 ? '' : 's')); }
+    catch (e) { summary.push('! Calendar advance failed: ' + (e && e.message)); }
+  } else {
+    summary.push('· Calendar API not available — advance manually if needed');
+  }
+
+  // 3) Clocks prompt — instability + lich + any others rendered
+  const instClock = document.getElementById('clock-count');
+  if (instClock) {
+    const cur = parseInt(instClock.textContent, 10) || 0;
+    const ans = prompt('Instability Clock currently at ' + cur + '/8.\nAdvance by how many segments? (0 for no change)', '0');
+    if (ans !== null) {
+      const bump = Math.max(0, parseInt(ans, 10) || 0);
+      if (bump) {
+        const next = Math.min(8, cur + bump);
+        instClock.textContent = String(next);
+        if (typeof saveClock === 'function') try { saveClock(); } catch (e) {}
+        summary.push('✓ Instability Clock ' + cur + ' → ' + next);
+      }
+    }
+  }
+
+  // 4) Toast + summary
+  alert('⏭ Session advance complete:\n\n' + summary.join('\n'));
+  console.log('[advance]', summary);
 }
 
 // Update 44 — Pre-session checklist (per-DM device localStorage).

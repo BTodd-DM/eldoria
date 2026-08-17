@@ -27,6 +27,10 @@
     "cue-active": {
       ".read": true,
       ".write": true
+    },
+    "combat": {
+      ".read": true,
+      ".write": true
     }
   }
 }
