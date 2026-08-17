@@ -31,10 +31,13 @@
   const PRESETS_PATH = 'encounter-presets';
   const ENCOUNTERS_JSON = 'data/encounters.json';
   const PC_IDS = ['torren', 'sylas', 'orin'];
+  // Capitalized to match SHEET_CONDITIONS in sheet-engine.js so two-way
+  // sync (tracker ↔ sheet) uses the same keys. Exhaustion is a level 0-6
+  // on the sheet, not a boolean condition — keep it here for monster use.
   const CONDITIONS_2024 = [
-    'blinded', 'charmed', 'deafened', 'frightened', 'grappled',
-    'incapacitated', 'invisible', 'paralyzed', 'petrified',
-    'poisoned', 'prone', 'restrained', 'stunned', 'unconscious', 'exhaustion'
+    'Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled',
+    'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified',
+    'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious', 'Exhaustion'
   ];
 
   const CT = {
