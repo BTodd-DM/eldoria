@@ -43,6 +43,9 @@
     init: function(containerId) {
       this._container = document.getElementById(containerId);
       if (!this._container) return;
+      // Render the empty-state ⚔ Start combat button immediately so the UI
+      // is functional even if Firebase sync is blocked or slow to fire.
+      this._render();
       this._initSync();
     },
 
