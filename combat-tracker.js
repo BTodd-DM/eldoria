@@ -46,12 +46,17 @@
     _vaultEncounters: [], // loaded from data/encounters.json
 
     init: function(containerId) {
+      console.log('[CombatTracker] init(' + containerId + ')');
       this._container = document.getElementById(containerId);
-      if (!this._container) return;
-      this._render();
-      this._initSync();
-      this._loadVaultEncounters();
-      this._initPresetsSync();
+      if (!this._container) {
+        console.warn('[CombatTracker] container #' + containerId + ' NOT FOUND in DOM');
+        return;
+      }
+      console.log('[CombatTracker] container found; rendering empty state');
+      try { this._render(); } catch (e) { console.error('[CombatTracker] _render threw:', e); this._container.innerHTML = '<div class="alert alert-warn">Combat tracker render error — see console.</div>'; }
+      try { this._initSync(); } catch (e) { console.warn('[CombatTracker] _initSync threw:', e); }
+      try { this._loadVaultEncounters(); } catch (e) { console.warn('[CombatTracker] _loadVaultEncounters threw:', e); }
+      try { this._initPresetsSync(); } catch (e) { console.warn('[CombatTracker] _initPresetsSync threw:', e); }
     },
 
     _loadVaultEncounters: function() {
@@ -786,4 +791,28 @@
   function escapeAttr(s) { return escapeHtml(s).replace(/'/g, '&#39;'); }
 
   window.CombatTracker = CT;
+
+  // Self-init fallback: if unlockApp's init call was missed or errored,
+  // watch for the container to appear and initialize ourselves.
+  function trySelfInit() {
+    if (CT._container) return true;
+    const el = document.getElementById('combat-tracker-container');
+    if (el) {
+      console.log('[CombatTracker] self-init triggered (unlockApp path did not run me)');
+      CT.init('combat-tracker-container');
+      return true;
+    }
+    return false;
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(trySelfInit, 100);
+      setTimeout(trySelfInit, 1000);
+      setTimeout(trySelfInit, 3000);
+    });
+  } else {
+    setTimeout(trySelfInit, 100);
+    setTimeout(trySelfInit, 1000);
+    setTimeout(trySelfInit, 3000);
+  }
 })();
