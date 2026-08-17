@@ -91,10 +91,25 @@
         this._ref.on('value', function(snap) {
           self._state = snap.val() || null;
           self._render();
+          self._maybeStartAutoSync();
         });
       } catch (e) {
         console.warn('[CombatTracker] Sync failed:', e);
         this._render();
+      }
+    },
+
+    _maybeStartAutoSync: function() {
+      const active = this._state && this._state.active;
+      if (active && !this._autoSyncTimer) {
+        const self = this;
+        this._autoSyncTimer = setInterval(function() {
+          if (!self._state || !self._state.active) return;
+          self._syncPCsFromSheets(true); // silent — no log spam
+        }, 3000);
+      } else if (!active && this._autoSyncTimer) {
+        clearInterval(this._autoSyncTimer);
+        this._autoSyncTimer = null;
       }
     },
 
