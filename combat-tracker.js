@@ -140,6 +140,34 @@
       this._write(state);
     },
 
+    _syncPCsFromSheets: function(silent) {
+      const self = this;
+      this._mutate(function(s) {
+        if (!s.combatants) return;
+        let updates = [];
+        s.combatants.forEach(function(c) {
+          if (c.kind !== 'pc' || !c.pcId) return;
+          const char = (typeof CHARACTERS !== 'undefined') ? CHARACTERS[c.pcId] : null;
+          if (!char) return;
+          let newHp = c.hp, newHpMax = c.hpMax, newAc = c.ac;
+          try {
+            if (typeof getSheetState === 'function') {
+              const ss = getSheetState(c.pcId);
+              if (ss && ss.hp && typeof ss.hp.current === 'number') newHp = ss.hp.current;
+            }
+          } catch (e) {}
+          if (char.hpMax) newHpMax = char.hpMax;
+          if (char.ac) newAc = char.ac;
+          if (c.hp !== newHp || c.hpMax !== newHpMax || c.ac !== newAc) {
+            updates.push(c.name + ' HP ' + c.hp + '→' + newHp + (c.ac !== newAc ? ' AC ' + c.ac + '→' + newAc : ''));
+            c.hp = newHp; c.hpMax = newHpMax; c.ac = newAc;
+            if (newHp > 0 && c.dead) c.dead = false;
+          }
+        });
+        if (updates.length && !silent) self._log(s, '🔄 Sync from sheets: ' + updates.join(', '));
+      });
+    },
+
     _endCombat: function() {
       if (!confirm('End the current encounter?\n\nA log summary will remain visible until you start a new one.')) return;
       this._write({ active: false, round: this._state ? this._state.round : 0, combatants: this._state ? this._state.combatants : [], log: this._state ? this._state.log : [], endedAt: Date.now() });
@@ -615,6 +643,7 @@
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addAdhocMonster()">+ Ad-hoc</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Presets</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._syncPCsFromSheets()" title="Re-pull HP/AC from each PC sheet (use after long rest or manual sheet edit)">🔄 Sync PCs</button>' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._advanceTurn()">⏭ Next turn</button>' +
             '<button class="action-btn" style="border-color:#a02020;color:#e0a0a0" onclick="if(window.CombatTracker) CombatTracker._endCombat()">End combat</button>' +
           '</div>' +
