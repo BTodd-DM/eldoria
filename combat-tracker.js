@@ -165,17 +165,31 @@
           const char = (typeof CHARACTERS !== 'undefined') ? CHARACTERS[c.pcId] : null;
           if (!char) return;
           let newHp = c.hp, newHpMax = c.hpMax, newAc = c.ac;
+          let newConds = c.conditions || {};
+          let condsChanged = false;
           try {
             if (typeof getSheetState === 'function') {
               const ss = getSheetState(c.pcId);
               if (ss && ss.hp && typeof ss.hp.current === 'number') newHp = ss.hp.current;
+              if (ss && ss.conditions) {
+                const sheetConds = ss.conditions;
+                // Sheet is source of truth for PC conditions
+                const oldKeys = Object.keys(c.conditions || {}).sort().join(',');
+                const newKeys = Object.keys(sheetConds).sort().join(',');
+                if (oldKeys !== newKeys) { newConds = Object.assign({}, sheetConds); condsChanged = true; }
+              }
             }
           } catch (e) {}
           if (char.hpMax) newHpMax = char.hpMax;
           if (char.ac) newAc = char.ac;
-          if (c.hp !== newHp || c.hpMax !== newHpMax || c.ac !== newAc) {
-            updates.push(c.name + ' HP ' + c.hp + '→' + newHp + (c.ac !== newAc ? ' AC ' + c.ac + '→' + newAc : ''));
+          if (c.hp !== newHp || c.hpMax !== newHpMax || c.ac !== newAc || condsChanged) {
+            const parts = [];
+            if (c.hp !== newHp) parts.push('HP ' + c.hp + '→' + newHp);
+            if (c.ac !== newAc) parts.push('AC ' + c.ac + '→' + newAc);
+            if (condsChanged) parts.push('conditions');
+            updates.push(c.name + ' ' + parts.join(', '));
             c.hp = newHp; c.hpMax = newHpMax; c.ac = newAc;
+            if (condsChanged) c.conditions = newConds;
             if (newHp > 0 && c.dead) c.dead = false;
           }
         });
@@ -296,8 +310,20 @@
         const c = (s.combatants || []).find(function(x) { return x.id === id; });
         if (!c) return;
         c.conditions = c.conditions || {};
-        if (c.conditions[cond]) { delete c.conditions[cond]; self._log(s, '−' + cond + ' · ' + c.name); }
-        else { c.conditions[cond] = true; self._log(s, '+' + cond + ' · ' + c.name); }
+        const willAdd = !c.conditions[cond];
+        if (willAdd) c.conditions[cond] = true; else delete c.conditions[cond];
+        self._log(s, (willAdd ? '+' : '−') + cond + ' · ' + c.name);
+        // Two-way sync to PC sheet
+        if (c.kind === 'pc' && c.pcId) {
+          try {
+            if (typeof withSheetState === 'function') {
+              withSheetState(c.pcId, function(ss) {
+                ss.conditions = ss.conditions || {};
+                if (willAdd) ss.conditions[cond] = true; else delete ss.conditions[cond];
+              });
+            }
+          } catch (e) {}
+        }
       });
     },
 
