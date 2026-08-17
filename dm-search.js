@@ -19,6 +19,10 @@
   const INDEX_URL = 'data/search-index.json';
   const OBSIDIAN_VAULT_NAME = 'Discovery D_D';
   const VAULT_PREFIX = 'Eldoria 2.0/';
+  // Absolute filesystem path to the vault — used for the more reliable
+  // obsidian://open?path=… form, which doesn't rely on the vault being
+  // registered under a particular name in Obsidian's vault list.
+  const VAULT_ABS_ROOT = '/Users/Brad/Library/CloudStorage/OneDrive-WAVERLEYCHRISTIANCOLLEGE/D_D/Discovery D_D/Eldoria 2.0/';
 
   const TYPE_LABELS = {
     npc:            '👤 NPCs',
@@ -151,11 +155,15 @@
   }
 
   function buildObsidianUrl(relPath) {
-    // Obsidian's URL scheme: obsidian://open?vault=NAME&file=PATH
-    // Path is vault-relative WITHOUT the .md extension.
-    const p = String(relPath || '').replace(/\.md$/i, '');
-    const full = VAULT_PREFIX + p;
-    return 'obsidian://open?vault=' + encodeURIComponent(OBSIDIAN_VAULT_NAME) + '&file=' + encodeURIComponent(full);
+    // Obsidian's URL scheme. We prefer the path-based form since it works
+    // regardless of what the user has named the vault in Obsidian's
+    // registered vault list:
+    //   obsidian://open?path=<absolute-path-to-file.md>
+    // The file MUST include its .md extension for this form.
+    const p = String(relPath || '');
+    const withMd = /\.md$/i.test(p) ? p : p + '.md';
+    const abs = VAULT_ABS_ROOT + withMd;
+    return 'obsidian://open?path=' + encodeURIComponent(abs);
   }
 
   function openDetailModal(relPath) {

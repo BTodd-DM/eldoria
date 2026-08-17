@@ -20,6 +20,7 @@
   const INDEX_URL = 'data/search-index.json';
   const OBSIDIAN_VAULT_NAME = 'Discovery D_D';
   const VAULT_PREFIX = 'Eldoria 2.0/';
+  const VAULT_ABS_ROOT = '/Users/Brad/Library/CloudStorage/OneDrive-WAVERLEYCHRISTIANCOLLEGE/D_D/Discovery D_D/Eldoria 2.0/';
   // Which types are worth tooltipping. Lore-facts / session-recaps have long
   // title strings that are unlikely to appear in prose — skip.
   const ELIGIBLE_TYPES = new Set(['npc', 'location', 'faction', 'item', 'plot', 'monster', 'pc']);
@@ -136,8 +137,9 @@
     if (!entry) return;
     const el = ensureTooltipEl();
     const icon = TYPE_ICONS[entry.type] || '·';
-    const obsidianUrl = 'obsidian://open?vault=' + encodeURIComponent(OBSIDIAN_VAULT_NAME) +
-      '&file=' + encodeURIComponent(VAULT_PREFIX + entry.path.replace(/\.md$/i, ''));
+    const p = entry.path;
+    const withMd = /\.md$/i.test(p) ? p : p + '.md';
+    const obsidianUrl = 'obsidian://open?path=' + encodeURIComponent(VAULT_ABS_ROOT + withMd);
     const body = (entry.body || '').slice(0, 220) + ((entry.body || '').length > 220 ? '…' : '');
     el.innerHTML =
       '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.3rem">' +
