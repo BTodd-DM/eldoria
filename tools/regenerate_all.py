@@ -11,6 +11,8 @@ GENERATORS = [
     "generate_cues.py",
     "generate_search_index.py",
     "generate_encounters.py",
+    "generate_random_encounters.py",
+    "generate_homebrew_monsters.py",
 ]
 
 def main():

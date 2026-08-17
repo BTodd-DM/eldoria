@@ -35,6 +35,10 @@
     "encounter-presets": {
       ".read": true,
       ".write": true
+    },
+    "xp-ledger": {
+      ".read": true,
+      ".write": true
     }
   }
 }

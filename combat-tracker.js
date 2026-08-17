@@ -56,6 +56,7 @@
         return;
       }
       console.log('[CombatTracker] container found; rendering empty state');
+      try { this._diceHistory = JSON.parse(localStorage.getItem('ct-dice-history') || '[]') || []; } catch (e) { this._diceHistory = []; }
       try { this._render(); } catch (e) { console.error('[CombatTracker] _render threw:', e); this._container.innerHTML = '<div class="alert alert-warn">Combat tracker render error — see console.</div>'; }
       try { this._initSync(); } catch (e) { console.warn('[CombatTracker] _initSync threw:', e); }
       try { this._loadVaultEncounters(); } catch (e) { console.warn('[CombatTracker] _loadVaultEncounters threw:', e); }
@@ -68,6 +69,77 @@
         .then(r => r.ok ? r.json() : { encounters: [] })
         .then(data => { self._vaultEncounters = data.encounters || []; })
         .catch(function() {});
+      // Also load random encounter tables.
+      fetch('data/random-encounters.json?_=' + Date.now())
+        .then(r => r.ok ? r.json() : { tables: [] })
+        .then(data => { self._randomTables = data.tables || []; })
+        .catch(function() { self._randomTables = []; });
+      // Also load homebrew monsters — merge into MONSTERS_2024 / MONSTERS_BY_ID.
+      fetch('data/homebrew-monsters.json?_=' + Date.now())
+        .then(r => r.ok ? r.json() : { monsters: [] })
+        .then(data => {
+          const hb = data.monsters || [];
+          if (typeof MONSTERS_2024 !== 'undefined' && typeof MONSTERS_BY_ID !== 'undefined') {
+            hb.forEach(function(m) {
+              if (!MONSTERS_BY_ID[m.id]) {
+                MONSTERS_2024.push(m);
+                MONSTERS_BY_ID[m.id] = m;
+              }
+            });
+            if (hb.length) console.log('[CombatTracker] Merged ' + hb.length + ' homebrew monsters.');
+          }
+        })
+        .catch(function() {});
+    },
+
+    _openRandomEncounter: function() {
+      if (!this._randomTables || !this._randomTables.length) {
+        alert('No random encounter tables loaded. Add .md files to Session Planning/Random Encounters/ in the vault, then re-run tools/generate_random_encounters.py.');
+        return;
+      }
+      const tables = this._randomTables;
+      // Simple picker via prompt
+      const opts = tables.map(function(t, i) { return (i+1) + '. ' + t.region + ' (' + t.entries.length + ' entries)'; }).join('\n');
+      const raw = prompt('Pick a region to roll on:\n\n' + opts + '\n\nEnter number:');
+      const idx = parseInt(raw, 10) - 1;
+      if (isNaN(idx) || idx < 0 || idx >= tables.length) return;
+      const table = tables[idx];
+      this._rollRandomEncounter(table);
+    },
+
+    _rollRandomEncounter: function(table) {
+      const die = table.die || 'd100';
+      const sides = parseInt(die.replace(/^d/i, ''), 10) || 100;
+      const roll = Math.ceil(Math.random() * sides);
+      const hit = (table.entries || []).find(function(e) {
+        if (!e.range) return false;
+        return roll >= e.range[0] && roll <= e.range[1];
+      });
+      if (!hit) {
+        alert('Rolled ' + roll + ' on ' + table.region + ' — no matching entry (table has gaps). Roll again or fill the range.');
+        return;
+      }
+      const monstersDesc = (hit.monsters || []).map(function(m) { return m.count + '× ' + (m.label || m.id); }).join(', ') || 'no combat';
+      const msg = '🎲 ' + table.region + ' — rolled ' + roll + ' on ' + die + '\n\n' +
+                  '“' + hit.description + '”\n\n' +
+                  'Monsters: ' + monstersDesc + '\n\n' +
+                  ((hit.monsters || []).length ? 'OK = load monsters into combat.\nCancel = keep just the description.' : 'OK = acknowledge.');
+      if (!confirm(msg)) return;
+      if (!(hit.monsters || []).length) return;
+      // Load monsters
+      const self = this;
+      const startFresh = !this._state || !this._state.active;
+      if (startFresh) this._startCombat();
+      setTimeout(function() {
+        (hit.monsters || []).forEach(function(m) {
+          if (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[m.id]) {
+            self._addMonsterFromCatalog(m.id, m.count || 1);
+          }
+        });
+        setTimeout(function() {
+          if (self._state && self._state.active) self._log(JSON.parse(JSON.stringify(self._state)), '🎲 Random: ' + table.region + ' → ' + roll + ' — ' + monstersDesc);
+        }, 300);
+      }, startFresh ? 400 : 0);
     },
 
     _initPresetsSync: function() {
@@ -201,9 +273,267 @@
     },
 
     _endCombat: function() {
-      if (!confirm('End the current encounter?\n\nA log summary will remain visible until you start a new one.')) return;
       const s = this._state || {};
-      this._write({ active: false, round: s.round || 0, combatants: s.combatants || [], log: s.log || [], endedAt: Date.now() });
+      const combatants = s.combatants || [];
+      // Compute XP from dead monsters
+      const xpBreakdown = this._computeXpBreakdown(combatants);
+      const totalXp = xpBreakdown.reduce(function(a, b) { return a + b.xp; }, 0);
+      const alivePcs = combatants.filter(function(c) { return c.kind === 'pc' && !c.dead; });
+      let msg = 'End the current encounter?\n\n';
+      if (xpBreakdown.length) {
+        msg += 'Monsters defeated:\n';
+        xpBreakdown.forEach(function(b) { msg += '  · ' + b.count + '× ' + b.name + ' — ' + (b.xp || 0) + ' XP\n'; });
+        msg += '\nTotal: ' + totalXp + ' XP';
+        if (alivePcs.length) {
+          const share = Math.floor(totalXp / alivePcs.length);
+          msg += ' → ' + share + ' XP each to ' + alivePcs.length + ' surviving PC' + (alivePcs.length === 1 ? '' : 's') + '.';
+        }
+        msg += '\n\nOK = end combat AND award XP.\nCancel = keep encounter open.';
+      } else {
+        msg += 'No monsters defeated (no XP to award).\n\nOK = end combat.\nCancel = keep encounter open.';
+      }
+      if (!confirm(msg)) return;
+      // Award XP
+      if (totalXp > 0 && alivePcs.length) {
+        this._awardXp(totalXp, alivePcs, xpBreakdown);
+      }
+      this._write({ active: false, round: s.round || 0, combatants: combatants, log: s.log || [], endedAt: Date.now(), lastXpAward: totalXp });
+    },
+
+    // Encounter difficulty per 2024 DMG guidance (approximate).
+    // Party XP budget per PC by level: easy/medium/hard/deadly.
+    // These are per-PC single-encounter budgets.
+    _pcBudgets: [
+      null, {e:25,m:50,h:75,d:100},{e:50,m:100,h:150,d:200},{e:75,m:150,h:225,d:400},
+      {e:125,m:250,h:375,d:500},{e:250,m:500,h:750,d:1100},{e:300,m:600,h:900,d:1400},
+      {e:350,m:750,h:1100,d:1700},{e:450,m:900,h:1400,d:2100},{e:550,m:1100,h:1600,d:2400},
+      {e:600,m:1200,h:1900,d:2800},{e:800,m:1600,h:2400,d:3600},{e:1000,m:2000,h:3000,d:4500},
+      {e:1100,m:2200,h:3400,d:5100},{e:1250,m:2500,h:3800,d:5700},{e:1400,m:2800,h:4300,d:6400},
+      {e:1600,m:3200,h:4800,d:7200},{e:2000,m:3900,h:5900,d:8800},{e:2100,m:4200,h:6300,d:9500},
+      {e:2400,m:4900,h:7300,d:10900},{e:2800,m:5700,h:8500,d:12700}
+    ],
+    _encounterMult: function(count) {
+      // 2024 uses simpler flat multipliers; 2014 had a table. This is a
+      // reasonable middle ground.
+      if (count <= 1) return 1;
+      if (count === 2) return 1.5;
+      if (count <= 6) return 2;
+      if (count <= 10) return 2.5;
+      return 3;
+    },
+    _computeEncounterDifficulty: function(combatants, opts) {
+      opts = opts || {};
+      const partyLevel = opts.partyLevel || 6;
+      const partySize = opts.partySize || 3;
+      let rawXp = 0, monsterCount = 0;
+      combatants.forEach(function(c) {
+        if (c.kind !== 'monster') return;
+        let xp = 0;
+        if (c.monsterId && typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[c.monsterId]) {
+          xp = MONSTERS_BY_ID[c.monsterId].xp || 0;
+        }
+        rawXp += xp;
+        monsterCount++;
+      });
+      const mult = this._encounterMult(monsterCount);
+      const adjXp = Math.floor(rawXp * mult);
+      const budget = this._pcBudgets[Math.min(20, Math.max(1, partyLevel))];
+      if (!budget) return { rawXp: rawXp, adjXp: adjXp, mult: mult, tier: 'trivial', count: monsterCount };
+      const easy = budget.e * partySize;
+      const med = budget.m * partySize;
+      const hard = budget.h * partySize;
+      const deadly = budget.d * partySize;
+      let tier = 'trivial';
+      if (adjXp >= deadly) tier = 'deadly';
+      else if (adjXp >= hard) tier = 'hard';
+      else if (adjXp >= med) tier = 'medium';
+      else if (adjXp >= easy) tier = 'easy';
+      return { rawXp: rawXp, adjXp: adjXp, mult: mult, tier: tier, count: monsterCount,
+               budgets: { easy: easy, medium: med, hard: hard, deadly: deadly } };
+    },
+
+    _renderDifficultyBadge: function(combatants) {
+      const d = this._computeEncounterDifficulty(combatants);
+      if (!d.count) return '';
+      const colors = { trivial: '#7f7f7f', easy: '#7fdb7f', medium: '#e0c060', hard: '#e08040', deadly: '#f47070' };
+      const tierLabel = d.tier.charAt(0).toUpperCase() + d.tier.slice(1);
+      return ' &nbsp;·&nbsp; <span title="Adjusted XP ' + d.adjXp + ' (raw ' + d.rawXp + ' × ' + d.mult + '). Assumes party level 6 × 3." style="color:' + colors[d.tier] + '">' + tierLabel + ' · ' + d.adjXp + ' XP</span>';
+    },
+
+    _computeXpBreakdown: function(combatants) {
+      const groups = {};
+      combatants.forEach(function(c) {
+        if (c.kind !== 'monster' || !c.dead) return;
+        // Strip trailing " #N" number so multiples group.
+        const baseName = (c.name || '').replace(/\s+#\d+$/, '').trim();
+        const key = c.monsterId || baseName;
+        if (!groups[key]) {
+          let xp = 0;
+          if (c.monsterId && typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[c.monsterId]) {
+            xp = MONSTERS_BY_ID[c.monsterId].xp || 0;
+          }
+          groups[key] = { name: baseName, xp: 0, unit: xp, count: 0 };
+        }
+        groups[key].count += 1;
+        groups[key].xp += groups[key].unit;
+      });
+      return Object.keys(groups).map(function(k) { return groups[k]; }).sort(function(a, b) { return b.xp - a.xp; });
+    },
+
+    _awardXp: function(totalXp, alivePcs, breakdown) {
+      if (typeof firebase === 'undefined' || !firebase.database) return;
+      const share = Math.floor(totalXp / alivePcs.length);
+      const now = Date.now();
+      const entry = {
+        amount: share, total: totalXp, when: now,
+        source: breakdown.map(function(b) { return b.count + '× ' + b.name; }).join(', ')
+      };
+      const ledger = firebase.database().ref('xp-ledger');
+      alivePcs.forEach(function(pc) {
+        const pcRef = ledger.child(pc.pcId || pc.id);
+        pcRef.child('entries').push(entry);
+        pcRef.child('total').transaction(function(cur) { return (cur || 0) + share; });
+      });
+    },
+
+    _openXpLedger: function() {
+      const dlg = document.getElementById('ct-xp-ledger-dialog');
+      if (!dlg) return;
+      const body = document.getElementById('ct-xp-ledger-body');
+      if (!body) return;
+      body.innerHTML = '<div style="text-align:center;color:var(--parch3);padding:1rem">Loading…</div>';
+      if (typeof firebase === 'undefined' || !firebase.database) { body.innerHTML = '<div style="color:var(--parch3)">Firebase unavailable.</div>'; }
+      else {
+        firebase.database().ref('xp-ledger').once('value').then(function(snap) {
+          const data = snap.val() || {};
+          const pcIds = PC_IDS.slice();
+          let html = '';
+          pcIds.forEach(function(pcId) {
+            const pcData = data[pcId] || {};
+            const total = pcData.total || 0;
+            const name = (typeof CHARACTERS !== 'undefined' && CHARACTERS[pcId] && CHARACTERS[pcId].name) || pcId;
+            const entriesObj = pcData.entries || {};
+            const entries = Object.keys(entriesObj).map(function(k) { return entriesObj[k]; }).sort(function(a, b) { return (b.when || 0) - (a.when || 0); });
+            html += '<div style="border:1px solid var(--gold2);border-radius:4px;padding:.6rem .75rem;margin-bottom:.75rem;background:rgba(20,14,6,0.4)">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:14px">' + escapeHtml(name) + '</div>';
+            html += '<div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:16px">' + total.toLocaleString() + ' XP</div></div>';
+            if (entries.length) {
+              html += '<div style="margin-top:.5rem;font-size:11.5px;color:var(--parch2);max-height:180px;overflow-y:auto">';
+              entries.slice(0, 20).forEach(function(e) {
+                const d = new Date(e.when || 0);
+                const when = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                html += '<div style="padding:.25rem 0;border-top:1px dashed rgba(160,128,64,0.2)">' +
+                  '<span style="color:var(--gold)">+' + (e.amount || 0) + '</span> · <span style="color:var(--parch3)">' + when + '</span><br>' +
+                  '<span style="font-style:italic;color:var(--parch3)">' + escapeHtml(e.source || '') + '</span></div>';
+              });
+              html += '</div>';
+            } else {
+              html += '<div style="margin-top:.4rem;font-size:11px;color:var(--parch3);font-style:italic">No XP awarded yet.</div>';
+            }
+            html += '</div>';
+          });
+          html += '<div style="text-align:center;margin-top:.5rem"><button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._resetXpLedger()" style="border-color:#a02020;color:#e0a0a0">Reset ledger</button></div>';
+          body.innerHTML = html;
+        }).catch(function(e) { body.innerHTML = '<div style="color:var(--parch3)">Load failed: ' + escapeHtml(e && e.message || String(e)) + '</div>'; });
+      }
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    },
+
+    _openDiceRoller: function() {
+      const dlg = document.getElementById('ct-dice-dialog');
+      if (!dlg) return;
+      this._renderDiceRoller();
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    },
+
+    _renderDiceRoller: function() {
+      const body = document.getElementById('ct-dice-body');
+      if (!body) return;
+      const history = this._diceHistory || [];
+      const btnRow = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100'].map(function(d) {
+        return '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollDice(\'' + d + '\')" style="min-width:52px">' + d + '</button>';
+      }).join('');
+      const advRow = '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollDice(\'d20\',{adv:true})">🌟 d20 adv</button>' +
+                     '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollDice(\'d20\',{dis:true})" style="border-color:#a02020;color:#e0a0a0">💀 d20 dis</button>';
+      body.innerHTML =
+        '<div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem">' + btnRow + '</div>' +
+        '<div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem">' + advRow + '</div>' +
+        '<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem">' +
+          '<label style="font-family:\'Cinzel\',serif;font-size:11px;color:var(--gold2)">Custom:</label>' +
+          '<input id="ct-dice-custom" type="text" placeholder="2d6+3" value="1d20" style="width:110px;padding:.3rem .5rem;background:rgba(10,8,5,0.6);border:1px solid var(--gold2);color:var(--parch);border-radius:2px" onkeydown="if(event.key===\'Enter\')CombatTracker._rollCustom()">' +
+          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollCustom()">🎲 Roll</button>' +
+          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._clearDiceHistory()" style="margin-left:auto">Clear log</button>' +
+        '</div>' +
+        '<div style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin-bottom:.4rem">HISTORY (last 20)</div>' +
+        '<div style="max-height:280px;overflow-y:auto;font-size:12.5px">' +
+          (history.length
+            ? history.slice(0, 20).map(function(h) {
+                const d = new Date(h.t);
+                const when = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                return '<div style="padding:.3rem 0;border-top:1px dashed rgba(160,128,64,0.2)">' +
+                  '<span style="color:var(--parch3)">' + when + '</span> · <span style="color:var(--gold)">' + escapeHtml(h.expr) + '</span> → <strong style="color:' + (h.crit === 20 ? '#7fdb7f' : h.crit === 1 ? '#f47070' : 'var(--parch1)') + '">' + h.total + '</strong>' +
+                  (h.detail ? ' <span style="color:var(--parch3);font-size:11px">[' + escapeHtml(h.detail) + ']</span>' : '') +
+                  '</div>';
+              }).join('')
+            : '<div style="color:var(--parch3);font-style:italic">No rolls yet.</div>') +
+        '</div>';
+    },
+
+    _rollDice: function(die, opts) {
+      opts = opts || {};
+      const sides = parseInt(die.replace('d', ''), 10);
+      if (!sides) return;
+      let expr = '1' + die, total = 0, detail = '';
+      if (opts.adv || opts.dis) {
+        const r1 = Math.ceil(Math.random() * sides);
+        const r2 = Math.ceil(Math.random() * sides);
+        total = opts.adv ? Math.max(r1, r2) : Math.min(r1, r2);
+        expr = die + (opts.adv ? ' (adv)' : ' (dis)');
+        detail = r1 + ', ' + r2;
+      } else {
+        total = Math.ceil(Math.random() * sides);
+      }
+      this._pushDiceHistory({ t: Date.now(), expr: expr, total: total, detail: detail, crit: (sides === 20 && !opts.adv && !opts.dis) ? total : null });
+      this._renderDiceRoller();
+    },
+
+    _rollCustom: function() {
+      const el = document.getElementById('ct-dice-custom');
+      if (!el) return;
+      const expr = String(el.value || '').trim();
+      const m = expr.match(/^(\d+)d(\d+)([+-]\d+)?$/i);
+      if (!m) { alert('Format: NdM or NdM+K (e.g. 2d6+3)'); return; }
+      const n = parseInt(m[1], 10), sides = parseInt(m[2], 10), mod = parseInt(m[3] || '0', 10);
+      if (n < 1 || n > 100 || sides < 2 || sides > 1000) { alert('Out of range.'); return; }
+      const rolls = [];
+      let sum = 0;
+      for (let i = 0; i < n; i++) { const r = Math.ceil(Math.random() * sides); rolls.push(r); sum += r; }
+      const total = sum + mod;
+      this._pushDiceHistory({ t: Date.now(), expr: expr, total: total, detail: rolls.join(', ') + (mod ? ' (' + (mod > 0 ? '+' : '') + mod + ')' : ''), crit: null });
+      this._renderDiceRoller();
+    },
+
+    _pushDiceHistory: function(entry) {
+      this._diceHistory = this._diceHistory || [];
+      this._diceHistory.unshift(entry);
+      if (this._diceHistory.length > 50) this._diceHistory = this._diceHistory.slice(0, 50);
+      try { localStorage.setItem('ct-dice-history', JSON.stringify(this._diceHistory.slice(0, 50))); } catch (e) {}
+    },
+
+    _clearDiceHistory: function() {
+      if (!confirm('Clear dice history?')) return;
+      this._diceHistory = [];
+      try { localStorage.removeItem('ct-dice-history'); } catch (e) {}
+      this._renderDiceRoller();
+    },
+
+    _resetXpLedger: function() {
+      if (!confirm('Reset the ENTIRE XP ledger for all PCs?\n\nThis cannot be undone.')) return;
+      if (typeof firebase === 'undefined' || !firebase.database) return;
+      firebase.database().ref('xp-ledger').remove().then(function() {
+        alert('XP ledger reset.');
+        if (window.CombatTracker) CombatTracker._openXpLedger();
+      });
     },
 
     _write: function(state) {
@@ -696,6 +1026,9 @@
           '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._startCombat()">⚔ Start combat</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Encounter presets</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openXpLedger()">🏆 XP ledger</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openDiceRoller()">🎲 Dice roller</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openRandomEncounter()">🎯 Random encounter</button>' +
           '</div>' +
           (s && s.log && s.log.length ? this._renderLog(s) : '');
         this._ensureDialogs();
@@ -706,7 +1039,7 @@
       this._sortByInit(combatants);
       const html =
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.75rem">' +
-          '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:14px">Round ' + (s.round || 1) + ' &nbsp;·&nbsp; ' + combatants.length + ' combatant' + (combatants.length === 1 ? '' : 's') + '</div>' +
+          '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:14px">Round ' + (s.round || 1) + ' &nbsp;·&nbsp; ' + combatants.length + ' combatant' + (combatants.length === 1 ? '' : 's') + this._renderDifficultyBadge(combatants) + '</div>' +
           '<div style="display:flex;gap:.4rem;flex-wrap:wrap">' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterPicker()">📖 Add from catalog</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addAdhocMonster()">+ Ad-hoc</button>' +
@@ -714,6 +1047,7 @@
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._syncPCsFromSheets()" title="Re-pull HP/AC from each PC sheet (use after long rest or manual sheet edit)">🔄 Sync PCs</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollMonsterInit()" title="Reroll initiative for every monster (PCs untouched — you enter theirs manually)">🎲 Roll monster init</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openXpLedger()" title="View XP ledger for all PCs">🏆 XP</button>' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._advanceTurn()">⏭ Next turn</button>' +
             '<button class="action-btn" style="border-color:#a02020;color:#e0a0a0" onclick="if(window.CombatTracker) CombatTracker._endCombat()">End combat</button>' +
           '</div>' +
@@ -880,6 +1214,32 @@
           '<div id="ct-statblock-body" style="padding:1rem 1.25rem;overflow-y:auto;max-height:75vh"></div>';
         document.body.appendChild(d2);
         d2.addEventListener('click', function(e) { if (e.target === d2) d2.close(); });
+      }
+      if (!document.getElementById('ct-xp-ledger-dialog')) {
+        const d5 = document.createElement('dialog');
+        d5.id = 'ct-xp-ledger-dialog';
+        d5.style.cssText = 'max-width:560px;width:92vw;max-height:85vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
+        d5.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center">' +
+            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">🏆 XP Ledger</div>' +
+            '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+          '</div>' +
+          '<div id="ct-xp-ledger-body" style="padding:1rem;overflow-y:auto;max-height:75vh"></div>';
+        document.body.appendChild(d5);
+        d5.addEventListener('click', function(e) { if (e.target === d5) d5.close(); });
+      }
+      if (!document.getElementById('ct-dice-dialog')) {
+        const d6 = document.createElement('dialog');
+        d6.id = 'ct-dice-dialog';
+        d6.style.cssText = 'max-width:520px;width:92vw;max-height:85vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
+        d6.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center">' +
+            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">🎲 Dice Roller</div>' +
+            '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+          '</div>' +
+          '<div id="ct-dice-body" style="padding:1rem;overflow-y:auto;max-height:75vh"></div>';
+        document.body.appendChild(d6);
+        d6.addEventListener('click', function(e) { if (e.target === d6) d6.close(); });
       }
     }
   };

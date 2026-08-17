@@ -529,6 +529,196 @@ const MONSTERS_2024 = [
     ],
     source: 'MM 2024 · Vaeloran currently Stage 3 lich progression — see NPC file for lich tracker; full stat block applies at Stage 9+' },
 
+  // ==================================================================
+  // ELDORIA-SPECIFIC ORIGINAL MONSTERS
+  // Designed from scratch for The Wayward Company campaign — factional
+  // enemies tied to Naturus cult, Guilded Veil, Halvor's operation, and
+  // Vaeloran's lich progression. Not adaptations of published creatures.
+  // ==================================================================
+
+  { id: 'naturus_touched_wolf', name: 'Naturus-Touched Wolf', size: 'Medium', type: 'beast (corrupted)', alignment: 'unaligned',
+    ac: 13, hp: 34, hpFormula: '5d8+10', speed: '45 ft.',
+    str: 14, dex: 15, con: 15, int: 4, wis: 12, cha: 6,
+    senses: 'darkvision 60 ft., passive Perception 13',
+    languages: '—',
+    cr: '1', xp: 200,
+    traits: [
+      { name: 'Corruption Aura', desc: 'The first creature to hit the wolf in melee each round takes 1d4 necrotic damage from black ichor spray.' },
+      { name: 'Pack Instinct', desc: 'Advantage on attack rolls against a creature if another Naturus-touched creature is within 5 ft. of it.' }
+    ],
+    actions: [
+      { name: 'Rending Bite', desc: 'Melee weapon attack, +4 to hit, reach 5 ft., one target. Hit: 2d6+2 piercing plus 1d4 necrotic. Target DC 12 Str save or knocked prone.' }
+    ],
+    source: 'Eldoria original — Naturus corruption variant of a common wolf. Appears in Frostwood Marsh.'
+  },
+
+  { id: 'naturus_adept', name: 'Naturus Adept', size: 'Medium', type: 'humanoid (cultist)', alignment: 'chaotic evil',
+    ac: 12, hp: 38, hpFormula: '7d8+7', speed: '30 ft.',
+    str: 10, dex: 12, con: 13, int: 12, wis: 15, cha: 11,
+    senses: 'passive Perception 12',
+    languages: 'Common, plus cult cant',
+    cr: '2', xp: 450,
+    traits: [
+      { name: 'Naturus Devotion', desc: 'Advantage on saves against being Charmed or Frightened.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Rot-Touched Sickle attacks OR casts a spell and makes one Sickle attack.' },
+      { name: 'Rot-Touched Sickle', desc: 'Melee weapon attack, +4 to hit, reach 5 ft., one target. Hit: 1d6+2 slashing plus 1d4 necrotic.' },
+      { name: 'Withering Bolt (spell, 3/day)', desc: 'Ranged spell attack, +4 to hit, range 60 ft., one target. Hit: 3d6 necrotic. Target loses hit points equal to its Con modifier (min 1) from its maximum until it finishes a long rest.' }
+    ],
+    bonusActions: [
+      { name: 'Corrupt Wound (recharge 5-6)', desc: 'One creature the Adept can see within 30 ft. that has taken damage this round: DC 12 Con save or take 2d6 necrotic damage as an existing wound festers.' }
+    ],
+    source: 'Eldoria original — mid-tier Naturus cult caster, sits between Cultist and Cult Fanatic.'
+  },
+
+  { id: 'rotwood_stalker', name: 'Rotwood Stalker', size: 'Large', type: 'monstrosity', alignment: 'unaligned',
+    ac: 14, hp: 65, hpFormula: '10d10+10', speed: '40 ft., climb 30 ft.',
+    str: 16, dex: 16, con: 13, int: 3, wis: 12, cha: 6,
+    skills: { stealth: 5 },
+    senses: 'darkvision 60 ft., passive Perception 11',
+    languages: '—',
+    cr: '3', xp: 700,
+    traits: [
+      { name: 'Marsh Stealth', desc: 'Advantage on Dex (Stealth) checks in dim light or swampy terrain.' },
+      { name: 'Ambush', desc: 'On its first turn in combat, has advantage on attack rolls against creatures that have not acted yet.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes one Claw and one Bite attack.' },
+      { name: 'Claw', desc: 'Melee weapon attack, +5 to hit, reach 10 ft., one target. Hit: 1d10+3 slashing. On hit, target must succeed on a DC 13 Str save or be pulled 10 ft. toward the Stalker.' },
+      { name: 'Bite', desc: 'Melee weapon attack, +5 to hit, reach 5 ft., one target. Hit: 2d6+3 piercing. If target is a Medium or smaller creature, it is Grappled (escape DC 13).' }
+    ],
+    source: 'Eldoria original — apex predator of Frostwood Marsh interior. Fights alone.'
+  },
+
+  { id: 'ashen_servant', name: 'Ashen Servant', size: 'Medium', type: 'undead', alignment: 'lawful evil',
+    ac: 13, hp: 44, hpFormula: '8d8+8', speed: '30 ft.',
+    str: 15, dex: 13, con: 13, int: 8, wis: 10, cha: 8,
+    damageResist: 'necrotic',
+    damageImmune: 'poison',
+    conditionImmune: 'exhaustion, poisoned',
+    senses: 'darkvision 60 ft., passive Perception 10',
+    languages: 'understands Common but cannot speak',
+    cr: '2', xp: 450,
+    traits: [
+      { name: 'Bound Purpose', desc: 'The Ashen Servant knows the location of its master (a lich or death priest) at any distance on the same plane, and will move toward that master if not otherwise directed.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Ash Blade attacks.' },
+      { name: 'Ash Blade', desc: 'Melee weapon attack, +4 to hit, reach 5 ft., one target. Hit: 1d8+2 slashing plus 1d6 necrotic. Nonmagical armor hit by the blade loses 1 point of AC until repaired (min AC 10).' }
+    ],
+    source: 'Eldoria original — a corpse re-animated by Vaeloran or one of his lieutenants and given a specific task. Deploys in pairs or triads.'
+  },
+
+  { id: 'hollow_voiced', name: 'The Hollow-Voiced', size: 'Medium', type: 'undead', alignment: 'neutral evil',
+    ac: 15, hp: 82, hpFormula: '11d8+33', speed: '30 ft.',
+    str: 13, dex: 16, con: 16, int: 14, wis: 15, cha: 18,
+    saves: { wis: 5, cha: 7 },
+    damageResist: 'necrotic; bludgeoning, piercing, slashing from nonmagical attacks',
+    damageImmune: 'poison',
+    conditionImmune: 'charmed, exhaustion, frightened, poisoned',
+    senses: 'darkvision 120 ft., passive Perception 12',
+    languages: 'the languages it knew in life plus Deep Speech',
+    cr: '5', xp: 1800,
+    traits: [
+      { name: 'Aura of Silence', desc: 'Spells of 3rd level or lower cast within 10 ft. of the Hollow-Voiced fail unless the caster succeeds on a DC 15 Cha save.' },
+      { name: 'Sunlight Sensitivity', desc: 'Disadvantage on attack rolls and Perception checks that rely on sight in direct sunlight.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Silencing Touch attacks.' },
+      { name: 'Silencing Touch', desc: 'Melee spell attack, +7 to hit, reach 5 ft., one target. Hit: 3d8 psychic. Target cannot speak or cast spells with verbal components until end of its next turn.' },
+      { name: 'Whisper of Unmaking (recharge 5-6)', desc: 'Choose one creature within 30 ft. that can hear. Target makes a DC 15 Wis save or takes 6d8 psychic damage and is Stunned until end of its next turn. On success, half damage and no stun.' }
+    ],
+    source: 'Eldoria original — one of Vaeloran\'s inner lieutenants. Silences prayer and spellcasting. Appears as a robed figure with no visible face; a soft, terrible voice comes from the empty hood.'
+  },
+
+  { id: 'guilded_veil_whisperer', name: 'Guilded Veil Whisperer', size: 'Medium', type: 'humanoid', alignment: 'lawful evil',
+    ac: 15, hp: 45, hpFormula: '10d8', speed: '30 ft.',
+    str: 10, dex: 16, con: 10, int: 15, wis: 14, cha: 16,
+    saves: { dex: 5, cha: 5 },
+    skills: { deception: 5, insight: 4, persuasion: 5, sleight: 5, stealth: 5 },
+    senses: 'passive Perception 12',
+    languages: 'Common, Elvish, Thieves\' Cant, plus one exotic',
+    cr: '3', xp: 700,
+    traits: [
+      { name: 'Sowing Doubt', desc: 'Once per turn as a free action, when the Whisperer speaks to a Charmed creature, that creature must succeed on a DC 13 Wis save or be Poisoned by suggestion (mechanics: disadvantage on next attack roll or ability check) until end of its next turn.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Poisoned Rapier attacks.' },
+      { name: 'Poisoned Rapier', desc: 'Melee weapon attack, +5 to hit, reach 5 ft., one target. Hit: 1d8+3 piercing plus 2d4 poison. On hit, target DC 13 Con save or Poisoned 1 min (save at end of each turn).' }
+    ],
+    bonusActions: [
+      { name: 'Disengaging Step', desc: 'Takes the Disengage action.' }
+    ],
+    reactions: [
+      { name: 'Read the Room', desc: 'When a creature the Whisperer can see makes an attack or spell against it, the Whisperer imposes disadvantage if it succeeds on a DC 15 Insight check to predict the attack.' }
+    ],
+    source: 'Eldoria original — Guilded Veil operative specializing in blackmail and misdirection. Not front-line muscle; deploys with Enforcer bodyguards.'
+  },
+
+  { id: 'bound_sentinel', name: 'Bound Sentinel', size: 'Large', type: 'construct', alignment: 'unaligned',
+    ac: 17, hp: 95, hpFormula: '10d10+40', speed: '30 ft.',
+    str: 18, dex: 10, con: 18, int: 3, wis: 10, cha: 1,
+    damageResist: 'bludgeoning, piercing, slashing from nonmagical non-adamantine attacks',
+    damageImmune: 'necrotic, poison, psychic',
+    conditionImmune: 'charmed, exhaustion, frightened, paralyzed, petrified, poisoned',
+    senses: 'darkvision 60 ft., passive Perception 10',
+    languages: 'understands Draconic (its bind-language) but cannot speak',
+    cr: '5', xp: 1800,
+    traits: [
+      { name: 'Anchored', desc: 'The Sentinel cannot move more than 60 ft. from the object or location it was bound to protect. If forced beyond that range, it collapses inert until returned.' },
+      { name: 'Magic Resistance', desc: 'Advantage on saving throws against spells and other magical effects.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Warding Slam attacks.' },
+      { name: 'Warding Slam', desc: 'Melee weapon attack, +7 to hit, reach 10 ft., one target. Hit: 2d10+4 bludgeoning plus 1d8 force.' }
+    ],
+    reactions: [
+      { name: 'Ward Redirect', desc: 'When a creature within 10 ft. targets another creature with a spell, the Sentinel forces the spell to target itself instead (no save).' }
+    ],
+    source: 'Eldoria original — arcane construct set by high-tier wizards (Vaeloran, high Aeloria mages) to guard specific vaults, tombs, or towers.'
+  },
+
+  { id: 'halvor_bruiser', name: 'Halvor Compound Bruiser', size: 'Medium', type: 'humanoid', alignment: 'neutral evil',
+    ac: 14, hp: 52, hpFormula: '7d8+21', speed: '30 ft.',
+    str: 17, dex: 12, con: 16, int: 9, wis: 10, cha: 11,
+    saves: { str: 5, con: 5 },
+    skills: { athletics: 5, intimidation: 3 },
+    senses: 'passive Perception 10',
+    languages: 'Common',
+    cr: '2', xp: 450,
+    traits: [
+      { name: 'Compound Loyalty', desc: 'If a Bruiser drops to 0 HP within 20 ft. of Halvor or another Bruiser, an ally within 20 ft. can use its reaction to move up to its speed toward the fallen Bruiser and make a melee attack with advantage against the creature that dropped them.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Reinforced Cudgel attacks.' },
+      { name: 'Reinforced Cudgel', desc: 'Melee weapon attack, +5 to hit, reach 5 ft., one target. Hit: 2d6+3 bludgeoning. On critical hit, target DC 12 Con save or Stunned until end of its next turn.' },
+      { name: 'Sap (recharge 4-6)', desc: 'Melee weapon attack, +5 to hit, reach 5 ft., one target. Hit: 1d6+3 bludgeoning. Target DC 13 Con save or unconscious 1 min (save at end of each turn or when hit).' }
+    ],
+    source: 'Eldoria original — Halvor\'s hand-picked muscle at his Ironhold compound. Tougher than a Thug, more disciplined; loyal because Halvor pays and protects them.'
+  },
+
+  { id: 'shadow_of_kaelith', name: 'Shadow of Kaelith', size: 'Medium', type: 'fiend (cult manifestation)', alignment: 'chaotic evil',
+    ac: 14, hp: 68, hpFormula: '9d8+27', speed: '40 ft.',
+    str: 13, dex: 18, con: 16, int: 10, wis: 13, cha: 16,
+    saves: { dex: 7 },
+    damageResist: 'necrotic; bludgeoning, piercing, slashing from nonmagical attacks not made in bright light',
+    damageImmune: 'poison',
+    conditionImmune: 'charmed, exhaustion, frightened, poisoned',
+    senses: 'darkvision 60 ft., passive Perception 11',
+    languages: 'understands Common but cannot speak',
+    cr: '4', xp: 1100,
+    traits: [
+      { name: 'Shadow Form', desc: 'Can move through a space as narrow as 1 inch wide without squeezing. In dim light or darkness, gains half cover and advantage on Stealth.' },
+      { name: 'Sunlight Weakness', desc: 'While in direct sunlight, has disadvantage on attack rolls, ability checks, and saving throws.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Makes two Draining Touch attacks.' },
+      { name: 'Draining Touch', desc: 'Melee spell attack, +6 to hit, reach 5 ft., one target. Hit: 2d6+4 necrotic. Target\'s Strength score is reduced by 1d4 (min 1). This reduction lasts until target finishes a short or long rest.' }
+    ],
+    source: 'Eldoria original — a manifest fragment of Sister Kaelith\'s corrupted essence. Kaelith has learned to project these as scouts and assassins ahead of her physical arrival. Killing one weakens the connection to Naturus temporarily but does not harm Kaelith herself.'
+  },
+
 ];
 
 const MONSTERS_BY_ID = {};

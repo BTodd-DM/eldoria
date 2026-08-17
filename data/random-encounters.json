@@ -1,0 +1,526 @@
+{
+  "tables": [
+    {
+      "id": "aeloria-streets",
+      "region": "Aeloria Streets",
+      "die": "d100",
+      "time": "any",
+      "tags": [
+        "urban",
+        "aeloria",
+        "wilderness-optional"
+      ],
+      "entries": [
+        {
+          "range": [
+            1,
+            10
+          ],
+          "description": "A pickpocket eyes the party's coin purse — Torren would notice on a passive Perception check.",
+          "monsters": [
+            {
+              "id": "bandit",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            11,
+            20
+          ],
+          "description": "Two Watch officers stop the party for a routine check. No trouble unless the party escalates.",
+          "monsters": [
+            {
+              "id": "guard",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "range": [
+            21,
+            30
+          ],
+          "description": "A drunk brawler stumbles from a tavern, insults the tallest party member. Non-lethal fistfight or de-escalation.",
+          "monsters": [
+            {
+              "id": "thug",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            31,
+            40
+          ],
+          "description": "A begging orphan tugs at a sleeve — genuine, hungry. Optional roleplay hook, no combat.",
+          "monsters": []
+        },
+        {
+          "range": [
+            41,
+            50
+          ],
+          "description": "A Guilded Veil courier hurries past, a wax-sealed letter tucked into their sleeve. Follow?",
+          "monsters": [
+            {
+              "id": "spy",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            51,
+            60
+          ],
+          "description": "A crumpled pamphlet blows past — Naturus doctrine, freshly printed. Trail leads somewhere?",
+          "monsters": []
+        },
+        {
+          "range": [
+            61,
+            70
+          ],
+          "description": "A back-alley robbery in progress — 3 thugs shaking down a merchant. Intervene?",
+          "monsters": [
+            {
+              "id": "thug",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            71,
+            80
+          ],
+          "description": "Vaeloran's coach clatters past. Does he wave? Look through them? Stop?",
+          "monsters": []
+        },
+        {
+          "range": [
+            81,
+            88
+          ],
+          "description": "A whispering shadow follows the party for two blocks then vanishes. Sylas senses illusion.",
+          "monsters": []
+        },
+        {
+          "range": [
+            89,
+            95
+          ],
+          "description": "Cult ambush — 4 cultists step from an alley, weapons drawn. This is Kaelith's people testing the party.",
+          "monsters": [
+            {
+              "id": "cultist",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "range": [
+            96,
+            100
+          ],
+          "description": "A wight prowls the Undercroft — undead loose in the city. Someone is losing control of the dead.",
+          "monsters": [
+            {
+              "id": "wight",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "body": "# Aeloria Streets — Random Encounters\n\nRoll d100 when the party spends a full period (morning / afternoon / evening / night) traversing Aeloria without a specific destination, OR when narrative pace demands a beat and there's no scripted event pending.\n\n## Weighting notes\nThe bottom of the table (89-100) skews darker as the campaign progresses. Early game, reroll 89-100. Post-Session 4 (party knows Kaelith is active), 89-95 becomes plausible. Post-Session 7 (Vaeloran unmasked), 96-100 becomes plausible."
+    },
+    {
+      "id": "aelorian-roads",
+      "region": "Aelorian Roads",
+      "die": "d100",
+      "time": "any",
+      "tags": [
+        "wilderness",
+        "travel",
+        "roads"
+      ],
+      "entries": [
+        {
+          "range": [
+            1,
+            25
+          ],
+          "description": "Uneventful — merchant caravan passes, exchanges news. Roleplay/rumour hook.",
+          "monsters": []
+        },
+        {
+          "range": [
+            26,
+            40
+          ],
+          "description": "A lone traveller in bad shape asks for escort to the next town. Genuine, no trick.",
+          "monsters": []
+        },
+        {
+          "range": [
+            41,
+            55
+          ],
+          "description": "A wolf pack, hungry — 4 wolves. Standard threat.",
+          "monsters": [
+            {
+              "id": "wolf",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "range": [
+            56,
+            65
+          ],
+          "description": "Bandits — 4 lay in wait behind an overturned cart. Classic ambush.",
+          "monsters": [
+            {
+              "id": "bandit",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "range": [
+            66,
+            75
+          ],
+          "description": "Highway robbery — a captain and thugs. Well-organized, will parley if outmatched.",
+          "monsters": [
+            {
+              "id": "bandit_captain",
+              "count": 1
+            },
+            {
+              "id": "thug",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            76,
+            82
+          ],
+          "description": "An orc raiding party moved south from the mountains. Rare this far, and worrying.",
+          "monsters": [
+            {
+              "id": "orc",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            83,
+            89
+          ],
+          "description": "A hobgoblin patrol — disciplined, banner-bearing. War-party scout ahead of something bigger.",
+          "monsters": [
+            {
+              "id": "hobgoblin",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "range": [
+            90,
+            95
+          ],
+          "description": "A manticore descends from a rocky ridge, testing whether these travellers are prey.",
+          "monsters": [
+            {
+              "id": "manticore",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            96,
+            100
+          ],
+          "description": "A cult ambush — the Guilded Veil has agents on the roads too. Assassin plus spies. Not looking to kill; looking to slow the party's arrival.",
+          "monsters": [
+            {
+              "id": "assassin",
+              "count": 1
+            },
+            {
+              "id": "spy",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "body": "# Aelorian Roads — Random Encounters\n\nRoll d100 per travel-day watch when the party is on any Aelorian road not otherwise scripted. Roads between Aeloria Crossroads and outlying settlements are patrolled but not safe; roads further out get progressively wilder.\n\n## Weighting notes\nBetween Aeloria and Ironhold, add +5 (heavier bandit activity around Halvor's trade routes). Beyond the Northern Reaches border, add +15 (frontier)."
+    },
+    {
+      "id": "frostwood-marsh",
+      "region": "Frostwood Marsh",
+      "die": "d100",
+      "time": "any",
+      "tags": [
+        "wilderness",
+        "marsh",
+        "naturus-touched"
+      ],
+      "entries": [
+        {
+          "range": [
+            1,
+            20
+          ],
+          "description": "Sinking mud slows progress. Con save DC 10 or one PC's boot is swallowed; 1d4 minutes lost.",
+          "monsters": []
+        },
+        {
+          "range": [
+            21,
+            35
+          ],
+          "description": "A pack of wolves — normal, hungry, wary. Not corrupted. Half will flee if two drop.",
+          "monsters": [
+            {
+              "id": "wolf",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            36,
+            45
+          ],
+          "description": "A traveller's abandoned camp. Recent. Bloody drag marks lead into the reeds. Investigation hook.",
+          "monsters": []
+        },
+        {
+          "range": [
+            46,
+            60
+          ],
+          "description": "Giant spiders in a dead-tree canopy. Ambush attack from above.",
+          "monsters": [
+            {
+              "id": "giant_spider",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "range": [
+            61,
+            72
+          ],
+          "description": "The marsh gas has a green tinge here — Naturus-touched. A brown bear, corruption-bloated, charges.",
+          "monsters": [
+            {
+              "id": "brown_bear",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            73,
+            82
+          ],
+          "description": "A giant crocodile in the deep water, drawn by the party's noise.",
+          "monsters": [
+            {
+              "id": "giant_crocodile",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            83,
+            90
+          ],
+          "description": "Kaelith's cult cell moves through the marsh, gathering something. 4 cultists + fanatic.",
+          "monsters": [
+            {
+              "id": "cultist",
+              "count": 4
+            },
+            {
+              "id": "cult_fanatic",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            91,
+            96
+          ],
+          "description": "A dire wolf leading a pack — corruption in its eyes. Uncharacteristically aggressive.",
+          "monsters": [
+            {
+              "id": "dire_wolf",
+              "count": 1
+            },
+            {
+              "id": "wolf",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            97,
+            100
+          ],
+          "description": "Something old moves in the deep marsh. Just for a moment. The party sees eyes the size of dinner plates and hears water displace. Then nothing. Foreshadow.",
+          "monsters": []
+        }
+      ],
+      "body": "# Frostwood Marsh — Random Encounters\n\nRoll d100 per travel-day watch. The marsh is a Naturus-touched region — the corruption is stronger toward the interior. Rolls skew stranger and more corrupted the further in the party gets.\n\n## Weighting notes\nAdd +10 to the roll each additional day the party spends in the marsh. Corruption stacks."
+    },
+    {
+      "id": "ironhold-streets",
+      "region": "Ironhold Streets",
+      "die": "d100",
+      "time": "any",
+      "tags": [
+        "urban",
+        "ironhold"
+      ],
+      "entries": [
+        {
+          "range": [
+            1,
+            15
+          ],
+          "description": "Halvor's enforcers move in a group of three — casually surveying, cataloguing faces. If the party looks like trouble, they follow.",
+          "monsters": [
+            {
+              "id": "thug",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "range": [
+            16,
+            25
+          ],
+          "description": "A worker with a limp offers a whispered warning about the compound guards' shift change. Reward for trust.",
+          "monsters": []
+        },
+        {
+          "range": [
+            26,
+            40
+          ],
+          "description": "Ironhold Watch patrol — the corrupt kind. Two guards and a captain looking for an excuse to fine someone.",
+          "monsters": [
+            {
+              "id": "guard",
+              "count": 2
+            },
+            {
+              "id": "bandit_captain",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            41,
+            50
+          ],
+          "description": "A funeral procession — worker crushed in the foundry. Grief-stricken family. Roleplay hook to Sera.",
+          "monsters": []
+        },
+        {
+          "range": [
+            51,
+            60
+          ],
+          "description": "A locked warehouse — no guards visible. Curiosity bait. What's inside?",
+          "monsters": []
+        },
+        {
+          "range": [
+            61,
+            75
+          ],
+          "description": "Halvor's compound is on lockdown tonight. Movement in and out is being logged. Any approach requires stealth or disguise.",
+          "monsters": [
+            {
+              "id": "thug",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "range": [
+            76,
+            85
+          ],
+          "description": "A courier with an urgent message runs past — envelope bears the Guilded Veil sigil. Intercept?",
+          "monsters": [
+            {
+              "id": "spy",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            86,
+            92
+          ],
+          "description": "Sera Vey herself appears — desperate, seeking news of Mira. Emotional beat.",
+          "monsters": []
+        },
+        {
+          "range": [
+            93,
+            97
+          ],
+          "description": "An ambush — Halvor knows the party is in town. 2 thugs plus an assassin, hit-and-run.",
+          "monsters": [
+            {
+              "id": "thug",
+              "count": 2
+            },
+            {
+              "id": "assassin",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "range": [
+            98,
+            100
+          ],
+          "description": "Something moved in the foundry chimneys — a scout of the deeper things stirring beneath Ironhold. Vrass-adjacent (if you want to seed the dragon early).",
+          "monsters": [
+            {
+              "id": "scout",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "body": "# Ironhold Streets — Random Encounters\n\nRoll d100 when the party spends a full period in Ironhold without a specific destination. Ironhold is more overtly hostile than Aeloria — most rolls trend toward pressure, surveillance, or intimidation.\n\n## Weighting notes\nIf the party has NOT yet acted against Halvor: reroll 93-97 (he doesn't know they're a threat yet). Post-Halvor confrontation, all rolls in play."
+    }
+  ],
+  "generated": true
+}

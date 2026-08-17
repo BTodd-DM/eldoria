@@ -1,0 +1,55 @@
+{
+  "monsters": [
+    {
+      "id": "cult-enforcer",
+      "name": "Cult Enforcer",
+      "size": "Medium",
+      "type": "humanoid",
+      "alignment": "any evil",
+      "ac": 15,
+      "hp": 45,
+      "hpFormula": "6d8+18",
+      "speed": "30 ft.",
+      "str": 16,
+      "dex": 14,
+      "con": 16,
+      "int": 10,
+      "wis": 12,
+      "cha": 10,
+      "saves": {
+        "con": 5
+      },
+      "skills": {
+        "athletics": 5,
+        "intimidation": 2
+      },
+      "senses": "passive Perception 11",
+      "languages": "Common, plus cult cant",
+      "cr": "2",
+      "xp": 450,
+      "traits": [
+        {
+          "name": "Zealous Fury",
+          "desc": "When the Enforcer is reduced to half HP or lower, its melee attacks deal +1d6 damage until end of encounter."
+        }
+      ],
+      "actions": [
+        {
+          "name": "Multiattack",
+          "desc": "Makes two Weighted Club attacks."
+        },
+        {
+          "name": "Weighted Club",
+          "desc": "Melee weapon attack, +5 to hit, reach 5 ft., one target. Hit — 1d8+3 bludgeoning damage."
+        },
+        {
+          "name": "Threaten (recharge 5-6)",
+          "desc": "A creature within 10 ft. that can see and hear the Enforcer must succeed on a DC 12 Wisdom save or be Frightened of it until the end of its next turn."
+        }
+      ],
+      "homebrew": true,
+      "_source": "Example Cult Enforcer.md"
+    }
+  ],
+  "generated": true
+}
