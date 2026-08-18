@@ -311,6 +311,7 @@ CHARACTERS.kaelith = {
 CHARACTERS.sylas = {
   id: 'sylas',
   name: 'Sylas',
+  portraitUrl: 'portraits/sylas.jpeg',
   playerName: 'Jacob_Pies',
   species: 'Tiefling (Chthonic)',
   className: 'Wizard',
