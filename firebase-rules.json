@@ -39,6 +39,10 @@
     "xp-ledger": {
       ".read": true,
       ".write": true
+    },
+    "monster-homebrew": {
+      ".read": true,
+      ".write": true
     }
   }
 }

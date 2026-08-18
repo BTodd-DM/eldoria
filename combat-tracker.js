@@ -29,6 +29,7 @@
 
   const COMBAT_PATH = 'combat';
   const PRESETS_PATH = 'encounter-presets';
+  const HOMEBREW_PATH = 'monster-homebrew';
   const ENCOUNTERS_JSON = 'data/encounters.json';
   const PC_IDS = ['torren', 'sylas', 'orin'];
   // Capitalized to match SHEET_CONDITIONS in sheet-engine.js so two-way
@@ -61,6 +62,7 @@
       try { this._initSync(); } catch (e) { console.warn('[CombatTracker] _initSync threw:', e); }
       try { this._loadVaultEncounters(); } catch (e) { console.warn('[CombatTracker] _loadVaultEncounters threw:', e); }
       try { this._initPresetsSync(); } catch (e) { console.warn('[CombatTracker] _initPresetsSync threw:', e); }
+      try { this._initHomebrewSync(); } catch (e) { console.warn('[CombatTracker] _initHomebrewSync threw:', e); }
     },
 
     _loadVaultEncounters: function() {
@@ -140,6 +142,193 @@
           if (self._state && self._state.active) self._log(JSON.parse(JSON.stringify(self._state)), '🎲 Random: ' + table.region + ' → ' + roll + ' — ' + monstersDesc);
         }, 300);
       }, startFresh ? 400 : 0);
+    },
+
+    _initHomebrewSync: function() {
+      if (typeof firebase === 'undefined' || !firebase.database) return;
+      const self = this;
+      try {
+        this._homebrewRef = firebase.database().ref(HOMEBREW_PATH);
+        this._homebrewRef.on('value', function(snap) {
+          const data = snap.val() || {};
+          self._customMonsters = data;
+          // Merge into MONSTERS_2024 / MONSTERS_BY_ID (remove old custom entries first).
+          if (typeof MONSTERS_2024 !== 'undefined' && typeof MONSTERS_BY_ID !== 'undefined') {
+            // Remove any previously-merged custom entries.
+            for (let i = MONSTERS_2024.length - 1; i >= 0; i--) {
+              if (MONSTERS_2024[i]._custom) {
+                delete MONSTERS_BY_ID[MONSTERS_2024[i].id];
+                MONSTERS_2024.splice(i, 1);
+              }
+            }
+            Object.keys(data).forEach(function(id) {
+              const m = Object.assign({}, data[id], { id: id, _custom: true });
+              if (!MONSTERS_BY_ID[id]) {
+                MONSTERS_2024.push(m);
+                MONSTERS_BY_ID[id] = m;
+              }
+            });
+            console.log('[CombatTracker] Loaded ' + Object.keys(data).length + ' custom monsters.');
+          }
+        });
+      } catch (e) { console.warn('[CombatTracker] Homebrew sync failed:', e); }
+    },
+
+    _openMonsterForm: function(existingId) {
+      const dlg = document.getElementById('ct-monster-form');
+      if (!dlg) return;
+      const existing = existingId ? (this._customMonsters || {})[existingId] : null;
+      document.getElementById('ct-mf-title').textContent = existing ? 'Edit Custom Monster' : 'Create Custom Monster';
+      document.getElementById('ct-mf-oldid').value = existingId || '';
+      const set = function(field, val) { const el = document.getElementById('ct-mf-' + field); if (el) el.value = val == null ? '' : val; };
+      const m = existing || {};
+      set('id', existingId || '');
+      set('name', m.name);
+      set('size', m.size || 'Medium');
+      set('type', m.type);
+      set('alignment', m.alignment);
+      set('ac', m.ac);
+      set('hp', m.hp);
+      set('hpFormula', m.hpFormula);
+      set('speed', m.speed || '30 ft.');
+      set('str', m.str || 10); set('dex', m.dex || 10); set('con', m.con || 10);
+      set('int', m.int || 10); set('wis', m.wis || 10); set('cha', m.cha || 10);
+      set('saves', m.saves ? JSON.stringify(m.saves) : '');
+      set('skills', m.skills ? JSON.stringify(m.skills) : '');
+      set('senses', m.senses);
+      set('languages', m.languages);
+      set('cr', m.cr);
+      set('xp', m.xp);
+      set('damageResist', m.damageResist);
+      set('damageImmune', m.damageImmune);
+      set('damageVuln', m.damageVuln);
+      set('conditionImmune', m.conditionImmune);
+      set('traits', (m.traits || []).map(function(t) { return t.name + ' :: ' + t.desc; }).join('\n'));
+      set('actions', (m.actions || []).map(function(t) { return t.name + ' :: ' + t.desc; }).join('\n'));
+      set('bonusActions', (m.bonusActions || []).map(function(t) { return t.name + ' :: ' + t.desc; }).join('\n'));
+      set('reactions', (m.reactions || []).map(function(t) { return t.name + ' :: ' + t.desc; }).join('\n'));
+      set('legendaryActions', (m.legendaryActions || []).map(function(t) { return t.name + ' :: ' + t.desc; }).join('\n'));
+      set('source', m.source);
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    },
+
+    _saveMonsterForm: function() {
+      const get = function(field) { const el = document.getElementById('ct-mf-' + field); return el ? String(el.value || '').trim() : ''; };
+      const getNum = function(field) { const v = parseInt(get(field), 10); return isNaN(v) ? null : v; };
+      const parseBlocks = function(field) {
+        const raw = get(field);
+        if (!raw) return [];
+        return raw.split('\n').map(function(line) {
+          const parts = line.split('::');
+          if (parts.length < 2) return null;
+          return { name: parts[0].trim(), desc: parts.slice(1).join('::').trim() };
+        }).filter(function(x) { return x && x.name; });
+      };
+      const parseJson = function(field) {
+        const raw = get(field);
+        if (!raw) return null;
+        try { return JSON.parse(raw); } catch (e) { return null; }
+      };
+      const id = get('id').toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+      if (!id) { alert('ID is required (kebab-case, letters/numbers/-/_)'); return; }
+      const name = get('name');
+      if (!name) { alert('Name is required.'); return; }
+      const oldId = get('oldid');
+      // Prevent overwriting a base catalog entry.
+      if (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[id] && !MONSTERS_BY_ID[id]._custom && id !== oldId) {
+        alert('That ID already exists in the base catalog. Choose a unique ID (e.g. suffix "_custom").');
+        return;
+      }
+      const m = {
+        name: name, size: get('size') || 'Medium', type: get('type'),
+        alignment: get('alignment'),
+        ac: getNum('ac'), hp: getNum('hp'), hpFormula: get('hpFormula'),
+        speed: get('speed') || '30 ft.',
+        str: getNum('str') || 10, dex: getNum('dex') || 10, con: getNum('con') || 10,
+        int: getNum('int') || 10, wis: getNum('wis') || 10, cha: getNum('cha') || 10,
+        senses: get('senses'), languages: get('languages'),
+        cr: get('cr'), xp: getNum('xp'),
+        damageResist: get('damageResist'), damageImmune: get('damageImmune'),
+        damageVuln: get('damageVuln'), conditionImmune: get('conditionImmune'),
+        traits: parseBlocks('traits'),
+        actions: parseBlocks('actions'),
+        bonusActions: parseBlocks('bonusActions'),
+        reactions: parseBlocks('reactions'),
+        legendaryActions: parseBlocks('legendaryActions'),
+        source: get('source') || 'Custom',
+        _custom: true, updatedAt: Date.now()
+      };
+      const savesJson = parseJson('saves'); if (savesJson) m.saves = savesJson;
+      const skillsJson = parseJson('skills'); if (skillsJson) m.skills = skillsJson;
+      if (m.ac == null || m.hp == null || !m.cr) { alert('AC, HP, and CR are required.'); return; }
+      if (!this._homebrewRef) { alert('Firebase unavailable — cannot save.'); return; }
+      const self = this;
+      // If renaming, delete old ID first.
+      const writes = [];
+      if (oldId && oldId !== id) writes.push(this._homebrewRef.child(oldId).remove());
+      writes.push(this._homebrewRef.child(id).set(m));
+      Promise.all(writes).then(function() {
+        document.getElementById('ct-monster-form').close();
+        // If picker is open, refresh it.
+        const picker = document.getElementById('ct-monster-picker');
+        if (picker && picker.open) self._openMonsterPicker();
+      }).catch(function(e) { alert('Save failed: ' + (e && e.message || e)); });
+    },
+
+    _deleteCustomMonster: function(id) {
+      if (!confirm('Delete custom monster "' + id + '"?\n\nThis cannot be undone.')) return;
+      if (!this._homebrewRef) return;
+      this._homebrewRef.child(id).remove().then(function() {
+        const picker = document.getElementById('ct-monster-picker');
+        if (picker && picker.open && window.CombatTracker) CombatTracker._openMonsterPicker();
+      });
+    },
+
+    _duplicateCustomMonster: function(id) {
+      const src = (this._customMonsters || {})[id];
+      if (!src) return;
+      // Open form pre-populated with source data but blank ID for user to name.
+      this._openMonsterForm(id);
+      // Then clear the ID field so user must pick a new one.
+      setTimeout(function() {
+        const idEl = document.getElementById('ct-mf-id');
+        const oldIdEl = document.getElementById('ct-mf-oldid');
+        if (idEl) idEl.value = id + '_copy';
+        if (oldIdEl) oldIdEl.value = '';
+      }, 50);
+    },
+
+    _exportCustomMonsterMd: function(id) {
+      const m = (this._customMonsters || {})[id];
+      if (!m) return;
+      // Build a homebrew-monster .md file for the vault.
+      const yamlLines = ['---'];
+      yamlLines.push('id: ' + id);
+      ['name','size','type','alignment','ac','hp','hpFormula','speed','str','dex','con','int','wis','cha','senses','languages','cr','xp','damageResist','damageImmune','damageVuln','conditionImmune','source'].forEach(function(k) {
+        if (m[k] != null && m[k] !== '') yamlLines.push(k + ': ' + (typeof m[k] === 'string' ? JSON.stringify(m[k]) : m[k]));
+      });
+      if (m.saves) yamlLines.push('saves: ' + JSON.stringify(m.saves));
+      if (m.skills) yamlLines.push('skills: ' + JSON.stringify(m.skills));
+      ['traits','actions','bonusActions','reactions','legendaryActions'].forEach(function(k) {
+        if (!m[k] || !m[k].length) return;
+        yamlLines.push(k + ':');
+        m[k].forEach(function(t) {
+          yamlLines.push('  - name: ' + JSON.stringify(t.name));
+          yamlLines.push('    desc: ' + JSON.stringify(t.desc));
+        });
+      });
+      yamlLines.push('---');
+      yamlLines.push('');
+      yamlLines.push('# ' + (m.name || id));
+      yamlLines.push('');
+      yamlLines.push('Custom monster — exported from combat tracker.');
+      const content = yamlLines.join('\n');
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (m.name || id).replace(/[^a-zA-Z0-9]+/g, ' ').trim() + '.md';
+      a.click();
+      setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
     },
 
     _initPresetsSync: function() {
@@ -708,22 +897,41 @@
       const dlg = document.getElementById('ct-monster-picker');
       if (!dlg) return;
       const listEl = document.getElementById('ct-picker-list');
+      const self = this;
       listEl.innerHTML = MONSTERS_2024.slice().sort(function(a, b) {
         return String(a.cr).localeCompare(String(b.cr)) || a.name.localeCompare(b.name);
       }).map(function(m) {
-        return '<div class="ct-picker-row" data-mid="' + m.id + '" style="padding:.5rem .75rem;border-bottom:1px solid rgba(160,128,64,0.15);cursor:pointer;display:flex;justify-content:space-between;gap:.75rem;align-items:baseline">' +
-          '<div><div style="font-family:\'Cinzel\',serif;font-size:12.5px;color:var(--gold2)">' + escapeHtml(m.name) + '</div>' +
-          '<div style="font-size:11px;color:var(--parch3)">' + escapeHtml(m.size + ' ' + m.type) + ' · AC ' + m.ac + ' · HP ' + m.hp + '</div></div>' +
-          '<div style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--parch3);letter-spacing:1px">CR ' + m.cr + '</div>' +
+        const isCustom = !!m._custom;
+        const isHomebrew = !!m.homebrew;
+        const badge = isCustom
+          ? '<span style="background:rgba(160,80,201,0.25);color:#c07adf;font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.4rem">CUSTOM</span>'
+          : isHomebrew
+            ? '<span style="background:rgba(64,168,120,0.25);color:#7fdbaf;font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.4rem">HOMEBREW</span>'
+            : '';
+        const controls = isCustom
+          ? '<div style="display:flex;gap:.25rem;margin-top:.3rem">' +
+              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">✎ Edit</button>' +
+              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⿻ Duplicate</button>' +
+              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._exportCustomMonsterMd(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⬇ Export .md</button>' +
+              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._deleteCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid #a02020;color:#e0a0a0;padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">✕ Delete</button>' +
+            '</div>'
+          : '';
+        return '<div class="ct-picker-row" data-mid="' + escapeAttr(m.id) + '" style="padding:.5rem .75rem;border-bottom:1px solid rgba(160,128,64,0.15);cursor:pointer">' +
+          '<div style="display:flex;justify-content:space-between;gap:.75rem;align-items:baseline">' +
+            '<div><div style="font-family:\'Cinzel\',serif;font-size:12.5px;color:var(--gold2)">' + escapeHtml(m.name) + badge + '</div>' +
+            '<div style="font-size:11px;color:var(--parch3)">' + escapeHtml((m.size || '') + ' ' + (m.type || '')) + ' · AC ' + (m.ac || '?') + ' · HP ' + (m.hp || '?') + '</div></div>' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--parch3);letter-spacing:1px">CR ' + (m.cr || '?') + '</div>' +
+          '</div>' +
+          controls +
           '</div>';
       }).join('');
       document.getElementById('ct-picker-search').value = '';
       if (dlg.showModal) dlg.showModal();
       else dlg.setAttribute('open', '');
-      // Attach click handlers
-      const self = this;
+      // Attach click handlers — clicking the row (not the sub-buttons) adds monster.
       listEl.querySelectorAll('.ct-picker-row').forEach(function(row) {
-        row.addEventListener('click', function() {
+        row.addEventListener('click', function(e) {
+          if (e.target.tagName === 'BUTTON') return; // sub-button handled
           const mid = row.getAttribute('data-mid');
           const countRaw = prompt('How many "' + MONSTERS_BY_ID[mid].name + '"?', '1');
           const count = Math.max(1, parseInt(countRaw, 10) || 1);
@@ -1151,7 +1359,10 @@
         d1.innerHTML =
           '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center">' +
             '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">📖 Monster Catalog</div>' +
-            '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:2px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+            '<div style="display:flex;gap:.4rem">' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(null)" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">+ Create custom</button>' +
+              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:2px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+            '</div>' +
           '</div>' +
           '<div style="padding:.5rem 1rem;border-bottom:1px solid rgba(160,128,64,0.35)">' +
             '<input id="ct-picker-search" type="text" placeholder="Filter…" style="width:100%;padding:.4rem .6rem;background:rgba(10,8,5,0.6);border:1px solid var(--gold2);color:var(--parch);border-radius:2px" oninput="var q=this.value.toLowerCase();document.querySelectorAll(\'#ct-picker-list .ct-picker-row\').forEach(function(r){r.style.display=r.textContent.toLowerCase().indexOf(q)>=0?\'\':\'none\'})">' +
@@ -1227,6 +1438,84 @@
           '<div id="ct-xp-ledger-body" style="padding:1rem;overflow-y:auto;max-height:75vh"></div>';
         document.body.appendChild(d5);
         d5.addEventListener('click', function(e) { if (e.target === d5) d5.close(); });
+      }
+      if (!document.getElementById('ct-monster-form')) {
+        const d7 = document.createElement('dialog');
+        d7.id = 'ct-monster-form';
+        d7.style.cssText = 'max-width:720px;width:94vw;max-height:90vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
+        // Small helpers to build the form
+        const lbl = function(text) { return '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold2);letter-spacing:1.5px;margin:.5rem 0 .2rem">' + text + '</label>'; };
+        const inp = function(id, ph, w) { return '<input id="ct-mf-' + id + '" type="text" placeholder="' + (ph||'') + '" style="width:' + (w||'100%') + ';padding:.35rem .5rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.5);color:var(--parch);border-radius:2px;font-size:12.5px">'; };
+        const num = function(id, ph, w) { return '<input id="ct-mf-' + id + '" type="number" placeholder="' + (ph||'') + '" style="width:' + (w||'70px') + ';padding:.35rem .5rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.5);color:var(--parch);border-radius:2px;font-size:12.5px">'; };
+        const ta  = function(id, ph, h) { return '<textarea id="ct-mf-' + id + '" placeholder="' + (ph||'') + '" style="width:100%;min-height:' + (h||'80px') + ';padding:.4rem .5rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.5);color:var(--parch);border-radius:2px;font-family:\'Crimson Pro\',serif;font-size:12.5px;resize:vertical"></textarea>'; };
+        d7.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0d0a06;z-index:2">' +
+            '<div id="ct-mf-title" style="font-family:\'Cinzel\',serif;color:var(--gold2)">Create Custom Monster</div>' +
+            '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+          '</div>' +
+          '<div style="padding:1rem;overflow-y:auto;max-height:78vh">' +
+            '<input type="hidden" id="ct-mf-oldid">' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('ID (unique, kebab-case)') + inp('id', 'e.g. mind_flayer') + '</div>' +
+              '<div>' + lbl('Name') + inp('name', 'e.g. Mind Flayer') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('Size') + '<select id="ct-mf-size" style="width:100%;padding:.35rem .5rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.5);color:var(--parch);border-radius:2px;font-size:12.5px">' + ['Tiny','Small','Medium','Large','Huge','Gargantuan'].map(function(s) { return '<option>' + s + '</option>'; }).join('') + '</select></div>' +
+              '<div>' + lbl('Type (e.g. humanoid (elf), aberration)') + inp('type') + '</div>' +
+              '<div>' + lbl('Alignment') + inp('alignment', 'e.g. lawful evil') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem">' +
+              '<div>' + lbl('AC *') + num('ac', '15', '100%') + '</div>' +
+              '<div>' + lbl('HP (avg) *') + num('hp', '75', '100%') + '</div>' +
+              '<div>' + lbl('HP formula') + inp('hpFormula', '10d8+30') + '</div>' +
+              '<div>' + lbl('Speed') + inp('speed', '30 ft.') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem">' +
+              '<div>' + lbl('STR') + num('str', '10', '100%') + '</div>' +
+              '<div>' + lbl('DEX') + num('dex', '10', '100%') + '</div>' +
+              '<div>' + lbl('CON') + num('con', '10', '100%') + '</div>' +
+              '<div>' + lbl('INT') + num('int', '10', '100%') + '</div>' +
+              '<div>' + lbl('WIS') + num('wis', '10', '100%') + '</div>' +
+              '<div>' + lbl('CHA') + num('cha', '10', '100%') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('Saves (JSON, e.g. {"con":6})') + inp('saves', '{"con":6}') + '</div>' +
+              '<div>' + lbl('Skills (JSON, e.g. {"perception":5})') + inp('skills', '{"perception":5}') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('Senses') + inp('senses', 'darkvision 60 ft., passive Perception 12') + '</div>' +
+              '<div>' + lbl('Languages') + inp('languages', 'Common, Elvish') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('CR * (string, e.g. "1/2", "5")') + inp('cr', '5') + '</div>' +
+              '<div>' + lbl('XP *') + num('xp', '1800', '100%') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('Damage resistances') + inp('damageResist', 'necrotic') + '</div>' +
+              '<div>' + lbl('Damage immunities') + inp('damageImmune', 'poison') + '</div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+              '<div>' + lbl('Damage vulnerabilities') + inp('damageVuln', 'radiant') + '</div>' +
+              '<div>' + lbl('Condition immunities') + inp('conditionImmune', 'poisoned, charmed') + '</div>' +
+            '</div>' +
+            lbl('Traits (one per line: Name :: Description)') +
+            ta('traits', 'Magic Resistance :: Advantage on saves vs spells.\\nRegeneration :: Regains 10 HP at start of its turn.', '80px') +
+            lbl('Actions (one per line: Name :: Description) — put "Multiattack" first if present') +
+            ta('actions', 'Multiattack :: Makes two attacks.\\nBite :: Melee +7 to hit, reach 5 ft. Hit: 2d6+4 piercing plus 3d6 poison.', '100px') +
+            lbl('Bonus actions (one per line: Name :: Description)') +
+            ta('bonusActions', '', '60px') +
+            lbl('Reactions (one per line: Name :: Description)') +
+            ta('reactions', '', '60px') +
+            lbl('Legendary actions (one per line: Name :: Description)') +
+            ta('legendaryActions', '', '60px') +
+            lbl('Source (your reference — e.g. "MM 2024 p.150" or "custom")') +
+            inp('source', 'MM 2024') +
+            '<div style="margin-top:1rem;text-align:right;position:sticky;bottom:0;background:#0d0a06;padding:.5rem 0;border-top:1px solid rgba(160,128,64,0.35)">' +
+              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:5px 14px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;margin-right:.5rem">Cancel</button>' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._saveMonsterForm()" style="background:var(--gold);color:#0d0a06;border:none;padding:5px 18px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">Save monster</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(d7);
       }
       if (!document.getElementById('ct-dice-dialog')) {
         const d6 = document.createElement('dialog');
