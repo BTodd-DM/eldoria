@@ -1043,14 +1043,6 @@ function renderSheet(charId) {
   html += '<strong>Alignment:</strong> ' + char.alignment;
   if (char.alias) html += '<br><strong>Alias:</strong> ' + char.alias;
   html += '</div>';
-  if (state.editMode) {
-    html += '<div style="margin-top:.4rem;font-size:11px;display:flex;gap:.4rem;align-items:center">' +
-      '<label style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold,#8a6a10);letter-spacing:1px">PORTRAIT URL:</label>' +
-      '<input type="text" value="' + portraitSrc.replace(/"/g, '&quot;') + '" placeholder="https://…" ' +
-      'onchange="setSheetPortrait(\'' + charId + '\', this.value)" ' +
-      'style="flex:1;padding:.25rem .4rem;background:#fff8e8;border:1px solid var(--border,#d0b070);color:var(--ink,#1a1208);border-radius:2px;font-size:11.5px">' +
-    '</div>';
-  }
   html += '</div></div>';
   html += '<div class="sheet-hex"><div class="sheet-hex-label">Armor Class</div><div class="sheet-hex-value">' + char.ac + '</div><div class="sheet-hex-sub">' + (char.acNote || '') + '</div></div>';
   html += renderHpBlock(charId, char, state);
