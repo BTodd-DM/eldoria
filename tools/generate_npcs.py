@@ -114,6 +114,7 @@ def extract_npc(path: Path, fm: dict) -> dict:
         "role": fm.get("player-role", ""),
         "avatar": fm.get("player-avatar", "".join(w[0] for w in str(name).split()[:2]).upper()),
         "avatarBg": fm.get("player-avatar-bg", ""),
+        "portraitUrl": fm.get("player-portrait") or fm.get("portrait") or "",
         "summary": fm.get("player-summary", ""),
         "badges": normalise_badges(fm.get("player-badges")),
         "order": fm.get("player-order", 999),

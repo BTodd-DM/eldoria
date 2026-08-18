@@ -1030,13 +1030,27 @@ function renderSheet(charId) {
     '</div>';
 
   html += '<div class="sheet-header">';
-  html += '<div class="sheet-id-block">';
+  html += '<div class="sheet-id-block" style="display:flex;gap:.75rem;align-items:flex-start">';
+  const portraitSrc = (state.portraitUrl || char.portraitUrl || '').trim();
+  if (portraitSrc) {
+    html += '<div class="sheet-portrait" style="flex:0 0 auto"><img src="' + portraitSrc.replace(/"/g, '&quot;') + '" alt="' + char.name + '" style="width:88px;height:88px;object-fit:cover;border-radius:6px;border:2px solid var(--gold2,#c9a84c);background:#0d0a06" onerror="this.style.display=\'none\'"></div>';
+  }
+  html += '<div style="flex:1 1 auto">';
   html += '<div class="sheet-id-name">' + char.name + '</div>';
   html += '<div class="sheet-id-meta">';
   html += '<strong>Class:</strong> ' + char.className + ' ' + char.level + ' (' + char.subclass + ')<br>';
   html += '<strong>Species:</strong> ' + char.species + ' &nbsp; <strong>Background:</strong> ' + char.background + '<br>';
   html += '<strong>Alignment:</strong> ' + char.alignment;
   if (char.alias) html += '<br><strong>Alias:</strong> ' + char.alias;
+  html += '</div>';
+  if (state.editMode) {
+    html += '<div style="margin-top:.4rem;font-size:11px;display:flex;gap:.4rem;align-items:center">' +
+      '<label style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold,#8a6a10);letter-spacing:1px">PORTRAIT URL:</label>' +
+      '<input type="text" value="' + portraitSrc.replace(/"/g, '&quot;') + '" placeholder="https://…" ' +
+      'onchange="setSheetPortrait(\'' + charId + '\', this.value)" ' +
+      'style="flex:1;padding:.25rem .4rem;background:#fff8e8;border:1px solid var(--border,#d0b070);color:var(--ink,#1a1208);border-radius:2px;font-size:11.5px">' +
+    '</div>';
+  }
   html += '</div></div>';
   html += '<div class="sheet-hex"><div class="sheet-hex-label">Armor Class</div><div class="sheet-hex-value">' + char.ac + '</div><div class="sheet-hex-sub">' + (char.acNote || '') + '</div></div>';
   html += renderHpBlock(charId, char, state);
@@ -1895,6 +1909,10 @@ function toggleCondition(charId, c) { withSheetState(charId, function(s) { if (s
 function setExhaustion(charId, n) { withSheetState(charId, function(s) { if (s.exhaustion === n) s.exhaustion = n - 1; else s.exhaustion = n; }); }
 function toggleInspiration(charId) { withSheetState(charId, function(s) { s.inspiration = !s.inspiration; }); }
 function setSheetNotes(charId, val) { const state = getSheetState(charId); state.notes = val; saveSheetState(charId, state); }
+function setSheetPortrait(charId, url) {
+  const v = String(url || '').trim();
+  withSheetState(charId, function(s) { s.portraitUrl = v; });
+}
 function toggleSpellDetail(spellId) { const el = document.getElementById('spell-detail-' + spellId); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
 function toggleUpcast(spellId) { const el = document.getElementById('spell-upcast-' + spellId); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
 function toggleSpellPrepared(charId, spellId) {

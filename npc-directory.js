@@ -247,11 +247,15 @@
         const cls = 'b-' + (b.color || 'grey');
         return '<span class="badge ' + cls + '">' + escapeHtml(b.text) + '</span>';
       }).join('');
+      const portrait = (npc.portraitUrl || '').trim();
+      const avatarHtml = portrait
+        ? '<div class="npc-avatar" style="padding:0;overflow:hidden;background:#0d0a06"><img src="' + escapeAttr(portrait) + '" alt="' + escapeAttr(npc.name) + '" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.outerHTML=\'' + escapeHtml(npc.avatar || '?').replace(/'/g, '&#39;') + '\'"></div>'
+        : '<div class="npc-avatar"' + avatarBg + '>' + escapeHtml(npc.avatar || '?') + '</div>';
       return [
         '<div class="card" data-npc-id="' + escapeAttr(npc.id) + '" style="position:relative">',
           '<button class="npc-pin-btn" onclick="if(window.NPCDirectory) NPCDirectory._togglePin(\'' + escapeAttr(npc.id) + '\')" title="Pin to top" style="position:absolute;top:6px;right:6px;background:transparent;border:1px solid var(--border);color:var(--ink3);padding:2px 8px;border-radius:3px;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:.5px;cursor:pointer;transition:all .12s;z-index:2">📌 pin</button>',
           '<div class="npc-header">',
-            '<div class="npc-avatar"' + avatarBg + '>' + escapeHtml(npc.avatar || '?') + '</div>',
+            avatarHtml,
             '<div>',
               '<div class="card-title" style="margin:0">' + escapeHtml(npc.name) + '</div>',
               '<div class="card-sub" style="margin:0">' + escapeHtml(npc.role) + '</div>',
