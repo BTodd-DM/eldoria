@@ -2126,11 +2126,53 @@ function arcaneRecovery(charId) {
 }
 
 function shortRest(charId) {
-  if (!confirm('Take a short rest?\n\nThis restores short-rest resources (Warlock slots, Fighter Second Wind, etc.). It does NOT restore HP or spell slots.')) return;
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  const available = char.hitDice.max - (state.hitDiceSpent || 0);
+  const currentHp = state.hp.current;
+  const maxHp = char.hpMax;
+  const missing = maxHp - currentHp;
+  const conMod = sheetAbilityMod(char.abilities.con);
+
+  const msg = 'Take a short rest?\n\n' +
+    'This restores short-rest resources (Warlock slots, Fighter Second Wind, etc.).\n\n' +
+    'Current HP: ' + currentHp + ' / ' + maxHp + (missing > 0 ? ' (missing ' + missing + ')' : ' (full)') + '\n' +
+    'Hit dice available: ' + available + ' × ' + char.hitDice.die + ' (avg ~' +
+    Math.max(1, Math.floor((parseInt(char.hitDice.die.slice(1), 10) + 1) / 2) + conMod) + ' HP each with CON ' + (conMod >= 0 ? '+' : '') + conMod + ')\n\n' +
+    'Click OK to proceed.';
+  if (!confirm(msg)) return;
+
+  let toSpend = 0;
+  if (available > 0 && missing > 0) {
+    const raw = prompt('How many hit dice would you like to spend?\n\n0 = none, ' + available + ' = spend all available.', '0');
+    if (raw === null) return; // cancelled
+    toSpend = Math.max(0, Math.min(available, parseInt(raw, 10) || 0));
+  }
+
+  const rollDetails = [];
+  let totalHealed = 0;
+  const sides = parseInt(char.hitDice.die.slice(1), 10);
   withSheetState(charId, function(s) {
-    (CHARACTERS[charId].resources || []).forEach(function(r) { if (r.recharge === 'short') s.resources[r.id] = r.max; });
+    // Roll each hit die
+    for (let i = 0; i < toSpend; i++) {
+      const roll = 1 + Math.floor(Math.random() * sides);
+      const gain = Math.max(1, roll + conMod);
+      rollDetails.push(char.hitDice.die + ' (' + roll + ')' + (conMod ? ' + ' + (conMod > 0 ? '+' : '') + conMod : '') + ' = ' + gain);
+      s.hp.current = Math.min(char.hpMax, s.hp.current + gain);
+      s.hitDiceSpent = (s.hitDiceSpent || 0) + 1;
+      totalHealed += gain;
+      // Stop early if already at max
+      if (s.hp.current >= char.hpMax) break;
+    }
+    // Restore short-rest resources
+    (char.resources || []).forEach(function(r) { if (r.recharge === 'short') s.resources[r.id] = r.max; });
   });
-  showRollToast('Short Rest', 'Short-rest resources restored', '✦');
+
+  const finalState = getSheetState(charId);
+  const summary = toSpend > 0
+    ? 'Spent ' + rollDetails.length + ' hit dice → +' + totalHealed + ' HP\n(' + rollDetails.join(', ') + ')\n\nHP now ' + finalState.hp.current + ' / ' + maxHp + '.\nShort-rest resources restored.'
+    : 'No hit dice spent. Short-rest resources restored.';
+  showRollToast('Short Rest', summary, toSpend > 0 ? '+' + totalHealed + ' HP' : '✦');
 }
 function longRest(charId) {
   const char = CHARACTERS[charId];
