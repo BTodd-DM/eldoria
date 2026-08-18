@@ -43,6 +43,10 @@
     "monster-homebrew": {
       ".read": true,
       ".write": true
+    },
+    "lich-progression": {
+      ".read": true,
+      ".write": true
     }
   }
 }
