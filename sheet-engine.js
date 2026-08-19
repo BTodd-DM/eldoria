@@ -892,6 +892,73 @@ function closeSheet() {
   else dialog.removeAttribute('open');
   _currentSheetId = null;
 }
+// ---------- Sheet readability preferences (per charId, localStorage) ----------
+function _sheetPrefKey(charId, k) { return 'eldoria-sheet-pref-' + charId + '-' + k; }
+function _sheetGetPref(charId, k, dflt) {
+  try { const v = localStorage.getItem(_sheetPrefKey(charId, k)); return v == null ? dflt : v; }
+  catch (e) { return dflt; }
+}
+function _sheetSetPref(charId, k, v) {
+  try { localStorage.setItem(_sheetPrefKey(charId, k), String(v)); } catch (e) {}
+}
+function _renderSheetOptionsBar(charId, ts, th) {
+  const tsBtn = function(val, label) {
+    const active = (val === ts) ? ' active' : '';
+    return '<button class="opt-btn' + active + '" onclick="setSheetTextSize(\'' + charId + '\',\'' + val + '\')">' + label + '</button>';
+  };
+  const thBtn = function(val, label) {
+    const active = (val === th) ? ' active' : '';
+    return '<button class="opt-btn' + active + '" onclick="setSheetTheme(\'' + charId + '\',\'' + val + '\')">' + label + '</button>';
+  };
+  return '<div class="sheet-options-bar">' +
+    '<span class="opt-label">TEXT</span>' +
+    '<div class="opt-group">' + tsBtn('sm', 'A') + tsBtn('lg', 'A+') + tsBtn('xl', 'A++') + '</div>' +
+    '<span class="opt-label" style="margin-left:.6rem">THEME</span>' +
+    '<div class="opt-group">' + thBtn('dark', '🌙 Dark') + thBtn('paper', '📜 Paper') + '</div>' +
+    '<span class="opt-label" style="margin-left:.6rem">SECTIONS</span>' +
+    '<div class="opt-group">' +
+      '<button class="opt-btn" onclick="toggleAllSheetSections(true)">Expand all</button>' +
+      '<button class="opt-btn" onclick="toggleAllSheetSections(false)">Collapse all</button>' +
+    '</div>' +
+  '</div>';
+}
+function setSheetTextSize(charId, val) {
+  _sheetSetPref(charId, 'textSize', val);
+  const body = document.getElementById('sheet-body');
+  if (body) body.setAttribute('data-text-size', val);
+  refreshSheet(charId);
+}
+function setSheetTheme(charId, val) {
+  _sheetSetPref(charId, 'theme', val);
+  const body = document.getElementById('sheet-body');
+  if (body) body.setAttribute('data-theme', val);
+  refreshSheet(charId);
+}
+function toggleAllSheetSections(open) {
+  document.querySelectorAll('#sheet-body details.sheet-collapsible').forEach(function(d) {
+    if (open) d.setAttribute('open', ''); else d.removeAttribute('open');
+    // Persist per section
+    const key = d.getAttribute('data-collapse-key');
+    if (key) { try { localStorage.setItem(key, open ? '1' : '0'); } catch (e) {} }
+  });
+}
+// Wraps a rendered section in a collapsible details element. Persists
+// open/closed state per (charId, sectionId) in localStorage.
+function _wrapCollapsible(charId, sectionId, label, contentHtml, defaultOpen) {
+  const key = 'eldoria-sheet-sec-' + charId + '-' + sectionId;
+  let openAttr = defaultOpen === false ? '' : ' open';
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved === '1') openAttr = ' open';
+    else if (saved === '0') openAttr = '';
+  } catch (e) {}
+  return '<details class="sheet-collapsible" data-collapse-key="' + key + '" data-section="' + sectionId + '"' + openAttr +
+    ' ontoggle="try{localStorage.setItem(this.getAttribute(\'data-collapse-key\'), this.open?\'1\':\'0\')}catch(e){}">' +
+    '<summary>' + label + '</summary>' +
+    '<div class="sheet-collapsible-body">' + contentHtml + '</div>' +
+    '</details>';
+}
+
 function refreshSheet(charId) {
   const body = document.getElementById('sheet-body');
   if (!body) return;
@@ -1015,7 +1082,17 @@ function renderSheet(charId) {
   const state = getSheetState(charId);
   const body = document.getElementById('sheet-body');
   if (!body) return;
+
+  // Apply saved readability preferences to #sheet-body (persisted per charId).
+  const prefTs = _sheetGetPref(charId, 'textSize', 'sm');
+  const prefTh = _sheetGetPref(charId, 'theme', 'dark');
+  body.setAttribute('data-text-size', prefTs);
+  body.setAttribute('data-theme', prefTh);
+
   let html = '';
+
+  // Sheet Options toolbar — text size, theme, collapse-all/expand-all.
+  html += _renderSheetOptionsBar(charId, prefTs, prefTh);
 
   // Rest buttons at the very top of the sheet (Phase 4B rev — user preference)
   // Update 15: Arcane Recovery button appears for characters whose classFeatures include it.
@@ -1067,20 +1144,20 @@ function renderSheet(charId) {
   html += '</div>';
 
   html += '<div>';
-  html += renderWeaponsSection(charId, char);
-  html += renderResourcesSection(charId, char, state);
-  html += renderFeaturesSection(char);
-  html += renderConditionsSection(charId, state);
+  html += _wrapCollapsible(charId, 'weapons',    '⚔ Weapons',           renderWeaponsSection(charId, char),      true);
+  html += _wrapCollapsible(charId, 'resources',  '⚡ Resources',          renderResourcesSection(charId, char, state), true);
+  html += _wrapCollapsible(charId, 'features',   '★ Features & Traits',  renderFeaturesSection(char),             false);
+  html += _wrapCollapsible(charId, 'conditions', '⊗ Conditions',         renderConditionsSection(charId, state),  false);
   html += '</div>';
 
   html += '<div>';
-  if (char.spellcasting) html += renderSpellsSection(charId, char, state);
-  html += renderAttunementSection(charId, state);
-  html += renderInventorySection(charId, char, state);
-  html += renderCurrencySection(charId, state);
-  html += renderEquipmentSection(char);
-  html += renderBioSection(charId, char, state);
-  html += renderCharacterExtras(char);
+  if (char.spellcasting) html += _wrapCollapsible(charId, 'spells', '✦ Spells', renderSpellsSection(charId, char, state), true);
+  html += _wrapCollapsible(charId, 'attunement', '◈ Attunement',   renderAttunementSection(charId, state),  false);
+  html += _wrapCollapsible(charId, 'inventory',  '🎒 Inventory',    renderInventorySection(charId, char, state), false);
+  html += _wrapCollapsible(charId, 'currency',   '💰 Currency',     renderCurrencySection(charId, state),    false);
+  html += _wrapCollapsible(charId, 'equipment',  '🛡 Equipment',    renderEquipmentSection(char),            false);
+  html += _wrapCollapsible(charId, 'bio',        '📖 Biography',    renderBioSection(charId, char, state),   false);
+  html += _wrapCollapsible(charId, 'extras',     '✧ Character Extras', renderCharacterExtras(char),          false);
   html += '</div>';
 
   html += '</div>';

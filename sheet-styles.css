@@ -490,3 +490,156 @@
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* =====================================================================
+   READABILITY PASS — text-size toggle, paper theme, spacing,
+   touch targets, collapsible sections. All scoped inside .sheet-body
+   so it can't leak into the DM dashboard.
+   ===================================================================== */
+
+/* Base spacing bump — subtle line-height increase applies at all sizes. */
+.sheet-body { line-height: 1.55; }
+.sheet-body p { line-height: 1.65; }
+.sheet-id-meta { line-height: 1.6 !important; }
+
+/* --- Text-size toggle. data-text-size: sm (default) | lg | xl --- */
+.sheet-body[data-text-size="lg"] { font-size: 15px; }
+.sheet-body[data-text-size="lg"] .sheet-hex-value { font-size: 30px; }
+.sheet-body[data-text-size="lg"] .sheet-id-name { font-size: 19px; }
+.sheet-body[data-text-size="lg"] .sheet-id-meta { font-size: 13.5px !important; }
+.sheet-body[data-text-size="lg"] .card-body,
+.sheet-body[data-text-size="lg"] .sheet-hp-current { font-size: 21px; }
+.sheet-body[data-text-size="lg"] .sheet-hex-sub,
+.sheet-body[data-text-size="lg"] .sheet-temp-row,
+.sheet-body[data-text-size="lg"] .sheet-ds-row { font-size: 12.5px; }
+
+.sheet-body[data-text-size="xl"] { font-size: 17px; }
+.sheet-body[data-text-size="xl"] .sheet-hex-value { font-size: 34px; }
+.sheet-body[data-text-size="xl"] .sheet-id-name { font-size: 22px; }
+.sheet-body[data-text-size="xl"] .sheet-id-meta { font-size: 15px !important; }
+.sheet-body[data-text-size="xl"] .card-body,
+.sheet-body[data-text-size="xl"] .sheet-hp-current { font-size: 24px; }
+.sheet-body[data-text-size="xl"] .sheet-hex-sub,
+.sheet-body[data-text-size="xl"] .sheet-temp-row,
+.sheet-body[data-text-size="xl"] .sheet-ds-row { font-size: 14px; }
+
+/* --- Paper theme --- */
+.sheet-body[data-theme="paper"] {
+  background: #f4ead4 !important;
+  color: #2a1a08;
+}
+.sheet-body[data-theme="paper"] .sheet-id-name,
+.sheet-body[data-theme="paper"] .sheet-hex-value,
+.sheet-body[data-theme="paper"] .sheet-hp-current { color: #6a4a10; }
+.sheet-body[data-theme="paper"] .sheet-hp-label,
+.sheet-body[data-theme="paper"] .sheet-id-meta,
+.sheet-body[data-theme="paper"] .sheet-hex-sub,
+.sheet-body[data-theme="paper"] .sheet-temp-row,
+.sheet-body[data-theme="paper"] .sheet-ds-row,
+.sheet-body[data-theme="paper"] .sheet-hex .sheet-hex-label { color: #6a5030; }
+.sheet-body[data-theme="paper"] .sheet-id-meta strong { color: #4a3018; }
+.sheet-body[data-theme="paper"] .sheet-hex,
+.sheet-body[data-theme="paper"] .card,
+.sheet-body[data-theme="paper"] .sheet-hp-block {
+  background: #fbf3dd !important;
+  border-color: #b89a5a !important;
+  color: #2a1a08;
+}
+.sheet-body[data-theme="paper"] .card-title { color: #6a4a10; }
+.sheet-body[data-theme="paper"] .card-sub { color: #7a5f30; }
+.sheet-body[data-theme="paper"] .card-body { color: #2a1a08; }
+.sheet-body[data-theme="paper"] input,
+.sheet-body[data-theme="paper"] textarea,
+.sheet-body[data-theme="paper"] select {
+  background: #fff8e5;
+  color: #2a1a08;
+  border-color: #b89a5a;
+}
+.sheet-body[data-theme="paper"] button.action-btn,
+.sheet-body[data-theme="paper"] .sheet-hd-roll {
+  background: #f3e6bd;
+  color: #4a3018;
+  border-color: #a88240;
+}
+
+/* --- Bigger touch targets on narrow viewports --- */
+@media (max-width: 768px) {
+  .sheet-body button,
+  .sheet-body .sheet-hd-roll,
+  .sheet-body .sheet-cond-row,
+  .sheet-body .sheet-ex-box { min-height: 34px; }
+  .sheet-body input[type="number"],
+  .sheet-body input[type="text"] { min-height: 34px; padding: .35rem .5rem; }
+  .sheet-body .sheet-hex { padding: .5rem .6rem; }
+  .sheet-body .sheet-cond-row input[type="checkbox"] { width: 18px; height: 18px; }
+}
+
+/* --- Collapsible section wrapper --- */
+.sheet-body details.sheet-collapsible {
+  border: 1px solid rgba(154,122,26,0.35);
+  border-radius: 4px;
+  margin-bottom: .5rem;
+  background: rgba(20,14,6,0.35);
+}
+.sheet-body[data-theme="paper"] details.sheet-collapsible {
+  background: #f9efd0;
+  border-color: #c8a860;
+}
+.sheet-body details.sheet-collapsible > summary {
+  cursor: pointer;
+  padding: .35rem .6rem;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--gold2);
+  text-transform: uppercase;
+  user-select: none;
+}
+.sheet-body[data-theme="paper"] details.sheet-collapsible > summary { color: #6a4a10; }
+.sheet-body details.sheet-collapsible > summary:hover { background: rgba(154,122,26,0.10); }
+.sheet-body details.sheet-collapsible > summary::marker { color: var(--gold2); }
+.sheet-body details.sheet-collapsible > .sheet-collapsible-body { padding: .5rem .75rem 0.75rem; }
+
+/* --- Sheet options toolbar (rendered at top of sheet by sheet-engine) --- */
+.sheet-options-bar {
+  display: flex; flex-wrap: wrap; gap: .4rem; align-items: center;
+  padding: .35rem .5rem; margin-bottom: .75rem;
+  border: 1px solid rgba(154,122,26,0.35);
+  border-radius: 4px;
+  background: rgba(20,14,6,0.35);
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+}
+.sheet-body[data-theme="paper"] .sheet-options-bar {
+  background: #f9efd0;
+  border-color: #c8a860;
+  color: #4a3018;
+}
+.sheet-options-bar .opt-group { display: flex; gap: 2px; align-items: center; }
+.sheet-options-bar .opt-btn {
+  background: transparent;
+  border: 1px solid rgba(154,122,26,0.5);
+  color: var(--parch3);
+  padding: 3px 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+}
+.sheet-options-bar .opt-btn:hover { background: rgba(154,122,26,0.15); color: var(--parch); }
+.sheet-options-bar .opt-btn.active {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+}
+.sheet-body[data-theme="paper"] .sheet-options-bar .opt-btn {
+  color: #6a5030;
+  border-color: #a88240;
+}
+.sheet-body[data-theme="paper"] .sheet-options-bar .opt-btn.active {
+  background: #a88240;
+  color: #fff;
+}
+.sheet-options-bar .opt-label {
+  color: var(--parch4);
+  padding-right: 4px;
+}
+.sheet-body[data-theme="paper"] .sheet-options-bar .opt-label { color: #7a5f30; }
