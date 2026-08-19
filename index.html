@@ -1715,6 +1715,12 @@ body {
   <div class="tab-inner">
     <button class="tab-btn active" onclick="showTab('p-gods',this)">✨ Pantheon</button>
     <button class="tab-btn" onclick="showTab('p-history',this)">🏛 History</button>
+    <button class="tab-btn" onclick="showTab('p-knowledge',this);if(window.PantheonKnowledge) PantheonKnowledge.renderDM('pantheon-knowledge-tracker')">🎓 Party Knowledge</button>
+  </div>
+
+  <div id="tab-p-knowledge" style="display:none">
+    <div class="sec-title">Party's Pantheon Knowledge</div>
+    <div id="pantheon-knowledge-tracker"></div>
   </div>
 
   <div id="tab-p-gods">
@@ -2015,6 +2021,8 @@ body {
 <script src="lich-tracker.js"></script>
 <script src="faction-tracker.js"></script>
 <script src="downtime-tracker.js"></script>
+<script src="pantheon-data.js"></script>
+<script src="pantheon-knowledge.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>

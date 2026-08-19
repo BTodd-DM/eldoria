@@ -887,35 +887,7 @@ body {
       What every literate Eldorian would know about the gods. Temple lessons, common folklore, priestly instruction. Names, domains, symbols.
     </div>
 
-    <div class="sec-title">The Creator Gods</div>
-    <div class="card-body" style="margin-bottom:.5rem;font-size:13px">Two gods shaped the world together at the beginning of time.</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem;margin-bottom:1.5rem">
-      <div class="card" style="border-left:3px solid var(--gold)">
-        <div class="card-title" style="color:var(--gold)">Luminos</div>
-        <div class="card-sub">Neutral Good · Creator</div>
-        <div class="card-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, teachers, and any who work to bring understanding into dark places. Symbol: a radiant orb wreathed in flowing light.</div>
-      </div>
-      <div class="card" style="border-left:3px solid var(--teal)">
-        <div class="card-title" style="color:var(--teal)">Veridania</div>
-        <div class="card-sub">Neutral · Creator</div>
-        <div class="card-body">Nature's balance, life, the interconnection of all living things. Honoured by druids, healers, and naturalists. Sylvarian communities revere her alongside Yggdris. Symbol: a blooming flower with intertwining roots.</div>
-      </div>
-    </div>
-
-    <div class="sec-title">The Children</div>
-    <div class="card-body" style="margin-bottom:.5rem;font-size:13px">Ten gods born of the Creators, each holding a domain of the world.</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem;margin-bottom:1.5rem">
-      <div class="card"><div class="card-title">Aetherius</div></div>
-      <div class="card"><div class="card-title">Solara</div></div>
-      <div class="card"><div class="card-title">Korvain</div></div>
-      <div class="card"><div class="card-title">Thalasia</div></div>
-      <div class="card"><div class="card-title">Mor'nyx</div></div>
-      <div class="card"><div class="card-title">Sirenna</div></div>
-      <div class="card"><div class="card-title">Yggdris</div></div>
-      <div class="card"><div class="card-title">Lunara</div></div>
-      <div class="card"><div class="card-title">Sylvana</div></div>
-      <div class="card"><div class="card-title">Mizura</div></div>
-    </div>
+    <div id="pantheon-player-container"></div>
   </div>
 
   <!-- ---------- HISTORY ---------- -->
@@ -1038,6 +1010,10 @@ function show(id, btn) {
   document.getElementById('panel-' + id).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0, 0);
+  // Lazy-render dynamic panels when they become visible.
+  if (id === 'lore' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
+    PantheonKnowledge.renderPlayer('pantheon-player-container');
+  }
 }
 
 function showLoreTab(id, btn) {
@@ -1053,6 +1029,10 @@ function showLoreTab(id, btn) {
   if (btn) {
     btn.style.borderColor = 'var(--gold)';
     btn.style.color = 'var(--gold)';
+  }
+  // Render pantheon into the dynamic container when the tab becomes visible.
+  if (id === 'pantheon' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
+    PantheonKnowledge.renderPlayer('pantheon-player-container');
   }
 }
 
@@ -1200,6 +1180,8 @@ function updateSheetUI(charKey) {
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
 <script src="npc-directory.js"></script>
+<script src="pantheon-data.js"></script>
+<script src="pantheon-knowledge.js"></script>
 <script src="players-auth.js"></script>
 <script>
 (function bootstrapPlayerIdentity() {
