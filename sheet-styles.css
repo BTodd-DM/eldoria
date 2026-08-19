@@ -770,3 +770,26 @@
 .sheet-body[data-theme="custom"] .sheet-ability-list,
 .sheet-body[data-theme="custom"] .sheet-weapon-table th,
 .sheet-body[data-theme="custom"] .sheet-weapon-table td { color: var(--sheet-custom-fg, #f2e8d0) !important; }
+
+/* --- Heroic Inspiration theme-aware active state.
+   Base state uses --gold3 which is invisible on paper backgrounds. --- */
+.sheet-body[data-theme="paper"] .sheet-inspiration-star { color: #a88240; }
+.sheet-body[data-theme="paper"] .sheet-inspiration.on {
+  border-color: #8a6a10 !important;
+  background: rgba(138,106,16,0.20) !important;
+  box-shadow: 0 0 10px rgba(138,106,16,0.35);
+}
+.sheet-body[data-theme="paper"] .sheet-inspiration.on .sheet-inspiration-star { color: #8a6a10; text-shadow: 0 0 4px rgba(138,106,16,0.4); }
+
+.sheet-body[data-theme="custom"] .sheet-inspiration-star {
+  color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 55%, var(--sheet-custom-fg, #f2e8d0));
+}
+.sheet-body[data-theme="custom"] .sheet-inspiration.on {
+  border-color: var(--sheet-custom-accent, #c9a84c) !important;
+  background: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 20%, transparent) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 45%, transparent);
+}
+.sheet-body[data-theme="custom"] .sheet-inspiration.on .sheet-inspiration-star {
+  color: var(--sheet-custom-accent, #c9a84c);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 50%, transparent);
+}
