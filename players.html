@@ -724,7 +724,7 @@ body {
       <div class="char-sub">Tiefling (Chthonic) · Wizard (Illusionist) · Level 6</div>
       <div class="char-body">A scholar from the Aurora Peaks who found his place at Aeloria's Scholars' Circle. Illusionist's mind, careful hands. Quietly gifted, quietly haunted.</div>
       <div class="char-actions">
-        <a href="sheet.html?id=sylas" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
+        <a href="sheet.html?id=sylas&from=player" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
         <a href="https://www.dndbeyond.com/characters" target="_blank" class="char-btn" data-dndb="sylas">🔗 D&amp;D Beyond</a>
         <label class="char-file-label">📎 Upload Sheet
           <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" onchange="uploadSheet('sylas', this)">
@@ -1206,7 +1206,7 @@ function updateSheetUI(charKey) {
     // Rewrite the "open my sheet" link (if any) to point at the identity's sheet.
     if (identity.sheetId) {
       document.querySelectorAll('[data-my-sheet]').forEach(function(a) {
-        a.setAttribute('href', 'sheet.html?id=' + encodeURIComponent(identity.sheetId));
+        a.setAttribute('href', 'sheet.html?id=' + encodeURIComponent(identity.sheetId) + '&from=player');
       });
     }
     // DM-only reveal (mirror of index.html dm-only pattern): unhide any .dm-only nodes.

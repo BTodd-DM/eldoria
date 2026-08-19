@@ -126,10 +126,25 @@ body {
 <body>
 
 <div class="sheet-page-header">
-  <a href="index.html" class="sheet-back-btn">← BACK TO DASHBOARD</a>
+  <a href="index.html" class="sheet-back-btn" id="sheet-back-btn">← BACK TO DASHBOARD</a>
   <div class="sheet-page-title" id="sheet-page-title">Character Sheet</div>
   <span class="sheet-dm-badge" id="sheet-dm-badge">DM</span>
 </div>
+<script>
+  // If opened from the player site, redirect the back button there instead.
+  (function() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('from') === 'player') {
+        const btn = document.getElementById('sheet-back-btn');
+        if (btn) {
+          btn.setAttribute('href', 'players.html');
+          btn.textContent = '← BACK TO PLAYER SITE';
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
 
 <div class="sheet-standalone-body">
   <div id="sheet-body" class="sheet-body">
