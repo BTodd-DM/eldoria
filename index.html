@@ -451,6 +451,51 @@ body {
 .stat-label2 { color: var(--gold2); font-weight: 600; }
 
 /* DEITY GRID */
+/* --- DM site text-size + theme controls --- */
+.dm-options-bar {
+  display: inline-flex; gap: .2rem; align-items: center;
+  padding: 2px 6px; margin-right: .5rem;
+  border: 1px solid rgba(154,122,26,0.45);
+  border-radius: 3px;
+  background: rgba(20,14,6,0.4);
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px;
+}
+.dm-options-bar .dm-opt-label { color: var(--parch4); padding: 0 3px; }
+.dm-options-bar .dm-opt-btn {
+  background: transparent;
+  border: 1px solid rgba(154,122,26,0.45);
+  color: var(--parch3);
+  padding: 2px 7px; border-radius: 2px; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px;
+}
+.dm-options-bar .dm-opt-btn:hover { color: var(--parch); background: rgba(154,122,26,0.15); }
+.dm-options-bar .dm-opt-btn.active {
+  background: var(--gold); color: var(--ink); border-color: var(--gold);
+}
+
+body[data-dm-text-size="sm"] { zoom: 1.00; }
+body[data-dm-text-size="lg"] { zoom: 1.12; }
+body[data-dm-text-size="xl"] { zoom: 1.25; }
+
+/* Light theme: use CSS invert to flip the whole dashboard, then
+   re-invert media so images and iframes still render correctly. Also
+   preserve hue on the (many) coloured badges by hue-rotate. */
+body[data-dm-theme="light"] {
+  filter: invert(0.92) hue-rotate(180deg);
+  background: #f4ead4;
+}
+body[data-dm-theme="light"] img,
+body[data-dm-theme="light"] iframe,
+body[data-dm-theme="light"] video,
+body[data-dm-theme="light"] svg,
+body[data-dm-theme="light"] .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* Keep the DM options bar readable in either mode */
+body[data-dm-theme="light"] .dm-options-bar .dm-opt-btn.active {
+  background: #6a4a10; color: #fff;
+}
+
 .deity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .5rem; }
 details.deity-card { padding: 0 !important; }
 details.deity-card > summary { list-style: none; display: flex; align-items: baseline; gap: .35rem; padding: .35rem .55rem; user-select: none; }
@@ -588,6 +633,15 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
     <div class="site-meta">DM Command Centre <button onclick="if(window.DMSearch) DMSearch.open()" title="Global search (Cmd/Ctrl-K)" style="margin-left:1rem;background:transparent;border:1px solid var(--gold2);color:var(--gold2);padding:3px 12px;border-radius:3px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;cursor:pointer">🔍 Search &nbsp;<span style="opacity:.6;font-size:9px">⌘K</span></button></div>
   </div>
   <div class="header-actions">
+    <div class="dm-options-bar" id="dm-options-bar">
+      <span class="dm-opt-label">TEXT</span>
+      <button class="dm-opt-btn" data-dm-ts="sm" onclick="setDMTextSize('sm')">A</button>
+      <button class="dm-opt-btn" data-dm-ts="lg" onclick="setDMTextSize('lg')">A+</button>
+      <button class="dm-opt-btn" data-dm-ts="xl" onclick="setDMTextSize('xl')">A++</button>
+      <span class="dm-opt-label" style="margin-left:.5rem">THEME</span>
+      <button class="dm-opt-btn" data-dm-th="dark"  onclick="setDMTheme('dark')">🌙</button>
+      <button class="dm-opt-btn" data-dm-th="light" onclick="setDMTheme('light')">📜</button>
+    </div>
     <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-roll20">Roll20 ↗</a>
     <a href="players.html" target="_blank" class="btn-players">Player View ↗</a>
   </div>
@@ -2060,6 +2114,39 @@ function applyCharacterUrls() {
 const PW = 'eldoria2dm';
 const AUTH_KEY = 'eldoria-dm-auth';
 const AUTH_DAYS = 30;
+
+// DM site text-size + theme (persisted in localStorage, applied on load).
+function _dmGetPref(k, dflt) { try { const v = localStorage.getItem('eldoria-dm-pref-' + k); return v == null ? dflt : v; } catch (e) { return dflt; } }
+function _dmSetPref(k, v)    { try { localStorage.setItem('eldoria-dm-pref-' + k, String(v)); } catch (e) {} }
+function _dmSyncOptionButtons() {
+  const ts = _dmGetPref('textSize', 'sm');
+  const th = _dmGetPref('theme', 'dark');
+  document.querySelectorAll('.dm-options-bar .dm-opt-btn').forEach(function(b) {
+    const bt = b.getAttribute('data-dm-ts');
+    const bh = b.getAttribute('data-dm-th');
+    b.classList.toggle('active', (bt && bt === ts) || (bh && bh === th));
+  });
+}
+function setDMTextSize(v) {
+  _dmSetPref('textSize', v);
+  document.body.setAttribute('data-dm-text-size', v);
+  _dmSyncOptionButtons();
+}
+function setDMTheme(v) {
+  _dmSetPref('theme', v);
+  document.body.setAttribute('data-dm-theme', v);
+  _dmSyncOptionButtons();
+}
+// Apply immediately on page load (before auth so re-lock still shows correct theme).
+(function _applyDMPrefsOnLoad() {
+  const apply = function() {
+    document.body.setAttribute('data-dm-text-size', _dmGetPref('textSize', 'sm'));
+    document.body.setAttribute('data-dm-theme', _dmGetPref('theme', 'dark'));
+    _dmSyncOptionButtons();
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+})();
 
 function unlockApp() {
   document.getElementById('auth-screen').style.display = 'none';
