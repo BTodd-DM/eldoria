@@ -597,6 +597,7 @@ body {
   <button class="nav-btn" onclick="show('characters',this)">Characters</button>
   <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
   <button class="nav-btn" onclick="show('locations',this)">🌍 World Map</button>
+  <button class="nav-btn" onclick="show('lore',this)">📖 Lore</button>
   <button class="nav-btn" onclick="show('notes',this)">Your Notes</button>
 </nav>
 
@@ -873,6 +874,119 @@ body {
   </details>
 </div>
 
+<!-- ===== LORE (player-facing — simplified pantheon + history) ===== -->
+<div id="panel-lore" class="panel">
+  <div class="tab-inner" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;border-bottom:1px solid var(--border2);padding-bottom:.5rem">
+    <button class="tab-btn active" onclick="showLoreTab('pantheon',this)" style="background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.35rem 1rem;border-radius:3px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">✨ Pantheon</button>
+    <button class="tab-btn" onclick="showLoreTab('history',this)" style="background:transparent;border:1px solid var(--border);color:var(--ink3);padding:.35rem 1rem;border-radius:3px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🏛 History</button>
+  </div>
+
+  <!-- ---------- PANTHEON ---------- -->
+  <div id="lore-tab-pantheon">
+    <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+      What every literate Eldorian would know about the gods. Temple lessons, common folklore, priestly instruction. Names, domains, symbols.
+    </div>
+
+    <div class="sec-title">The Creator Gods</div>
+    <div class="card-body" style="margin-bottom:.5rem;font-size:13px">Two gods shaped the world together at the beginning of time.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem;margin-bottom:1.5rem">
+      <div class="card" style="border-left:3px solid var(--gold)">
+        <div class="card-title" style="color:var(--gold)">Luminos</div>
+        <div class="card-sub">Neutral Good · Creator</div>
+        <div class="card-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, teachers, and any who work to bring understanding into dark places. Symbol: a radiant orb wreathed in flowing light.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--teal)">
+        <div class="card-title" style="color:var(--teal)">Veridania</div>
+        <div class="card-sub">Neutral · Creator</div>
+        <div class="card-body">Nature's balance, life, the interconnection of all living things. Honoured by druids, healers, and naturalists. Sylvarian communities revere her alongside Yggdris. Symbol: a blooming flower with intertwining roots.</div>
+      </div>
+    </div>
+
+    <div class="sec-title">The Children</div>
+    <div class="card-body" style="margin-bottom:.5rem;font-size:13px">Ten gods born of the Creators, each holding a domain of the world.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.5rem;margin-bottom:1.5rem">
+      <div class="card"><div class="card-title">Aetherius</div><div class="card-sub">Lawful Good</div><div class="card-body">Wisdom, prophecy, the stars. State deity of the Aurum Dominion. Symbol: a starburst.</div></div>
+      <div class="card"><div class="card-title">Solara</div><div class="card-sub">Lawful Good</div><div class="card-body">Light, sun, rebirth. Paladins and healers. Revered by the nomads of the Ember Wastes. Symbol: a golden sunburst.</div></div>
+      <div class="card"><div class="card-title">Korvain</div><div class="card-sub">Lawful Neutral</div><div class="card-body">Craftsmanship, invention, the dwarven peoples. Chief god of the Celestium Clans. Symbol: anvil and hammer.</div></div>
+      <div class="card"><div class="card-title">Thalasia</div><div class="card-sub">Lawful Neutral</div><div class="card-body">Arcane magic and the elemental forces. Central to the mages of the Aurum Dominion. Symbol: a crystal marked with elemental sigils.</div></div>
+      <div class="card"><div class="card-title">Mor'nyx</div><div class="card-sub">Lawful Neutral</div><div class="card-body">Death, the afterlife, the protection of the dead. Chief god of the Ember Wastes tombs. Symbol: an ankh with winged scarab.</div></div>
+      <div class="card"><div class="card-title">Sirenna</div><div class="card-sub">Neutral</div><div class="card-body">The sea, protection, the natural world's harsher edges. Worshipped by the Reptilian Tribes and the Pirate Confederacy. Symbol: a coiled sea serpent.</div></div>
+      <div class="card"><div class="card-title">Yggdris</div><div class="card-sub">Neutral Good</div><div class="card-body">Nature, balance, the life cycle. Worshipped by the Sylvarian Enclaves, druids, and rangers. Symbol: intertwined trees.</div></div>
+      <div class="card"><div class="card-title">Lunara</div><div class="card-sub">Neutral</div><div class="card-body">The moon, dreams, hidden truths. The Order of the Silver Crescent is devoted to her. Symbol: a crescent moon.</div></div>
+      <div class="card"><div class="card-title">Sylvana</div><div class="card-sub">Chaotic Good</div><div class="card-body">Travel, air, communication. Patron of the nomad clans of the Ember Wastes. Symbol: a wind-carried feather.</div></div>
+      <div class="card"><div class="card-title">Mizura</div><div class="card-sub">Chaotic Neutral</div><div class="card-body">Secrets, illusions, trickery. Patron of rogues, spies, and quiet cults. Symbol: a two-faced mask.</div></div>
+    </div>
+
+    <div class="sec-title">The Betrayer Gods</div>
+    <div style="background:rgba(120,20,20,0.08);border:1px solid rgba(120,20,20,0.4);border-radius:3px;padding:.75rem 1rem;margin-bottom:.75rem;color:var(--ink);font-size:13px;line-height:1.6">
+      Two of the Children turned against the others at the end of the First Age. Their names are known — spoken quietly, with a warding gesture — but their worship is forbidden throughout the civilised lands.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.6rem">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="card-title" style="color:var(--red)">Astronar — the Twilight Sovereign</div>
+        <div class="card-sub">Lawful Evil · Darkness, deception, domination</div>
+        <div class="card-body">Said to work through secrets, whispers, and those who believe themselves free. Blamed in old stories for the coming of the Dark Reign. Symbol: an eclipse shrouding a sun.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="card-title" style="color:var(--red)">Naturus — the Rotting Entropy</div>
+        <div class="card-sub">Chaotic Evil · Decay, corruption, ruin</div>
+        <div class="card-body">Said to rot what he touches. His cults hide in wild places and gather beneath the sign of the withered tree. Priests warn against travelling through corrupted lands after nightfall.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- HISTORY ---------- -->
+  <div id="lore-tab-history" style="display:none">
+    <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+      The four ages of Eldoria as taught in temples and told at hearths. Click any age to read.
+    </div>
+
+    <details class="card gold" style="margin-bottom:.75rem" open>
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold);font-weight:700;font-size:13px">1st Age — Creation and Harmony</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>Luminos and Veridania shaped Eldoria together. Luminos brought light, order, and the celestial realms; Veridania infused it with life, forests, rivers, and the balance of the natural world.</p>
+        <p>They gave rise to the Children — ten lesser gods, each holding a domain. For a long age, the Pantheon lived in harmony.</p>
+        <p>But two of the Children grew restless. Astronar coveted the power of secrets. Naturus hungered to spread decay. Slowly, through whispers and cunning, they turned others against the Creators.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--red);font-weight:700;font-size:13px">The Usurpation — End of the 1st Age</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>Astronar and Naturus rose against Luminos and Veridania. The battle scarred the world. The Creators were driven into hiding; their power was diminished but not destroyed.</p>
+        <p>In the shadow of that war, the Dwarven clans of the Underpeak were shattered by pressure from the Aurum Dominion. Those who refused submission began the great exodus — the ancestors of what would become the <strong>Celestium Clans</strong> beneath the Celestial Plateau.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--red);font-weight:700;font-size:13px">2nd Age — The Dark Reign</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>Astronar and Naturus ruled openly. The sun's light was dimmed and a long twilight settled across Eldoria. Forests twisted into thorn-mazes; rivers ran foul; predator and prey lost their balance.</p>
+        <p>Fear spread. Cults of the Twilight Sovereign and the Rotting Entropy flourished. Loyalty was demanded and dissent punished.</p>
+        <p>In the marshes to the west, the <strong>Lethraliri</strong> civilisation endured — a people of ice and water, builders of stilt-cities and communers with elemental spirits. Their role in the Age's end became legend.</p>
+        <p>In hidden places, followers of Luminos and Veridania whispered to one another through dreams. Heroes rose beneath the banner of the returning light.</p>
+      </div>
+    </details>
+
+    <details class="card gold" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold);font-weight:700;font-size:13px">The Reclamation — End of the 2nd Age</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>Luminos and Veridania returned. With the Children who had remained loyal, and with mortal heroes who had never given up hope, they cast Astronar and Naturus down. The Betrayers were bound — the priests say — beyond the reach of mortals, and the sun rose over Eldoria for the first time in seven centuries.</p>
+        <p>Much was lost. Much was rebuilt. The current age began.</p>
+      </div>
+    </details>
+
+    <details class="card" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--ink);font-weight:700;font-size:13px">3rd Age — Reclamation and Reforging (present day)</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The age you live in. Civilisations have rebuilt. The <strong>Aelorian Territories</strong>, the <strong>Aurum Dominion</strong>, the <strong>Celestium Clans</strong>, the <strong>Sylvarian Enclaves</strong>, the Ember Wastes nomads, the Reptilian Tribes and the Pirate Confederacy all hold their own patches of the world.</p>
+        <p>Trade routes have reopened. Temples of Luminos have been raised again in most cities — though not all: in the Aurum Dominion, Luminos's faith is quietly suppressed by the state.</p>
+        <p>But the corruption Naturus left in the world was never fully cleansed. In the deep places, in the marshes, in the wild forests — something still stirs.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
 <!-- ===== NOTES ===== -->
 <div id="panel-notes" class="panel">
   <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
@@ -941,6 +1055,22 @@ function show(id, btn) {
   document.getElementById('panel-' + id).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0, 0);
+}
+
+function showLoreTab(id, btn) {
+  ['pantheon','history'].forEach(function(t) {
+    const el = document.getElementById('lore-tab-' + t);
+    if (el) el.style.display = (t === id) ? '' : 'none';
+  });
+  document.querySelectorAll('#panel-lore .tab-btn').forEach(function(b) {
+    b.style.background = 'transparent';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--ink3)';
+  });
+  if (btn) {
+    btn.style.borderColor = 'var(--gold)';
+    btn.style.color = 'var(--gold)';
+  }
 }
 
 // Player Notes — saved to localStorage
