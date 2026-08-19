@@ -59,6 +59,14 @@
     "pantheon-knowledge": {
       ".read": true,
       ".write": true
+    },
+    "handouts": {
+      ".read": true,
+      ".write": true
+    },
+    "faction-details": {
+      ".read": true,
+      ".write": true
     }
   }
 }

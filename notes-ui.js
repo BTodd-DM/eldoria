@@ -175,8 +175,8 @@ function _emptyMessage(state, totalCount, visibleCount) {
 
 function _renderNotesHeader(canCreate) {
   return '<div class="wc-notes-header">' +
-    '<div class="wc-notes-title">Notes</div>' +
-    '<button class="wc-notes-newbtn" onclick="notesWidgetStartCreate()">＋ New Note</button>' +
+    '<div class="wc-notes-title">Messages</div>' +
+    '<button class="wc-notes-newbtn" onclick="notesWidgetStartCreate()">＋ New Message</button>' +
     '</div>';
 }
 

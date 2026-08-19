@@ -491,8 +491,21 @@ body[data-dm-theme="light"] svg,
 body[data-dm-theme="light"] .no-invert {
   filter: invert(1) hue-rotate(180deg);
 }
+/* Custom = invert light theme with user-chosen hue tint. */
+body[data-dm-theme="custom"] {
+  filter: invert(0.92) hue-rotate(calc(180deg + var(--dm-custom-hue-deg, 0deg)));
+  background: var(--dm-custom-bg, #f4ead4);
+}
+body[data-dm-theme="custom"] img,
+body[data-dm-theme="custom"] iframe,
+body[data-dm-theme="custom"] video,
+body[data-dm-theme="custom"] svg,
+body[data-dm-theme="custom"] .no-invert {
+  filter: invert(1) hue-rotate(calc(-1 * (180deg + var(--dm-custom-hue-deg, 0deg))));
+}
 /* Keep the DM options bar readable in either mode */
-body[data-dm-theme="light"] .dm-options-bar .dm-opt-btn.active {
+body[data-dm-theme="light"] .dm-options-bar .dm-opt-btn.active,
+body[data-dm-theme="custom"] .dm-options-bar .dm-opt-btn.active {
   background: #6a4a10; color: #fff;
 }
 
@@ -639,8 +652,14 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
       <button class="dm-opt-btn" data-dm-ts="lg" onclick="setDMTextSize('lg')">A+</button>
       <button class="dm-opt-btn" data-dm-ts="xl" onclick="setDMTextSize('xl')">A++</button>
       <span class="dm-opt-label" style="margin-left:.5rem">THEME</span>
-      <button class="dm-opt-btn" data-dm-th="dark"  onclick="setDMTheme('dark')">🌙</button>
-      <button class="dm-opt-btn" data-dm-th="light" onclick="setDMTheme('light')">📜</button>
+      <button class="dm-opt-btn" data-dm-th="dark"   onclick="setDMTheme('dark')">🌙</button>
+      <button class="dm-opt-btn" data-dm-th="light"  onclick="setDMTheme('light')">📜</button>
+      <button class="dm-opt-btn" data-dm-th="custom" onclick="setDMTheme('custom')">🎨</button>
+      <span id="dm-custom-controls" style="display:none;margin-left:.35rem">
+        <input type="color" title="Background hue" id="dm-custom-hue"
+          style="width:22px;height:20px;border:1px solid rgba(154,122,26,0.5);border-radius:2px;background:transparent;cursor:pointer;padding:0;vertical-align:middle"
+          onchange="setDMCustomHue(this.value)">
+      </span>
     </div>
     <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-roll20">Roll20 ↗</a>
     <a href="players.html" target="_blank" class="btn-players">Player View ↗</a>
@@ -678,12 +697,13 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
   <button class="nav-btn" onclick="showPanel('players',this)">⚡ Players</button>
   <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
   <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
-  <button class="nav-btn" onclick="showPanel('notes',this)">📝 Notes</button>
+  <button class="nav-btn" onclick="showPanel('notes',this)">💬 Messages</button>
   <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
   <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
   <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
   <button class="nav-btn" onclick="showPanel('pantheon',this)">📖 Lore</button>
   <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
+  <button class="nav-btn" onclick="showPanel('handouts',this);if(window.HandoutsUI){HandoutsUI.initDM('handouts-container');}">📜 Handouts</button>
 </nav>
 
 <!-- ============ SESSIONS (consolidated: Now · Prep · Calendar · Recaps) ============ -->
@@ -1490,7 +1510,7 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 
 <!-- ============ NOTES (Phase 6) ============ -->
 <div id="panel-notes" class="panel">
-  <div class="sec-title">📝 Notes — DM view</div>
+  <div class="sec-title">💬 Messages — DM view</div>
   <div class="alert alert-info">
     You see: <strong>your own notes</strong> (any scope), any player's <strong>DM-only</strong> notes, and any <strong>DM + Party</strong> notes. You do NOT see private notes or party-only notes (those are hidden from you by design). Real-time sync — new notes from players appear within a second.
   </div>
@@ -2052,6 +2072,12 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
   </div>
 </div>
 
+<!-- ============ HANDOUTS ============ -->
+<div id="panel-handouts" class="panel">
+  <div class="sec-title">📜 Handouts</div>
+  <div id="handouts-container"></div>
+</div>
+
 <!-- ============ INTERACTIVE 2024 CHARACTER SHEET MODAL ============ -->
 <dialog id="sheet-dialog">
   <div class="sheet-topbar">
@@ -2074,6 +2100,8 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 <script src="firebase-sync.js"></script>
 <script src="notes-sync.js"></script>
 <script src="notes-ui.js"></script>
+<script src="handouts.js"></script>
+<script src="handouts-ui.js"></script>
 <script src="sheet-history-ui.js"></script>
 <script src="dm-npc-notes.js"></script>
 <script src="dm-npc-pin-cue.js"></script>
@@ -2136,13 +2164,50 @@ function setDMTheme(v) {
   _dmSetPref('theme', v);
   document.body.setAttribute('data-dm-theme', v);
   _dmSyncOptionButtons();
+  const cw = document.getElementById('dm-custom-controls');
+  if (cw) cw.style.display = (v === 'custom') ? 'inline-block' : 'none';
+  if (v === 'custom') _applyDMCustomHue();
+}
+function _applyDMCustomHue() {
+  const hex = _dmGetPref('customHue', '#f4ead4');
+  document.body.style.setProperty('--dm-custom-bg', hex);
+  // Compute hue rotation in degrees from a hex — map to 0-360
+  const deg = _hexToHueDeg(hex);
+  document.body.style.setProperty('--dm-custom-hue-deg', deg + 'deg');
+  const inp = document.getElementById('dm-custom-hue');
+  if (inp) inp.value = hex;
+}
+function setDMCustomHue(hex) {
+  _dmSetPref('customHue', hex);
+  _applyDMCustomHue();
+}
+function _hexToHueDeg(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+  if (!m) return 0;
+  const r = parseInt(m[1], 16) / 255, g = parseInt(m[2], 16) / 255, b = parseInt(m[3], 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0;
+  if (max !== min) {
+    const d = max - min;
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+      case g: h = ((b - r) / d + 2); break;
+      case b: h = ((r - g) / d + 4); break;
+    }
+    h *= 60;
+  }
+  return Math.round(h);
 }
 // Apply immediately on page load (before auth so re-lock still shows correct theme).
 (function _applyDMPrefsOnLoad() {
   const apply = function() {
+    const th = _dmGetPref('theme', 'dark');
     document.body.setAttribute('data-dm-text-size', _dmGetPref('textSize', 'sm'));
-    document.body.setAttribute('data-dm-theme', _dmGetPref('theme', 'dark'));
+    document.body.setAttribute('data-dm-theme', th);
     _dmSyncOptionButtons();
+    const cw = document.getElementById('dm-custom-controls');
+    if (cw) cw.style.display = (th === 'custom') ? 'inline-block' : 'none';
+    if (th === 'custom') _applyDMCustomHue();
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
   else apply();

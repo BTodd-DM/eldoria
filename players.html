@@ -598,7 +598,8 @@ body {
   <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
   <button class="nav-btn" onclick="show('locations',this)">🌍 World Map</button>
   <button class="nav-btn" onclick="show('lore',this)">📖 Lore</button>
-  <button class="nav-btn" onclick="show('notes',this)">Your Notes</button>
+  <button class="nav-btn" data-nav-handouts onclick="show('handouts',this)">📜 Handouts</button>
+  <button class="nav-btn" onclick="show('notes',this)">💬 Messages</button>
 </nav>
 
 <!-- ===== RECAPS ===== -->
@@ -942,10 +943,16 @@ body {
   </div>
 </div>
 
+<!-- ===== HANDOUTS ===== -->
+<div id="panel-handouts" class="panel">
+  <div class="sec-title">📜 Handouts</div>
+  <div id="handouts-container-player"></div>
+</div>
+
 <!-- ===== NOTES ===== -->
 <div id="panel-notes" class="panel">
   <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
-    Four scopes: <strong>Private</strong> (only you), <strong>DM-only</strong> (you + DM), <strong>DM + Party</strong> (everyone), <strong>Party-only</strong> (players, hidden from DM). Notes sync live across all your devices.
+    Four scopes: <strong>Private</strong> (only you), <strong>DM-only</strong> (you + DM), <strong>DM + Party</strong> (everyone), <strong>Party-only</strong> (players, hidden from DM). Messages sync live across all your devices.
   </div>
 
   <!-- Phase 6 notes widget — populated after login by initNotesWidget() -->
@@ -1013,6 +1020,9 @@ function show(id, btn) {
   // Lazy-render dynamic panels when they become visible.
   if (id === 'lore' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
     PantheonKnowledge.renderPlayer('pantheon-player-container', window._currentIdentity);
+  }
+  if (id === 'handouts' && window.HandoutsUI && document.getElementById('handouts-container-player')) {
+    HandoutsUI.initPlayer('handouts-container-player', window._currentIdentity);
   }
 }
 
@@ -1182,6 +1192,8 @@ function updateSheetUI(charKey) {
 <script src="npc-directory.js"></script>
 <script src="pantheon-data.js"></script>
 <script src="pantheon-knowledge.js"></script>
+<script src="handouts.js"></script>
+<script src="handouts-ui.js"></script>
 <script src="players-auth.js"></script>
 <script>
 (function bootstrapPlayerIdentity() {
@@ -1221,6 +1233,12 @@ function updateSheetUI(charKey) {
     if (window.NPCDirectory && typeof NPCDirectory.init === 'function') {
       try { NPCDirectory.init('npc-grid-container', identity); }
       catch (e) { console.warn('NPCDirectory init failed:', e); }
+    }
+    // Update 24 — Bootstrap handouts UI eagerly so arrival toasts fire even
+    // when the player is on a different tab.
+    if (window.HandoutsUI && document.getElementById('handouts-container-player')) {
+      try { HandoutsUI.initPlayer('handouts-container-player', identity); }
+      catch (e) { console.warn('HandoutsUI init failed:', e); }
     }
   }
 
