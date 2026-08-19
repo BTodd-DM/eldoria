@@ -1012,7 +1012,7 @@ function show(id, btn) {
   window.scrollTo(0, 0);
   // Lazy-render dynamic panels when they become visible.
   if (id === 'lore' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
-    PantheonKnowledge.renderPlayer('pantheon-player-container');
+    PantheonKnowledge.renderPlayer('pantheon-player-container', window._currentIdentity);
   }
 }
 
@@ -1032,7 +1032,7 @@ function showLoreTab(id, btn) {
   }
   // Render pantheon into the dynamic container when the tab becomes visible.
   if (id === 'pantheon' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
-    PantheonKnowledge.renderPlayer('pantheon-player-container');
+    PantheonKnowledge.renderPlayer('pantheon-player-container', window._currentIdentity);
   }
 }
 
@@ -1197,6 +1197,8 @@ function updateSheetUI(charKey) {
   let selectedId = null;
 
   function showApp(identity) {
+    // Store identity globally so panel-render helpers (Lore, etc.) can filter by it.
+    window._currentIdentity = identity;
     loginScreen.classList.remove('on');
     app.classList.add('ready');
     chip.classList.add('on');

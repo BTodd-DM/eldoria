@@ -365,7 +365,7 @@ CHARACTERS.sylas = {
     { name: 'Creature Type: Humanoid', desc: 'Standard humanoid for effects that target creature type.' }
   ],
   feats: [
-    { name: 'Lich Initiate',     desc: '**Soul Siphon (No Action).** When he reduces a Humanoid to 0 HP with a spell of 1st level or higher, he can consume its soul. The soul is destroyed and cannot be raised except by Wish. Sylas has a spirit jar (his necklace) that stores the essence. **This is his defining secret feat — the party does not know he took it. Orin does not yet know. Vaeloran knows and is watching.**' },
+    { name: 'Lich Initiate',     desc: '**Soul Siphon (No Action).** When he reduces a Humanoid to 0 HP with a spell of 1st level or higher, he can consume its soul. The soul is destroyed and cannot be raised except by Wish. Sylas has a spirit jar (his necklace) that stores the essence. **Rider:** After a soul is siphoned, the next attack Sylas makes that HITS deals an additional **+1d6+5** damage. Bumping the Soul Siphon counter auto-arms the charge — a banner appears at the top of the sheet with a Roll & consume button. **This is his defining secret feat — the party does not know he took it. Orin does not yet know. Vaeloran knows and is watching.**' },
     { name: 'Magic Initiate (Wizard)', desc: 'Grants two cantrips from the Wizard list — **Mage Hand** and **Message** — and one 1st-level Wizard spell always prepared: **Shield**. Shield can be cast once per Long Rest without a slot, or using any spell slot he has.' },
     { name: 'Sage Ability Score Improvements', desc: 'The Sage background feat granting +2/+1 to ability scores (applied to INT and CON at 1st level).' }
   ],

@@ -1106,6 +1106,17 @@ function renderSheet(charId) {
     '<button onclick="longRest(\'' + charId + '\')" style="background:var(--gold);color:#0d0a06;border:none;border-radius:3px;padding:.45rem 1rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🌙 Long Rest</button>' +
     '</div>';
 
+  // Sylas Soul Siphon rider banner — shows only when siphonCharged is true.
+  if (charId === 'sylas' && state.siphonCharged) {
+    html += '<div style="margin:.4rem 0 .75rem;padding:.55rem .85rem;border:1px solid #c04040;background:linear-gradient(90deg, rgba(192,64,64,0.20), rgba(192,64,64,0.06));border-radius:4px;display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap">' +
+      '<div style="font-family:\'Cinzel\',serif;color:#f4b0b0;font-size:12px;letter-spacing:1px">⚡ SIPHON CHARGED &nbsp;·&nbsp; next hit deals <strong style="color:#ffdada">+1d6+5</strong> damage</div>' +
+      '<div style="display:flex;gap:.4rem">' +
+        '<button onclick="rollSiphonBonus(\'' + charId + '\')" style="background:#a02828;color:#fff;border:none;border-radius:3px;padding:.35rem .9rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">🎲 Roll & consume</button>' +
+        '<button onclick="clearSiphonCharge(\'' + charId + '\')" style="background:transparent;color:#d0a0a0;border:1px solid #a02828;border-radius:3px;padding:.35rem .7rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer" title="Dismiss without rolling (e.g. missed the attack)">✕ Dismiss</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   html += '<div class="sheet-header">';
   html += '<div class="sheet-id-block" style="display:flex;gap:.75rem;align-items:flex-start">';
   const portraitSrc = (state.portraitUrl || char.portraitUrl || '').trim();
@@ -1955,6 +1966,24 @@ function _checkConcentrationOnDamage(charId, damageAmount) {
   }, 150);
 }
 function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
+
+// Sylas Soul Siphon rider — rolls +1d6+5 bonus and clears the charge.
+function rollSiphonBonus(charId) {
+  const roll = 1 + Math.floor(Math.random() * 6);
+  const total = roll + 5;
+  withSheetState(charId, function(s) { s.siphonCharged = false; });
+  if (typeof showRollToast === 'function') {
+    showRollToast('Siphon Bonus', '1d6 (' + roll + ') + 5', '+' + total + ' damage');
+  } else {
+    alert('Siphon bonus: 1d6 (' + roll + ') + 5 = +' + total + ' damage');
+  }
+}
+function clearSiphonCharge(charId) {
+  withSheetState(charId, function(s) { s.siphonCharged = false; });
+}
+function toggleSiphonCharge(charId) {
+  withSheetState(charId, function(s) { s.siphonCharged = !s.siphonCharged; });
+}
 function bumpResource(charId, rid, delta) {
   withSheetState(charId, function(s) {
     const char = CHARACTERS[charId];
@@ -1962,6 +1991,11 @@ function bumpResource(charId, rid, delta) {
     const max = res && typeof res.max === 'number' ? res.max : 999;
     const cur = s.resources[rid] || 0;
     s.resources[rid] = Math.max(0, Math.min(max, cur + delta));
+    // Sylas homebrew: incrementing the Soul Siphon counter charges the
+    // "next hit +1d6+5" rider automatically.
+    if (charId === 'sylas' && rid === 'soul_siphon' && delta > 0) {
+      s.siphonCharged = true;
+    }
   });
 }
 function setResourceValue(charId, rid, raw) {
