@@ -451,7 +451,16 @@ body {
 .stat-label2 { color: var(--gold2); font-weight: 600; }
 
 /* DEITY GRID */
-.deity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .6rem; }
+.deity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .5rem; }
+details.deity-card { padding: 0 !important; }
+details.deity-card > summary { list-style: none; display: flex; align-items: baseline; gap: .35rem; padding: .35rem .55rem; user-select: none; }
+details.deity-card > summary::-webkit-details-marker { display: none; }
+details.deity-card > summary::before { content: '▸'; color: var(--parch3); font-size: 10px; margin-right: .1rem; transition: transform .12s; }
+details.deity-card[open] > summary::before { content: '▾'; }
+details.deity-card > summary:hover { background: rgba(160,128,64,0.08); }
+details.deity-card > .deity-body { padding: .35rem .6rem .55rem; border-top: 1px dashed rgba(160,128,64,0.25); }
+details.deity-card > summary .deity-name { margin-bottom: 0 !important; }
+details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 .deity-card {
   background: rgba(20,15,8,0.6);
   border: 1px solid rgba(160,128,64,0.2);
@@ -1726,22 +1735,22 @@ body {
   <div id="tab-p-gods">
     <div class="sec-title">Creator Gods</div>
     <div class="deity-grid">
-      <div class="deity-card" style="border-left:3px solid var(--gold2)"><div class="deity-name" style="color:var(--gold3)">Luminos</div><div class="deity-align">Neutral Good · Creator</div><div class="deity-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, enlighteners. <strong>Suppressed in the Aurum Dominion</strong> — why Merric smuggled holy goods there. Symbol: radiant orb with light patterns.</div></div>
-      <div class="deity-card" style="border-left:3px solid var(--teal2)"><div class="deity-name" style="color:#a0d4c4">Veridania</div><div class="deity-align">Neutral · Creator</div><div class="deity-body">Nature's balance and interconnectedness. Druids, healers, naturalists. Sylvarian Enclaves revere her alongside Yggdris. Symbol: blooming flower with intertwining roots.</div></div>
+      <details class="deity-card" style="border-left:3px solid var(--gold2)"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name" style="color:var(--gold3)">Luminos</span> <span class="deity-align" style="margin-left:.35rem">Neutral Good · Creator</span></summary><div class="deity-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, enlighteners. <strong>Suppressed in the Aurum Dominion</strong> — why Merric smuggled holy goods there. Symbol: radiant orb with light patterns.</div></details>
+      <details class="deity-card" style="border-left:3px solid var(--teal2)"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name" style="color:#a0d4c4">Veridania</span> <span class="deity-align" style="margin-left:.35rem">Neutral · Creator</span></summary><div class="deity-body">Nature's balance and interconnectedness. Druids, healers, naturalists. Sylvarian Enclaves revere her alongside Yggdris. Symbol: blooming flower with intertwining roots.</div></details>
     </div>
 
     <div class="sec-title">The Children</div>
     <div class="deity-grid">
-      <div class="deity-card"><div class="deity-name">Mizura</div><div class="deity-align">Chaotic Neutral</div><div class="deity-body">Secrets, illusions, trickery. Rogues and spies. Secretive cults. Two-faced mask symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Sylvana</div><div class="deity-align">Chaotic Good</div><div class="deity-body">Travel, air, communication. Nomads of the Ember Wastes. Wind-carried feather symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Aetherius</div><div class="deity-align">Lawful Good</div><div class="deity-body">Wisdom, prophecy, stars. Aurum Dominion state deity. Starburst symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Solara</div><div class="deity-align">Lawful Good</div><div class="deity-body">Light, sun, rebirth. Paladins, healers. Ember Wastes nomads. Gold sunburst symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Lunara</div><div class="deity-align">Neutral</div><div class="deity-body">Moon, dreams, mystery. Order of the Silver Crescent devoted to her. Crescent moon symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Yggdris</div><div class="deity-align">Neutral Good</div><div class="deity-body">Nature, balance, life cycle. Sylvarian Enclaves, druids, rangers. Intertwined tree symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Korvain</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Craftsmanship, invention, dwarvenkind. Celestium Clans. Anvil and hammer symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Sirenna</div><div class="deity-align">Neutral</div><div class="deity-body">Sea, protection, nature. Reptilian Tribes and Pirate Confederacy. Coiled sea serpent symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Thalasia</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Arcane magic, elemental forces. Aurum Dominion. Crystal with elemental motifs symbol.</div></div>
-      <div class="deity-card"><div class="deity-name">Mor'nyx</div><div class="deity-align">Lawful Neutral</div><div class="deity-body">Death, afterlife, protection. Ember Wastes tombs. Ankh with winged scarab symbol.</div></div>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Mizura</span> <span class="deity-align" style="margin-left:.35rem">Chaotic Neutral</span></summary><div class="deity-body">Secrets, illusions, trickery. Rogues and spies. Secretive cults. Two-faced mask symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Sylvana</span> <span class="deity-align" style="margin-left:.35rem">Chaotic Good</span></summary><div class="deity-body">Travel, air, communication. Nomads of the Ember Wastes. Wind-carried feather symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Aetherius</span> <span class="deity-align" style="margin-left:.35rem">Lawful Good</span></summary><div class="deity-body">Wisdom, prophecy, stars. Aurum Dominion state deity. Starburst symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Solara</span> <span class="deity-align" style="margin-left:.35rem">Lawful Good</span></summary><div class="deity-body">Light, sun, rebirth. Paladins, healers. Ember Wastes nomads. Gold sunburst symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Lunara</span> <span class="deity-align" style="margin-left:.35rem">Neutral</span></summary><div class="deity-body">Moon, dreams, mystery. Order of the Silver Crescent devoted to her. Crescent moon symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Yggdris</span> <span class="deity-align" style="margin-left:.35rem">Neutral Good</span></summary><div class="deity-body">Nature, balance, life cycle. Sylvarian Enclaves, druids, rangers. Intertwined tree symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Korvain</span> <span class="deity-align" style="margin-left:.35rem">Lawful Neutral</span></summary><div class="deity-body">Craftsmanship, invention, dwarvenkind. Celestium Clans. Anvil and hammer symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Sirenna</span> <span class="deity-align" style="margin-left:.35rem">Neutral</span></summary><div class="deity-body">Sea, protection, nature. Reptilian Tribes and Pirate Confederacy. Coiled sea serpent symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Thalasia</span> <span class="deity-align" style="margin-left:.35rem">Lawful Neutral</span></summary><div class="deity-body">Arcane magic, elemental forces. Aurum Dominion. Crystal with elemental motifs symbol.</div></details>
+      <details class="deity-card"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name">Mor'nyx</span> <span class="deity-align" style="margin-left:.35rem">Lawful Neutral</span></summary><div class="deity-body">Death, afterlife, protection. Ember Wastes tombs. Ankh with winged scarab symbol.</div></details>
     </div>
 
     <div class="sec-title">Betrayer Gods</div>
@@ -1752,8 +1761,8 @@ body {
       <span style="font-size:11px;color:#d8a8a8;font-style:italic">DM ONLY — common folk know nothing of any of this. Only deep First-Age scholars know the Dawnoak even exists.</span>
     </div>
     <div class="deity-grid">
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</div><div class="deity-align">Lawful Evil · Darkness, Deception, Domination, Power</div><div class="deity-body">Almost certainly <strong>Vaeloran's true patron</strong> — though Vaeloran may not consciously know it. His influence: slow, patient, through institutions and individuals who believe they're acting freely. <strong>Vaeloran is unknowingly collecting Astronar's shards.</strong> Eclipse shrouding a sun symbol.</div></div>
-      <div class="deity-card" style="border-left:3px solid var(--red2)"><div class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</div><div class="deity-align">Chaotic Evil · Decay, Corruption, Chaos, Destruction</div><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. <strong>His unfinished child — Vroth-Khorn, "the Withering" — lies beneath the Frostwood Marsh,</strong> bound by the Lethraliri at the cost of their civilisation. See <em>Bestiary/Vroth-Khorn - The Withering</em>. Withered tree symbol.</div></div>
+      <details class="deity-card" style="border-left:3px solid var(--red2)"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name" style="color:#f4c4c4">Astronar — the Twilight Sovereign</span> <span class="deity-align" style="margin-left:.35rem">Lawful Evil · Darkness, Deception, Domination, Power</span></summary><div class="deity-body">Almost certainly <strong>Vaeloran's true patron</strong> — though Vaeloran may not consciously know it. His influence: slow, patient, through institutions and individuals who believe they're acting freely. <strong>Vaeloran is unknowingly collecting Astronar's shards.</strong> Eclipse shrouding a sun symbol.</div></details>
+      <details class="deity-card" style="border-left:3px solid var(--red2)"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name" style="color:#f4c4c4">Naturus — the Rotting Entropy</span> <span class="deity-align" style="margin-left:.35rem">Chaotic Evil · Decay, Corruption, Chaos, Destruction</span></summary><div class="deity-body">Sister Kaelith serves him (unknowingly manipulated through whispers). The meteor shard corruption, gnoll den shrine, and rot spreading through the territories are all Naturus's influence. <strong>His unfinished child — Vroth-Khorn, "the Withering" — lies beneath the Frostwood Marsh,</strong> bound by the Lethraliri at the cost of their civilisation. See <em>Bestiary/Vroth-Khorn - The Withering</em>. Withered tree symbol.</div></details>
     </div>
   </div>
 
