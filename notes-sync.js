@@ -115,6 +115,8 @@
         recipient: note.recipient || null,
         title: String(note.title || '').slice(0, 200),
         body: String(note.body || ''),
+        tags: Array.isArray(note.tags) ? note.tags.filter(Boolean).map(String).slice(0, 20) : [],
+        readBy: {},   // { identityId: true }
         createdAt: firebase.database.ServerValue.TIMESTAMP,
         updatedAt: firebase.database.ServerValue.TIMESTAMP
       };
@@ -132,8 +134,30 @@
         cleanPatch.scope = patch.scope;
       }
       if (patch.recipient !== undefined) cleanPatch.recipient = patch.recipient || null;
+      if (patch.tags !== undefined) cleanPatch.tags = Array.isArray(patch.tags) ? patch.tags.filter(Boolean).map(String).slice(0, 20) : [];
       cleanPatch.updatedAt = firebase.database.ServerValue.TIMESTAMP;
       return this._ref.child(noteId).update(cleanPatch);
+    },
+
+    markRead: function(noteId, identityId, isRead) {
+      if (!this.ready || !noteId || !identityId) return Promise.resolve();
+      const val = isRead ? true : null;
+      return this._ref.child(noteId).child('readBy').child(identityId).set(val);
+    },
+
+    getAllTags: function(identity) {
+      const notes = identity ? this.filterVisible(this.getAllNotes(), identity) : this.getAllNotes();
+      const set = {};
+      notes.forEach(function(n) { (n.tags || []).forEach(function(t) { if (t) set[t] = (set[t] || 0) + 1; }); });
+      return Object.keys(set).sort().map(function(t) { return { tag: t, count: set[t] }; });
+    },
+
+    hasTag: function(note, tag) {
+      return !!(note && note.tags && note.tags.indexOf(tag) >= 0);
+    },
+
+    isReadBy: function(note, identityId) {
+      return !!(note && note.readBy && note.readBy[identityId]);
     },
 
     delete: function(noteId) {

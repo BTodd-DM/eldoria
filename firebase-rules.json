@@ -47,6 +47,14 @@
     "lich-progression": {
       ".read": true,
       ".write": true
+    },
+    "faction-reputation": {
+      ".read": true,
+      ".write": true
+    },
+    "downtime-log": {
+      ".read": true,
+      ".write": true
     }
   }
 }

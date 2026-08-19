@@ -694,6 +694,7 @@ body {
 
   <div class="sec-title">Quick Session Tools</div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="action-btn" onclick="if(window.DowntimeTracker) DowntimeTracker.open()" style="background:rgba(160,128,64,0.15);color:var(--gold2);border-color:var(--gold2)">⏳ Downtime Tracker</button>
     <button class="action-btn" onclick="sendPrompt('Design the Wayward Company\'s Session 6 arrival at Ironhold\'s northern gate — Torren (halfling assassin rogue), Sylas (tiefling illusionist wizard), Orin (cleric of Luminos), all level 6, dawn of Day 12. Include how Brenna parts ways, Sera\'s exit toward Halvor\'s compound, first impressions of the gate captain, and a subtle sign of the town\'s political tension')">Session 6 Arrival ↗</button>
     <button class="action-btn" onclick="sendPrompt('What is Vaeloran doing to Lyssandra Vale right now off-screen while the Wayward Company is camped outside Ironhold\'s northern gates? Give me 3 options of escalating severity')">Lyssandra Off-Screen ↗</button>
     <button class="action-btn" onclick="sendPrompt('Design the next confrontation between Orin (Cleric of Luminos level 6) and Merric/Rulden (Veilmaster, Orin\'s adoptive father) in The Wayward Company — write it as a tense dialogue with emotional beats, Merric\'s mask cracking, and a moment where he must choose between the Veil and his son')">Merric Confrontation ↗</button>
@@ -2012,6 +2013,8 @@ body {
 <script src="monsters-2024.js"></script>
 <script src="combat-tracker.js"></script>
 <script src="lich-tracker.js"></script>
+<script src="faction-tracker.js"></script>
+<script src="downtime-tracker.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>

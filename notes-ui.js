@@ -99,12 +99,28 @@ function _renderNotesWidget(allNotes) {
   if (!identity) return;
 
   const visible = NotesSync.filterVisible(allNotes, identity);
-  // Apply scope + author filters
+  // Apply scope + author + tag + unread filters
   const filtered = visible.filter(function(n) {
     if (state.activeScope !== 'all' && n.scope !== state.activeScope) return false;
     if (state.authorFilter !== 'all' && n.author !== state.authorFilter) return false;
+    if (state.tagFilter && (!n.tags || n.tags.indexOf(state.tagFilter) < 0)) return false;
+    if (state.unreadOnly && NotesSync.isReadBy && NotesSync.isReadBy(n, identity.id)) return false;
     return true;
   });
+  // Build tag chip bar from all visible notes
+  const tagSet = {};
+  visible.forEach(function(n) { (n.tags || []).forEach(function(t) { if (t) tagSet[t] = (tagSet[t] || 0) + 1; }); });
+  const tagList = Object.keys(tagSet).sort();
+  const unreadCount = visible.filter(function(n) { return !NotesSync.isReadBy(n, identity.id); }).length;
+  const chipBar = (tagList.length || unreadCount > 0) ?
+    '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin:.4rem 0;font-size:11px;align-items:center">' +
+      '<button onclick="notesWidgetToggleUnreadOnly()" style="background:' + (state.unreadOnly ? 'var(--gold,#8a6a10)' : 'transparent') + ';color:' + (state.unreadOnly ? '#fff' : 'var(--gold,#8a6a10)') + ';border:1px solid var(--gold,#8a6a10);border-radius:10px;padding:2px 8px;cursor:pointer;font-family:Cinzel,serif;font-size:10px;letter-spacing:.5px">' + (state.unreadOnly ? '● unread only ✓' : '● unread (' + unreadCount + ')') + '</button>' +
+      tagList.map(function(t) {
+        const active = state.tagFilter === t;
+        return '<button onclick="notesWidgetFilterByTag(\'' + t + '\')" style="background:' + (active ? 'var(--gold,#8a6a10)' : 'transparent') + ';color:' + (active ? '#fff' : 'var(--gold,#8a6a10)') + ';border:1px solid var(--gold,#8a6a10);border-radius:10px;padding:2px 8px;cursor:pointer;font-family:Cinzel,serif;font-size:10px;letter-spacing:.5px">#' + t + ' (' + tagSet[t] + ')</button>';
+      }).join('') +
+      (state.tagFilter ? '<button onclick="notesWidgetClearTagFilter()" style="background:transparent;color:var(--ink3,#5a4020);border:1px dashed var(--ink3,#5a4020);border-radius:10px;padding:2px 8px;cursor:pointer;font-size:10px">✕ clear tag</button>' : '') +
+    '</div>' : '';
 
   // Which scopes can this identity CREATE?
   const canCreate = _createableScopes(identity);
@@ -118,6 +134,7 @@ function _renderNotesWidget(allNotes) {
   html += _renderNotesHeader(canCreate);
   html += _renderScopeTabs(state.activeScope);
   html += _renderAuthorFilter(state.authorFilter, authorList);
+  html += chipBar;
 
   if (state.creating) {
     html += _renderCreateForm(canCreate);
@@ -195,10 +212,19 @@ function _renderNoteCard(note, identity) {
   const isAuthor = note.author === identity.id;
   const bodyHtml = _notesEscapeBody(note.body || '');
   const titleHtml = note.title ? '<div class="wc-note-title">' + _notesEscape(note.title) + '</div>' : '';
-  const actions = isAuthor
+  const isRead = NotesSync.isReadBy ? NotesSync.isReadBy(note, identity.id) : false;
+  const readBtn = '<button class="wc-note-read" onclick="notesWidgetToggleRead(\'' + note.id + '\')" title="Toggle read/unread">' + (isRead ? '✓ read' : '● unread') + '</button>';
+  const actions = (isAuthor
     ? '<button class="wc-note-edit" onclick="notesWidgetStartEdit(\'' + note.id + '\')">Edit</button>' +
       '<button class="wc-note-del" onclick="notesWidgetDelete(\'' + note.id + '\')">Delete</button>'
+    : '') + readBtn;
+  const tagsHtml = (note.tags && note.tags.length)
+    ? '<div class="wc-note-tags" style="margin-top:.35rem;display:flex;flex-wrap:wrap;gap:.25rem">' +
+      note.tags.map(function(t) {
+        return '<span onclick="notesWidgetFilterByTag(\'' + _notesEscape(t) + '\')" style="background:rgba(160,128,64,0.18);color:var(--gold,#8a6a10);padding:1px 6px;border-radius:8px;font-size:10px;font-family:Cinzel,serif;letter-spacing:.5px;cursor:pointer" title="Filter by #' + _notesEscape(t) + '">#' + _notesEscape(t) + '</span>';
+      }).join('') + '</div>'
     : '';
+  const unreadBorder = isRead ? '' : ';box-shadow:inset 3px 0 0 rgba(201,168,76,0.6)';
   // Handout-specific decoration
   let recipientBadge = '';
   let handoutBanner = '';
@@ -212,7 +238,7 @@ function _renderNoteCard(note, identity) {
       handoutBanner = '<div style="background:rgba(74,45,122,0.15);border:1px dashed rgba(74,45,122,0.6);border-radius:3px;padding:.35rem .5rem;margin-bottom:.4rem;color:#a48bd6;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">📮 <strong>From the DM — for your eyes only</strong></div>';
     }
   }
-  return '<div class="wc-note-card" style="border-left-color:' + scope.color + '">' +
+  return '<div class="wc-note-card" data-note-id="' + note.id + '" data-tags="' + _notesEscape((note.tags || []).join(',')) + '" data-read="' + (isRead ? '1' : '0') + '" style="border-left-color:' + scope.color + unreadBorder + '">' +
     handoutBanner +
     '<div class="wc-note-head">' +
       '<span class="wc-note-scope" style="background:' + scope.color + '">' + _notesEscape(scope.label) + '</span>' +
@@ -223,6 +249,7 @@ function _renderNoteCard(note, identity) {
     '</div>' +
     titleHtml +
     '<div class="wc-note-body">' + bodyHtml + '</div>' +
+    tagsHtml +
     '</div>';
 }
 
@@ -254,6 +281,7 @@ function _renderNoteForm(note, canCreate, label, saveHandler, cancelHandler) {
     '<label>Scope: <select id="wc-note-form-scope" onchange="_notesUpdateRecipientVisibility()">' + scopeOpts + '</select></label>' +
     '<label id="wc-note-form-recipient-row" style="' + recipientRowStyle + '">📮 Send to: <select id="wc-note-form-recipient">' + recipientOpts + '</select></label>' +
     '<input type="text" id="wc-note-form-title" placeholder="Title (optional)" value="' + _notesEscape(note.title || '') + '" maxlength="200">' +
+    '<input type="text" id="wc-note-form-tags" placeholder="Tags (comma-separated, e.g. session-6, ironhold, mira)" value="' + _notesEscape((note.tags || []).join(', ')) + '">' +
     '<textarea id="wc-note-form-body" placeholder="Write your note…" rows="6">' + _notesEscape(note.body || '') + '</textarea>' +
     '<div class="wc-note-form-actions">' +
       '<button class="wc-note-form-save" onclick="' + saveHandler + '(' + (note.id ? '\'' + note.id + '\'' : '') + ')">Save</button>' +
@@ -278,9 +306,11 @@ function notesWidgetSaveCreate() {
   const scope = document.getElementById('wc-note-form-scope').value;
   const title = document.getElementById('wc-note-form-title').value;
   const body = document.getElementById('wc-note-form-body').value;
+  const tagsRaw = (document.getElementById('wc-note-form-tags') || {}).value || '';
+  const tags = tagsRaw.split(',').map(function(t) { return t.trim().toLowerCase().replace(/^#/, ''); }).filter(Boolean);
   if (!body.trim()) { alert('Note body is empty.'); return; }
   const identity = _notesWidgetState.identity;
-  const payload = { author: identity.id, scope: scope, title: title, body: body };
+  const payload = { author: identity.id, scope: scope, title: title, body: body, tags: tags };
   if (scope === 'to-player') {
     const rec = document.getElementById('wc-note-form-recipient');
     if (!rec || !rec.value) { alert('Pick a recipient.'); return; }
@@ -297,8 +327,10 @@ function notesWidgetSaveEdit(noteId) {
   const scope = document.getElementById('wc-note-form-scope').value;
   const title = document.getElementById('wc-note-form-title').value;
   const body = document.getElementById('wc-note-form-body').value;
+  const tagsRaw = (document.getElementById('wc-note-form-tags') || {}).value || '';
+  const tags = tagsRaw.split(',').map(function(t) { return t.trim().toLowerCase().replace(/^#/, ''); }).filter(Boolean);
   if (!body.trim()) { alert('Note body is empty.'); return; }
-  const patch = { scope: scope, title: title, body: body };
+  const patch = { scope: scope, title: title, body: body, tags: tags };
   if (scope === 'to-player') {
     const rec = document.getElementById('wc-note-form-recipient');
     if (!rec || !rec.value) { alert('Pick a recipient.'); return; }
@@ -315,6 +347,20 @@ function notesWidgetDelete(noteId) {
   if (!confirm('Delete this note? This cannot be undone.')) return;
   NotesSync.delete(noteId).catch(function(e) { alert('Delete failed: ' + (e && e.message || e)); });
 }
+function notesWidgetToggleRead(noteId) {
+  const identity = _notesWidgetState.identity;
+  if (!identity || !NotesSync.markRead) return;
+  const notes = NotesSync.getAllNotes();
+  const note = notes.find(function(n) { return n.id === noteId; });
+  const isRead = NotesSync.isReadBy(note, identity.id);
+  NotesSync.markRead(noteId, identity.id, !isRead);
+}
+function notesWidgetFilterByTag(tag) {
+  _notesWidgetState.tagFilter = (_notesWidgetState.tagFilter === tag) ? null : tag;
+  _rerender();
+}
+function notesWidgetClearTagFilter() { _notesWidgetState.tagFilter = null; _rerender(); }
+function notesWidgetToggleUnreadOnly() { _notesWidgetState.unreadOnly = !_notesWidgetState.unreadOnly; _rerender(); }
 function _rerender() {
   if (!_notesWidgetState.containerId) return;
   const all = NotesSync.getAllNotes();
