@@ -502,26 +502,12 @@
 .sheet-body p { line-height: 1.65; }
 .sheet-id-meta { line-height: 1.6 !important; }
 
-/* --- Text-size toggle. data-text-size: sm (default) | lg | xl --- */
-.sheet-body[data-text-size="lg"] { font-size: 15px; }
-.sheet-body[data-text-size="lg"] .sheet-hex-value { font-size: 30px; }
-.sheet-body[data-text-size="lg"] .sheet-id-name { font-size: 19px; }
-.sheet-body[data-text-size="lg"] .sheet-id-meta { font-size: 13.5px !important; }
-.sheet-body[data-text-size="lg"] .card-body,
-.sheet-body[data-text-size="lg"] .sheet-hp-current { font-size: 21px; }
-.sheet-body[data-text-size="lg"] .sheet-hex-sub,
-.sheet-body[data-text-size="lg"] .sheet-temp-row,
-.sheet-body[data-text-size="lg"] .sheet-ds-row { font-size: 12.5px; }
-
-.sheet-body[data-text-size="xl"] { font-size: 17px; }
-.sheet-body[data-text-size="xl"] .sheet-hex-value { font-size: 34px; }
-.sheet-body[data-text-size="xl"] .sheet-id-name { font-size: 22px; }
-.sheet-body[data-text-size="xl"] .sheet-id-meta { font-size: 15px !important; }
-.sheet-body[data-text-size="xl"] .card-body,
-.sheet-body[data-text-size="xl"] .sheet-hp-current { font-size: 24px; }
-.sheet-body[data-text-size="xl"] .sheet-hex-sub,
-.sheet-body[data-text-size="xl"] .sheet-temp-row,
-.sheet-body[data-text-size="xl"] .sheet-ds-row { font-size: 14px; }
+/* --- Text-size toggle: uses CSS zoom so it scales the ENTIRE sheet
+   uniformly (every font-size, padding, hex tile, spell chip, etc.),
+   not just a handful of hand-mapped selectors. --- */
+.sheet-body[data-text-size="sm"] { zoom: 1.00; }
+.sheet-body[data-text-size="lg"] { zoom: 1.15; }
+.sheet-body[data-text-size="xl"] { zoom: 1.30; }
 
 /* --- Paper theme --- */
 .sheet-body[data-theme="paper"] {
@@ -638,8 +624,149 @@
   background: #a88240;
   color: #fff;
 }
+
+/* --- Custom theme: reads inline CSS variables set by the sheet
+   options bar (per-PC colour picker + preset swatches). --- */
+.sheet-body[data-theme="custom"] {
+  background: var(--sheet-custom-bg, #100a05) !important;
+  color: var(--sheet-custom-fg, #f2e8d0);
+}
+.sheet-body[data-theme="custom"] .card,
+.sheet-body[data-theme="custom"] .sheet-hex,
+.sheet-body[data-theme="custom"] .sheet-hp-block,
+.sheet-body[data-theme="custom"] details.sheet-collapsible,
+.sheet-body[data-theme="custom"] .sheet-options-bar {
+  background: color-mix(in srgb, var(--sheet-custom-bg, #100a05) 92%, transparent) !important;
+  border-color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 60%, transparent) !important;
+  color: var(--sheet-custom-fg, #f2e8d0);
+}
+.sheet-body[data-theme="custom"] .sheet-id-name,
+.sheet-body[data-theme="custom"] .sheet-hex-value,
+.sheet-body[data-theme="custom"] .sheet-hp-current,
+.sheet-body[data-theme="custom"] .card-title,
+.sheet-body[data-theme="custom"] details.sheet-collapsible > summary {
+  color: var(--sheet-custom-accent, #c9a84c) !important;
+}
+.sheet-body[data-theme="custom"] .sheet-id-meta,
+.sheet-body[data-theme="custom"] .card-body,
+.sheet-body[data-theme="custom"] .card-sub,
+.sheet-body[data-theme="custom"] .sheet-hex-sub,
+.sheet-body[data-theme="custom"] .sheet-hp-label,
+.sheet-body[data-theme="custom"] .sheet-hex-label { color: var(--sheet-custom-fg, #f2e8d0); }
+.sheet-body[data-theme="custom"] input,
+.sheet-body[data-theme="custom"] textarea,
+.sheet-body[data-theme="custom"] select {
+  background: color-mix(in srgb, var(--sheet-custom-bg, #100a05) 80%, #fff 15%);
+  color: var(--sheet-custom-fg, #f2e8d0);
+  border-color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 55%, transparent);
+}
+.sheet-body[data-theme="custom"] button.action-btn,
+.sheet-body[data-theme="custom"] .sheet-hd-roll,
+.sheet-body[data-theme="custom"] .sheet-options-bar .opt-btn {
+  background: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 18%, transparent);
+  color: var(--sheet-custom-accent, #c9a84c);
+  border-color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 60%, transparent);
+}
+.sheet-body[data-theme="custom"] .sheet-options-bar .opt-btn.active {
+  background: var(--sheet-custom-accent, #c9a84c);
+  color: var(--sheet-custom-bg, #100a05);
+}
+.sheet-body[data-theme="custom"] .opt-label { color: var(--sheet-custom-fg, #f2e8d0); }
+
+/* Colour-picker + preset swatch row inside the options bar. */
+.sheet-options-bar .theme-custom-row {
+  display: flex; flex-wrap: wrap; gap: .35rem; align-items: center;
+  width: 100%; padding-top: .35rem; margin-top: .35rem;
+  border-top: 1px dashed color-mix(in srgb, currentColor 35%, transparent);
+}
+.sheet-options-bar .theme-custom-row label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.sheet-options-bar .theme-custom-row input[type="color"] {
+  width: 26px; height: 24px; border: 1px solid rgba(154,122,26,0.5);
+  border-radius: 2px; background: transparent; cursor: pointer; padding: 0;
+}
+.sheet-options-bar .preset-swatch {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid rgba(154,122,26,0.5); cursor: pointer;
+  transition: transform .12s;
+}
+.sheet-options-bar .preset-swatch:hover { transform: scale(1.15); border-color: var(--gold2); }
 .sheet-options-bar .opt-label {
   color: var(--parch4);
   padding-right: 4px;
 }
 .sheet-body[data-theme="paper"] .sheet-options-bar .opt-label { color: #7a5f30; }
+
+/* --- Paper theme: broader coverage for boxes not caught by the initial
+   .card/.sheet-hex/.sheet-hp-block selectors. Some sheet sections use
+   their own classes (.sheet-ability, .sheet-sub, .sheet-inspiration,
+   .sheet-weapon-table, .sheet-slot-block) and some header wrappers have
+   inline dark backgrounds — we override those explicitly here. --- */
+.sheet-body[data-theme="paper"] .sheet-ability,
+.sheet-body[data-theme="paper"] .sheet-sub,
+.sheet-body[data-theme="paper"] .sheet-inspiration,
+.sheet-body[data-theme="paper"] .sheet-slot-block,
+.sheet-body[data-theme="paper"] .sheet-weapon-table,
+.sheet-body[data-theme="paper"] .sheet-weapon-table th,
+.sheet-body[data-theme="paper"] .sheet-weapon-table td,
+.sheet-body[data-theme="paper"] .sheet-deathsaves,
+.sheet-body[data-theme="paper"] .sheet-hd-row,
+.sheet-body[data-theme="paper"] .sheet-hp {
+  background: #fbf3dd !important;
+  border-color: #b89a5a !important;
+  color: #2a1a08 !important;
+}
+.sheet-body[data-theme="paper"] .sheet-id-block { background: transparent !important; }
+.sheet-body[data-theme="paper"] .sheet-portrait,
+.sheet-body[data-theme="paper"] .sheet-portrait > * {
+  background: #fbf3dd !important;
+  border-color: #b89a5a !important;
+}
+.sheet-body[data-theme="paper"] .sheet-ability-name,
+.sheet-body[data-theme="paper"] .sheet-ability-mod,
+.sheet-body[data-theme="paper"] .sheet-sub-title,
+.sheet-body[data-theme="paper"] .sheet-slot-level { color: #6a4a10 !important; }
+.sheet-body[data-theme="paper"] .sheet-ability-score,
+.sheet-body[data-theme="paper"] .sheet-ability-list,
+.sheet-body[data-theme="paper"] .sheet-weapon-table th,
+.sheet-body[data-theme="paper"] .sheet-weapon-table td { color: #2a1a08 !important; }
+.sheet-body[data-theme="paper"] .sheet-hp-btn {
+  background: #f3e6bd !important;
+  color: #4a3018 !important;
+  border-color: #a88240 !important;
+}
+.sheet-body[data-theme="paper"] .sheet-hp-btn.heal { background: #d0e8c8 !important; color: #204020 !important; }
+.sheet-body[data-theme="paper"] .sheet-hp-btn.dmg  { background: #f0c8c8 !important; color: #602020 !important; }
+
+/* Same expansion for the Custom theme, so user-picked backgrounds
+   reach the ability cards, section wrappers, inspiration tile, etc. */
+.sheet-body[data-theme="custom"] .sheet-ability,
+.sheet-body[data-theme="custom"] .sheet-sub,
+.sheet-body[data-theme="custom"] .sheet-inspiration,
+.sheet-body[data-theme="custom"] .sheet-slot-block,
+.sheet-body[data-theme="custom"] .sheet-weapon-table,
+.sheet-body[data-theme="custom"] .sheet-weapon-table th,
+.sheet-body[data-theme="custom"] .sheet-weapon-table td,
+.sheet-body[data-theme="custom"] .sheet-deathsaves,
+.sheet-body[data-theme="custom"] .sheet-hd-row,
+.sheet-body[data-theme="custom"] .sheet-hp {
+  background: color-mix(in srgb, var(--sheet-custom-bg, #100a05) 92%, transparent) !important;
+  border-color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 60%, transparent) !important;
+  color: var(--sheet-custom-fg, #f2e8d0) !important;
+}
+.sheet-body[data-theme="custom"] .sheet-id-block { background: transparent !important; }
+.sheet-body[data-theme="custom"] .sheet-portrait,
+.sheet-body[data-theme="custom"] .sheet-portrait > * {
+  background: color-mix(in srgb, var(--sheet-custom-bg, #100a05) 92%, transparent) !important;
+  border-color: color-mix(in srgb, var(--sheet-custom-accent, #c9a84c) 60%, transparent) !important;
+}
+.sheet-body[data-theme="custom"] .sheet-ability-name,
+.sheet-body[data-theme="custom"] .sheet-ability-mod,
+.sheet-body[data-theme="custom"] .sheet-sub-title,
+.sheet-body[data-theme="custom"] .sheet-slot-level { color: var(--sheet-custom-accent, #c9a84c) !important; }
+.sheet-body[data-theme="custom"] .sheet-ability-score,
+.sheet-body[data-theme="custom"] .sheet-ability-list,
+.sheet-body[data-theme="custom"] .sheet-weapon-table th,
+.sheet-body[data-theme="custom"] .sheet-weapon-table td { color: var(--sheet-custom-fg, #f2e8d0) !important; }

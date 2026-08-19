@@ -901,6 +901,18 @@ function _sheetGetPref(charId, k, dflt) {
 function _sheetSetPref(charId, k, v) {
   try { localStorage.setItem(_sheetPrefKey(charId, k), String(v)); } catch (e) {}
 }
+// Custom theme presets — bg / fg / accent. Users can pick any hex too.
+const _SHEET_PRESETS = [
+  { name: 'Dark Parchment',  bg: '#100a05', fg: '#f2e8d0', accent: '#c9a84c' },
+  { name: 'Paper',           bg: '#f4ead4', fg: '#2a1a08', accent: '#8a6a10' },
+  { name: 'Sepia',           bg: '#2b1f10', fg: '#e8d0a8', accent: '#d4a05a' },
+  { name: 'Blue Ink',        bg: '#f0f4ff', fg: '#0d1a3a', accent: '#3050a0' },
+  { name: 'Forest',          bg: '#0f1a10', fg: '#d0e0c8', accent: '#7fbf6a' },
+  { name: 'High Contrast',   bg: '#000000', fg: '#ffffff', accent: '#ffd700' },
+  { name: 'Night Owl',       bg: '#1a1a2e', fg: '#e0e8f0', accent: '#a080e0' },
+  { name: 'Rose',            bg: '#fff0f2', fg: '#3a1020', accent: '#c04070' }
+];
+
 function _renderSheetOptionsBar(charId, ts, th) {
   const tsBtn = function(val, label) {
     const active = (val === ts) ? ' active' : '';
@@ -910,17 +922,36 @@ function _renderSheetOptionsBar(charId, ts, th) {
     const active = (val === th) ? ' active' : '';
     return '<button class="opt-btn' + active + '" onclick="setSheetTheme(\'' + charId + '\',\'' + val + '\')">' + label + '</button>';
   };
-  return '<div class="sheet-options-bar">' +
+  let html = '<div class="sheet-options-bar">' +
     '<span class="opt-label">TEXT</span>' +
     '<div class="opt-group">' + tsBtn('sm', 'A') + tsBtn('lg', 'A+') + tsBtn('xl', 'A++') + '</div>' +
     '<span class="opt-label" style="margin-left:.6rem">THEME</span>' +
-    '<div class="opt-group">' + thBtn('dark', '🌙 Dark') + thBtn('paper', '📜 Paper') + '</div>' +
+    '<div class="opt-group">' + thBtn('dark', '🌙 Dark') + thBtn('paper', '📜 Paper') + thBtn('custom', '🎨 Custom') + '</div>' +
     '<span class="opt-label" style="margin-left:.6rem">SECTIONS</span>' +
     '<div class="opt-group">' +
       '<button class="opt-btn" onclick="toggleAllSheetSections(true)">Expand all</button>' +
       '<button class="opt-btn" onclick="toggleAllSheetSections(false)">Collapse all</button>' +
-    '</div>' +
-  '</div>';
+    '</div>';
+
+  if (th === 'custom') {
+    const bg = _sheetGetPref(charId, 'customBg', '#100a05');
+    const fg = _sheetGetPref(charId, 'customFg', '#f2e8d0');
+    const ac = _sheetGetPref(charId, 'customAccent', '#c9a84c');
+    html += '<div class="theme-custom-row">' +
+      '<label>Bg <input type="color" value="' + bg + '" onchange="setSheetCustomColor(\'' + charId + '\',\'bg\',this.value)"></label>' +
+      '<label>Text <input type="color" value="' + fg + '" onchange="setSheetCustomColor(\'' + charId + '\',\'fg\',this.value)"></label>' +
+      '<label>Accent <input type="color" value="' + ac + '" onchange="setSheetCustomColor(\'' + charId + '\',\'accent\',this.value)"></label>' +
+      '<span class="opt-label" style="margin-left:.4rem">PRESETS</span>';
+    _SHEET_PRESETS.forEach(function(p) {
+      html += '<span class="preset-swatch" title="' + p.name + '" ' +
+        'style="background:linear-gradient(135deg,' + p.bg + ' 0%,' + p.bg + ' 55%,' + p.accent + ' 55%,' + p.accent + ' 100%)" ' +
+        'onclick="applySheetPreset(\'' + charId + '\',\'' + p.bg + '\',\'' + p.fg + '\',\'' + p.accent + '\')"></span>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  return html;
 }
 function setSheetTextSize(charId, val) {
   _sheetSetPref(charId, 'textSize', val);
@@ -933,6 +964,27 @@ function setSheetTheme(charId, val) {
   const body = document.getElementById('sheet-body');
   if (body) body.setAttribute('data-theme', val);
   refreshSheet(charId);
+}
+function setSheetCustomColor(charId, which, hex) {
+  const key = which === 'bg' ? 'customBg' : which === 'fg' ? 'customFg' : 'customAccent';
+  _sheetSetPref(charId, key, hex);
+  _applySheetCustomVars(charId);
+}
+function applySheetPreset(charId, bg, fg, accent) {
+  _sheetSetPref(charId, 'customBg', bg);
+  _sheetSetPref(charId, 'customFg', fg);
+  _sheetSetPref(charId, 'customAccent', accent);
+  _sheetSetPref(charId, 'theme', 'custom');
+  const body = document.getElementById('sheet-body');
+  if (body) body.setAttribute('data-theme', 'custom');
+  refreshSheet(charId);
+}
+function _applySheetCustomVars(charId) {
+  const body = document.getElementById('sheet-body');
+  if (!body) return;
+  body.style.setProperty('--sheet-custom-bg',     _sheetGetPref(charId, 'customBg', '#100a05'));
+  body.style.setProperty('--sheet-custom-fg',     _sheetGetPref(charId, 'customFg', '#f2e8d0'));
+  body.style.setProperty('--sheet-custom-accent', _sheetGetPref(charId, 'customAccent', '#c9a84c'));
 }
 function toggleAllSheetSections(open) {
   document.querySelectorAll('#sheet-body details.sheet-collapsible').forEach(function(d) {
@@ -1088,6 +1140,7 @@ function renderSheet(charId) {
   const prefTh = _sheetGetPref(charId, 'theme', 'dark');
   body.setAttribute('data-text-size', prefTs);
   body.setAttribute('data-theme', prefTh);
+  if (prefTh === 'custom') _applySheetCustomVars(charId);
 
   let html = '';
 
