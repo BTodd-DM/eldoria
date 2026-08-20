@@ -131,11 +131,15 @@ function getSheetState(id) {
   // Phase 4A migration: seed editable equipment + currency + editMode from
   // the sheet-data.js defaults on first load. After that, state is canonical
   // and syncs via Firebase.
-  // Heal corrupted equipment (any entry whose name is "[object Object]"
-  // — result of an earlier broken migration when char.equipment was
-  // upgraded from strings to structured objects without the seeder
-  // knowing how to read the new shape).
-  if (state.equipment && state.equipment.some(function(it) { return it && (it.name === '[object Object]' || it.name === undefined); })) {
+  // Heal corrupted equipment: earlier broken migration stored each
+  // char.equipment object literally in the .name field, so state has
+  // entries like { name: { name: 'Chain Shirt', wt: 20, ... }, ... }.
+  // The UI stringifies these as "[object Object]". Detect any entry
+  // whose name isn't a proper string (or IS the literal fallback
+  // "[object Object]") and re-seed from char.equipment.
+  if (state.equipment && state.equipment.some(function(it) {
+    return it && (typeof it.name !== 'string' || it.name === '[object Object]' || it.name === '' || it.name === undefined);
+  })) {
     state.equipment = null;
   }
   if (!state.equipment) {
