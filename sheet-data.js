@@ -479,6 +479,95 @@ CHARACTERS.sylas = {
   ]
 };
 
+// ----- TORREN -------------------------------------------------------
+CHARACTERS.torren = {
+  id: 'torren',
+  name: 'Torren',
+  portraitUrl: 'portraits/torren.jpeg',
+  species: 'Halfling',
+  className: 'Rogue',
+  level: 6,
+  subclass: 'Assassin',
+  background: '(TBD — see backstory / Guilded Veil / ex-Watch)',
+  alignment: 'Neutral',
+  size: 'Small',
+  appearance: 'Older halfling than he looks. Ex-Watch (Stonegate), discharged. Guilded Veil operative. Sworn to Vrass as of Session 5.',
+  ac: 14, acNote: 'Studded leather (light armor, if worn) + Dex; adjust in inventory',
+  hpMax: 43,
+  hitDice: { max: 6, die: 'd8' },
+  speed: 30, initiative: 3, proficiencyBonus: 3, passivePerception: 17,
+  abilities: { str: 11, dex: 17, con: 13, int: 13, wis: 13, cha: 12 },
+  saves: {
+    dex: { proficient: true, modOverride: 6 },
+    int: { proficient: true, modOverride: 4 }
+  },
+  skills: {
+    // Proficient
+    acrobatics:   { proficient: true, modOverride: 6 },
+    athletics:    { proficient: true, modOverride: 3 },
+    deception:    { proficient: true, modOverride: 4 },
+    intimidation: { proficient: true, modOverride: 4 },
+    survival:     { proficient: true, modOverride: 4 },
+    // Expertise (double proficiency)
+    investigation:  { proficient: true, expertise: true, modOverride: 7 },
+    perception:     { proficient: true, expertise: true, modOverride: 7 },
+    sleight_of_hand:{ proficient: true, expertise: true, modOverride: 9 },
+    stealth:        { proficient: true, expertise: true, modOverride: 9 }
+  },
+  languages: ['Common', 'Dwarvish', 'Gnomish', 'Goblin', "Thieves' Cant"],
+  armorProf: 'Light Armor',
+  weaponProf: 'Simple Weapons, Crossbow (Hand), Rapier, Scimitar, Shortsword, Whip',
+  toolProf: "Dice Set, Disguise Kit, Poisoner's Kit, Thieves' Tools",
+  saveNote: 'A: advantage on saves to avoid or end the Frightened condition (source TBD — likely a feat or racial trait).',
+  weapons: [
+    // Dagger + Shortbow live in inventory; magic +1 variants also there.
+    // Only fallbacks + always-available attacks stay in char.weapons.
+    { name: 'Unarmed Strike', atk: 3, damage: '1 bludgeoning', notes: 'Damage OR Grapple (Str/Dex save DC 14) OR Shove (Str/Dex save DC 14 to avoid 5-ft push OR prone). One mode per attack.' }
+  ],
+  classFeatures: [
+    { name: 'Expertise (4 skills)',   desc: 'Investigation, Perception, Sleight of Hand, Stealth — double proficiency bonus.' },
+    { name: 'Sneak Attack (3d6)',     desc: 'Once per turn, extra 3d6 damage on a Finesse or Ranged attack IF advantage OR an ally within 5 ft of target (and no disadvantage). Same damage type as the weapon.' },
+    { name: 'Cunning Action',         desc: 'Bonus action to Dash, Disengage, or Hide.' },
+    { name: 'Steady Aim',             desc: 'Bonus action: grant self advantage on next attack this turn — Speed becomes 0 for the rest of the turn. Cannot have moved this turn to use.' },
+    { name: 'Uncanny Dodge',          desc: 'Reaction: halve incoming damage from a visible attacker\'s hit (round down).' },
+    { name: "Thieves' Cant",          desc: 'Secret sign-and-slang used by rogues and criminal networks; nearly imperceptible to outsiders.' },
+    { name: 'Weapon Mastery (Rogue)', desc: 'Access to the mastery property of certain weapons. Currently uses Nick (Dagger), Vex (Shortbow, Shortsword), Sap (Spear). Reassign at long rest.' },
+    { name: 'Cunning Strike (1d6 costs)', desc: 'When landing Sneak Attack, may spend 1d6 of the Sneak Attack pool to trigger an effect: Poison (DC 14 Con or Poisoned 1 min), Trip (Large or smaller, DC 14 Dex or Prone), Withdraw (move half speed after the attack without provoking).' }
+  ],
+  subclassFeatures: [
+    { name: 'Assassinate',            desc: 'First round of each combat: advantage on attack rolls against any creature that hasn\'t taken a turn yet. If Sneak Attack hits during that first round, +6 additional damage of the weapon\'s type.' }
+  ],
+  speciesFeatures: [
+    { name: 'Small size',             desc: 'Occupies a smaller space; may squeeze past Medium creatures.' },
+    { name: 'Halfling traits',        desc: '(TBD — verify with player: Lucky, Brave, Halfling Nimbleness, Naturally Stealthy — 2024 PHB standard set.)' }
+  ],
+  feats: [
+    { name: 'Feats',                  desc: '(TBD — screenshots pending; probably ASI at L4 given save DEX +6 / INT +4 fits +2 to Dex).' }
+  ],
+  resources: [
+    // Rogues don't have short/long recharging casting slots. Sneak Attack
+    // itself resets each turn, not tracked here.
+  ],
+  equipment: [
+    // From Actions screenshot — inventory list not yet provided, so weapons
+    // seeded here. Update once full inventory screenshot arrives.
+    { name: 'Dagger',        equipped: true,  slot: 'weapon',     wt: 1, cost: 2,   desc: 'Simple, Finesse, Light, Thrown (20/60), Nick (mastery). 1d4 piercing.' },
+    { name: 'Dagger, +1',    equipped: true,  slot: 'weapon',     wt: 1,            desc: 'Magic +1 dagger. Simple, Finesse, Light, Thrown (20/60), Nick (mastery). 1d4 piercing.' },
+    { name: 'Shortbow',      equipped: false, slot: 'weapon',     wt: 2, cost: 25,  desc: 'Simple, Ammunition (80/320), Two-Handed, Vex (mastery). 1d6 piercing.' },
+    { name: 'Shortbow, +1',  equipped: false, slot: 'weapon',     wt: 2,            desc: 'Magic +1 shortbow. Simple, Ammunition (80/320), Two-Handed, Vex (mastery). 1d6 piercing.' },
+    { name: 'Shortsword',    equipped: false, slot: 'weapon',     wt: 2, cost: 10,  desc: 'Martial, Finesse, Light, Vex (mastery). 1d6 piercing.' },
+    { name: 'Spear',         equipped: false, slot: 'weapon',     wt: 3, cost: 1,   desc: 'Simple, Thrown (20/60), Versatile (1d8), Sap (mastery). 1d6 piercing.' }
+    // Full inventory (armor, ammunition, tools, packs, potions, misc gear)
+    // pending — add when Torren Inventory screenshot is supplied.
+  ],
+  currency: { pp: 0, gp: 0, sp: 0, cp: 0 },  // TBD
+  bio: {
+    faction: 'Guilded Veil (Stonegate cell); ex-Aelorian Watch (discharged).',
+    bond: 'Sworn to lifetime service to Vrass (young black dragon) as of Session 5.',
+    voice: '(see backstory verbatim reference)'
+  }
+};
+
 // ----- ORIN ---------------------------------------------------------
 CHARACTERS.orin = {
   id: 'orin',

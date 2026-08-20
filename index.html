@@ -1151,11 +1151,12 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
     <div class="card gold">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem">
         <span>Torren</span>
-        <span title="Interactive sheet not built yet — placeholder" style="font-size:11px;letter-spacing:1px;color:var(--parch3);font-weight:400;border:1px dashed var(--parch3);padding:2px 8px;border-radius:3px;cursor:not-allowed;opacity:.7">📜 Sheet (soon)</span>
+        <a href="#" onclick="event.preventDefault();openCharacterSheet('torren')" style="font-size:11px;letter-spacing:1px;color:var(--gold2);text-decoration:none;font-weight:400;border:1px solid var(--gold2);padding:2px 8px;border-radius:3px">📜 Sheet ↗</a>
       </div>
       <div class="card-sub">Halfling &nbsp;·&nbsp; Assassin Rogue &nbsp;·&nbsp; Level 6</div>
-      <div class="hp-bar"><div class="hp-fill warn" style="width:75%"></div></div>
-      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Sneak Attack: 3d6</div>
+      <div class="hp-bar"><div class="hp-fill good" style="width:100%"></div></div>
+      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: 43 / 43 &nbsp;·&nbsp; AC: 14 &nbsp;·&nbsp; Init: +3 &nbsp;·&nbsp; Sneak Attack: 3d6</div>
+      <button class="open-sheet-btn" onclick="openCharacterSheet('torren')">📜 Open Character Sheet</button>
       <div class="stat-row"><span class="stat-label">Key action</span><span class="stat-val">Wounded Lyssandra</span></div>
       <div class="stat-row"><span class="stat-label">Personal thread</span><span class="stat-val">Matilda — tracks north</span></div>
       <div class="stat-row"><span class="stat-label">Assassinate</span><span class="stat-val">Surprise = auto crit</span></div>
