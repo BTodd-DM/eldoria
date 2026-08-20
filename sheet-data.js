@@ -478,3 +478,111 @@ CHARACTERS.sylas = {
     { id: 'soul_siphon',       label: 'Soul Siphon consumed count', max: 999, default: 0, display: 'counter', recharge: 'never', note: 'Tally the souls Sylas has taken. Long-term Lich Initiate progress. Type or use +/-.' }
   ]
 };
+
+// ----- ORIN ---------------------------------------------------------
+CHARACTERS.orin = {
+  id: 'orin',
+  name: 'Orin',
+  portraitUrl: 'portraits/orin.jpeg',
+  species: 'Goliath',
+  className: 'Cleric',
+  level: 6,
+  subclass: 'Light Domain',
+  divineOrder: 'Thaumaturge',
+  background: '(see backstory)',
+  alignment: 'Neutral Good',
+  size: 'Medium',
+  appearance: 'Goliath cleric of Luminos. Devoted, mercy-first. Adoptive son of Merric Underbough / Rulden Marr.',
+  ac: 17, acNote: 'Chain shirt + shield + Dex',
+  hpMax: 50,
+  hitDice: { max: 6, die: 'd8' },
+  speed: 45, initiative: 5, proficiencyBonus: 3, passivePerception: 18,
+  abilities: { str: 17, dex: 15, con: 16, int: 12, wis: 20, cha: 10 },
+  saves: {
+    wis: { proficient: true, modOverride: 8 },
+    cha: { proficient: true, modOverride: 3 }
+  },
+  skills: {
+    athletics:  { proficient: true, modOverride: 6 },  // STR prof
+    insight:    { proficient: true, modOverride: 8 },  // WIS prof (Divine Order-granted)
+    medicine:   { proficient: true, modOverride: 8 },  // WIS prof (Divine Order-granted)
+    perception: { proficient: true, modOverride: 8 },  // WIS prof
+    // Divine Order Thaumaturge grants a flat +5 bonus to Arcana and Religion (WIS-mod + prof-ish equivalent).
+    arcana:     { modOverride: 6, note: '+5 Divine Order bonus stacked' },
+    religion:   { modOverride: 6, note: '+5 Divine Order bonus stacked' }
+    // Other skills default to ability mod (Survival +5, Animal Handling +5, etc.).
+  },
+  languages: ['Common', 'Giant', 'Halfling'],
+  armorProf: 'Light Armor, Medium Armor, Shields',
+  weaponProf: 'Simple Weapons',
+  toolProf: 'Dice Set',
+  // Weapons + spell attacks that appear in the Attacks section of the sheet.
+  weapons: [
+    { name: 'Mace',           range: '5 ft. (reach)',    atk: '+6', dmg: '1d6+3 bludgeoning', notes: 'Simple, Sap',  equipped: true },
+    { name: 'Spear',          range: '20/60 ft. thrown', atk: '+6', dmg: '1d6+3 pierc. (1d8+3 versatile)', notes: 'Simple, Thrown, Versatile, Sap' },
+    { name: 'Light Crossbow', range: '80/320 ft.',       atk: '+5', dmg: '1d8+2 piercing', notes: 'Simple, Ammunition (200 bolts), Loading, Two-Handed' },
+    { name: 'Unarmed Strike', range: '5 ft.',            atk: '+6', dmg: '4 bludgeoning', notes: 'Fallback' }
+  ],
+  // Class + subclass + species features. My own 1-line mechanical
+  // summaries — not published rules text.
+  classFeatures: [
+    { name: 'Spellcasting (Wisdom)',          desc: 'Prepared caster. Save DC 16, Spell Attack +8. Ritual casting.' },
+    { name: 'Divine Order — Thaumaturge',     desc: 'Extra Cleric cantrip. Flat +5 to Arcana and Religion checks.' },
+    { name: 'Channel Divinity (3/rest)',      desc: '3 uses per long rest, 1 recovered on short rest. Options: Turn Undead, Divine Spark, Radiance of the Dawn (Light Domain), Sear Undead (auxiliary).' },
+    { name: 'Turn Undead',                    desc: 'Action, DC 16 Wis save. Undead within 30 ft. that fail spend their turn fleeing.' },
+    { name: 'Divine Spark',                   desc: 'Bonus action, targeted 60 ft. — heal 2d8+5 OR deal 2d8+5 radiant/necrotic (Wis save half).' },
+    { name: 'Blessed Strikes (L7 pending)',   desc: 'Choose at L7. Currently NOT active at L6.' }
+  ],
+  subclassFeatures: [
+    { name: 'Light Domain Spells',            desc: 'Bonus prepared spells always available (Faerie Fire, Burning Hands / Scorching Ray / Daylight etc. progressing by level).' },
+    { name: 'Warding Flare (WIS-mod / long rest)', desc: 'Reaction: impose disadvantage on an attack roll made against you or a creature within 30 ft. by a creature you can see.' },
+    { name: 'Radiance of the Dawn (Channel Divinity)', desc: 'Action, dispels magical darkness in 30 ft.; each hostile there DC 16 Con save or take 2d10+6 radiant, half on save.' },
+    { name: 'Improved Flare (L6)',            desc: 'Warding Flare can now protect a creature within 30 ft., not just yourself.' }
+  ],
+  speciesFeatures: [
+    { name: 'Large Form / Powerful Build',    desc: 'Count as Large for grappling, shoving, lifting, and carrying capacity.' },
+    { name: 'Stone\'s Endurance (Prof/day)',  desc: 'Reaction when taking damage: reduce it by 1d12 + Con mod.' },
+    { name: 'Mountain-Born',                  desc: 'Resistance to cold; acclimatised to high altitude.' },
+    { name: 'Giant Ancestry',                 desc: 'Chosen Giant benefit (verify with player which was picked at char creation).' }
+  ],
+  spellcasting: {
+    ability: 'Wisdom',
+    saveDc: 16,
+    atk: 8,
+    slots: [4, 3, 3],  // L1, L2, L3 slots at Cleric 6
+    prepared: {
+      cantrips: ['Guidance', 'Sacred Flame', 'Spare the Dying', 'Word of Radiance'],
+      1: ['Bless', 'Burning Hands', '(+ more — screenshot cut off)'],
+      2: ['Scorching Ray', '(+ more — need screenshot)'],
+      3: ['(need screenshot)']
+    },
+    notes: 'Domain spells auto-prepared and always available. Prepared list to be finalised once screenshots of 1st/2nd/3rd level are provided.'
+  },
+  resources: [
+    { id: 'channel_divinity', label: 'Channel Divinity',      max: 3, recharge: 'short' },  // 3/long, regains 1 on short
+    { id: 'warding_flare',    label: 'Warding Flare (uses/long)', max: 5, recharge: 'long' },  // Wis mod = 5
+    { id: 'stones_endurance', label: "Stone's Endurance",     max: 3, recharge: 'short' }   // prof/day, refresh on short in 2024
+  ],
+  // Inventory as visible in screenshots. Currency approximate — verify.
+  equipment: [
+    { name: 'Chain Shirt',    equipped: true,  slot: 'armor',  desc: 'Medium armor. AC 13 + Dex (max 2).' },
+    { name: 'Shield',         equipped: true,  slot: 'shield', desc: '+2 AC. Two hands to equip/unequip as part of an attack.' },
+    { name: 'Mace',           equipped: true,  slot: 'weapon' },
+    { name: 'Spear',          equipped: false, slot: 'weapon' },
+    { name: 'Light Crossbow', equipped: false, slot: 'weapon' },
+    { name: 'Bolts',          qty: 200,        slot: 'ammunition' },
+    { name: 'Holy Symbol',    slot: 'gear' },
+    { name: 'Hooded Lantern', slot: 'gear' },
+    { name: 'Manacles',       slot: 'gear' },
+    { name: 'Dice Set',       slot: 'tool' }
+    // + more visible on the sheet — add when full screenshot provided.
+  ],
+  currency: { pp: 3, gp: 295, sp: 0, cp: 0 },
+  // Bio short — full backstory lives in vault _Backstories - Verbatim Reference.md.
+  bio: {
+    faith: 'Luminos — cleric of Light. Mercy is his strength.',
+    adoptive_father: 'Merric Underbough (aka Rulden Marr) — has since become Veilmaster of the Guilded Veil (party knows).',
+    homeland: '(from backstory)',
+    voice: '(from backstory)'
+  }
+};
