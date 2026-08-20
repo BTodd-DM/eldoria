@@ -488,7 +488,7 @@ CHARACTERS.torren = {
   className: 'Rogue',
   level: 6,
   subclass: 'Assassin',
-  background: '(TBD — see backstory / Guilded Veil / ex-Watch)',
+  background: 'Soldier',
   alignment: 'Neutral',
   size: 'Small',
   appearance: 'Older halfling than he looks. Ex-Watch (Stonegate), discharged. Guilded Veil operative. Sworn to Vrass as of Session 5.',
@@ -531,36 +531,58 @@ CHARACTERS.torren = {
     { name: 'Steady Aim',             desc: 'Bonus action: grant self advantage on next attack this turn — Speed becomes 0 for the rest of the turn. Cannot have moved this turn to use.' },
     { name: 'Uncanny Dodge',          desc: 'Reaction: halve incoming damage from a visible attacker\'s hit (round down).' },
     { name: "Thieves' Cant",          desc: 'Secret sign-and-slang used by rogues and criminal networks; nearly imperceptible to outsiders.' },
-    { name: 'Weapon Mastery (Rogue)', desc: 'Access to the mastery property of certain weapons. Currently uses Nick (Dagger), Vex (Shortbow, Shortsword), Sap (Spear). Reassign at long rest.' },
-    { name: 'Cunning Strike (1d6 costs)', desc: 'When landing Sneak Attack, may spend 1d6 of the Sneak Attack pool to trigger an effect: Poison (DC 14 Con or Poisoned 1 min), Trip (Large or smaller, DC 14 Dex or Prone), Withdraw (move half speed after the attack without provoking).' }
+    { name: 'Weapon Mastery (2 picks)', desc: 'Currently: Dagger (Nick) and Shortsword (Vex). Reassign at long rest.' },
+    { name: 'Cunning Strike (1d6 costs)', desc: 'When Sneak Attack hits, may spend 1d6 from the Sneak Attack pool to add an effect: Poison (DC 14 Con or Poisoned 1 min — requires Poisoner\'s Kit), Trip (Large or smaller, DC 14 Dex or Prone), Withdraw (move half speed after the attack without provoking).' }
   ],
   subclassFeatures: [
-    { name: 'Assassinate',            desc: 'First round of each combat: advantage on attack rolls against any creature that hasn\'t taken a turn yet. If Sneak Attack hits during that first round, +6 additional damage of the weapon\'s type.' }
+    { name: 'Assassin\'s Tools',      desc: 'Free Disguise Kit + Poisoner\'s Kit + proficiency with both.' },
+    { name: 'Assassinate',            desc: 'Advantage on Initiative rolls. First round of each combat: advantage on attacks against any creature that hasn\'t taken a turn yet. If Sneak Attack hits during that first round, +6 damage of the weapon\'s type.' }
   ],
   speciesFeatures: [
-    { name: 'Small size',             desc: 'Occupies a smaller space; may squeeze past Medium creatures.' },
-    { name: 'Halfling traits',        desc: '(TBD — verify with player: Lucky, Brave, Halfling Nimbleness, Naturally Stealthy — 2024 PHB standard set.)' }
+    { name: 'Brave',                  desc: 'Advantage on saves to avoid or end the Frightened condition.' },
+    { name: 'Halfling Nimbleness',    desc: 'Can move through the space of any creature one size larger, but can\'t stop in the same space.' },
+    { name: 'Luck',                   desc: 'When Torren rolls a 1 on a d20 test, reroll and use the new result.' },
+    { name: 'Naturally Stealthy',     desc: 'Can take the Hide action even when obscured only by a creature at least one size larger.' }
   ],
   feats: [
-    { name: 'Feats',                  desc: '(TBD — screenshots pending; probably ASI at L4 given save DEX +6 / INT +4 fits +2 to Dex).' }
+    { name: 'Skilled (Rogue)',        desc: 'Three additional proficiencies. Torren picked Athletics, Deception, Perception.' },
+    { name: 'Savage Attacker (Soldier background)', desc: 'Once per turn on a weapon hit, roll the weapon\'s damage dice twice and use either result.' }
   ],
   resources: [
     // Rogues don't have short/long recharging casting slots. Sneak Attack
     // itself resets each turn, not tracked here.
   ],
   equipment: [
-    // From Actions screenshot — inventory list not yet provided, so weapons
-    // seeded here. Update once full inventory screenshot arrives.
-    { name: 'Dagger',        equipped: true,  slot: 'weapon',     wt: 1, cost: 2,   desc: 'Simple, Finesse, Light, Thrown (20/60), Nick (mastery). 1d4 piercing.' },
-    { name: 'Dagger, +1',    equipped: true,  slot: 'weapon',     wt: 1,            desc: 'Magic +1 dagger. Simple, Finesse, Light, Thrown (20/60), Nick (mastery). 1d4 piercing.' },
-    { name: 'Shortbow',      equipped: false, slot: 'weapon',     wt: 2, cost: 25,  desc: 'Simple, Ammunition (80/320), Two-Handed, Vex (mastery). 1d6 piercing.' },
-    { name: 'Shortbow, +1',  equipped: false, slot: 'weapon',     wt: 2,            desc: 'Magic +1 shortbow. Simple, Ammunition (80/320), Two-Handed, Vex (mastery). 1d6 piercing.' },
-    { name: 'Shortsword',    equipped: false, slot: 'weapon',     wt: 2, cost: 10,  desc: 'Martial, Finesse, Light, Vex (mastery). 1d6 piercing.' },
-    { name: 'Spear',         equipped: false, slot: 'weapon',     wt: 3, cost: 1,   desc: 'Simple, Thrown (20/60), Versatile (1d8), Sap (mastery). 1d6 piercing.' }
-    // Full inventory (armor, ammunition, tools, packs, potions, misc gear)
-    // pending — add when Torren Inventory screenshot is supplied.
+    // -- Equipment (15 items, 34 lb) --
+    { name: 'Dagger, +1',       equipped: true,  slot: 'weapon',     wt: 1,             desc: 'Magic +1. Simple, Finesse, Light, Thrown (20/60), Nick mastery.' },
+    { name: 'Dagger',           equipped: false, slot: 'weapon',     wt: 1, cost: 2,    desc: 'Simple, Finesse, Light, Thrown (20/60), Nick mastery. 1d4 piercing.' },
+    { name: 'Dagger',           equipped: false, slot: 'weapon',     wt: 1, cost: 2,    desc: 'Second dagger. Simple, Finesse, Light, Thrown, Nick mastery. 1d4 piercing.' },
+    { name: 'Shortbow, +1',     equipped: true,  slot: 'weapon',     wt: 2,             desc: 'Magic +1. Simple, Ammunition (80/320), Two-Handed, Vex mastery.' },
+    { name: 'Shortbow',         equipped: false, slot: 'weapon',     wt: 2, cost: 25,   desc: 'Simple, Ammunition (80/320), Two-Handed, Vex mastery.' },
+    { name: 'Shortbow',         equipped: false, slot: 'weapon',     wt: 2, cost: 25,   desc: 'Second shortbow. Simple, Ammunition (80/320), Two-Handed, Vex mastery.' },
+    { name: 'Shortsword',       equipped: false, slot: 'weapon',     wt: 2, cost: 10,   desc: 'Martial, Finesse, Light, Vex mastery. 1d6 piercing.' },
+    { name: 'Spear',            equipped: false, slot: 'weapon',     wt: 3, cost: 1,    desc: 'Simple, Thrown (20/60), Versatile (1d8), Sap mastery.' },
+    { name: 'Arrows',           qty: 20,         slot: 'ammunition', wt: 1, cost: 1 },
+    { name: 'Arrows',           qty: 20,         slot: 'ammunition', wt: 1, cost: 1,    desc: 'Second stack.' },
+    { name: 'Leather Armor',    equipped: true,  slot: 'armor',      wt: 10, cost: 10,  desc: 'Light armor, AC 11 + Dex (no cap). Currently gives AC 14.' },
+    { name: "Thieves' Tools",   qty: 1,          slot: 'tool',       wt: 1, cost: 25,   desc: 'Utility, Exploration. Proficient — used for locks and traps.' },
+    { name: 'Dice Set',         qty: 1,          slot: 'tool',       cost: 0.1,         desc: 'Social. Proficient.' },
+    { name: "Healer's Kit",     qty: 1,          slot: 'gear',       wt: 3, cost: 5,    desc: 'Healing. 10 charges. Action to stabilise or restore a small amount of HP to an ally.' },
+    { name: "Traveler's Clothes", qty: 1,        slot: 'clothing',   wt: 4, cost: 2,    desc: 'Social, Outerwear.' },
+    // -- Backpack (10 items, 42 lb — over capacity 37/30 lb) --
+    { name: 'Ball Bearings',    qty: 1000,       slot: 'backpack',   wt: 2, cost: 1,    desc: 'Control, Utility, Combat. Action to scatter 10-ft area — creatures moving through DC 10 Dex save or Prone.' },
+    { name: 'Bell',             qty: 1,          slot: 'backpack',   wt: 0, cost: 1,    desc: 'Communication, Utility.' },
+    { name: 'Candle',           qty: 10,         slot: 'backpack',   wt: 0, cost: 0.1,  desc: 'Utility, Exploration, Consumable. Bright light 5 ft, dim 5 ft beyond.' },
+    { name: 'Crowbar',          qty: 1,          slot: 'backpack',   wt: 5, cost: 2,    desc: 'Utility, Exploration. Grants advantage on Str checks where leverage helps.' },
+    { name: 'Hooded Lantern',   qty: 1,          slot: 'backpack',   wt: 2, cost: 5,    desc: 'Utility, Exploration. Bright 30 ft, dim 30 ft beyond.' },
+    { name: 'Oil',              qty: 7,          slot: 'backpack',   wt: 7, cost: 0.7,  desc: 'Damage, Utility. Splash a flask to prime terrain for fire (5-ft square), or throw as improvised (1d4 fire on hit if ignited).' },
+    { name: 'Rations',          qty: 5,          slot: 'backpack',   wt: 10, cost: 2.5, desc: 'Consumable. 1 day of food each.' },
+    { name: 'Rope',             qty: 1,          slot: 'backpack',   wt: 5, cost: 1,    desc: 'Hemp, 50 ft.' },
+    { name: 'Tinderbox',        qty: 1,          slot: 'backpack',   wt: 1, cost: 0.5,  desc: 'Utility, Exploration. 1 action to light a lamp/torch/small fire.' },
+    { name: 'Waterskin',        qty: 1,          slot: 'backpack',   wt: 5, cost: 0.2,  desc: 'Container. 4 pints capacity.' }
+    // Quiver: empty. No attuned items.
   ],
-  currency: { pp: 0, gp: 0, sp: 0, cp: 0 },  // TBD
+  currency: { pp: 0, gp: 0, sp: 0, cp: 0 },  // TBD — send when convenient
   bio: {
     faction: 'Guilded Veil (Stonegate cell); ex-Aelorian Watch (discharged).',
     bond: 'Sworn to lifetime service to Vrass (young black dragon) as of Session 5.',
