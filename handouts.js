@@ -122,7 +122,8 @@
     // A handout is visible to an identity if:
     //   - the identity IS the recipient (recipients[identityId] === true), OR
     //   - recipients.party === true, OR
-    //   - the identity is the DM (sees everything)
+    //   - the identity is the DM (sees everything, including drafts)
+    // A "draft" (no recipients checked) is DM-only.
     filterForIdentity: function(identity) {
       if (!identity) return [];
       const arr = this.getAll();
@@ -135,18 +136,26 @@
 
     _detectNewArrivals: function(prev, cur) {
       // Fire arrival callbacks for handouts the current identity can see
-      // that weren't in the previous snapshot.
+      // that weren't in the previous snapshot. Also fires when an existing
+      // handout was previously a draft (no recipients) and now targets us —
+      // that's the "released" moment.
       const identity = window._currentIdentity;
       if (!identity) return;
       const cbs = this._arrivalCbs || [];
       if (!cbs.length) return;
+      function isVisibleTo(h, id) {
+        const r = (h && h.recipients) || {};
+        return (id.role === 'dm') || r.party || r[id.id];
+      }
       Object.keys(cur).forEach(function(id) {
-        if (prev[id]) return; // not new
-        const h = Object.assign({ id: id }, cur[id]);
-        const r = h.recipients || {};
-        const visible = (identity.role === 'dm') || r.party || r[identity.id];
-        if (!visible) return;
-        cbs.forEach(function(cb) { try { cb(h); } catch (e) {} });
+        const prevH = prev[id];
+        const curH = Object.assign({ id: id }, cur[id]);
+        const nowVisible = isVisibleTo(curH, identity);
+        if (!nowVisible) return;
+        // Was it visible before? If yes, no arrival. If no, fire.
+        const wasVisible = prevH ? isVisibleTo(Object.assign({ id: id }, prevH), identity) : false;
+        if (wasVisible) return;
+        cbs.forEach(function(cb) { try { cb(curH); } catch (e) {} });
       });
     },
 

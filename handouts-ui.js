@@ -84,14 +84,20 @@
 
     _renderCard: function(h) {
       const isRead = window.HandoutsSync.isReadBy(h, this._identity.id);
-      const recips = this._recipientList(h);
+      const isDraft = this._isDraft(h);
+      const recips = isDraft ? 'DRAFT — not released' : this._recipientList(h);
       const readCount = h.readBy ? Object.keys(h.readBy).length : 0;
       const unreadBorder = (!isRead && !this._dmMode) ? ';box-shadow:inset 4px 0 0 var(--gold, #8a6a10)' : '';
+      const draftBg = isDraft ? ';background:rgba(80,80,120,0.10);border-style:dashed' : '';
+      const draftBadge = isDraft
+        ? '<span style="display:inline-block;background:rgba(160,80,201,0.25);color:#c07adf;font-size:9px;padding:1px 6px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-right:.35rem">DRAFT</span>'
+        : '';
       const dmActions = this._dmMode
         ? '<div style="display:flex;gap:.3rem;margin-top:.4rem">' +
             '<button class="action-btn" onclick="event.stopPropagation();HandoutsUI.startEdit(\'' + h.id + '\')" style="font-size:10px;padding:2px 8px">Edit</button>' +
+            (isDraft ? '<button class="action-btn" onclick="event.stopPropagation();HandoutsUI.quickRelease(\'' + h.id + '\')" style="font-size:10px;padding:2px 8px;background:var(--gold);color:var(--ink);border-color:var(--gold)" title="Release to a recipient right now">📤 Release…</button>' : '') +
             '<button class="action-btn" onclick="event.stopPropagation();HandoutsUI.deleteHandout(\'' + h.id + '\')" style="font-size:10px;padding:2px 8px;border-color:#a02020;color:#e0a0a0">Delete</button>' +
-            '<span style="font-size:10px;color:var(--parch3);margin-left:auto;align-self:center">' + readCount + ' read</span>' +
+            '<span style="font-size:10px;color:var(--parch3);margin-left:auto;align-self:center">' + (isDraft ? '—' : readCount + ' read') + '</span>' +
           '</div>'
         : '';
       const thumb = h.imageUrl
@@ -99,9 +105,9 @@
         : '';
       const unreadDot = (!isRead && !this._dmMode) ? '<span style="color:var(--gold);font-size:9px;margin-right:.3rem">●</span>' : '';
       const preview = String(h.body || '').replace(/[\r\n]+/g, ' ').slice(0, 120) + (String(h.body || '').length > 120 ? '…' : '');
-      return '<div class="handout-card" data-handout-id="' + this._esc(h.id) + '" style="border:1px solid var(--border, var(--gold, #8a6a10));border-radius:4px;padding:.6rem .7rem;cursor:pointer;background:rgba(20,14,6,0.15)' + unreadBorder + '">' +
+      return '<div class="handout-card" data-handout-id="' + this._esc(h.id) + '" style="border:1px solid var(--border, var(--gold, #8a6a10));border-radius:4px;padding:.6rem .7rem;cursor:pointer;background:rgba(20,14,6,0.15)' + unreadBorder + draftBg + '">' +
         thumb +
-        '<div style="font-family:\'Cinzel\',serif;color:var(--gold, #8a6a10);font-size:13px;margin-bottom:.15rem">' + unreadDot + this._esc(h.title) + '</div>' +
+        '<div style="font-family:\'Cinzel\',serif;color:var(--gold, #8a6a10);font-size:13px;margin-bottom:.15rem">' + draftBadge + unreadDot + this._esc(h.title) + '</div>' +
         '<div style="font-size:10.5px;color:var(--parch4, var(--ink3));letter-spacing:.5px;margin-bottom:.3rem">📮 ' + recips + '</div>' +
         '<div style="font-size:12px;color:var(--parch2, var(--ink));line-height:1.5">' + this._esc(preview) + '</div>' +
         dmActions +
@@ -113,6 +119,27 @@
       if (r.party) return 'Party (all)';
       const names = PC_LIST.filter(function(p) { return r[p.id]; }).map(function(p) { return p.label; });
       return names.length ? names.join(', ') : '(no recipients)';
+    },
+
+    _isDraft: function(h) {
+      const r = (h && h.recipients) || {};
+      return !r.party && !r.sylas && !r.orin && !r.torren;
+    },
+
+    quickRelease: function(id) {
+      const opts = ['1. Party (all)', '2. Sylas only', '3. Orin only', '4. Torren only', '5. Sylas + Orin', '6. Custom (open the editor)'];
+      const raw = prompt('Release this handout to:\n\n' + opts.join('\n') + '\n\nEnter number:');
+      const n = parseInt(raw, 10);
+      let recipients = null;
+      if (n === 1) recipients = { party: true };
+      else if (n === 2) recipients = { sylas: true };
+      else if (n === 3) recipients = { orin: true };
+      else if (n === 4) recipients = { torren: true };
+      else if (n === 5) recipients = { sylas: true, orin: true };
+      else if (n === 6) { this.startEdit(id); return; }
+      else return;
+      window.HandoutsSync.update(id, { recipients: recipients })
+        .catch(function(e) { alert('Release failed: ' + (e && e.message || e)); });
     },
 
     _wireCardClicks: function() {
@@ -163,7 +190,10 @@
     cancelForm: function() { this._creating = false; this._editingId = null; this.render(); },
 
     _renderForm: function() {
-      let cur = { title: '', body: '', imageUrl: '', recipients: { party: true } };
+      // New handouts default to DRAFT (no recipients). DM chooses when to
+      // release — either at creation, or later via the ✏ Edit or 📤 Release
+      // buttons on the card.
+      let cur = { title: '', body: '', imageUrl: '', recipients: {} };
       if (this._editingId) {
         const found = window.HandoutsSync.getAll().find(function(h) { return h.id === HandoutsUI._editingId; });
         if (found) cur = found;
@@ -178,7 +208,7 @@
         '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold, #8a6a10);letter-spacing:1.5px;margin-bottom:.15rem">IMAGE (URL, or upload a file below)</label>' +
         '<input id="ho-image-url" type="text" placeholder="https://…" value="' + this._esc(cur.imageUrl) + '" style="width:100%;padding:.4rem .5rem;margin-bottom:.3rem;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.5);color:var(--parch, var(--ink));border-radius:2px">' +
         '<input id="ho-image-file" type="file" accept="image/*" onchange="HandoutsUI._imageToBase64(this)" style="margin-bottom:.6rem;font-size:11px">' +
-        '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold, #8a6a10);letter-spacing:1.5px;margin-bottom:.3rem">RECIPIENTS</label>' +
+        '<label style="display:block;font-family:\'Cinzel\',serif;font-size:10px;color:var(--gold, #8a6a10);letter-spacing:1.5px;margin-bottom:.3rem">RECIPIENTS <span style="font-family:\'Crimson Pro\',serif;font-size:11px;letter-spacing:.5px;color:var(--parch3, var(--ink3));font-style:italic">— leave all unchecked to save as a DRAFT (only you can see it)</span></label>' +
         '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem">' +
           '<label style="display:flex;gap:.3rem;align-items:center;font-size:12px;cursor:pointer"><input type="checkbox" id="ho-r-party" ' + (rec.party ? 'checked' : '') + '> Party (all)</label>' +
           PC_LIST.map(function(p) {
@@ -219,10 +249,8 @@
         }
       };
       if (!payload.title) { alert('Title required.'); return; }
-      if (!payload.recipients.party && !payload.recipients.sylas && !payload.recipients.orin && !payload.recipients.torren) {
-        alert('Pick at least one recipient (or Party).');
-        return;
-      }
+      // No recipients checked → saved as a DRAFT (DM-only). This is fine
+      // and intentional — DM prepares handouts in advance, releases later.
       const self = this;
       const op = this._editingId
         ? window.HandoutsSync.update(this._editingId, payload)
@@ -328,7 +356,7 @@
       title: "K's Note (Pig's Head Inn access)",
       body: "Show this at the back door after the second bell. Ask for the mender.\n\nThey will let you through. Speak only to those who wear the moss-mark. No names.\n\nDo not come again if you are followed. Do not come at all if the sky is clear — cloud only.\n\n— K",
       imageUrl: '',
-      recipients: { party: true }
+      recipients: {}  // DRAFT — release when the party physically obtains the note
     },
     {
       title: "Letter from Rulden Marr to Orin",
@@ -346,13 +374,13 @@
       title: "Coin Cipher — Scrap Found in Bag",
       body: "A folded slip of vellum, no bigger than a coin. Ink is fresh. The hand is not yours.\n\n    3 — 7 — 1 — 4 — 9 — 2\n    a debt owed at the eclipse\n    the third coin opens the fourth\n    do not spend the last\n\nThe rest of the page has been torn away.",
       imageUrl: '',
-      recipients: { sylas: true }
+      recipients: {}  // DRAFT — release if/when Sylas finds a scrap in his bag
     },
     {
       title: "WANTED — By Order of the Compound",
       body: "By order of Master Halvor of the Ironhold Compound —\n\nThe following persons are wanted for questioning regarding recent trespass, assault, and the removal of protected property from Compound grounds.\n\nInquiries and any credible sighting to be brought directly to the Compound gate. A finder's fee applies.\n\nDo NOT approach if armed. Do NOT engage if in company of the Watch.\n\n[descriptions and sketches on the reverse]\n\nPosted this day in every guildhall, tavern, and gate-post of Ironhold. Copies to be sent to the northern roads and to Duskmere.\n\n— The Compound",
       imageUrl: '',
-      recipients: { party: true }
+      recipients: {}  // DRAFT — release after the party publicly acts against Halvor
     },
     {
       title: "Template — Signed Contract",
