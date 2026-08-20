@@ -131,6 +131,13 @@ function getSheetState(id) {
   // Phase 4A migration: seed editable equipment + currency + editMode from
   // the sheet-data.js defaults on first load. After that, state is canonical
   // and syncs via Firebase.
+  // Heal corrupted equipment (any entry whose name is "[object Object]"
+  // — result of an earlier broken migration when char.equipment was
+  // upgraded from strings to structured objects without the seeder
+  // knowing how to read the new shape).
+  if (state.equipment && state.equipment.some(function(it) { return it && (it.name === '[object Object]' || it.name === undefined); })) {
+    state.equipment = null;
+  }
   if (!state.equipment) {
     state.equipment = (char.equipment || []).map(function(item, i) {
       // Accepts either a plain string (legacy Sylas seeding) OR a structured
@@ -239,6 +246,63 @@ function getSheetState(id) {
         custom: true
       };
     });
+    // Additional seed: if char.spellcasting.prepared is present (name-only
+    // list by level, e.g. Orin's format), turn each entry into a state spell.
+    // Look up mechanical fields from the SPELLS_2024 catalog by name — we
+    // never fabricate spell rules text; if the catalog doesn't know the
+    // spell, the entry appears with just the name and level, and Bradley
+    // can fill in details in edit mode.
+    if (char.spellcasting && char.spellcasting.prepared) {
+      const prep = char.spellcasting.prepared;
+      const byNameLower = {};
+      if (typeof SPELLS_2024 !== 'undefined') {
+        SPELLS_2024.forEach(function(s) { byNameLower[(s.name || '').toLowerCase()] = s; });
+      }
+      const existingNames = {};
+      state.spells.forEach(function(s) { existingNames[(s.name || '').toLowerCase()] = true; });
+      const buckets = [
+        { key: 'cantrips', level: 0 },
+        { key: '1',        level: 1 },
+        { key: '2',        level: 2 },
+        { key: '3',        level: 3 },
+        { key: '4',        level: 4 },
+        { key: '5',        level: 5 },
+        { key: '6',        level: 6 },
+        { key: '7',        level: 7 },
+        { key: '8',        level: 8 },
+        { key: '9',        level: 9 }
+      ];
+      let seq = 0;
+      buckets.forEach(function(b) {
+        const list = prep[b.key];
+        if (!Array.isArray(list)) return;
+        list.forEach(function(name) {
+          const key = String(name || '').toLowerCase();
+          if (!name || existingNames[key]) return;
+          const cat = byNameLower[key];
+          existingNames[key] = true;
+          state.spells.push({
+            id: 'seed_prep_' + (seq++),
+            sourceSpellId: cat ? cat.id : null,
+            name: cat ? cat.name : name,
+            level: cat ? cat.level : b.level,
+            school: cat ? (cat.school || '') : '',
+            castingTime: cat ? (cat.castingTime || 'Action') : 'Action',
+            range: cat ? (cat.range || '—') : '—',
+            components: cat ? (cat.components || '') : '',
+            duration: cat ? (cat.duration || '') : '',
+            concentration: cat ? !!cat.concentration : false,
+            ritual: cat ? !!cat.ritual : false,
+            description: cat ? (cat.description || '') : '',
+            atHigherLevels: cat ? (cat.atHigherLevels || null) : null,
+            prepared: true,
+            alwaysPrepared: false,
+            alwaysPreparedReason: '',
+            custom: !cat
+          });
+        });
+      });
+    }
   }
   // Phase 4B rev: ensure alwaysPrepared field on every spell (for older seeded state)
   (state.spells || []).forEach(function(sp) {
@@ -1809,9 +1873,19 @@ function renderPrepModal() {
     });
   }
 
+  // Max castable spell level — cap the prep list. Read from
+  // char.spellcasting.slots length (e.g. [4,3,3] = up to L3). Fallback 9.
+  const maxSlot = (char.spellcasting && Array.isArray(char.spellcasting.slots))
+    ? char.spellcasting.slots.length
+    : 9;
+
   // Filter
   const filter = (_prepModalFilter || '').toLowerCase();
   const filtered = entries.filter(function(e) {
+    // Hide spells above the character's max slot level (unless the entry is
+    // already always-prepared for some campaign-specific reason — never hide
+    // those).
+    if (e.level > maxSlot && !e.alwaysPrepared) return false;
     if (_prepModalLevel !== 'all' && e.level !== _prepModalLevel) return false;
     if (!filter) return true;
     return (e.name || '').toLowerCase().indexOf(filter) !== -1;
@@ -1822,8 +1896,9 @@ function renderPrepModal() {
   const alwaysCount = entries.filter(function(e) { return e.alwaysPrepared; }).length;
   const over = prepMax !== null && preparedCount > prepMax;
 
-  // Level filter buttons
-  const levels = ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // Level filter buttons — only include levels the character can actually cast.
+  const allLevels = ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const levels = allLevels.filter(function(l) { return l === 'all' || l <= maxSlot; });
   const levelBtns = levels.map(function(l) {
     const active = _prepModalLevel === l;
     const bg = active ? 'var(--gold)' : 'rgba(160,128,64,0.15)';
