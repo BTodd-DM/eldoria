@@ -489,14 +489,15 @@ CHARACTERS.orin = {
   level: 6,
   subclass: 'Light Domain',
   divineOrder: 'Thaumaturge',
-  background: '(see backstory)',
+  background: 'Guard',
   alignment: 'Neutral Good',
   size: 'Medium',
   appearance: 'Goliath cleric of Luminos. Devoted, mercy-first. Adoptive son of Merric Underbough / Rulden Marr.',
   ac: 17, acNote: 'Chain shirt + shield + Dex',
   hpMax: 50,
   hitDice: { max: 6, die: 'd8' },
-  speed: 45, initiative: 5, proficiencyBonus: 3, passivePerception: 18,
+  speed: 35, initiative: 5, proficiencyBonus: 3, passivePerception: 18,
+  speedNote: 'Base 35 ft. +10 ft while Activate Large Form is on (bonus action, 1/long rest, 10 min).',
   abilities: { str: 17, dex: 15, con: 16, int: 12, wis: 20, cha: 10 },
   saves: {
     wis: { proficient: true, modOverride: 8 },
@@ -530,8 +531,7 @@ CHARACTERS.orin = {
     { name: 'Divine Order — Thaumaturge',     desc: 'Extra Cleric cantrip. Flat +5 to Arcana and Religion checks.' },
     { name: 'Channel Divinity (3/rest)',      desc: '3 uses per long rest, 1 recovered on short rest. Options: Turn Undead, Divine Spark, Radiance of the Dawn (Light Domain), Sear Undead (auxiliary).' },
     { name: 'Turn Undead (Channel Divinity)', desc: 'Action. Undead within 30 ft.: DC 16 Wis save or Frightened + Incapacitated 1 min, flees. Ends early on damage taken.' },
-    { name: 'Divine Spark (Channel Divinity)', desc: 'Bonus action, Holy Symbol at creature within 30 ft. Either heal 1d8+5 HP, OR target makes DC 16 Con save (half) for 1d8+5 radiant or necrotic (Orin picks type).' },
-    { name: 'Blessed Strikes (L7 pending)',   desc: 'Choose at L7. Not active yet.' }
+    { name: 'Divine Spark (Channel Divinity)', desc: 'Bonus action, Holy Symbol at creature within 30 ft. Either heal 1d8+5 HP, OR target makes DC 16 Con save (half) for 1d8+5 radiant or necrotic (Orin picks type).' }
   ],
   subclassFeatures: [
     { name: 'Light Domain — Bonus Cantrip',   desc: 'Light cantrip granted at subclass pickup (in addition to normal cantrips known).' },
