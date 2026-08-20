@@ -1220,11 +1220,12 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
     <div class="card teal">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem">
         <span>Orin</span>
-        <span title="Interactive sheet not built yet — placeholder" style="font-size:11px;letter-spacing:1px;color:var(--parch3);font-weight:400;border:1px dashed var(--parch3);padding:2px 8px;border-radius:3px;cursor:not-allowed;opacity:.7">📜 Sheet (soon)</span>
+        <a href="#" onclick="event.preventDefault();openCharacterSheet('orin')" style="font-size:11px;letter-spacing:1px;color:var(--gold2);text-decoration:none;font-weight:400;border:1px solid var(--gold2);padding:2px 8px;border-radius:3px">📜 Sheet ↗</a>
       </div>
-      <div class="card-sub">Goliath &nbsp;·&nbsp; Cleric of Luminos &nbsp;·&nbsp; Level 6</div>
-      <div class="hp-bar"><div class="hp-fill good" style="width:90%"></div></div>
-      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: — / — &nbsp;·&nbsp; Spell Save DC: — &nbsp;·&nbsp; Channel Divinity: 2/rest</div>
+      <div class="card-sub">Goliath &nbsp;·&nbsp; Cleric of Luminos (Light Domain, Thaumaturge) &nbsp;·&nbsp; Level 6</div>
+      <div class="hp-bar"><div class="hp-fill good" style="width:100%"></div></div>
+      <div style="font-size:11px;color:var(--parch3);margin-bottom:.5rem">HP: 50 / 50 &nbsp;·&nbsp; AC: 17 &nbsp;·&nbsp; Spell Save DC: 16 &nbsp;·&nbsp; Channel Divinity: 3/rest</div>
+      <button class="open-sheet-btn" onclick="openCharacterSheet('orin')">📜 Open Character Sheet</button>
 
       <div class="backstory-card" style="background:rgba(20,15,8,0.55);border:1px solid rgba(160,128,64,0.3);border-left:3px solid var(--teal2,#0d3d30);border-radius:3px;padding:.6rem .75rem;margin:.4rem 0 .75rem">
         <div style="font-size:10px;color:var(--gold2);letter-spacing:1.2px;font-family:'Cinzel',serif;margin-bottom:.35rem">📖 BACKSTORY REFRESHER</div>
@@ -1807,6 +1808,10 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
   </div>
 
   <div id="tab-p-gods">
+    <div style="display:flex;gap:.4rem;justify-content:flex-end;margin-bottom:.5rem">
+      <button class="action-btn" onclick="document.querySelectorAll('#tab-p-gods details.deity-card').forEach(function(d){d.setAttribute('open','');})">Expand all</button>
+      <button class="action-btn" onclick="document.querySelectorAll('#tab-p-gods details.deity-card').forEach(function(d){d.removeAttribute('open');})">Collapse all</button>
+    </div>
     <div class="sec-title">Creator Gods</div>
     <div class="deity-grid">
       <details class="deity-card" style="border-left:3px solid var(--gold2)"><summary style="cursor:pointer;padding:.3rem .4rem"><span class="deity-name" style="color:var(--gold3)">Luminos</span> <span class="deity-align" style="margin-left:.35rem">Neutral Good · Creator</span></summary><div class="deity-body">Radiant light, creativity, hope, knowledge. Revered by scholars, artists, enlighteners. <strong>Suppressed in the Aurum Dominion</strong> — why Merric smuggled holy goods there. Symbol: radiant orb with light patterns.</div></details>
