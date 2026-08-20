@@ -522,7 +522,7 @@ CHARACTERS.orin = {
     { name: 'Mace',           range: '5 ft. (reach)',    atk: '+6', dmg: '1d6+3 bludgeoning', notes: 'Simple, Sap',  equipped: true },
     { name: 'Spear',          range: '20/60 ft. thrown', atk: '+6', dmg: '1d6+3 pierc. (1d8+3 versatile)', notes: 'Simple, Thrown, Versatile, Sap' },
     { name: 'Light Crossbow', range: '80/320 ft.',       atk: '+5', dmg: '1d8+2 piercing', notes: 'Simple, Ammunition (200 bolts), Loading, Two-Handed' },
-    { name: 'Unarmed Strike', range: '5 ft.',            atk: '+6', dmg: '4 bludgeoning', notes: 'Fallback' }
+    { name: 'Unarmed Strike', range: '5 ft.',            atk: '+6', dmg: '4 bludgeoning', notes: 'Damage OR Grapple (Str/Dex save DC 14) OR Shove (Str/Dex save DC 14 to avoid 5-ft push OR prone). One mode per attack.' }
   ],
   // Class + subclass + species features. My own 1-line mechanical
   // summaries — not published rules text.
@@ -534,16 +534,19 @@ CHARACTERS.orin = {
     { name: 'Divine Spark (Channel Divinity)', desc: 'Bonus action, Holy Symbol at creature within 30 ft. Either heal 1d8+5 HP, OR target makes DC 16 Con save (half) for 1d8+5 radiant or necrotic (Orin picks type).' }
   ],
   subclassFeatures: [
-    { name: 'Light Domain — Bonus Cantrip',   desc: 'Light cantrip granted at subclass pickup (in addition to normal cantrips known).' },
-    { name: 'Warding Flare (5/short rest)',   desc: 'Reaction when a creature within 30 ft. that Orin can see makes an attack roll — impose disadvantage AND grant the target 2d6+5 temporary HP.' },
-    { name: 'Radiance of the Dawn (Channel Divinity)', desc: 'Action. 30-ft emanation from self: dispels magical darkness; each chosen creature DC 16 Con save or take 2d10+6 radiant (half on save).' },
-    { name: 'Improved Flare (L6)',            desc: 'Warding Flare\'s reaction can now protect an ally within 30 ft. as well as Orin himself.' },
-    { name: 'Sear Undead (subclass boost)',   desc: 'When Orin uses Turn Undead, any undead that fail the save also take 5d8 radiant. Does not break the turn effect.' }
+    { name: 'Light Domain — Bonus Cantrip',           desc: 'Extra Light cantrip granted at subclass pickup.' },
+    { name: 'Warding Flare (5/short rest)',           desc: 'Reaction when a creature within 30 ft. that Orin can see makes an attack roll — impose disadvantage on the roll AND grant the target 2d6+5 temporary HP (Improved Warding Flare, L6).' },
+    { name: 'Radiance of the Dawn (Channel Divinity)', desc: 'Action. 30-ft emanation: dispels magical darkness; each chosen creature DC 16 Con save or take 2d10+6 radiant (half on save).' },
+    { name: 'Sear Undead (subclass boost)',           desc: 'When Orin uses Turn Undead, any undead that fail the save also take 5d8 radiant. Doesn\'t break the turn effect.' }
   ],
   speciesFeatures: [
-    { name: 'Large Form / Powerful Build',    desc: 'Counts as Large for grappling, shoving, lifting, and carrying capacity.' },
-    { name: 'Activate Large Form (1/long rest)', desc: 'Bonus action: become Large for 10 min. Advantage on Str checks and +10 ft speed while active. Ends early on choice.' },
-    { name: 'Storm\'s Thunder (Storm Giant Ancestry, 3/long rest)', desc: 'Reaction when Orin takes damage from a creature within 60 ft.: deal 1d8 thunder damage back to that creature.' }
+    { name: 'Powerful Build',                                  desc: 'Advantage on ability checks to end the Grappled condition. Counts as one size larger for carrying capacity.' },
+    { name: 'Activate Large Form (bonus action, 1/long rest)', desc: 'Become Large for 10 min. Advantage on Str checks, +10 ft speed. End early at will.' },
+    { name: "Storm's Thunder (Storm Giant Ancestry, 3/long)",  desc: 'Reaction when Orin takes damage from a creature within 60 ft.: deal 1d8 thunder damage back to that creature.' }
+  ],
+  feats: [
+    { name: 'Ability Score Improvement (Cleric L4)', desc: '+2 Wisdom.' },
+    { name: 'Alert (Guard background)',              desc: 'Initiative Proficiency: +3 to initiative rolls. Initiative Swap: after rolling, may swap your init with a willing ally in the same combat (neither may be Incapacitated).' }
   ],
   spellcasting: {
     ability: 'Wisdom',

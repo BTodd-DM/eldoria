@@ -132,8 +132,25 @@ function getSheetState(id) {
   // the sheet-data.js defaults on first load. After that, state is canonical
   // and syncs via Firebase.
   if (!state.equipment) {
-    state.equipment = (char.equipment || []).map(function(str, i) {
-      return { id: 'seed_' + i, name: str, quantity: 1, notes: '', custom: true, sourceItemId: null };
+    state.equipment = (char.equipment || []).map(function(item, i) {
+      // Accepts either a plain string (legacy Sylas seeding) OR a structured
+      // object (new Orin / Torren shape with name/qty/wt/desc/equipped/etc).
+      if (typeof item === 'string') {
+        return { id: 'seed_' + i, name: item, quantity: 1, notes: '', custom: true, sourceItemId: null };
+      }
+      return {
+        id: 'seed_' + i,
+        name: item.name || '(unnamed)',
+        quantity: item.qty || item.quantity || 1,
+        notes: item.desc || item.notes || '',
+        weight: item.wt,
+        cost: item.cost,
+        slot: item.slot,
+        equipped: !!item.equipped,
+        attuned: !!item.attuned,
+        custom: true,
+        sourceItemId: null
+      };
     });
   }
   // One-time Sylas inventory cleanup — replaces known-bad legacy seed items
