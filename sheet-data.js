@@ -517,12 +517,12 @@ CHARACTERS.orin = {
   armorProf: 'Light Armor, Medium Armor, Shields',
   weaponProf: 'Simple Weapons',
   toolProf: 'Dice Set',
-  // Weapons + spell attacks that appear in the Attacks section of the sheet.
+  // Weapons + fallback attacks that appear in the Attacks section.
+  // Note: Mace / Spear / Light Crossbow live in inventory (equipment)
+  // and auto-appear in the attack list when equipped there — so we
+  // don't repeat them here.
   weapons: [
-    { name: 'Mace',           range: '5 ft. (reach)',    atk: '+6', dmg: '1d6+3 bludgeoning', notes: 'Simple, Sap',  equipped: true },
-    { name: 'Spear',          range: '20/60 ft. thrown', atk: '+6', dmg: '1d6+3 pierc. (1d8+3 versatile)', notes: 'Simple, Thrown, Versatile, Sap' },
-    { name: 'Light Crossbow', range: '80/320 ft.',       atk: '+5', dmg: '1d8+2 piercing', notes: 'Simple, Ammunition (200 bolts), Loading, Two-Handed' },
-    { name: 'Unarmed Strike', range: '5 ft.',            atk: '+6', dmg: '4 bludgeoning', notes: 'Damage OR Grapple (Str/Dex save DC 14) OR Shove (Str/Dex save DC 14 to avoid 5-ft push OR prone). One mode per attack.' }
+    { name: 'Unarmed Strike', atk: 6, damage: '4 bludgeoning', notes: 'Damage OR Grapple (Str/Dex save DC 14) OR Shove (Str/Dex save DC 14 to avoid 5-ft push OR prone). One mode per attack.' }
   ],
   // Class + subclass + species features. My own 1-line mechanical
   // summaries — not published rules text.

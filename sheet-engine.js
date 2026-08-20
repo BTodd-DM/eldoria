@@ -795,6 +795,10 @@ function itemActionType(item) {
   }
   // Custom item heuristics — only strong signals
   if (/^potion\b|\bpotion of\b|\belixir\b|\bscroll of\b/.test(nameLow)) return 'use';
+  // Slot hint (new structured seed format used by Orin/Torren)
+  const slot = String(item.slot || '').toLowerCase();
+  if (slot === 'weapon' || slot === 'armor' || slot === 'shield') return 'equip';
+  if (slot === 'consumable') return 'use';
   return null;
 }
 
@@ -805,6 +809,11 @@ function isItemEquippable(item) { return itemActionType(item) === 'equip'; }
 // Returns null if we can't get useful attack data.
 function inventoryItemToAttack(item) {
   if (!item) return null;
+  // Slot-based filter for custom seeded items (Orin/Torren format) —
+  // armor and shields are equipped but they aren't attacks. Only weapons
+  // (or magic that acts as an attack) belong in the Attacks table.
+  const slot = String(item.slot || '').toLowerCase();
+  if (slot === 'armor' || slot === 'shield') return null;
   let name = item.name || 'Item';
   let damage = '—';
   let notes = item.notes || '';
@@ -817,6 +826,9 @@ function inventoryItemToAttack(item) {
       }
       if (catItem.category !== 'weapon') return null; // armor equipped but not an attack
     }
+  } else if (item.custom && slot !== 'weapon') {
+    // Custom items with no weapon-slot hint aren't attacks either.
+    return null;
   }
   return { name: name, damage: damage, notes: notes };
 }
