@@ -307,6 +307,23 @@ function getSheetState(id) {
         });
       });
     }
+    // Tag always-prepared spells (domain, racial, feat, item-granted)
+    // so they don't count against the prepared-spell cap. Reasons
+    // surface in the prep-modal badge.
+    if (char.spellcasting && Array.isArray(char.spellcasting.alwaysPrepared)) {
+      const alwaysMap = {};
+      char.spellcasting.alwaysPrepared.forEach(function(entry) {
+        if (entry && entry.name) alwaysMap[entry.name.toLowerCase()] = entry.reason || 'Always prepared';
+      });
+      state.spells.forEach(function(sp) {
+        const reason = alwaysMap[(sp.name || '').toLowerCase()];
+        if (reason) {
+          sp.alwaysPrepared = true;
+          sp.alwaysPreparedReason = reason;
+          sp.prepared = true;
+        }
+      });
+    }
   }
   // Phase 4B rev: ensure alwaysPrepared field on every spell (for older seeded state)
   (state.spells || []).forEach(function(sp) {

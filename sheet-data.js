@@ -559,7 +559,17 @@ CHARACTERS.orin = {
       2: ['Hold Person', 'Prayer of Healing', 'Scorching Ray', 'See Invisibility', 'Spiritual Weapon'],
       3: ['Aura of Vitality', 'Daylight', 'Fireball', 'Spirit Guardians']
     },
-    notes: 'Light Domain always-prepared spells (Burning Hands, Faerie Fire, Scorching Ray, Daylight, Fireball) do not count against prepared-spell limit.'
+    // Free-source spells that don't count against the prepared cap.
+    // Seeder tags matching state.spells entries with alwaysPrepared=true
+    // and the reason surfaces in the prep-modal UI.
+    alwaysPrepared: [
+      { name: 'Burning Hands',  reason: 'Light Domain' },
+      { name: 'Faerie Fire',    reason: 'Light Domain' },
+      { name: 'Scorching Ray',  reason: 'Light Domain' },
+      { name: 'Daylight',       reason: 'Light Domain' },
+      { name: 'Fireball',       reason: 'Light Domain' }
+    ],
+    notes: 'Light Domain grants 5 always-prepared spells that do not count against the prepared limit.'
   },
   resources: [
     { id: 'channel_divinity', label: 'Channel Divinity',              max: 3, recharge: 'short' },  // 3/long, regains 1 on short
