@@ -529,21 +529,21 @@ CHARACTERS.orin = {
     { name: 'Spellcasting (Wisdom)',          desc: 'Prepared caster. Save DC 16, Spell Attack +8. Ritual casting.' },
     { name: 'Divine Order — Thaumaturge',     desc: 'Extra Cleric cantrip. Flat +5 to Arcana and Religion checks.' },
     { name: 'Channel Divinity (3/rest)',      desc: '3 uses per long rest, 1 recovered on short rest. Options: Turn Undead, Divine Spark, Radiance of the Dawn (Light Domain), Sear Undead (auxiliary).' },
-    { name: 'Turn Undead',                    desc: 'Action, DC 16 Wis save. Undead within 30 ft. that fail spend their turn fleeing.' },
-    { name: 'Divine Spark',                   desc: 'Bonus action, targeted 60 ft. — heal 2d8+5 OR deal 2d8+5 radiant/necrotic (Wis save half).' },
-    { name: 'Blessed Strikes (L7 pending)',   desc: 'Choose at L7. Currently NOT active at L6.' }
+    { name: 'Turn Undead (Channel Divinity)', desc: 'Action. Undead within 30 ft.: DC 16 Wis save or Frightened + Incapacitated 1 min, flees. Ends early on damage taken.' },
+    { name: 'Divine Spark (Channel Divinity)', desc: 'Bonus action, Holy Symbol at creature within 30 ft. Either heal 1d8+5 HP, OR target makes DC 16 Con save (half) for 1d8+5 radiant or necrotic (Orin picks type).' },
+    { name: 'Blessed Strikes (L7 pending)',   desc: 'Choose at L7. Not active yet.' }
   ],
   subclassFeatures: [
-    { name: 'Light Domain Spells',            desc: 'Bonus prepared spells always available (Faerie Fire, Burning Hands / Scorching Ray / Daylight etc. progressing by level).' },
-    { name: 'Warding Flare (WIS-mod / long rest)', desc: 'Reaction: impose disadvantage on an attack roll made against you or a creature within 30 ft. by a creature you can see.' },
-    { name: 'Radiance of the Dawn (Channel Divinity)', desc: 'Action, dispels magical darkness in 30 ft.; each hostile there DC 16 Con save or take 2d10+6 radiant, half on save.' },
-    { name: 'Improved Flare (L6)',            desc: 'Warding Flare can now protect a creature within 30 ft., not just yourself.' }
+    { name: 'Light Domain — Bonus Cantrip',   desc: 'Light cantrip granted at subclass pickup (in addition to normal cantrips known).' },
+    { name: 'Warding Flare (5/short rest)',   desc: 'Reaction when a creature within 30 ft. that Orin can see makes an attack roll — impose disadvantage AND grant the target 2d6+5 temporary HP.' },
+    { name: 'Radiance of the Dawn (Channel Divinity)', desc: 'Action. 30-ft emanation from self: dispels magical darkness; each chosen creature DC 16 Con save or take 2d10+6 radiant (half on save).' },
+    { name: 'Improved Flare (L6)',            desc: 'Warding Flare\'s reaction can now protect an ally within 30 ft. as well as Orin himself.' },
+    { name: 'Sear Undead (subclass boost)',   desc: 'When Orin uses Turn Undead, any undead that fail the save also take 5d8 radiant. Does not break the turn effect.' }
   ],
   speciesFeatures: [
-    { name: 'Large Form / Powerful Build',    desc: 'Count as Large for grappling, shoving, lifting, and carrying capacity.' },
-    { name: 'Stone\'s Endurance (Prof/day)',  desc: 'Reaction when taking damage: reduce it by 1d12 + Con mod.' },
-    { name: 'Mountain-Born',                  desc: 'Resistance to cold; acclimatised to high altitude.' },
-    { name: 'Giant Ancestry',                 desc: 'Chosen Giant benefit (verify with player which was picked at char creation).' }
+    { name: 'Large Form / Powerful Build',    desc: 'Counts as Large for grappling, shoving, lifting, and carrying capacity.' },
+    { name: 'Activate Large Form (1/long rest)', desc: 'Bonus action: become Large for 10 min. Advantage on Str checks and +10 ft speed while active. Ends early on choice.' },
+    { name: 'Storm\'s Thunder (Storm Giant Ancestry, 3/long rest)', desc: 'Reaction when Orin takes damage from a creature within 60 ft.: deal 1d8 thunder damage back to that creature.' }
   ],
   spellcasting: {
     ability: 'Wisdom',
@@ -552,32 +552,48 @@ CHARACTERS.orin = {
     slots: [4, 3, 3],  // L1, L2, L3 slots at Cleric 6
     prepared: {
       cantrips: ['Guidance', 'Sacred Flame', 'Spare the Dying', 'Word of Radiance'],
-      1: ['Bless', 'Burning Hands', '(+ more — screenshot cut off)'],
-      2: ['Scorching Ray', '(+ more — need screenshot)'],
-      3: ['(need screenshot)']
+      1: ['Bless', 'Burning Hands', 'Cure Wounds', 'Faerie Fire', 'Guiding Bolt', 'Shield of Faith'],
+      2: ['Hold Person', 'Prayer of Healing', 'Scorching Ray', 'See Invisibility', 'Spiritual Weapon'],
+      3: ['Aura of Vitality', 'Daylight', 'Fireball', 'Spirit Guardians']
     },
-    notes: 'Domain spells auto-prepared and always available. Prepared list to be finalised once screenshots of 1st/2nd/3rd level are provided.'
+    notes: 'Light Domain always-prepared spells (Burning Hands, Faerie Fire, Scorching Ray, Daylight, Fireball) do not count against prepared-spell limit.'
   },
   resources: [
-    { id: 'channel_divinity', label: 'Channel Divinity',      max: 3, recharge: 'short' },  // 3/long, regains 1 on short
-    { id: 'warding_flare',    label: 'Warding Flare (uses/long)', max: 5, recharge: 'long' },  // Wis mod = 5
-    { id: 'stones_endurance', label: "Stone's Endurance",     max: 3, recharge: 'short' }   // prof/day, refresh on short in 2024
+    { id: 'channel_divinity', label: 'Channel Divinity',              max: 3, recharge: 'short' },  // 3/long, regains 1 on short
+    { id: 'warding_flare',    label: 'Warding Flare (5/short rest)',  max: 5, recharge: 'short' },
+    { id: 'large_form',       label: 'Activate Large Form (1/long)',  max: 1, recharge: 'long' },
+    { id: 'storms_thunder',   label: "Storm's Thunder (3/long rest)", max: 3, recharge: 'long' }
   ],
-  // Inventory as visible in screenshots. Currency approximate — verify.
+  // Full inventory from DDB screenshots.
+  // Equipped items (red-square markers in DDB): Mace, Spear, Chain Shirt, Shield.
+  // Total weight carried: ~95 lb.
   equipment: [
-    { name: 'Chain Shirt',    equipped: true,  slot: 'armor',  desc: 'Medium armor. AC 13 + Dex (max 2).' },
-    { name: 'Shield',         equipped: true,  slot: 'shield', desc: '+2 AC. Two hands to equip/unequip as part of an attack.' },
-    { name: 'Mace',           equipped: true,  slot: 'weapon' },
-    { name: 'Spear',          equipped: false, slot: 'weapon' },
-    { name: 'Light Crossbow', equipped: false, slot: 'weapon' },
-    { name: 'Bolts',          qty: 200,        slot: 'ammunition' },
-    { name: 'Holy Symbol',    slot: 'gear' },
-    { name: 'Hooded Lantern', slot: 'gear' },
-    { name: 'Manacles',       slot: 'gear' },
-    { name: 'Dice Set',       slot: 'tool' }
-    // + more visible on the sheet — add when full screenshot provided.
+    // -- Equipment (worn / at-hand, 12 items, 66 lb) --
+    { name: 'Chain Shirt',       equipped: true,  slot: 'armor',      wt: 20, cost: 50,  desc: 'Medium armor. AC 13 + Dex (max +2).' },
+    { name: 'Shield',            equipped: true,  slot: 'shield',     wt: 6,  cost: 10,  desc: '+2 AC. Two-hand to equip/unequip as part of an attack.' },
+    { name: 'Mace',              equipped: true,  slot: 'weapon',     wt: 4,  cost: 5,   desc: 'Simple, Sap. 1d6 bludgeoning.' },
+    { name: 'Spear',             equipped: true,  slot: 'weapon',     wt: 3,  cost: 1,   desc: 'Simple, Thrown (20/60), Versatile (1d8), Sap. 1d6 piercing.' },
+    { name: 'Light Crossbow',    equipped: false, slot: 'weapon',     wt: 5,  cost: 25,  desc: 'Simple, Ammunition (80/320), Loading, Two-Handed, Slow.' },
+    { name: 'Bolts',             qty: 200,        slot: 'ammunition', wt: 15, cost: 10 },
+    { name: 'Dice Set',          qty: 1,          slot: 'tool',       cost: 0.1, desc: 'Social — Dice set proficiency.' },
+    { name: 'Holy Symbol',       qty: 1,          slot: 'gear',       desc: 'Spellcasting focus for Cleric spells (Luminos).' },
+    { name: 'Hooded Lantern',    qty: 1,          slot: 'gear',       wt: 2,  cost: 5,   desc: 'Utility, Exploration. Bright light 30 ft, dim 30 ft beyond.' },
+    { name: 'Manacles',          qty: 1,          slot: 'gear',       wt: 6,  cost: 2,   desc: 'Control, Utility. DC 20 to break or Sleight of Hand DC 20 to escape.' },
+    { name: 'Potion of Healing', qty: 2,          slot: 'consumable', wt: 1,             desc: '1 Charge each. Bonus action to drink: 2d4+2 HP.' },
+    { name: "Traveler's Clothes", qty: 1,         slot: 'clothing',   wt: 4,  cost: 2,   desc: 'Social, Outerwear.' },
+    // -- Backpack (6 items, 29 lb / cap 30) --
+    { name: 'Blanket',           qty: 1,          slot: 'backpack',   wt: 3,  cost: 0.5, desc: 'Utility.' },
+    { name: 'Holy Water',        qty: 1,          slot: 'backpack',   wt: 1,  cost: 25,  desc: 'Damage, Utility, Combat. Action to splash — 2d6 radiant to fiend or undead within 5 ft.' },
+    { name: 'Lamp',              qty: 1,          slot: 'backpack',   wt: 1,  cost: 0.5, desc: 'Utility, Exploration. Bright 15 ft, dim 30 ft beyond.' },
+    { name: 'Rations',           qty: 7,          slot: 'backpack',   wt: 14, cost: 3.5, desc: 'Consumable. 1 day of food each.' },
+    { name: 'Robe',              qty: 1,          slot: 'backpack',   wt: 4,  cost: 1 },
+    { name: 'Tinderbox',         qty: 1,          slot: 'backpack',   wt: 1,  cost: 0.5, desc: 'Utility, Exploration. 1 action to light a lamp/torch/small fire.' }
+    // Quiver: empty. Attunement: no items currently attuned (3 slots available).
   ],
-  currency: { pp: 3, gp: 295, sp: 0, cp: 0 },
+  // Currency — verify against DDB. Screenshot showed 295 gp and a few pp/ep;
+  // exact minor totals unclear from the coin icons. Update in edit mode
+  // (Currency section) once confirmed.
+  currency: { pp: 3, gp: 295, ep: 8, sp: 0, cp: 0 },
   // Bio short — full backstory lives in vault _Backstories - Verbatim Reference.md.
   bio: {
     faith: 'Luminos — cleric of Light. Mercy is his strength.',
