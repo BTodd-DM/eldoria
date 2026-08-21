@@ -492,6 +492,18 @@ CHARACTERS.torren = {
   alignment: 'Neutral',
   size: 'Small',
   appearance: 'Older halfling than he looks. Ex-Watch (Stonegate), discharged. Guilded Veil operative. Sworn to Vrass as of Session 5.',
+  // Verbatim from the vault backstory (Torren.md — player-written; do not
+  // paraphrase). The renderBioSection reads this as one prose block.
+  backstory:
+    "Torren is older than he looks and older than he acts. He spent most of his working life in the Aelorian Territories Watch, stationed at the Stonegate garrison on the northern frontier. He served under Captain Rikhardt Vall and alongside Nell Vissen. A solid soldier for most of it, competent, dependable.\n\n" +
+    "Somewhere along the way — quietly, unglamorously — he began taking coin from the wrong people. Small favours at first: turning a blind eye on a shipment, adjusting a patrol route, dropping a name to someone waiting for it. Payments were small. Then they weren't. The corruption was slow enough that he told himself for years he wasn't corrupt, only tired. Then he was caught.\n\n" +
+    "The discharge was public. Vall did not protect him — not because Vall was cruel but because the evidence had gone too far and Vall was, above all, a fair officer. Torren stood at attention while it was read out. He never wore the tabard again.\n\n" +
+    "He didn't leave Stonegate right away. He had nothing waiting for him. He drifted through the taverns of the lower town for a season, drinking, sleeping poorly, doing odd jobs for merchants who remembered his old favours. That's where Wenzel \"The Kite\" Tosscobble found him — the Stonegate cell leader of the Guilded Veil. She didn't recruit him with promises; she just started paying him for the work he was already doing, framed it as an organisation, and made the offer feel inevitable. He said yes. It felt like a homecoming. It was.\n\n" +
+    "He worked the Veil's Stonegate cell for years — smuggling contraband through the north gate, quietly intimidating merchants behind on tribute, occasional wet-work when the Kite pointed at someone. His assassin skills sharpened in that period. He learned that the world had far fewer honest people in it than his Watch years had led him to believe, and that this was, in some ways, easier to live with.\n\n" +
+    "Eventually he came south to Aeloria — either sent by Wenzel as an inter-cell liaison, or because Stonegate was getting too warm, or both. He connected with the Aeloria network. He was the party's way into the Pig's Head back rooms. He met Merric there. He hasn't been back to Stonegate. He does not particularly want to go.",
+  personality: 'PTSD from Stonegate frontier duty — nightmares, startle-response to specific sounds. Wary of magic-wielders (including Sylas). Distrustful of tall people (including Orin). Something to prove — takes Assassinate risks. Manages more than he lets on.',
+  bond: 'Sworn to lifetime service to Vrass (young black dragon) as of Session 5. Dark bond active. Also owes the Guilded Veil (Stonegate cell of origin, now Aeloria network via Gerald and Merric).',
+  flaw: 'Cannot look Captain Vall in the eye. Avoids Watch tabards. Assumes tall people are looking down on him — sometimes literally, always figuratively.',
   ac: 14, acNote: 'Studded leather (light armor, if worn) + Dex; adjust in inventory',
   hpMax: 43,
   hitDice: { max: 6, die: 'd8' },
