@@ -1031,6 +1031,13 @@
       if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
     },
 
+    _closeBrowser: function() {
+      const dlg = document.getElementById('ct-browser-dialog');
+      if (!dlg) return;
+      if (typeof dlg.close === 'function') { try { dlg.close(); } catch (e) {} }
+      dlg.removeAttribute('open');
+    },
+
     _renderBrowser: function() {
       const body = document.getElementById('ct-browser-body');
       if (!body) { console.warn('[CombatTracker] Browser body element missing'); return; }
@@ -1763,18 +1770,25 @@
       if (!document.getElementById('ct-browser-dialog')) {
         const db = document.createElement('dialog');
         db.id = 'ct-browser-dialog';
-        db.style.cssText = 'max-width:800px;width:96vw;height:90vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px;display:flex;flex-direction:column';
+        // Note: no display:flex on the dialog itself — browsers use
+        // dialog:not([open]){display:none} to hide when closed, and an
+        // inline display style would override that (dialog stays visible
+        // after .close()). Layout is on the inner wrapper instead.
+        db.style.cssText = 'max-width:800px;width:96vw;height:90vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px';
         db.innerHTML =
-          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">' +
-            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">📚 Monster Catalog Browser</div>' +
-            '<div style="display:flex;gap:.4rem">' +
-              '<button onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(null)" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">+ Create custom</button>' +
-              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+          '<div style="display:flex;flex-direction:column;height:100%">' +
+            '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">' +
+              '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">📚 Monster Catalog Browser</div>' +
+              '<div style="display:flex;gap:.4rem">' +
+                '<a href="bestiary.html" target="_blank" rel="noopener" style="background:linear-gradient(180deg, var(--gold), var(--muted));color:var(--ink);border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;text-decoration:none;font-weight:700" title="Open the catalog as a standalone page in a new tab">↗ Pop Out</a>' +
+                '<button onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(null)" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">+ Create custom</button>' +
+                '<button onclick="if(window.CombatTracker) CombatTracker._closeBrowser()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
-          '<div id="ct-browser-body" style="display:flex;flex-direction:column;flex:1;overflow:hidden"></div>';
+            '<div id="ct-browser-body" style="display:flex;flex-direction:column;flex:1;overflow:hidden"></div>' +
+          '</div>';
         document.body.appendChild(db);
-        db.addEventListener('click', function(e) { if (e.target === db) db.close(); });
+        db.addEventListener('click', function(e) { if (e.target === db && CT._closeBrowser) CT._closeBrowser(); });
       }
       if (!document.getElementById('ct-monster-form')) {
         const d7 = document.createElement('dialog');
@@ -1885,13 +1899,24 @@
       CT.init('combat-tracker-container');
       return true;
     }
-    // No container on this page (e.g. standalone sheet.html). Still run the
-    // Firebase /monster-homebrew subscribe so any page that reads
-    // MONSTERS_BY_ID gets custom overrides applied. One-shot; guarded so
-    // multiple selfInit ticks don't double-subscribe.
+    // No combat tracker container. Still run the Firebase /monster-homebrew
+    // subscribe so any page reading MONSTERS_BY_ID gets custom overrides.
     if (!CT._catalogSyncStarted && typeof firebase !== 'undefined' && firebase.database) {
       CT._catalogSyncStarted = true;
       try { CT._initHomebrewSync(); } catch (e) { console.warn('[CombatTracker] catalog-only sync failed:', e); }
+    }
+    // Standalone bestiary page — if there's a bestiary container, render
+    // the browser inline into it (not as a modal). Refreshes on any
+    // Firebase catalog change via the subscribe above.
+    const bestiary = document.getElementById('bestiary-container');
+    if (bestiary && !CT._bestiaryWired) {
+      CT._bestiaryWired = true;
+      // Give this page a browser body element so _renderBrowser can target it.
+      bestiary.innerHTML = '<div id="ct-browser-body" style="display:flex;flex-direction:column;height:calc(100vh - 80px);overflow:hidden"></div>';
+      CT._browserState = CT._browserState || { search: '', sort: 'name', typeFilter: null, crBand: null, sourceFilter: null, envFilter: null, roleFilter: null, selected: {} };
+      // Initial render + re-render whenever the homebrew data changes
+      setTimeout(function() { CT._renderBrowser(); }, 200);
+      setTimeout(function() { CT._renderBrowser(); }, 1500);  // catch late Firebase merge
     }
     return false;
   }

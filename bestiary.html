@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monster Catalog Browser — The Wayward Company</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="sheet-styles.css">
+<style>
+  :root {
+    --ink: #0d0a06;
+    --parch: #f2e8d0;
+    --parch1: #f2e8d0;
+    --parch2: #e8d9b8;
+    --parch3: #d4c49a;
+    --parch4: #c0aa7a;
+    --gold: #9a7a1a;
+    --gold2: #c9a84c;
+    --gold3: #e8c96a;
+    --red: #6a1010;
+    --red2: #a02020;
+    --muted: #8a6a10;
+  }
+  body {
+    margin: 0;
+    background: #100a05;
+    color: var(--parch);
+    font-family: 'Crimson Pro', Georgia, serif;
+    min-height: 100vh;
+  }
+  .page-header {
+    background: linear-gradient(180deg, #0d0a06, #1a1208);
+    border-bottom: 2px solid var(--gold2);
+    padding: .6rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .page-title {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    color: var(--gold2);
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+  .back-btn, .create-btn {
+    text-decoration: none;
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1px;
+    border: 1px solid var(--gold2);
+    padding: 4px 12px; border-radius: 2px;
+    transition: all .2s;
+    cursor: pointer;
+    background: transparent;
+    color: var(--gold2);
+  }
+  .back-btn:hover, .create-btn:hover { background: var(--gold2); color: var(--ink); }
+  .create-btn {
+    background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700;
+  }
+  .header-actions { display: flex; gap: .5rem; }
+  #bestiary-container {
+    padding: 0;
+  }
+  /* Auth screen — same aesthetic as index.html / sheet.html */
+  #auth-screen {
+    position: fixed; inset: 0; z-index: 100;
+    background: radial-gradient(ellipse at center, #1a1208 0%, #0a0603 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .auth-card {
+    background: rgba(20,14,6,0.9);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    padding: 2rem 2.5rem;
+    max-width: 400px;
+    text-align: center;
+  }
+  .auth-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--gold2);
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+  .auth-input {
+    width: 100%;
+    padding: .6rem .8rem;
+    background: rgba(10,8,5,0.6);
+    border: 1px solid var(--gold);
+    color: var(--parch);
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .auth-btn {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: .5rem 1.5rem;
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  .auth-btn:hover { background: var(--gold2); }
+  .auth-err { color: var(--red2); font-size: 11px; margin-top: .5rem; display: none; }
+</style>
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-title">Monster Catalog</div>
+    <p style="font-size:12px;color:var(--parch3);font-style:italic;margin:.5rem 0 1rem">DM access only</p>
+    <input type="password" id="pw-input" class="auth-input" placeholder="PASSPHRASE" autocomplete="off">
+    <div class="auth-err" id="auth-err">Wrong passphrase.</div>
+    <button class="auth-btn" onclick="checkAuth()">Enter</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <a href="index.html" class="back-btn">← BACK TO DASHBOARD</a>
+      <div class="page-title">📚 Monster Catalog</div>
+    </div>
+    <div class="header-actions">
+      <button class="create-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(null)">+ Create custom</button>
+    </div>
+  </div>
+  <div id="bestiary-container"></div>
+</div>
+
+<script>
+  const PW = 'wayward';
+  const AUTH_KEY = 'eldoria-dm-auth';
+  const AUTH_DAYS = 30;
+  function unlockApp() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+  function checkAuth() {
+    const v = document.getElementById('pw-input').value.toLowerCase().trim();
+    if (v === PW) {
+      try {
+        const expiry = Date.now() + AUTH_DAYS * 24 * 60 * 60 * 1000;
+        localStorage.setItem(AUTH_KEY, String(expiry));
+      } catch (e) {}
+      unlockApp();
+    } else {
+      document.getElementById('auth-err').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+  document.getElementById('pw-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkAuth(); });
+  (function tryAutoUnlock() {
+    try {
+      const stored = localStorage.getItem(AUTH_KEY);
+      if (stored && Date.now() < parseInt(stored, 10)) unlockApp();
+    } catch (e) {}
+  })();
+</script>
+
+<!-- Firebase SDK + monster catalog + combat-tracker (for the /monster-homebrew sync + browser render) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="monsters-2024.js"></script>
+<script src="combat-tracker.js"></script>
+
+</body>
+</html>
