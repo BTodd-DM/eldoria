@@ -616,6 +616,17 @@ CHARACTERS.orin = {
   alignment: 'Neutral Good',
   size: 'Medium',
   appearance: 'Goliath cleric of Luminos. Devoted, mercy-first. Adoptive son of Merric Underbough / Rulden Marr.',
+  // Verbatim from the vault backstory (Orin.md / _Backstories - Verbatim
+  // Reference.md — player-written; do not paraphrase).
+  backstory:
+    "Pre-Merric origin: Orin comes from The Stonemarked — a warrior clan of goliaths living in the mountains northeast of Duskmere. A proud people who value physical strength, endurance, and martial prowess above all else.\n\n" +
+    "The exile: The Stonemarked practice a coming-of-age trial. Children who fail — or who are deemed to lack the warrior spirit — are cast out. Not killed, but exiled. Left at the edge of their territory with nothing. Orin failed his trial.\n\n" +
+    "The reason matters: Orin did not fail through cowardice or weakness. He failed because he showed mercy — he refused to deliver a killing blow at the moment the trial demanded it. His clan read this as failure of spirit. What it actually was: the beginning of a divine calling. Luminos touched him even then. He was approximately seven or eight years old when the Stonemarked left him near the road south of Duskmere.\n\n" +
+    "Found by Merric: Merric Underbough (then a Luminar of Luminos) found Orin wandering, malnourished and alone. He took him in, raised him, and brought him into the faith of Luminos. Orin became a Cleric — his devotion is real, shaped entirely by Merric's guidance and warmth.\n\n" +
+    "The theological resonance: The \"weakness\" that got Orin exiled was actually Luminos's calling. His mercy was not weakness — it was the first expression of his faith. He does not yet fully understand this.",
+  personality: 'Devoted to Luminos. Mercy-first — will de-escalate before he draws steel. His devotion is genuine and shaped entirely by Merric\'s example. Steady, honest, unshowy.',
+  bond: 'Adoptive father Merric Underbough — now revealed as Rulden Marr, Veilmaster of the Guilded Veil. Merric sent a cold warning ending "Keep to the light, Orin. It suits you better." Seraphine (Dawnwarden of the Temple of Luminos) has counselled him not to stop searching for the truth.',
+  flaw: 'His entire faith was built on Merric\'s example. If Merric is corrupt, Orin doesn\'t yet know what his own faith stands on. Faith crisis pending. Does NOT know that the Stonemarked are currently in danger; does NOT know Sylas is consuming souls.',
   ac: 17, acNote: 'Chain shirt + shield + Dex',
   hpMax: 50,
   hitDice: { max: 6, die: 'd8' },
