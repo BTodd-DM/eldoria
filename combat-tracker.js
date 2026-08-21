@@ -152,23 +152,42 @@
         this._homebrewRef.on('value', function(snap) {
           const data = snap.val() || {};
           self._customMonsters = data;
-          // Merge into MONSTERS_2024 / MONSTERS_BY_ID (remove old custom entries first).
+          // Cache the originals of any base monsters overridden by custom
+          // entries, so deleting the override restores the base.
+          if (!self._baseMonsterBackup) self._baseMonsterBackup = {};
           if (typeof MONSTERS_2024 !== 'undefined' && typeof MONSTERS_BY_ID !== 'undefined') {
-            // Remove any previously-merged custom entries.
+            // 1. Remove any previously-merged custom entries (undo prior overrides).
             for (let i = MONSTERS_2024.length - 1; i >= 0; i--) {
-              if (MONSTERS_2024[i]._custom) {
-                delete MONSTERS_BY_ID[MONSTERS_2024[i].id];
+              const m = MONSTERS_2024[i];
+              if (m._custom || m._override) {
+                delete MONSTERS_BY_ID[m.id];
                 MONSTERS_2024.splice(i, 1);
               }
             }
-            Object.keys(data).forEach(function(id) {
-              const m = Object.assign({}, data[id], { id: id, _custom: true });
+            // 2. Restore backed-up bases (if a previous override was removed).
+            Object.keys(self._baseMonsterBackup).forEach(function(id) {
               if (!MONSTERS_BY_ID[id]) {
-                MONSTERS_2024.push(m);
-                MONSTERS_BY_ID[id] = m;
+                MONSTERS_2024.push(self._baseMonsterBackup[id]);
+                MONSTERS_BY_ID[id] = self._baseMonsterBackup[id];
               }
             });
-            console.log('[CombatTracker] Loaded ' + Object.keys(data).length + ' custom monsters.');
+            // 3. Merge current custom data. Same-ID = override, new-ID = custom.
+            Object.keys(data).forEach(function(id) {
+              const base = MONSTERS_BY_ID[id];
+              if (base && !base._custom && !base._override) {
+                // Override — cache the base first, then swap in the custom.
+                self._baseMonsterBackup[id] = base;
+                const idx = MONSTERS_2024.indexOf(base);
+                if (idx >= 0) MONSTERS_2024.splice(idx, 1);
+                delete MONSTERS_BY_ID[id];
+              }
+              const m = Object.assign({}, data[id], { id: id });
+              if (self._baseMonsterBackup[id]) { m._override = true; m._overrideOf = self._baseMonsterBackup[id].name; }
+              else { m._custom = true; }
+              MONSTERS_2024.push(m);
+              MONSTERS_BY_ID[id] = m;
+            });
+            console.log('[CombatTracker] Loaded ' + Object.keys(data).length + ' custom entries (' + MONSTERS_2024.filter(function(x){return x._override;}).length + ' overrides).');
           }
         });
       } catch (e) { console.warn('[CombatTracker] Homebrew sync failed:', e); }
@@ -177,8 +196,20 @@
     _openMonsterForm: function(existingId) {
       const dlg = document.getElementById('ct-monster-form');
       if (!dlg) return;
-      const existing = existingId ? (this._customMonsters || {})[existingId] : null;
-      document.getElementById('ct-mf-title').textContent = existing ? 'Edit Custom Monster' : 'Create Custom Monster';
+      // Look up existing entry: prefer custom/override, else fall back to
+      // the merged catalog (fork a base or homebrew monster into an override).
+      let existing = null;
+      let isForkFromBase = false;
+      if (existingId) {
+        existing = (this._customMonsters || {})[existingId];
+        if (!existing && typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[existingId]) {
+          existing = MONSTERS_BY_ID[existingId];
+          isForkFromBase = !existing._custom && !existing._override;
+        }
+      }
+      document.getElementById('ct-mf-title').textContent = existing
+        ? (isForkFromBase ? 'Edit — creates override of "' + (existing.name || existingId) + '"' : 'Edit Custom Monster')
+        : 'Create Custom Monster';
       document.getElementById('ct-mf-oldid').value = existingId || '';
       const set = function(field, val) { const el = document.getElementById('ct-mf-' + field); if (el) el.value = val == null ? '' : val; };
       const m = existing || {};
@@ -234,11 +265,8 @@
       const name = get('name');
       if (!name) { alert('Name is required.'); return; }
       const oldId = get('oldid');
-      // Prevent overwriting a base catalog entry.
-      if (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[id] && !MONSTERS_BY_ID[id]._custom && id !== oldId) {
-        alert('That ID already exists in the base catalog. Choose a unique ID (e.g. suffix "_custom").');
-        return;
-      }
+      // Same-ID as a base catalog entry is allowed — it becomes an
+      // OVERRIDE (base is preserved, restorable via ✕ Revert).
       const m = {
         name: name, size: get('size') || 'Medium', type: get('type'),
         alignment: get('alignment'),
@@ -892,6 +920,185 @@
       });
     },
 
+    // ------------------------------------------------------------
+    // 📚 Full monster catalog browser — search / sort / filter / encounter calc
+    // ------------------------------------------------------------
+    _browserState: { search: '', sort: 'name', typeFilter: null, crBand: null, sourceFilter: null, envFilter: null, roleFilter: null, selected: {} },
+
+    _openBrowser: function() {
+      const dlg = document.getElementById('ct-browser-dialog');
+      if (!dlg) return;
+      this._browserState.selected = {}; // reset encounter-calc selection each open
+      this._renderBrowser();
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    },
+
+    _renderBrowser: function() {
+      const body = document.getElementById('ct-browser-body');
+      if (!body || typeof MONSTERS_2024 === 'undefined') return;
+      const st = this._browserState;
+      const self = this;
+      const search = (st.search || '').toLowerCase();
+
+      // Filter
+      function crBandMatch(cr, band) {
+        if (!band) return true;
+        const n = parseFloat(String(cr).replace('1/8','0.125').replace('1/4','0.25').replace('1/2','0.5'));
+        if (isNaN(n)) return false;
+        if (band === '0-1')   return n <= 1;
+        if (band === '2-4')   return n >= 2 && n <= 4;
+        if (band === '5-9')   return n >= 5 && n <= 9;
+        if (band === '10-14') return n >= 10 && n <= 14;
+        if (band === '15-20') return n >= 15 && n <= 20;
+        if (band === '21+')   return n >= 21;
+        return true;
+      }
+      function sourceOf(m) {
+        if (m._override) return 'override';
+        if (m._custom)   return 'custom';
+        if (m.homebrew)  return 'homebrew';
+        return 'base';
+      }
+      const filtered = MONSTERS_2024.slice().filter(function(m) {
+        if (search && (m.name || '').toLowerCase().indexOf(search) === -1) return false;
+        if (st.typeFilter && (m.type || '').toLowerCase().indexOf(st.typeFilter) === -1) return false;
+        if (!crBandMatch(m.cr, st.crBand)) return false;
+        if (st.sourceFilter && sourceOf(m) !== st.sourceFilter) return false;
+        if (st.envFilter) {
+          const envs = Array.isArray(m.environment) ? m.environment.map(function(e){return String(e).toLowerCase();}) : [];
+          if (envs.indexOf(st.envFilter) === -1) return false;
+        }
+        if (st.roleFilter && String(m.role || '').toLowerCase() !== st.roleFilter) return false;
+        return true;
+      });
+
+      // Sort
+      function crNum(m) { return parseFloat(String(m.cr).replace('1/8','0.125').replace('1/4','0.25').replace('1/2','0.5')) || 0; }
+      const SIZE_ORD = { 'Tiny':0, 'Small':1, 'Medium':2, 'Large':3, 'Huge':4, 'Gargantuan':5 };
+      if (st.sort === 'name')      filtered.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+      else if (st.sort === 'cr-asc')  filtered.sort(function(a,b){ return crNum(a) - crNum(b) || (a.name||'').localeCompare(b.name||''); });
+      else if (st.sort === 'cr-desc') filtered.sort(function(a,b){ return crNum(b) - crNum(a) || (a.name||'').localeCompare(b.name||''); });
+      else if (st.sort === 'xp')      filtered.sort(function(a,b){ return (b.xp||0) - (a.xp||0); });
+      else if (st.sort === 'size')    filtered.sort(function(a,b){ return (SIZE_ORD[a.size]||0) - (SIZE_ORD[b.size]||0); });
+
+      // Encounter-budget calc from selected checkboxes
+      const selected = Object.keys(st.selected).map(function(id) { return { id: id, qty: st.selected[id] }; }).filter(function(x){ return x.qty > 0; });
+      let calcHtml = '';
+      if (selected.length) {
+        const combatants = [];
+        selected.forEach(function(s) {
+          const m = MONSTERS_BY_ID[s.id];
+          if (!m) return;
+          for (let i = 0; i < s.qty; i++) combatants.push({ kind: 'monster', monsterId: s.id });
+        });
+        const d = self._computeEncounterDifficulty(combatants);
+        const colors = { trivial: '#7f7f7f', easy: '#7fdb7f', medium: '#e0c060', hard: '#e08040', deadly: '#f47070' };
+        const tierLabel = d.tier.charAt(0).toUpperCase() + d.tier.slice(1);
+        const detail = selected.map(function(s){ const m=MONSTERS_BY_ID[s.id]; return s.qty+'× '+(m?m.name:s.id); }).join(', ');
+        calcHtml = '<div style="margin-top:.5rem;padding:.5rem .75rem;background:rgba(20,14,6,0.5);border:1px solid var(--gold2);border-radius:3px;font-size:12px">' +
+          '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:11px;letter-spacing:1px;margin-bottom:.25rem">ENCOUNTER CALC (party level 6 × 3)</div>' +
+          '<div>' + detail + '</div>' +
+          '<div style="margin-top:.3rem">Raw XP: <strong>' + d.rawXp + '</strong> &nbsp;·&nbsp; Adjusted: <strong>' + d.adjXp + '</strong> (×' + d.mult + ') &nbsp;·&nbsp; <strong style="color:' + colors[d.tier] + '">' + tierLabel + '</strong></div>' +
+          '<div style="margin-top:.35rem;display:flex;gap:.4rem;flex-wrap:wrap">' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._loadBrowserSelectionIntoCombat()" style="background:var(--gold);color:var(--ink);border-color:var(--gold)">⚔ Load selection into combat</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker){CombatTracker._browserState.selected={};CombatTracker._renderBrowser();}">Clear selection</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function chip(label, active, onclick) {
+        return '<button onclick="' + onclick + '" style="background:' + (active ? 'var(--gold)' : 'transparent') + ';color:' + (active ? 'var(--ink)' : 'var(--parch)') + ';border:1px solid var(--gold2);padding:2px 8px;border-radius:10px;font-family:\'Cinzel\',serif;font-size:9.5px;letter-spacing:.5px;cursor:pointer;margin-right:3px;margin-bottom:3px">' + label + '</button>';
+      }
+      function tf(v) { return 'if(window.CombatTracker){CombatTracker._browserState.typeFilter=' + (v?"'"+v+"'":null) + ';CombatTracker._renderBrowser();}'; }
+      function bf(v) { return 'if(window.CombatTracker){CombatTracker._browserState.crBand=' + (v?"'"+v+"'":null) + ';CombatTracker._renderBrowser();}'; }
+      function sf(v) { return 'if(window.CombatTracker){CombatTracker._browserState.sourceFilter=' + (v?"'"+v+"'":null) + ';CombatTracker._renderBrowser();}'; }
+      function ef(v) { return 'if(window.CombatTracker){CombatTracker._browserState.envFilter=' + (v?"'"+v+"'":null) + ';CombatTracker._renderBrowser();}'; }
+      function rf(v) { return 'if(window.CombatTracker){CombatTracker._browserState.roleFilter=' + (v?"'"+v+"'":null) + ';CombatTracker._renderBrowser();}'; }
+
+      const types = ['humanoid','beast','fiend','undead','dragon','fey','elemental','plant','ooze','construct','aberration','monstrosity','giant'];
+      const crBands = ['0-1','2-4','5-9','10-14','15-20','21+'];
+      const sources = ['base','homebrew','custom','override'];
+      const envs = ['urban','forest','marsh','underground','mountain','arctic','ruins','planar','any'];
+      const roles = ['brute','skirmisher','ambusher','caster','controller','soldier','support','boss','other'];
+
+      let html = '<div style="padding:.6rem .75rem;border-bottom:1px solid rgba(160,128,64,0.35)">' +
+        '<div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem">' +
+          '<input type="text" placeholder="Search…" value="' + escapeAttr(st.search) + '" oninput="if(window.CombatTracker){CombatTracker._browserState.search=this.value;CombatTracker._renderBrowser();this.focus();}" style="flex:1;padding:.35rem .6rem;background:rgba(10,8,5,0.6);border:1px solid var(--gold2);color:var(--parch);border-radius:2px" autofocus>' +
+          '<label style="font-size:10px;color:var(--parch3)">Sort:</label>' +
+          '<select onchange="if(window.CombatTracker){CombatTracker._browserState.sort=this.value;CombatTracker._renderBrowser();}" style="padding:.3rem .5rem;background:rgba(10,8,5,0.6);border:1px solid var(--gold2);color:var(--parch);border-radius:2px;font-size:11px">' +
+            ['name','cr-asc','cr-desc','xp','size'].map(function(s){ const sel = st.sort===s?' selected':''; const lbl = {name:'Name',['cr-asc']:'CR ↑',['cr-desc']:'CR ↓',xp:'XP',size:'Size'}[s]; return '<option value="'+s+'"'+sel+'>'+lbl+'</option>'; }).join('') +
+          '</select>' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">TYPE</div><div>' +
+          chip('All', !st.typeFilter, tf(null)) + types.map(function(t){ return chip(t, st.typeFilter===t, tf(t)); }).join('') + '</div>' +
+        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">CR</div><div>' +
+          chip('All', !st.crBand, bf(null)) + crBands.map(function(b){ return chip(b, st.crBand===b, bf(b)); }).join('') + '</div>' +
+        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">SOURCE</div><div>' +
+          chip('All', !st.sourceFilter, sf(null)) + sources.map(function(s){ return chip(s, st.sourceFilter===s, sf(s)); }).join('') + '</div>' +
+        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">ENVIRONMENT</div><div>' +
+          chip('All', !st.envFilter, ef(null)) + envs.map(function(e){ return chip(e, st.envFilter===e, ef(e)); }).join('') + '</div>' +
+        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">ROLE</div><div>' +
+          chip('All', !st.roleFilter, rf(null)) + roles.map(function(r){ return chip(r, st.roleFilter===r, rf(r)); }).join('') + '</div>' +
+        '<div style="margin-top:.4rem;font-size:11px;color:var(--parch3);font-style:italic">' + filtered.length + ' of ' + MONSTERS_2024.length + ' monsters</div>' +
+        calcHtml +
+      '</div>';
+
+      // List
+      html += '<div style="overflow-y:auto;flex:1;padding:.35rem .75rem">';
+      if (!filtered.length) {
+        html += '<div style="text-align:center;color:var(--parch3);padding:1rem;font-style:italic">No monsters match your filters.</div>';
+      } else {
+        filtered.forEach(function(m) {
+          const src = sourceOf(m);
+          const badge = (src !== 'base') ? '<span style="background:rgba(160,128,64,0.15);color:var(--parch3);font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.35rem">' + src.toUpperCase() + '</span>' : '';
+          const envLine = Array.isArray(m.environment) && m.environment.length ? ' · ' + m.environment.join(', ') : '';
+          const roleLine = m.role ? ' · ' + m.role : '';
+          const qty = self._browserState.selected[m.id] || 0;
+          html += '<div data-mid="' + escapeAttr(m.id) + '" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.4rem .5rem;border-bottom:1px dashed rgba(160,128,64,0.2);cursor:pointer" onclick="if(window.CombatTracker) CombatTracker._openStatBlock(\'' + escapeAttr(m.id) + '\')">' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:12.5px">' + escapeHtml(m.name) + badge + '</div>' +
+              '<div style="font-size:10.5px;color:var(--parch3)">' + escapeHtml((m.size||'') + ' ' + (m.type||'')) + envLine + roleLine + ' · AC ' + (m.ac||'?') + ' · HP ' + (m.hp||'?') + '</div>' +
+            '</div>' +
+            '<div style="font-family:\'Cinzel\',serif;font-size:10px;color:var(--parch3);letter-spacing:1px;min-width:60px;text-align:right">CR ' + (m.cr||'?') + '<br><span style="font-size:9px">' + (m.xp||0) + ' XP</span></div>' +
+            '<div style="display:flex;gap:.25rem;align-items:center" onclick="event.stopPropagation()">' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._browserSelect(\'' + escapeAttr(m.id) + '\',-1)" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);width:22px;height:22px;border-radius:2px;cursor:pointer">−</button>' +
+              '<span style="min-width:20px;text-align:center;font-family:\'Cinzel\',serif;color:var(--gold3)">' + qty + '</span>' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._browserSelect(\'' + escapeAttr(m.id) + '\',1)" style="background:transparent;border:1px solid var(--gold2);color:var(--gold2);width:22px;height:22px;border-radius:2px;cursor:pointer">+</button>' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:2px 6px;border-radius:2px;font-size:10px;cursor:pointer">✎</button>' +
+            '</div>' +
+          '</div>';
+        });
+      }
+      html += '</div>';
+      body.innerHTML = html;
+    },
+
+    _browserSelect: function(id, delta) {
+      const s = this._browserState.selected;
+      s[id] = Math.max(0, (s[id] || 0) + delta);
+      if (s[id] === 0) delete s[id];
+      this._renderBrowser();
+    },
+
+    _loadBrowserSelectionIntoCombat: function() {
+      const s = this._browserState.selected;
+      const self = this;
+      if (!this._state || !this._state.active) {
+        // Start combat first
+        this._startCombat();
+      }
+      setTimeout(function() {
+        Object.keys(s).forEach(function(id) {
+          if (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID[id]) {
+            self._addMonsterFromCatalog(id, s[id]);
+          }
+        });
+        self._browserState.selected = {};
+        const dlg = document.getElementById('ct-browser-dialog');
+        if (dlg && dlg.close) dlg.close();
+      }, 400);
+    },
+
     _openMonsterPicker: function() {
       if (typeof MONSTERS_2024 === 'undefined') { alert('Monster catalog not loaded.'); return; }
       const dlg = document.getElementById('ct-monster-picker');
@@ -902,20 +1109,25 @@
         return String(a.cr).localeCompare(String(b.cr)) || a.name.localeCompare(b.name);
       }).map(function(m) {
         const isCustom = !!m._custom;
+        const isOverride = !!m._override;
         const isHomebrew = !!m.homebrew;
-        const badge = isCustom
+        const badge = isOverride
+          ? '<span style="background:rgba(224,128,64,0.25);color:#e0a860;font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.4rem" title="Custom override of a base monster">OVERRIDE</span>'
+          : isCustom
           ? '<span style="background:rgba(160,80,201,0.25);color:#c07adf;font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.4rem">CUSTOM</span>'
           : isHomebrew
             ? '<span style="background:rgba(64,168,120,0.25);color:#7fdbaf;font-size:9px;padding:1px 5px;border-radius:2px;font-family:\'Cinzel\',serif;letter-spacing:1px;margin-left:.4rem">HOMEBREW</span>'
             : '';
-        const controls = isCustom
-          ? '<div style="display:flex;gap:.25rem;margin-top:.3rem">' +
-              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">✎ Edit</button>' +
-              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⿻ Duplicate</button>' +
-              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._exportCustomMonsterMd(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⬇ Export .md</button>' +
-              '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._deleteCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid #a02020;color:#e0a0a0;padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">✕ Delete</button>' +
-            '</div>'
+        // Universal ✎ Edit for every monster. Base monsters get a Fork-as-
+        // Override on save; custom/override entries edit in place. Homebrew
+        // (vault-sourced) also editable — save creates an override.
+        const editBtn = '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer" title="' + (isCustom || isOverride ? 'Edit this custom entry' : 'Fork this monster into a custom override') + '">✎ Edit</button>';
+        const dupBtn = '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⿻ Duplicate</button>';
+        const expBtn = '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._exportCustomMonsterMd(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer">⬇ Export .md</button>';
+        const delBtn = (isCustom || isOverride)
+          ? '<button onclick="event.stopPropagation();if(window.CombatTracker) CombatTracker._deleteCustomMonster(\'' + escapeAttr(m.id) + '\')" style="background:transparent;border:1px solid #a02020;color:#e0a0a0;padding:1px 6px;border-radius:2px;font-size:10px;cursor:pointer" title="' + (isOverride ? 'Delete override (restores the base)' : 'Delete this custom monster') + '">✕ ' + (isOverride ? 'Revert' : 'Delete') + '</button>'
           : '';
+        const controls = '<div style="display:flex;gap:.25rem;margin-top:.3rem;flex-wrap:wrap">' + editBtn + dupBtn + expBtn + delBtn + '</div>';
         return '<div class="ct-picker-row" data-mid="' + escapeAttr(m.id) + '" style="padding:.5rem .75rem;border-bottom:1px solid rgba(160,128,64,0.15);cursor:pointer">' +
           '<div style="display:flex;justify-content:space-between;gap:.75rem;align-items:baseline">' +
             '<div><div style="font-family:\'Cinzel\',serif;font-size:12.5px;color:var(--gold2)">' + escapeHtml(m.name) + badge + '</div>' +
@@ -1220,7 +1432,12 @@
         (m.cr        ? '<div style="font-size:12px;margin-bottom:.5rem"><strong>CR</strong> ' + m.cr + ' (XP ' + (m.xp || 0) + ')</div>' : '') +
         (traits    ? '<div style="margin-bottom:.5rem;font-size:12.5px;line-height:1.55">' + traits + '</div>' : '') +
         (actions   ? '<h3 style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin:.5rem 0 .3rem;border-bottom:1px solid rgba(160,128,64,0.35)">Actions</h3><div style="font-size:12.5px;line-height:1.55">' + actions + '</div>' : '') +
-        (legendary ? '<h3 style="font-family:\'Cinzel\',serif;color:#e0a0e0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin:.5rem 0 .3rem;border-bottom:1px solid rgba(200,160,200,0.35)">Legendary Actions</h3><div style="font-size:12.5px;line-height:1.55">' + legendary + '</div>' : '');
+        (legendary ? '<h3 style="font-family:\'Cinzel\',serif;color:#e0a0e0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin:.5rem 0 .3rem;border-bottom:1px solid rgba(200,160,200,0.35)">Legendary Actions</h3><div style="font-size:12.5px;line-height:1.55">' + legendary + '</div>' : '') +
+        '<div style="margin-top:.75rem;padding-top:.5rem;border-top:1px solid rgba(160,128,64,0.35);display:flex;gap:.4rem;flex-wrap:wrap">' +
+          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" title="' + ((m._custom || m._override) ? 'Edit this custom entry' : 'Fork this monster into a custom override — the base stays intact') + '">✎ Edit</button>' +
+          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')">⿻ Duplicate</button>' +
+          (m.source ? '<div style="margin-left:auto;font-size:10px;color:var(--parch4);font-style:italic;align-self:center">' + escapeHtml(m.source) + '</div>' : '') +
+        '</div>';
       if (dlg.showModal) dlg.showModal();
       else dlg.setAttribute('open', '');
     },
@@ -1237,6 +1454,7 @@
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openXpLedger()">🏆 XP ledger</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openDiceRoller()">🎲 Dice roller</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openRandomEncounter()">🎯 Random encounter</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openBrowser()">📚 Browse catalog</button>' +
           '</div>' +
           (s && s.log && s.log.length ? this._renderLog(s) : '');
         this._ensureDialogs();
@@ -1250,6 +1468,7 @@
           '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:14px">Round ' + (s.round || 1) + ' &nbsp;·&nbsp; ' + combatants.length + ' combatant' + (combatants.length === 1 ? '' : 's') + this._renderDifficultyBadge(combatants) + '</div>' +
           '<div style="display:flex;gap:.4rem;flex-wrap:wrap">' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterPicker()">📖 Add from catalog</button>' +
+            '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openBrowser()" title="Full catalog browser — search, sort, filter, encounter calc">📚 Browse catalog</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addAdhocMonster()">+ Ad-hoc</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openEncountersModal()">📋 Presets</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
@@ -1438,6 +1657,22 @@
           '<div id="ct-xp-ledger-body" style="padding:1rem;overflow-y:auto;max-height:75vh"></div>';
         document.body.appendChild(d5);
         d5.addEventListener('click', function(e) { if (e.target === d5) d5.close(); });
+      }
+      if (!document.getElementById('ct-browser-dialog')) {
+        const db = document.createElement('dialog');
+        db.id = 'ct-browser-dialog';
+        db.style.cssText = 'max-width:800px;width:96vw;height:90vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch1);border-radius:6px;display:flex;flex-direction:column';
+        db.innerHTML =
+          '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--gold2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">' +
+            '<div style="font-family:\'Cinzel\',serif;color:var(--gold2)">📚 Monster Catalog Browser</div>' +
+            '<div style="display:flex;gap:.4rem">' +
+              '<button onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(null)" style="background:var(--gold);color:#0d0a06;border:none;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px">+ Create custom</button>' +
+              '<button onclick="this.closest(\'dialog\').close()" style="background:transparent;border:1px solid var(--parch3);color:var(--parch3);padding:4px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+            '</div>' +
+          '</div>' +
+          '<div id="ct-browser-body" style="display:flex;flex-direction:column;flex:1;overflow:hidden"></div>';
+        document.body.appendChild(db);
+        db.addEventListener('click', function(e) { if (e.target === db) db.close(); });
       }
       if (!document.getElementById('ct-monster-form')) {
         const d7 = document.createElement('dialog');

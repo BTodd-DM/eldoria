@@ -719,6 +719,361 @@ const MONSTERS_2024 = [
     source: 'Eldoria original — a manifest fragment of Sister Kaelith\'s corrupted essence. Kaelith has learned to project these as scouts and assassins ahead of her physical arrival. Killing one weakens the connection to Naturus temporarily but does not harm Kaelith herself.'
   },
 
+  // ==================================================================
+  // ELDORIA-ORIGINAL EXPANSION PACK — 20 more campaign creatures
+  // Designed from scratch for The Wayward Company. Grouped loosely by
+  // faction/theme. Each carries environment[] + role tags for the
+  // browser filter chips.
+  // ==================================================================
+
+  // ---- Naturus / Frostwood corruption ----
+  { id: 'marsh_rot_ooze', name: 'Marsh Rot Ooze', size: 'Medium', type: 'ooze (corrupted)', alignment: 'unaligned',
+    ac: 8, hp: 34, hpFormula: '4d8+16', speed: '10 ft., climb 10 ft.',
+    str: 12, dex: 6, con: 18, int: 1, wis: 6, cha: 1,
+    damageImmune: 'acid, poison', conditionImmune: 'blinded, charmed, deafened, exhaustion, frightened, prone',
+    senses: 'blindsight 30 ft. (blind beyond)', languages: '—',
+    cr: '2', xp: 450, environment: ['marsh', 'underground'], role: 'ambusher',
+    traits: [
+      { name: 'Rot Aura', desc: 'Each creature that starts its turn within 5 ft. takes 1d4 necrotic.' },
+      { name: 'False Puddle', desc: 'In marsh terrain, indistinguishable from a puddle. DC 15 Wis (Perception) to spot.' }
+    ],
+    actions: [
+      { name: 'Slam', desc: 'Melee +4 to hit, reach 5 ft. Hit: 1d8+1 bludgeoning plus 2d6 necrotic. Target DC 14 Con save or Poisoned 1 min.' }
+    ],
+    source: 'Eldoria original — Frostwood Marsh corruption.' },
+
+  { id: 'withered_sapling', name: 'Withered Sapling', size: 'Small', type: 'plant (corrupted)', alignment: 'unaligned',
+    ac: 12, hp: 18, hpFormula: '4d6+4', speed: '15 ft.',
+    str: 12, dex: 10, con: 12, int: 3, wis: 8, cha: 4,
+    damageResist: 'piercing', damageVuln: 'fire', conditionImmune: 'blinded, deafened, exhaustion',
+    senses: 'blindsight 30 ft.', languages: 'understands Sylvan but cannot speak',
+    cr: '1/4', xp: 50, environment: ['forest', 'marsh'], role: 'skirmisher',
+    traits: [
+      { name: 'Pack Growth', desc: 'Advantage on Wisdom saves while within 10 ft. of another Withered Sapling.' }
+    ],
+    actions: [
+      { name: 'Thorn Lash', desc: 'Melee +3 to hit, reach 5 ft. Hit: 1d6+1 slashing plus 1d4 necrotic.' }
+    ],
+    source: 'Eldoria original — Naturus-touched sapling that walks.' },
+
+  { id: 'bog_bound_wretch', name: 'Bog-Bound Wretch', size: 'Medium', type: 'undead', alignment: 'chaotic evil',
+    ac: 13, hp: 45, hpFormula: '6d8+18', speed: '25 ft., swim 25 ft.',
+    str: 15, dex: 12, con: 16, int: 4, wis: 10, cha: 6,
+    damageResist: 'cold, necrotic', damageImmune: 'poison', conditionImmune: 'exhaustion, poisoned',
+    senses: 'darkvision 60 ft.', languages: 'understands what it knew in life',
+    cr: '3', xp: 700, environment: ['marsh', 'underground'], role: 'brute',
+    traits: [
+      { name: 'Marsh Passage', desc: 'Ignores difficult terrain caused by mud, reeds, or shallow water.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Rotting Claw attacks.' },
+      { name: 'Rotting Claw', desc: 'Melee +5 to hit, reach 5 ft. Hit: 1d8+3 slashing plus 1d6 necrotic. Target\'s Max HP reduced by the necrotic damage taken until it finishes a long rest.' }
+    ],
+    source: 'Eldoria original — travellers claimed by Vroth-Khorn seep and reanimated by Naturus rot.' },
+
+  { id: 'naturus_priest', name: 'Naturus Priest', size: 'Medium', type: 'humanoid (cultist)', alignment: 'neutral evil',
+    ac: 14, hp: 78, hpFormula: '12d8+24', speed: '30 ft.',
+    str: 12, dex: 12, con: 14, int: 13, wis: 17, cha: 12,
+    saves: { con: 5, wis: 6 }, skills: { religion: 4 },
+    senses: 'passive Perception 13', languages: 'Common, plus cult cant',
+    cr: '5', xp: 1800, environment: ['urban', 'marsh', 'underground'], role: 'caster',
+    traits: [
+      { name: 'Withering Presence', desc: 'Creatures that start a turn within 10 ft. of the Priest and can see it must succeed on a DC 14 Wis save or have disadvantage on attack rolls until end of that turn.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Sickle attacks OR casts a spell + one Sickle.' },
+      { name: 'Bone Sickle', desc: 'Melee +4 to hit, reach 5 ft. Hit: 1d6+1 slashing plus 2d6 necrotic.' },
+      { name: 'Contagion (2/day)', desc: 'One creature within 60 ft.: DC 14 Con save or Poisoned 1 hour. Failure by 5+: also Blinded for the duration.' },
+      { name: 'Blight (2/day)', desc: 'One creature within 30 ft.: DC 14 Con save. Fail: 4d8 necrotic (half on save). Plants auto-fail and wither.' }
+    ],
+    source: 'Eldoria original — full-tier Naturus cult leader (Kaelith\'s rank). Runs a cell of Adepts + Cultists.' },
+
+  { id: 'silent_herald', name: "Kaelith's Silent Herald", size: 'Medium', type: 'humanoid (cultist)', alignment: 'chaotic evil',
+    ac: 15, hp: 45, hpFormula: '7d8+14', speed: '35 ft.',
+    str: 11, dex: 17, con: 14, int: 12, wis: 14, cha: 10,
+    skills: { stealth: 5, perception: 4 },
+    senses: 'darkvision 60 ft.', languages: 'Common; communicates with other Heralds by whistle-cant only',
+    cr: '3', xp: 700, environment: ['forest', 'marsh', 'urban'], role: 'ambusher',
+    traits: [
+      { name: 'Whisper-Bound', desc: 'Cannot speak aloud — throat sewn shut in a cult rite. Immune to fear-based verbal effects.' },
+      { name: 'Ambush', desc: 'On its first turn in combat, advantage on attacks against creatures that have not acted yet.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Bone-Tip Dart attacks.' },
+      { name: 'Bone-Tip Dart', desc: 'Ranged +5 to hit, range 30/120 ft. Hit: 1d4+3 piercing plus 2d6 poison. Target DC 12 Con save or Poisoned 1 min.' },
+      { name: 'Silent Cut', desc: 'Melee +5 to hit, reach 5 ft. Hit: 1d6+3 slashing. If target is Surprised, add 2d6 damage.' }
+    ],
+    source: 'Eldoria original — Kaelith\'s forward scouts. Reports back through the whisper network.' },
+
+  // ---- Vaeloran / Duskwhisper undead + servants ----
+  { id: 'duskwhisper_cinder', name: 'Duskwhisper Cinder', size: 'Small', type: 'construct (undead ash)', alignment: 'lawful evil',
+    ac: 12, hp: 22, hpFormula: '4d6+8', speed: '25 ft.',
+    str: 10, dex: 14, con: 14, int: 6, wis: 8, cha: 4,
+    damageResist: 'necrotic; bludgeoning, piercing, slashing from nonmagical attacks',
+    damageImmune: 'poison', conditionImmune: 'charmed, exhaustion, frightened, poisoned',
+    senses: 'darkvision 60 ft.', languages: 'understands Common but cannot speak',
+    cr: '1', xp: 200, environment: ['urban', 'underground'], role: 'skirmisher',
+    traits: [
+      { name: 'Ash Form', desc: 'When reduced to 0 HP, collapses into a pile of ash. Reforms after 24 hours if the ash is not scattered or hallowed.' }
+    ],
+    actions: [
+      { name: 'Ember Claw', desc: 'Melee +4 to hit, reach 5 ft. Hit: 1d6+2 slashing plus 1d4 fire.' }
+    ],
+    source: 'Eldoria original — minor servant Vaeloran fabricates from Spire hearth-ash. Numerous, disposable.' },
+
+  { id: 'sanctum_wraith', name: 'Sanctum Wraith', size: 'Medium', type: 'undead', alignment: 'lawful evil',
+    ac: 13, hp: 55, hpFormula: '10d8+10', speed: '0 ft., fly 40 ft. (hover)',
+    str: 6, dex: 16, con: 12, int: 12, wis: 14, cha: 15,
+    damageResist: 'cold, fire, lightning, necrotic; bludgeoning, piercing, slashing from nonmagical attacks not made in bright light',
+    damageImmune: 'poison', damageVuln: 'radiant',
+    conditionImmune: 'charmed, exhaustion, grappled, paralyzed, petrified, poisoned, prone, restrained',
+    senses: 'darkvision 60 ft.', languages: 'Common',
+    cr: '3', xp: 700, environment: ['urban', 'underground'], role: 'controller',
+    traits: [
+      { name: 'Bound to Sanctum', desc: 'Cannot move more than 300 ft. from the object or room it is bound to guard. Attempts pull it violently back.' },
+      { name: 'Incorporeal', desc: 'Passes through creatures and solid objects (5 ft. of movement per 5 ft. moved through solid). Takes 1d10 force if it ends its turn inside a solid object.' }
+    ],
+    actions: [
+      { name: 'Chilling Grasp', desc: 'Melee spell +5 to hit, reach 5 ft. Hit: 3d6 cold and the target\'s speed is halved until end of its next turn.' }
+    ],
+    source: 'Eldoria original — bound guardian in Vaeloran\'s Spire chambers.' },
+
+  { id: 'memory_eater', name: 'Memory Eater', size: 'Small', type: 'aberration', alignment: 'neutral evil',
+    ac: 14, hp: 65, hpFormula: '10d6+30', speed: '15 ft., fly 40 ft.',
+    str: 8, dex: 16, con: 16, int: 15, wis: 12, cha: 10,
+    damageResist: 'psychic',
+    senses: 'blindsight 30 ft., darkvision 60 ft.', languages: 'understands Common, Deep Speech',
+    cr: '4', xp: 1100, environment: ['urban', 'underground'], role: 'controller',
+    traits: [
+      { name: 'Feeds on Regret', desc: 'Advantage on all attack rolls against creatures that have taken psychic damage in the last hour.' }
+    ],
+    actions: [
+      { name: 'Devour Recollection', desc: 'One creature within 30 ft.: DC 14 Int save. Fail: 3d6 psychic and the target forgets one meaningful event (Memory Eater picks) until it finishes a long rest. Success: half damage, no memory loss.' },
+      { name: 'Whispered Question', desc: 'Melee touch +6 to hit, reach 5 ft. Hit: 2d8 psychic and the Memory Eater regains HP equal to the damage dealt.' }
+    ],
+    source: 'Eldoria original — Vaeloran sends these to interrogate captured witnesses. Lyssandra was very likely visited by one.' },
+
+  { id: 'aureks_hand', name: "Aurek's Hand", size: 'Medium', type: 'humanoid', alignment: 'neutral evil',
+    ac: 16, hp: 88, hpFormula: '12d8+36', speed: '30 ft.',
+    str: 18, dex: 15, con: 16, int: 12, wis: 12, cha: 14,
+    saves: { str: 7, con: 6 }, skills: { athletics: 7, intimidation: 5 },
+    senses: 'passive Perception 11', languages: 'Common, Thieves\' Cant',
+    cr: '5', xp: 1800, environment: ['urban'], role: 'brute',
+    traits: [
+      { name: 'Contracted Silence', desc: 'Immune to charm, compulsion, and truth-magic. Will not speak of Aurek under any coercion.' },
+      { name: "Aurek's Mark", desc: 'When reduced to 0 HP, a small brand on the shoulder ignites and burns to ash — Vaeloran learns of the death within the hour.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Battle-Cane attacks.' },
+      { name: 'Battle-Cane', desc: 'Melee +7 to hit, reach 5 ft. Hit: 1d8+4 bludgeoning plus 2d6 force. Target must succeed on DC 15 Str save or knocked prone.' },
+      { name: 'Command the Kept (1/day)', desc: 'One humanoid within 30 ft. that has ever taken Aurek coin: DC 14 Wis save or Charmed 1 min, must obey a single order.' }
+    ],
+    source: 'Eldoria original — enforcer of the Aurek criminal alias. Trained, contracted, disposable.' },
+
+  { id: 'reliquary_guardian', name: 'Reliquary Guardian', size: 'Large', type: 'construct', alignment: 'unaligned',
+    ac: 18, hp: 110, hpFormula: '13d10+39', speed: '30 ft.',
+    str: 19, dex: 8, con: 17, int: 3, wis: 11, cha: 1,
+    damageImmune: 'necrotic, poison, psychic; bludgeoning/piercing/slashing from nonmagical non-adamantine attacks',
+    conditionImmune: 'charmed, exhaustion, frightened, paralyzed, petrified, poisoned',
+    senses: 'darkvision 120 ft., truesight 30 ft.', languages: 'understands Draconic (its bind-tongue) but cannot speak',
+    cr: '6', xp: 2300, environment: ['underground'], role: 'brute',
+    traits: [
+      { name: 'Bound to Reliquary', desc: 'Cannot move more than 90 ft. from the reliquary it guards.' },
+      { name: 'Magic Resistance', desc: 'Advantage on saves against spells and other magical effects.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Guardian Fist attacks.' },
+      { name: 'Guardian Fist', desc: 'Melee +7 to hit, reach 10 ft. Hit: 2d8+4 bludgeoning plus 1d8 radiant.' },
+      { name: 'Ward Detonation (recharge 5-6)', desc: '15-ft radius emanation from self: each other creature DC 15 Con save or take 4d8 force, half on save.' }
+    ],
+    source: 'Eldoria original — Vaeloran commissions these for his research vaults. Tougher than the Bound Sentinel.' },
+
+  // ---- Guilded Veil / criminal ----
+  { id: 'veil_enforcer', name: 'Veil Enforcer', size: 'Medium', type: 'humanoid', alignment: 'lawful evil',
+    ac: 14, hp: 58, hpFormula: '9d8+18', speed: '30 ft.',
+    str: 15, dex: 15, con: 15, int: 11, wis: 12, cha: 13,
+    saves: { dex: 4 }, skills: { deception: 3, intimidation: 3, stealth: 4 },
+    senses: 'passive Perception 11', languages: "Common, Thieves' Cant",
+    cr: '3', xp: 700, environment: ['urban'], role: 'skirmisher',
+    traits: [
+      { name: 'Read the Room', desc: 'Advantage on Insight checks against creatures it has watched for at least 10 minutes.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Oiled-Blade attacks.' },
+      { name: 'Oiled Blade', desc: 'Melee +4 to hit, reach 5 ft. Hit: 1d6+2 piercing plus 2d4 poison (DC 12 Con save halves poison only).' },
+      { name: 'Loose the Cord', desc: 'Ranged +4 to hit, range 20/60 ft. Garrotte cord — 1d6+2 slashing. If target is Surprised, add 2d6.' }
+    ],
+    source: 'Eldoria original — Guilded Veil field muscle. Sits between Enforcer (my earlier Cult Enforcer) and Whisperer in the cell hierarchy.' },
+
+  { id: 'veiled_cutthroat', name: 'Veiled Cutthroat', size: 'Medium', type: 'humanoid', alignment: 'chaotic evil',
+    ac: 15, hp: 40, hpFormula: '7d8+7', speed: '35 ft.',
+    str: 10, dex: 17, con: 12, int: 13, wis: 12, cha: 11,
+    skills: { deception: 3, stealth: 5, sleight: 5 },
+    senses: 'passive Perception 11', languages: "Common, Thieves' Cant",
+    cr: '2', xp: 450, environment: ['urban'], role: 'ambusher',
+    traits: [
+      { name: 'Backing Away', desc: 'Bonus action to Disengage.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Concealed Dagger attacks.' },
+      { name: 'Concealed Dagger', desc: 'Melee +5 to hit, reach 5 ft. Hit: 1d4+3 piercing. If target is Surprised, deal maximum damage.' }
+    ],
+    source: 'Eldoria original — Veil low-tier assassin, city-street specialist.' },
+
+  { id: 'ledger_bound_auditor', name: 'Ledger-Bound Auditor', size: 'Medium', type: 'humanoid (spellcaster)', alignment: 'lawful neutral',
+    ac: 13, hp: 66, hpFormula: '12d8+12', speed: '30 ft.',
+    str: 9, dex: 14, con: 12, int: 17, wis: 15, cha: 13,
+    saves: { int: 6 }, skills: { insight: 5, investigation: 6, arcana: 6 },
+    senses: 'truesight 30 ft. (from cursed ledger)', languages: 'Common, Thieves\' Cant, plus one exotic',
+    cr: '4', xp: 1100, environment: ['urban'], role: 'controller',
+    traits: [
+      { name: 'Bound to Books', desc: 'Cannot willingly leave the room while their private ledger is open on the desk. If forced, save DC 15 or take 2d6 psychic each turn.' },
+      { name: 'Instant Recall', desc: 'Perfect memory of every transaction they have witnessed. Advantage on Investigation checks about finances or contracts.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Quill-Dart attacks OR casts a spell and one Quill-Dart.' },
+      { name: 'Quill Dart', desc: 'Ranged +6 to hit, range 30/120 ft. Hit: 2d6+3 piercing.' },
+      { name: 'Auditor\'s Judgement (1/day)', desc: 'One creature within 60 ft. that has recently lied to the Auditor: DC 14 Cha save or take 6d6 psychic and be Restrained by written script until end of its next turn.' }
+    ],
+    source: 'Eldoria original — Veil forensic accountant with a magical ledger. Not a fighter unless cornered; will negotiate.' },
+
+  // ---- Ironhold / forge ----
+  { id: 'foundry_furnace_kin', name: 'Foundry Furnace-Kin', size: 'Medium', type: 'elemental', alignment: 'neutral',
+    ac: 13, hp: 72, hpFormula: '11d8+22', speed: '40 ft.',
+    str: 14, dex: 17, con: 14, int: 6, wis: 10, cha: 7,
+    damageImmune: 'fire, poison', damageVuln: 'cold',
+    conditionImmune: 'exhaustion, grappled, paralyzed, petrified, poisoned, prone, restrained, unconscious',
+    senses: 'darkvision 60 ft.', languages: 'Ignan',
+    cr: '4', xp: 1100, environment: ['urban', 'underground'], role: 'brute',
+    traits: [
+      { name: 'Molten Body', desc: 'A creature that touches or hits with a melee attack within 5 ft. takes 1d6 fire.' },
+      { name: 'Ignite Metal', desc: 'Any metal object worn or carried by a creature within 5 ft. of the Furnace-Kin heats to painful temperatures — Con save DC 13 or drop.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Blazing Slam attacks.' },
+      { name: 'Blazing Slam', desc: 'Melee +5 to hit, reach 5 ft. Hit: 2d6+3 bludgeoning plus 2d6 fire.' }
+    ],
+    source: 'Eldoria original — fire elemental born from decades of Ironhold forge-smoke. Rare escape from a foundry accident.' },
+
+  { id: 'ashling_beggar', name: 'Ashling Beggar', size: 'Medium', type: 'humanoid', alignment: 'chaotic neutral',
+    ac: 11, hp: 22, hpFormula: '4d8+4', speed: '30 ft.',
+    str: 10, dex: 13, con: 12, int: 9, wis: 10, cha: 12,
+    skills: { deception: 3, sleight: 3, stealth: 3 },
+    senses: 'passive Perception 10', languages: 'Common, Thieves\' Cant',
+    cr: '1/2', xp: 100, environment: ['urban'], role: 'skirmisher',
+    traits: [
+      { name: 'City Rat', desc: 'Advantage on Dex (Stealth) checks in Rustpocket or similar dense urban terrain.' }
+    ],
+    actions: [
+      { name: 'Rusted Shiv', desc: 'Melee +3 to hit, reach 5 ft. Hit: 1d4+1 piercing plus 1d4 poison (rust and grime).' },
+      { name: 'Cry for Help', desc: 'Bonus action once per encounter: summons 1d4 more Ashling Beggars from nearby alleys in 1d2 rounds.' }
+    ],
+    source: 'Eldoria original — Rustpocket denizen. Rare as a threat alone; dangerous in numbers.' },
+
+  { id: 'halvor_assessor', name: "Halvor's Assessor", size: 'Medium', type: 'humanoid', alignment: 'lawful evil',
+    ac: 14, hp: 52, hpFormula: '8d8+16', speed: '30 ft.',
+    str: 13, dex: 14, con: 14, int: 15, wis: 13, cha: 15,
+    skills: { deception: 4, insight: 3, investigation: 4, persuasion: 4 },
+    senses: 'passive Perception 11', languages: 'Common, plus one regional',
+    cr: '4', xp: 1100, environment: ['urban'], role: 'controller',
+    traits: [
+      { name: 'Cold Read', desc: 'Passive: knows within one round of meeting a person whether they own significant property or debt. Advantage on Insight vs any topic touching money.' },
+      { name: 'Compound Reserve', desc: 'When first reduced below half HP, calls in reinforcements — 2 Halvor Compound Bruisers arrive on the following round.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Contract-Sealer attacks.' },
+      { name: 'Contract-Sealer (weighted rod)', desc: 'Melee +4 to hit, reach 5 ft. Hit: 1d8+2 bludgeoning. On critical hit, the target is Marked by the Compound — Compound assets have advantage to track them for 24 h.' },
+      { name: 'Legal Coercion (recharge 5-6)', desc: 'One humanoid within 30 ft.: DC 13 Cha save or Frightened 1 min (repeat save each turn). Only affects creatures with any debt, contract, or grievance the Assessor can name.' }
+    ],
+    source: 'Eldoria original — Halvor\'s property scout and shakedown specialist. Rarely fights unless the paperwork demands it.' },
+
+  // ---- Frostwood / Lethraliri legacy horrors ----
+  { id: 'fen_wraith', name: 'Fen-Wraith', size: 'Medium', type: 'undead', alignment: 'neutral evil',
+    ac: 13, hp: 62, hpFormula: '9d8+18', speed: '0 ft., fly 40 ft. (hover)',
+    str: 6, dex: 16, con: 14, int: 13, wis: 15, cha: 16,
+    damageResist: 'cold, necrotic; bludgeoning, piercing, slashing from nonmagical attacks not made in bright light',
+    damageImmune: 'poison', damageVuln: 'radiant',
+    conditionImmune: 'charmed, exhaustion, grappled, paralyzed, petrified, poisoned, prone, restrained',
+    senses: 'darkvision 60 ft.', languages: 'the languages it knew in life (usually old Lethraliri Elvish)',
+    cr: '4', xp: 1100, environment: ['marsh', 'ruins'], role: 'ambusher',
+    traits: [
+      { name: 'Incorporeal', desc: 'Passes through creatures and solid objects (5 ft. of movement per 5 ft. moved). Takes 1d10 force if ending its turn inside a solid object.' },
+      { name: 'Grief-Bound', desc: 'Cannot move more than 500 ft. from where it died in the Second Age.' }
+    ],
+    actions: [
+      { name: 'Life Drain', desc: 'Melee spell +5 to hit, reach 5 ft. Hit: 4d8 necrotic and the target\'s HP max is reduced by the damage until it finishes a long rest.' }
+    ],
+    source: 'Eldoria original — a Lethraliri elf who died defending the marsh seal. Not evil in life; grief has warped it.' },
+
+  { id: 'ice_silence_weaver', name: 'Ice-Silence Weaver', size: 'Medium', type: 'undead (spellcaster)', alignment: 'lawful evil',
+    ac: 16, hp: 90, hpFormula: '12d8+36', speed: '30 ft.',
+    str: 10, dex: 14, con: 16, int: 17, wis: 14, cha: 13,
+    saves: { con: 6, int: 6 }, skills: { arcana: 6, perception: 4 },
+    damageResist: 'cold, necrotic, bludgeoning/piercing/slashing from nonmagical attacks',
+    damageImmune: 'poison', conditionImmune: 'charmed, exhaustion, frightened, poisoned',
+    senses: 'darkvision 90 ft.', languages: 'Common, old Lethraliri Elvish, Aquan',
+    cr: '5', xp: 1800, environment: ['marsh', 'ruins', 'arctic'], role: 'caster',
+    traits: [
+      { name: 'Silence Aura', desc: 'Spells of 3rd level or lower cast within 15 ft. of the Weaver auto-fail unless the caster succeeds on a DC 15 Con save.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Casts a spell + one Icebound Touch, OR two Icebound Touches.' },
+      { name: 'Icebound Touch', desc: 'Melee spell +6 to hit, reach 5 ft. Hit: 3d6 cold. Target DC 14 Con or Restrained by ice until end of its next turn.' },
+      { name: 'Snow-Silent Bolt (2/day)', desc: 'One creature within 60 ft.: DC 14 Dex save. Fail: 6d8 cold; also cannot speak or cast verbal spells until end of its next turn.' }
+    ],
+    source: 'Eldoria original — a Lethraliri sorcerer who died at the sealing of Vroth-Khorn and rose slowly over centuries.' },
+
+  // ---- Feywild / Sylvarian ----
+  { id: 'sap_sipper', name: 'Aelarion Sap-Sipper', size: 'Tiny', type: 'fey', alignment: 'chaotic good',
+    ac: 14, hp: 12, hpFormula: '5d4', speed: '10 ft., fly 30 ft.',
+    str: 3, dex: 18, con: 10, int: 12, wis: 14, cha: 15,
+    skills: { perception: 4, stealth: 6 },
+    senses: 'passive Perception 14', languages: 'Sylvan, Common',
+    cr: '1/2', xp: 100, environment: ['forest'], role: 'skirmisher',
+    traits: [
+      { name: 'Fey Step', desc: 'Bonus action: teleport up to 30 ft. to an unoccupied space it can see.' },
+      { name: 'Sap-Warded', desc: 'Advantage on saves against poison and disease.' }
+    ],
+    actions: [
+      { name: 'Thorn Rapier', desc: 'Melee +6 to hit, reach 5 ft. Hit: 1d4+4 piercing.' },
+      { name: 'Enchanting Whisper (1/short rest)', desc: 'One creature within 30 ft.: DC 12 Wis save or Charmed for 1 min (repeat save each turn or when harmed).' }
+    ],
+    source: 'Eldoria original — small fey that feed on the sap of the Aelarion Tree. Territorial, but not malicious.' },
+
+  { id: 'root_knit_warden', name: 'Root-Knit Warden', size: 'Medium', type: 'plant', alignment: 'neutral good',
+    ac: 15, hp: 60, hpFormula: '8d8+24', speed: '30 ft.',
+    str: 17, dex: 12, con: 16, int: 10, wis: 15, cha: 11,
+    damageResist: 'piercing', damageVuln: 'fire', conditionImmune: 'blinded, deafened, exhaustion',
+    senses: 'darkvision 60 ft., tremorsense 30 ft.', languages: 'Sylvan, Common',
+    cr: '3', xp: 700, environment: ['forest'], role: 'brute',
+    traits: [
+      { name: 'Rooted Defence', desc: 'When stationary at start of turn, gains +2 AC (already included when guarding a specific tree).' },
+      { name: 'Wood-Speak', desc: 'Can telepathically communicate with any tree within 60 ft.' }
+    ],
+    actions: [
+      { name: 'Multiattack', desc: 'Two Bough-Slam attacks.' },
+      { name: 'Bough Slam', desc: 'Melee +5 to hit, reach 10 ft. Hit: 2d6+3 bludgeoning. Target DC 13 Str save or knocked prone.' },
+      { name: 'Bind (recharge 5-6)', desc: 'One creature within 15 ft.: DC 13 Str save or Restrained by roots until end of its next turn.' }
+    ],
+    source: 'Eldoria original — Sylvarian Enclave defender. Grown, not built. Will parley with polite travellers.' },
+
+  // ---- Monstrosity — surveillance/spy ----
+  { id: 'corvid_sentinel', name: 'Corvid Sentinel', size: 'Small', type: 'monstrosity', alignment: 'neutral evil',
+    ac: 13, hp: 26, hpFormula: '4d6+12', speed: '10 ft., fly 60 ft.',
+    str: 8, dex: 16, con: 16, int: 14, wis: 15, cha: 6,
+    skills: { perception: 6, stealth: 5 },
+    senses: 'darkvision 60 ft., passive Perception 16', languages: 'understands Common; croaks and mimics',
+    cr: '2', xp: 450, environment: ['urban', 'forest', 'mountain'], role: 'skirmisher',
+    traits: [
+      { name: 'Mimicry', desc: 'Can perfectly imitate any voice or sound it has heard for at least 6 seconds. Deceived only on DC 14 Insight.' },
+      { name: 'Watcher\'s Bond', desc: 'One handler (Aurek, Vaeloran, or their agent) can see through this creature\'s eyes at any distance on the same plane.' }
+    ],
+    actions: [
+      { name: 'Rending Beak', desc: 'Melee +5 to hit, reach 5 ft. Hit: 2d4+3 piercing.' },
+      { name: 'Wing-Shear (recharge 5-6)', desc: '10-ft cone: each creature DC 13 Dex save or take 2d6 slashing and be Deafened 1 min.' }
+    ],
+    source: 'Eldoria original — Aurek and Vaeloran\'s primary surveillance. Corvids infused with a bind-magic. Kill one and the handler notices instantly.' },
+
 ];
 
 const MONSTERS_BY_ID = {};
