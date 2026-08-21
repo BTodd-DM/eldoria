@@ -539,6 +539,28 @@
             if (newHp > 0 && c.dead) c.dead = false;
           }
         });
+        // Sylas minion sync — sheet is source of truth. Pull HP from
+        // each linked minion in Sylas's sheet state.
+        try {
+          if (typeof getSheetState === 'function') {
+            const sylasState = getSheetState('sylas');
+            const minions = (sylasState && sylasState.minions) || [];
+            const byId = {};
+            minions.forEach(function(m) { byId[m.id] = m; });
+            s.combatants.forEach(function(c) {
+              if (!c.sylasMinionId) return;
+              const m = byId[c.sylasMinionId];
+              if (!m) return;
+              if (c.hp !== m.hp || c.hpMax !== m.hpMax) {
+                updates.push(c.name + ' HP ' + c.hp + '→' + m.hp);
+                c.hp = m.hp;
+                c.hpMax = m.hpMax;
+                if (c.hp <= 0 && !c.dead) c.dead = true;
+                if (c.hp > 0 && c.dead) c.dead = false;
+              }
+            });
+          }
+        } catch (e) {}
         if (updates.length && !silent) self._log(s, '🔄 Sync from sheets: ' + updates.join(', '));
       });
     },
