@@ -594,7 +594,7 @@ CHARACTERS.torren = {
     { name: 'Waterskin',        qty: 1,          slot: 'backpack',   wt: 5, cost: 0.2,  desc: 'Container. 4 pints capacity.' }
     // Quiver: empty. No attuned items.
   ],
-  currency: { pp: 0, gp: 0, sp: 0, cp: 0 },  // TBD — send when convenient
+  currency: { pp: 0, gp: 20, sp: 47, cp: 0 },  // Confirmed by player
   bio: {
     faction: 'Guilded Veil (Stonegate cell); ex-Aelorian Watch (discharged).',
     bond: 'Sworn to lifetime service to Vrass (young black dragon) as of Session 5.',
