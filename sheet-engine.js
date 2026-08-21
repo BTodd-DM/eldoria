@@ -225,6 +225,17 @@ function getSheetState(id) {
     state.currency = Object.assign({ cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }, char.coins || {});
   }
   if (state.editMode === undefined) state.editMode = false;
+  // Sylas Animate Dead seed — start with the 2 zombies he already had at
+  // the current campaign moment. Only seeds if never initialised; Sylas
+  // can edit/rename/remove freely after.
+  if (id === 'sylas' && !state.minions) {
+    const z = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie']) ? MONSTERS_BY_ID['zombie'] : null;
+    state.minions = [
+      { id: 'zombie_1_' + Date.now(),     kind: 'zombie', name: 'Zombie #1', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' },
+      { id: 'zombie_2_' + (Date.now()+1), kind: 'zombie', name: 'Zombie #2', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' }
+    ];
+    state.lastReassert = null;
+  }
   // Phase 4B migration: seed editable spells from char.spells on first load.
   if (!state.spells) {
     state.spells = (char.spells || []).map(function(sp, i) {
@@ -1331,6 +1342,7 @@ function renderSheet(charId) {
   html += '<div>';
   if (char.spellcasting) html += _wrapCollapsible(charId, 'spells', '✦ Spells', renderSpellsSection(charId, char, state), true);
   html += _wrapCollapsible(charId, 'attunement', '◈ Attunement',   renderAttunementSection(charId, state),  false);
+  if (charId === 'sylas') html += _wrapCollapsible(charId, 'minions', '🧟 Undead Minions',   renderMinionsSection(charId, state),  false);
   html += _wrapCollapsible(charId, 'inventory',  '🎒 Inventory',    renderInventorySection(charId, char, state), false);
   html += _wrapCollapsible(charId, 'currency',   '💰 Currency',     renderCurrencySection(charId, state),    false);
   html += _wrapCollapsible(charId, 'equipment',  '🛡 Equipment',    renderEquipmentSection(char),            false);
@@ -2011,6 +2023,51 @@ function renderEquipmentSection(char) {
   return '<div class="sheet-sub"><div class="sheet-sub-title">Languages</div><div style="font-size:12px;color:var(--parch2)">' + langs + '</div></div>' +
     '<div class="sheet-sub"><div class="sheet-sub-title">Equipment Training & Proficiencies</div>' + trainHtml + '</div>';
 }
+function renderMinionsSection(charId, state) {
+  const minions = state.minions || [];
+  const zStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie']) ? MONSTERS_BY_ID['zombie'] : null;
+  const sStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['skeleton']) ? MONSTERS_BY_ID['skeleton'] : null;
+  const zAc = zStats ? zStats.ac : '?';
+  const sAc = sStats ? sStats.ac : '?';
+  const alive = minions.filter(function(m) { return m.hp > 0; });
+  const zombieCount   = alive.filter(function(m) { return m.kind === 'zombie'; }).length;
+  const skeletonCount = alive.filter(function(m) { return m.kind === 'skeleton'; }).length;
+  const reassert = state.lastReassert ? new Date(state.lastReassert).toLocaleString() : 'never';
+  let rows = '';
+  if (!minions.length) {
+    rows = '<div style="padding:.5rem;text-align:center;color:var(--parch4);font-style:italic;font-size:12px">No active minions. Cast Animate Dead to raise some.</div>';
+  } else {
+    rows = minions.map(function(m, idx) {
+      const ac = m.kind === 'skeleton' ? sAc : zAc;
+      const dead = m.hp <= 0;
+      const style = dead ? 'opacity:.5;text-decoration:line-through' : '';
+      return '<div style="display:flex;gap:.4rem;align-items:center;padding:.3rem .2rem;border-bottom:1px dashed rgba(160,128,64,0.2);' + style + '">' +
+        '<input type="text" value="' + _sheetEscapeAttr(m.name) + '" onchange="renameMinion(\'' + charId + '\', ' + idx + ', this.value)" style="flex:1;padding:2px 6px;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.4);color:var(--parch);border-radius:2px;font-size:12px">' +
+        '<span style="font-size:10px;color:var(--parch3);letter-spacing:1px;font-family:\'Cinzel\',serif">' + m.kind.toUpperCase() + '</span>' +
+        '<span style="font-size:10.5px;color:var(--parch3)">AC ' + ac + '</span>' +
+        '<button onclick="minionHp(\'' + charId + '\', ' + idx + ', -1)" style="background:rgba(139,26,26,0.4);color:var(--parch);border:1px solid rgba(160,128,64,0.3);border-radius:2px;padding:1px 6px;font-size:10px;cursor:pointer">−</button>' +
+        '<input type="number" value="' + m.hp + '" onchange="setMinionHp(\'' + charId + '\', ' + idx + ', this.value)" style="width:3.5ch;text-align:center;padding:1px 2px;background:rgba(10,8,5,0.6);border:1px solid rgba(160,128,64,0.4);color:var(--gold3);font-family:\'Cinzel\',serif;font-size:12px;border-radius:2px;-moz-appearance:textfield">' +
+        '<span style="font-size:10px;color:var(--parch4)">/ ' + m.hpMax + '</span>' +
+        '<button onclick="minionHp(\'' + charId + '\', ' + idx + ', 1)" style="background:rgba(13,74,42,0.4);color:var(--parch);border:1px solid rgba(160,128,64,0.3);border-radius:2px;padding:1px 6px;font-size:10px;cursor:pointer">+</button>' +
+        '<button onclick="removeMinion(\'' + charId + '\', ' + idx + ')" style="background:transparent;color:var(--red2);border:1px solid var(--red2);border-radius:2px;padding:1px 6px;font-size:10px;cursor:pointer">✕</button>' +
+      '</div>';
+    }).join('');
+  }
+  return '<div class="sheet-sub"><div class="sheet-sub-title">Undead Minions ' +
+      '<span style="font-family:\'Crimson Pro\',serif;font-weight:400;font-size:11px;color:var(--parch3);text-transform:none;letter-spacing:0;margin-left:.4rem">' +
+        'Active: ' + alive.length + ' &nbsp;·&nbsp; ' + zombieCount + ' zombie' + (zombieCount === 1 ? '' : 's') + ' + ' + skeletonCount + ' skeleton' + (skeletonCount === 1 ? '' : 's') +
+      '</span></div>' +
+    '<div style="font-size:11px;color:var(--parch4);font-style:italic;margin-bottom:.35rem">Last reassert: ' + reassert + '</div>' +
+    '<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem">' +
+      '<button onclick="castAnimateDead(\'' + charId + '\')" style="background:rgba(90,60,150,0.2);color:#c8a8e0;border:1px solid #a070c0;border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">✨ Cast Animate Dead</button>' +
+      '<button onclick="reassertControl(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">🔁 Reassert Control</button>' +
+      (minions.length ? '<button onclick="endAllMinions(\'' + charId + '\')" style="background:transparent;color:var(--red2);border:1px solid var(--red2);border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">End All</button>' : '') +
+    '</div>' +
+    rows +
+    '<div style="font-size:10.5px;color:var(--parch4);font-style:italic;margin-top:.4rem">Stats pull from the catalog (edit &quot;zombie&quot; or &quot;skeleton&quot; via the Custom Monster form to change their base HP/AC).</div>' +
+  '</div>';
+}
+
 function renderBioSection(charId, char, state) {
   return '<div class="sheet-sub"><div class="sheet-sub-title">Appearance · Backstory · Personality</div><div style="font-size:12px;color:var(--parch2);line-height:1.5">' +
     (char.appearance ? '<strong>Appearance:</strong> ' + char.appearance + '<br><br>' : '') +
@@ -2144,6 +2201,63 @@ function _checkConcentrationOnDamage(charId, damageAmount) {
   }, 150);
 }
 function toggleResource(charId, rid, n) { withSheetState(charId, function(s) { if ((s.resources[rid] || 0) >= n) s.resources[rid] = n - 1; else s.resources[rid] = n; }); }
+
+// ---------- Sylas Animate Dead — minion handlers ----------
+function castAnimateDead(charId) {
+  const zStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie'])   ? MONSTERS_BY_ID['zombie']   : null;
+  const sStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['skeleton']) ? MONSTERS_BY_ID['skeleton'] : null;
+  const zHp = (zStats && zStats.hp) || 22;
+  const sHp = (sStats && sStats.hp) || 13;
+  const raw = prompt('Cast Animate Dead at what spell level? (3-9)', '3');
+  const lvl = parseInt(raw, 10);
+  if (isNaN(lvl) || lvl < 3 || lvl > 9) return;
+  const total = 2 * (lvl - 2);   // 3rd-level = 2 minions; +2 per higher level (2024 PHB)
+  const zRaw = prompt('Total ' + total + ' minions this casting.\n\nHow many ZOMBIES? (rest will be skeletons)', total);
+  const zombies = Math.max(0, Math.min(total, parseInt(zRaw, 10) || 0));
+  const skeletons = total - zombies;
+  withSheetState(charId, function(s) {
+    if (!s.minions) s.minions = [];
+    let seq = s.minions.length + 1;
+    for (let i = 0; i < zombies; i++) {
+      s.minions.push({ id: 'z_' + Date.now() + '_' + i, kind: 'zombie', name: 'Zombie #' + (seq++), hp: zHp, hpMax: zHp, notes: '' });
+    }
+    for (let i = 0; i < skeletons; i++) {
+      s.minions.push({ id: 's_' + Date.now() + '_' + i, kind: 'skeleton', name: 'Skeleton #' + (seq++), hp: sHp, hpMax: sHp, notes: '' });
+    }
+    s.lastReassert = Date.now();
+  });
+  if (typeof showRollToast === 'function') {
+    showRollToast('Animate Dead', 'Level ' + lvl + ' — raised ' + zombies + ' zombie(s), ' + skeletons + ' skeleton(s)', '🧟');
+  }
+}
+function renameMinion(charId, idx, name) {
+  withSheetState(charId, function(s) { if (s.minions && s.minions[idx]) s.minions[idx].name = String(name || ''); });
+}
+function minionHp(charId, idx, delta) {
+  withSheetState(charId, function(s) {
+    if (!s.minions || !s.minions[idx]) return;
+    const m = s.minions[idx];
+    m.hp = Math.max(0, Math.min(m.hpMax, m.hp + delta));
+  });
+}
+function setMinionHp(charId, idx, val) {
+  const n = parseInt(val, 10); if (isNaN(n)) return;
+  withSheetState(charId, function(s) {
+    if (!s.minions || !s.minions[idx]) return;
+    s.minions[idx].hp = Math.max(0, Math.min(s.minions[idx].hpMax, n));
+  });
+}
+function removeMinion(charId, idx) {
+  withSheetState(charId, function(s) { if (s.minions) s.minions.splice(idx, 1); });
+}
+function reassertControl(charId) {
+  withSheetState(charId, function(s) { s.lastReassert = Date.now(); });
+  if (typeof showRollToast === 'function') showRollToast('Reassert Control', 'Timestamp updated', '🔁');
+}
+function endAllMinions(charId) {
+  if (!confirm('End all active minions?\n\nRemoves every entry from the minions list.')) return;
+  withSheetState(charId, function(s) { s.minions = []; });
+}
 
 // Sylas Soul Siphon rider — rolls +1d6+5 bonus and clears the charge.
 function rollSiphonBonus(charId) {

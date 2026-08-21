@@ -447,6 +447,46 @@
       this._write(state);
     },
 
+    _sylasHasMinions: function() {
+      try {
+        if (typeof getSheetState !== 'function') return false;
+        const s = getSheetState('sylas');
+        return !!(s && Array.isArray(s.minions) && s.minions.filter(function(m) { return m.hp > 0; }).length);
+      } catch (e) { return false; }
+    },
+
+    _addSylasMinions: function() {
+      if (typeof getSheetState !== 'function') return;
+      const s = getSheetState('sylas');
+      if (!s || !Array.isArray(s.minions) || !s.minions.length) { alert('Sylas has no active minions.'); return; }
+      const zStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie'])   ? MONSTERS_BY_ID['zombie']   : null;
+      const sStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['skeleton']) ? MONSTERS_BY_ID['skeleton'] : null;
+      const self = this;
+      this._mutate(function(state) {
+        state.combatants = state.combatants || [];
+        s.minions.forEach(function(m, idx) {
+          if (m.hp <= 0) return;
+          // Skip if already in combat (by minion sheet-id)
+          if (state.combatants.some(function(c) { return c.sylasMinionId === m.id; })) return;
+          const stats = m.kind === 'skeleton' ? sStats : zStats;
+          const dexMod = stats ? Math.floor(((stats.dex || 10) - 10) / 2) : 0;
+          const roll = 1 + Math.floor(Math.random() * 20);
+          state.combatants.push({
+            id: 'minion-' + m.id,
+            kind: 'monster',
+            name: "👤 Sylas's " + m.name,
+            monsterId: m.kind, // 'zombie' or 'skeleton' — maps to catalog for stat lookup
+            sylasMinionId: m.id, // link back to sheet state
+            initiative: roll + dexMod,
+            ac: stats ? stats.ac : (m.kind === 'skeleton' ? 13 : 8),
+            hp: m.hp, hpMax: m.hpMax, tempHp: 0,
+            conditions: {}, concentrating: '', dead: m.hp <= 0
+          });
+        });
+        self._log(state, "🧟 Added Sylas's minions (" + s.minions.filter(function(x){return x.hp>0;}).length + ')');
+      });
+    },
+
     _syncPCsFromSheets: function(silent) {
       const self = this;
       this._mutate(function(s) {
@@ -514,6 +554,16 @@
       if (totalXp > 0 && alivePcs.length) {
         this._awardXp(totalXp, alivePcs, xpBreakdown);
       }
+      // Prune dead Sylas minions from his sheet state
+      try {
+        const deadMinionIds = combatants.filter(function(c) { return c.sylasMinionId && c.hp <= 0; }).map(function(c) { return c.sylasMinionId; });
+        if (deadMinionIds.length && typeof withSheetState === 'function') {
+          withSheetState('sylas', function(ss) {
+            if (!ss.minions) return;
+            ss.minions = ss.minions.filter(function(m) { return deadMinionIds.indexOf(m.id) === -1; });
+          });
+        }
+      } catch (e) {}
       this._write({ active: false, round: s.round || 0, combatants: combatants, log: s.log || [], endedAt: Date.now(), lastXpAward: totalXp });
     },
 
@@ -832,6 +882,18 @@
             }
           } catch (e) {}
         }
+        // Sylas minion sync — HP changes here mirror to his sheet's minions list
+        if (c.sylasMinionId) {
+          try {
+            if (typeof withSheetState === 'function') {
+              withSheetState('sylas', function(ss) {
+                if (!ss.minions) return;
+                const m = ss.minions.find(function(x) { return x.id === c.sylasMinionId; });
+                if (m) m.hp = c.hp;
+              });
+            }
+          } catch (e) {}
+        }
         if (prev !== c.hp) self._log(s, (c.hp > prev ? '❤' : '💥') + ' ' + c.name + ' HP ' + prev + '→' + c.hp);
       });
     },
@@ -935,8 +997,10 @@
 
     _renderBrowser: function() {
       const body = document.getElementById('ct-browser-body');
-      if (!body || typeof MONSTERS_2024 === 'undefined') return;
-      const st = this._browserState;
+      if (!body) { console.warn('[CombatTracker] Browser body element missing'); return; }
+      if (typeof MONSTERS_2024 === 'undefined') { body.innerHTML = '<div style="padding:1rem;color:var(--red2)">Monster catalog not loaded (MONSTERS_2024 undefined).</div>'; return; }
+      try {
+      const st = this._browserState || (this._browserState = { search: '', sort: 'name', typeFilter: null, crBand: null, sourceFilter: null, envFilter: null, roleFilter: null, selected: {} });
       const self = this;
       const search = (st.search || '').toLowerCase();
 
@@ -1071,6 +1135,10 @@
       }
       html += '</div>';
       body.innerHTML = html;
+      } catch (e) {
+        console.error('[CombatTracker] _renderBrowser failed:', e);
+        body.innerHTML = '<div style="padding:1rem;color:var(--red2)"><strong>Browser render error.</strong><br>' + escapeHtml(e && e.message || String(e)) + '<br><small>See DevTools console for stack trace.</small></div>';
+      }
     },
 
     _browserSelect: function(id, delta) {
@@ -1474,6 +1542,7 @@
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._saveCurrentAsPreset()" title="Save current encounter as a preset for later">💾 Save preset</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._syncPCsFromSheets()" title="Re-pull HP/AC from each PC sheet (use after long rest or manual sheet edit)">🔄 Sync PCs</button>' +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._rollMonsterInit()" title="Reroll initiative for every monster (PCs untouched — you enter theirs manually)">🎲 Roll monster init</button>' +
+            (this._sylasHasMinions() ? '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._addSylasMinions()" title="Add all of Sylas\'s currently-active Animate Dead minions as combatants">🧟 Add Sylas\'s minions</button>' : '') +
             '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openXpLedger()" title="View XP ledger for all PCs">🏆 XP</button>' +
             '<button class="action-btn" style="background:var(--gold);color:#0d0a06;border:none" onclick="if(window.CombatTracker) CombatTracker._advanceTurn()">⏭ Next turn</button>' +
             '<button class="action-btn" style="border-color:#a02020;color:#e0a0a0" onclick="if(window.CombatTracker) CombatTracker._endCombat()">End combat</button>' +
