@@ -1863,6 +1863,14 @@
       CT.init('combat-tracker-container');
       return true;
     }
+    // No container on this page (e.g. standalone sheet.html). Still run the
+    // Firebase /monster-homebrew subscribe so any page that reads
+    // MONSTERS_BY_ID gets custom overrides applied. One-shot; guarded so
+    // multiple selfInit ticks don't double-subscribe.
+    if (!CT._catalogSyncStarted && typeof firebase !== 'undefined' && firebase.database) {
+      CT._catalogSyncStarted = true;
+      try { CT._initHomebrewSync(); } catch (e) { console.warn('[CombatTracker] catalog-only sync failed:', e); }
+    }
     return false;
   }
   if (document.readyState === 'loading') {

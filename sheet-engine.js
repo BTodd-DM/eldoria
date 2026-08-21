@@ -225,16 +225,22 @@ function getSheetState(id) {
     state.currency = Object.assign({ cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }, char.coins || {});
   }
   if (state.editMode === undefined) state.editMode = false;
-  // Sylas Animate Dead seed — start with the 2 zombies he already had at
-  // the current campaign moment. Only seeds if never initialised; Sylas
-  // can edit/rename/remove freely after.
-  if (id === 'sylas' && !state.minions) {
-    const z = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie']) ? MONSTERS_BY_ID['zombie'] : null;
-    state.minions = [
-      { id: 'zombie_1_' + Date.now(),     kind: 'zombie', name: 'Zombie #1', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' },
-      { id: 'zombie_2_' + (Date.now()+1), kind: 'zombie', name: 'Zombie #2', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' }
-    ];
-    state.lastReassert = null;
+  // Sylas Animate Dead seed — start with the 2 zombies he had at the
+  // current campaign moment. Uses a dedicated `minionsInitialized` flag
+  // rather than checking the array (Firebase drops empty arrays as
+  // null, which would otherwise re-seed on every reload after End All).
+  if (id === 'sylas' && !state.minionsInitialized) {
+    if (!state.minions) {
+      const z = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie']) ? MONSTERS_BY_ID['zombie'] : null;
+      state.minions = [
+        { id: 'zombie_1_' + Date.now(),     kind: 'zombie', name: 'Zombie #1', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' },
+        { id: 'zombie_2_' + (Date.now()+1), kind: 'zombie', name: 'Zombie #2', hp: (z && z.hp) || 22, hpMax: (z && z.hp) || 22, notes: '' }
+      ];
+      state.lastReassert = null;
+    }
+    // Whether we seeded or the user already had minions from an earlier
+    // session, mark initialised so we never re-seed.
+    state.minionsInitialized = true;
   }
   // Phase 4B migration: seed editable spells from char.spells on first load.
   if (!state.spells) {
@@ -2061,6 +2067,7 @@ function renderMinionsSection(charId, state) {
     '<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem">' +
       '<button onclick="castAnimateDead(\'' + charId + '\')" style="background:rgba(90,60,150,0.2);color:#c8a8e0;border:1px solid #a070c0;border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">✨ Cast Animate Dead</button>' +
       '<button onclick="reassertControl(\'' + charId + '\')" style="background:rgba(160,128,64,0.15);color:var(--gold2);border:1px solid var(--gold2);border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">🔁 Reassert Control</button>' +
+      (minions.length ? '<button onclick="refreshMinionStats(\'' + charId + '\')" title="Re-pull HP max from the catalog for every minion. Use after editing the base zombie/skeleton stat block." style="background:transparent;color:var(--parch3);border:1px solid var(--parch3);border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">🔄 Refresh stats</button>' : '') +
       (minions.length ? '<button onclick="endAllMinions(\'' + charId + '\')" style="background:transparent;color:var(--red2);border:1px solid var(--red2);border-radius:2px;padding:.35rem .75rem;font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:1px;cursor:pointer">End All</button>' : '') +
     '</div>' +
     rows +
@@ -2256,7 +2263,30 @@ function reassertControl(charId) {
 }
 function endAllMinions(charId) {
   if (!confirm('End all active minions?\n\nRemoves every entry from the minions list.')) return;
-  withSheetState(charId, function(s) { s.minions = []; });
+  withSheetState(charId, function(s) { s.minions = []; s.minionsInitialized = true; });
+}
+function refreshMinionStats(charId) {
+  const zStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['zombie'])   ? MONSTERS_BY_ID['zombie']   : null;
+  const sStats = (typeof MONSTERS_BY_ID !== 'undefined' && MONSTERS_BY_ID['skeleton']) ? MONSTERS_BY_ID['skeleton'] : null;
+  if (!zStats && !sStats) { alert('Monster catalog not loaded. Cannot refresh.'); return; }
+  let updated = 0;
+  withSheetState(charId, function(s) {
+    if (!s.minions) return;
+    s.minions.forEach(function(m) {
+      const stats = m.kind === 'skeleton' ? sStats : zStats;
+      if (!stats || stats.hp == null) return;
+      const newMax = stats.hp;
+      if (m.hpMax !== newMax) {
+        m.hpMax = newMax;
+        m.hp = Math.min(m.hp, newMax);
+        updated++;
+      }
+    });
+    s.minionsInitialized = true;
+  });
+  if (typeof showRollToast === 'function') {
+    showRollToast('Refresh stats', updated ? updated + ' minion(s) updated from catalog' : 'All minions already up-to-date', '🔄');
+  }
 }
 
 // Sylas Soul Siphon rider — rolls +1d6+5 bonus and clears the charge.
