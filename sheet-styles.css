@@ -180,16 +180,62 @@
 .sheet-ds-circle.success.on { background: var(--safe); border-color: var(--gold2); }
 .sheet-ds-circle.failure.on { background: var(--danger); border-color: var(--red2); }
 
-/* Main 3-column body grid */
+/* Main body grid: narrow ability column + flexible reorder zone */
 .sheet-grid {
   display: grid;
-  grid-template-columns: 280px 1fr 1fr;
+  grid-template-columns: 280px 1fr;
   gap: .75rem;
 }
+/* Reorder zone: 2 auto-flowing columns. Sections push around each other on drag. */
+.sheet-reorder-zone {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  grid-auto-flow: row dense;
+  align-content: start;
+}
+.sheet-reorder-zone > details { margin: 0; align-self: start; }
 @media (max-width: 1100px) {
   .sheet-header { grid-template-columns: 1fr 1fr; }
   .sheet-grid { grid-template-columns: 1fr; }
+  .sheet-reorder-zone { grid-template-columns: 1fr; }
 }
+/* Edit-Layout mode affordances — grip icons + arrow buttons appear only when active */
+.sheet-section-controls {
+  display: none;
+  align-items: center;
+  gap: .3rem;
+  margin-left: auto;
+}
+.sheet-body[data-edit-layout="1"] .sheet-section-controls { display: inline-flex; }
+.sheet-body[data-edit-layout="1"] .sheet-collapsible > summary {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  outline: 1px dashed rgba(201,168,76,0.35);
+  outline-offset: -2px;
+}
+.sheet-body[data-edit-layout="1"] .sheet-collapsible { cursor: grab; }
+.sheet-body[data-edit-layout="1"] .sheet-collapsible.dragging { opacity: .55; cursor: grabbing; }
+.sheet-body[data-edit-layout="1"] .sheet-collapsible.drop-target > summary {
+  outline: 2px solid var(--gold3);
+  background: rgba(201,168,76,0.12);
+}
+.sheet-section-controls .grip {
+  font-family: 'Cinzel', serif; font-size: 13px;
+  color: var(--gold2); letter-spacing: 1px;
+  padding: 0 4px; cursor: grab; user-select: none;
+}
+.sheet-section-controls .grip:active { cursor: grabbing; }
+.sheet-section-controls .move-btn {
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.5);
+  color: var(--gold2);
+  font-size: 10px; padding: 1px 6px; border-radius: 2px;
+  cursor: pointer; font-family: 'Cinzel', serif;
+}
+.sheet-section-controls .move-btn:hover { background: rgba(201,168,76,0.18); }
+.sheet-section-controls .move-btn:disabled { opacity: .3; cursor: not-allowed; }
 
 /* Strip row above grid: initiative, speed, size, passive perception, prof, inspiration */
 .sheet-strip {

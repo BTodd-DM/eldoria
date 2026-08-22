@@ -1045,6 +1045,8 @@ const _SHEET_PRESETS = [
 ];
 
 function _renderSheetOptionsBar(charId, ts, th) {
+  const state = getSheetState(charId);
+  const editOn = !!state.editLayout;
   const tsBtn = function(val, label) {
     const active = (val === ts) ? ' active' : '';
     return '<button class="opt-btn' + active + '" onclick="setSheetTextSize(\'' + charId + '\',\'' + val + '\')">' + label + '</button>';
@@ -1062,6 +1064,11 @@ function _renderSheetOptionsBar(charId, ts, th) {
     '<div class="opt-group">' +
       '<button class="opt-btn" onclick="toggleAllSheetSections(true)">Expand all</button>' +
       '<button class="opt-btn" onclick="toggleAllSheetSections(false)">Collapse all</button>' +
+    '</div>' +
+    '<span class="opt-label" style="margin-left:.6rem">LAYOUT</span>' +
+    '<div class="opt-group">' +
+      '<button class="opt-btn' + (editOn ? ' active' : '') + '" onclick="toggleSheetEditLayout(\'' + charId + '\')" title="Toggle drag-and-drop reordering of sections">' + (editOn ? '✓ Editing layout' : '🔀 Edit layout') + '</button>' +
+      (editOn ? '<button class="opt-btn" onclick="resetSheetLayout(\'' + charId + '\')" title="Restore the default section order">🔄 Reset</button>' : '') +
     '</div>';
 
   if (th === 'custom') {
@@ -1127,7 +1134,7 @@ function toggleAllSheetSections(open) {
 }
 // Wraps a rendered section in a collapsible details element. Persists
 // open/closed state per (charId, sectionId) in localStorage.
-function _wrapCollapsible(charId, sectionId, label, contentHtml, defaultOpen) {
+function _wrapCollapsible(charId, sectionId, label, contentHtml, defaultOpen, editMode) {
   const key = 'eldoria-sheet-sec-' + charId + '-' + sectionId;
   let openAttr = defaultOpen === false ? '' : ' open';
   try {
@@ -1135,11 +1142,110 @@ function _wrapCollapsible(charId, sectionId, label, contentHtml, defaultOpen) {
     if (saved === '1') openAttr = ' open';
     else if (saved === '0') openAttr = '';
   } catch (e) {}
-  return '<details class="sheet-collapsible" data-collapse-key="' + key + '" data-section="' + sectionId + '"' + openAttr +
+  const dragAttr = editMode ? ' draggable="true"' : '';
+  const dragHandlers = editMode
+    ? ' ondragstart="_sheetDragStart(event,\'' + charId + '\',\'' + sectionId + '\')"' +
+      ' ondragover="_sheetDragOver(event)"' +
+      ' ondragleave="_sheetDragLeave(event)"' +
+      ' ondrop="_sheetDrop(event,\'' + charId + '\',\'' + sectionId + '\')"' +
+      ' ondragend="_sheetDragEnd(event)"'
+    : '';
+  const controls =
+    '<span class="sheet-section-controls">' +
+      '<button class="move-btn" onclick="event.preventDefault();event.stopPropagation();moveSheetSection(\'' + charId + '\',\'' + sectionId + '\',-1)" title="Move up">⬆</button>' +
+      '<button class="move-btn" onclick="event.preventDefault();event.stopPropagation();moveSheetSection(\'' + charId + '\',\'' + sectionId + '\',1)" title="Move down">⬇</button>' +
+      '<span class="grip" title="Drag to reorder">⋮⋮</span>' +
+    '</span>';
+  return '<details class="sheet-collapsible" data-collapse-key="' + key + '" data-section="' + sectionId + '"' + dragAttr + openAttr + dragHandlers +
     ' ontoggle="try{localStorage.setItem(this.getAttribute(\'data-collapse-key\'), this.open?\'1\':\'0\')}catch(e){}">' +
-    '<summary>' + label + '</summary>' +
+    '<summary><span class="section-label">' + label + '</span>' + controls + '</summary>' +
     '<div class="sheet-collapsible-body">' + contentHtml + '</div>' +
     '</details>';
+}
+
+// ----- Section reorder helpers -----
+const _SHEET_DEFAULT_SECTION_ORDER = ['weapons','resources','features','conditions','spells','attunement','minions','inventory','currency','equipment','bio','extras'];
+function _getSheetSectionOrder(state, availableIds) {
+  const availSet = {};
+  availableIds.forEach(function(id) { availSet[id] = true; });
+  const stored = Array.isArray(state.sectionOrder) ? state.sectionOrder.filter(function(s) { return availSet[s]; }) : [];
+  _SHEET_DEFAULT_SECTION_ORDER.forEach(function(s) {
+    if (availSet[s] && stored.indexOf(s) === -1) stored.push(s);
+  });
+  return stored;
+}
+function _computeSheetSectionOrderForChar(charId) {
+  const char = CHARACTERS[charId];
+  const state = getSheetState(charId);
+  const avail = ['weapons','resources','features','conditions'];
+  if (char.spellcasting) avail.push('spells');
+  avail.push('attunement');
+  if (charId === 'sylas') avail.push('minions');
+  avail.push('inventory','currency','equipment','bio','extras');
+  return _getSheetSectionOrder(state, avail);
+}
+function moveSheetSection(charId, sectionId, delta) {
+  const state = getSheetState(charId);
+  const order = _computeSheetSectionOrderForChar(charId);
+  const idx = order.indexOf(sectionId);
+  if (idx === -1) return;
+  const to = idx + delta;
+  if (to < 0 || to >= order.length) return;
+  const tmp = order[to]; order[to] = order[idx]; order[idx] = tmp;
+  state.sectionOrder = order;
+  saveSheetState(charId, state);
+  refreshSheet(charId);
+}
+let _sheetDragging = null;
+function _sheetDragStart(e, charId, sectionId) {
+  _sheetDragging = { charId: charId, sectionId: sectionId };
+  try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', sectionId); } catch (_) {}
+  if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.add('dragging');
+}
+function _sheetDragOver(e) {
+  if (!_sheetDragging) return;
+  e.preventDefault();
+  try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
+  if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.add('drop-target');
+}
+function _sheetDragLeave(e) {
+  if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.remove('drop-target');
+}
+function _sheetDrop(e, charId, targetSectionId) {
+  e.preventDefault();
+  if (!_sheetDragging || _sheetDragging.charId !== charId) { _sheetDragging = null; return; }
+  const fromId = _sheetDragging.sectionId;
+  _sheetDragging = null;
+  if (fromId === targetSectionId) { refreshSheet(charId); return; }
+  const state = getSheetState(charId);
+  const order = _computeSheetSectionOrderForChar(charId);
+  const fromIdx = order.indexOf(fromId);
+  if (fromIdx === -1) return;
+  order.splice(fromIdx, 1);
+  const insertAt = order.indexOf(targetSectionId);
+  if (insertAt === -1) return;
+  order.splice(insertAt, 0, fromId);
+  state.sectionOrder = order;
+  saveSheetState(charId, state);
+  refreshSheet(charId);
+}
+function _sheetDragEnd(e) {
+  _sheetDragging = null;
+  document.querySelectorAll('#sheet-body .sheet-collapsible.dragging').forEach(function(d) { d.classList.remove('dragging'); });
+  document.querySelectorAll('#sheet-body .sheet-collapsible.drop-target').forEach(function(d) { d.classList.remove('drop-target'); });
+}
+function toggleSheetEditLayout(charId) {
+  const state = getSheetState(charId);
+  state.editLayout = !state.editLayout;
+  saveSheetState(charId, state);
+  refreshSheet(charId);
+}
+function resetSheetLayout(charId) {
+  if (typeof confirm === 'function' && !confirm('Reset section order to the default layout?')) return;
+  const state = getSheetState(charId);
+  state.sectionOrder = null;
+  saveSheetState(charId, state);
+  refreshSheet(charId);
 }
 
 function refreshSheet(charId) {
@@ -1271,6 +1377,7 @@ function renderSheet(charId) {
   const prefTh = _sheetGetPref(charId, 'theme', 'dark');
   body.setAttribute('data-text-size', prefTs);
   body.setAttribute('data-theme', prefTh);
+  body.setAttribute('data-edit-layout', state.editLayout ? '1' : '0');
   if (prefTh === 'custom') _applySheetCustomVars(charId);
 
   let html = '';
@@ -1333,27 +1440,30 @@ function renderSheet(charId) {
 
   html += '<div class="sheet-grid">';
 
+  // Col 1: ability score cards (unchanged, not part of reorder zone)
   html += '<div>';
   ['str','dex','con','int','wis','cha'].forEach(function(a) { html += renderAbilityCard(charId, char, a); });
-  // Rest buttons now live at the top of the sheet (Phase 4B rev). No middle-column row.
   html += '</div>';
 
-  html += '<div>';
-  html += _wrapCollapsible(charId, 'weapons',    '⚔ Weapons',           renderWeaponsSection(charId, char),      true);
-  html += _wrapCollapsible(charId, 'resources',  '⚡ Resources',          renderResourcesSection(charId, char, state), true);
-  html += _wrapCollapsible(charId, 'features',   '★ Features & Traits',  renderFeaturesSection(char),             false);
-  html += _wrapCollapsible(charId, 'conditions', '⊗ Conditions',         renderConditionsSection(charId, state),  false);
-  html += '</div>';
-
-  html += '<div>';
-  if (char.spellcasting) html += _wrapCollapsible(charId, 'spells', '✦ Spells', renderSpellsSection(charId, char, state), true);
-  html += _wrapCollapsible(charId, 'attunement', '◈ Attunement',   renderAttunementSection(charId, state),  false);
-  if (charId === 'sylas') html += _wrapCollapsible(charId, 'minions', '🧟 Undead Minions',   renderMinionsSection(charId, state),  false);
-  html += _wrapCollapsible(charId, 'inventory',  '🎒 Inventory',    renderInventorySection(charId, char, state), false);
-  html += _wrapCollapsible(charId, 'currency',   '💰 Currency',     renderCurrencySection(charId, state),    false);
-  html += _wrapCollapsible(charId, 'equipment',  '🛡 Equipment',    renderEquipmentSection(char),            false);
-  html += _wrapCollapsible(charId, 'bio',        '📖 Biography',    renderBioSection(charId, char, state),   false);
-  html += _wrapCollapsible(charId, 'extras',     '✧ Character Extras', renderCharacterExtras(char),          false);
+  // Reorder zone: merged former cols 2 + 3, auto-flowing 2-column grid.
+  // Sections are rendered in state.sectionOrder (with sensible defaults).
+  const em = !!state.editLayout;
+  const sections = {};
+  sections.weapons    = _wrapCollapsible(charId, 'weapons',    '⚔ Weapons',            renderWeaponsSection(charId, char),         true,  em);
+  sections.resources  = _wrapCollapsible(charId, 'resources',  '⚡ Resources',          renderResourcesSection(charId, char, state),true,  em);
+  sections.features   = _wrapCollapsible(charId, 'features',   '★ Features & Traits',  renderFeaturesSection(char),                false, em);
+  sections.conditions = _wrapCollapsible(charId, 'conditions', '⊗ Conditions',         renderConditionsSection(charId, state),     false, em);
+  if (char.spellcasting) sections.spells = _wrapCollapsible(charId, 'spells', '✦ Spells', renderSpellsSection(charId, char, state), true, em);
+  sections.attunement = _wrapCollapsible(charId, 'attunement', '◈ Attunement',        renderAttunementSection(charId, state),     false, em);
+  if (charId === 'sylas') sections.minions = _wrapCollapsible(charId, 'minions', '🧟 Undead Minions', renderMinionsSection(charId, state), false, em);
+  sections.inventory  = _wrapCollapsible(charId, 'inventory',  '🎒 Inventory',         renderInventorySection(charId, char, state),false, em);
+  sections.currency   = _wrapCollapsible(charId, 'currency',   '💰 Currency',          renderCurrencySection(charId, state),       false, em);
+  sections.equipment  = _wrapCollapsible(charId, 'equipment',  '🛡 Equipment',         renderEquipmentSection(char),               false, em);
+  sections.bio        = _wrapCollapsible(charId, 'bio',        '📖 Biography',         renderBioSection(charId, char, state),      false, em);
+  sections.extras     = _wrapCollapsible(charId, 'extras',     '✧ Character Extras',   renderCharacterExtras(char),                false, em);
+  const order = _getSheetSectionOrder(state, Object.keys(sections));
+  html += '<div class="sheet-reorder-zone">';
+  order.forEach(function(sid) { if (sections[sid]) html += sections[sid]; });
   html += '</div>';
 
   html += '</div>';
