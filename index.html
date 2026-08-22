@@ -227,6 +227,45 @@ body {
 .nav-btn:hover { color: var(--gold2); border-bottom-color: rgba(201,168,76,0.3); }
 .nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold2); }
 
+/* NAV RIBBON EDIT-LAYOUT MODE — drag-drop reorder */
+.nav-edit-tools { margin-left: auto; display: flex; gap: .35rem; padding: .55rem .5rem; }
+.nav-edit-btn {
+  background: transparent;
+  border: 1px solid rgba(160,128,64,0.4);
+  color: var(--parch3);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.nav-edit-btn:hover { background: rgba(201,168,76,0.15); color: var(--gold2); border-color: var(--gold2); }
+.nav-edit-btn.active { background: var(--gold2); color: var(--ink); border-color: var(--gold2); }
+body.nav-edit-on .nav-btn {
+  border: 1px dashed rgba(201,168,76,0.4);
+  border-bottom-width: 3px;
+  cursor: grab;
+  padding-left: 1.8rem;
+  position: relative;
+}
+body.nav-edit-on .nav-btn::before {
+  content: '⋮⋮';
+  position: absolute;
+  left: .5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold2);
+  font-size: 10px;
+  letter-spacing: -2px;
+}
+body.nav-edit-on .nav-btn.nav-dragging { opacity: .45; cursor: grabbing; }
+body.nav-edit-on .nav-btn.nav-drop-target {
+  border-left: 2px solid var(--gold3);
+  background: rgba(201,168,76,0.10);
+}
+
 /* PANELS */
 .panel { display: none; padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
 .panel.active { display: block; }
@@ -736,18 +775,22 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
   </div>
 </div>
 
-<nav class="main-nav">
-  <button class="nav-btn active" onclick="showPanel('sessions',this)">📜 Sessions</button>
-  <button class="nav-btn" onclick="showPanel('players',this)">⚡ Players</button>
-  <button class="nav-btn" onclick="showPanel('npcs',this)">👥 NPCs</button>
-  <button class="nav-btn" onclick="showPanel('quests',this)">🗺 Quests</button>
-  <button class="nav-btn" onclick="showPanel('notes',this)">💬 Messages</button>
-  <button class="nav-btn" onclick="showPanel('clock',this)">⏳ Clock</button>
-  <button class="nav-btn" onclick="showPanel('combat',this)">🗡 Combat</button>
-  <button class="nav-btn" onclick="showPanel('world',this)">🌍 World</button>
-  <button class="nav-btn" onclick="showPanel('pantheon',this)">📖 Lore</button>
-  <button class="nav-btn" onclick="showPanel('names',this)">🎲 Names</button>
-  <button class="nav-btn" onclick="showPanel('handouts',this);if(window.HandoutsUI){HandoutsUI.initDM('handouts-container');}">📜 Handouts</button>
+<nav class="main-nav" id="main-nav">
+  <button class="nav-btn active" data-nav-id="sessions" onclick="showPanel('sessions',this)">📜 Sessions</button>
+  <button class="nav-btn" data-nav-id="players" onclick="showPanel('players',this)">⚡ Players</button>
+  <button class="nav-btn" data-nav-id="npcs" onclick="showPanel('npcs',this)">👥 NPCs</button>
+  <button class="nav-btn" data-nav-id="quests" onclick="showPanel('quests',this)">🗺 Quests</button>
+  <button class="nav-btn" data-nav-id="notes" onclick="showPanel('notes',this)">💬 Messages</button>
+  <button class="nav-btn" data-nav-id="clock" onclick="showPanel('clock',this)">⏳ Clock</button>
+  <button class="nav-btn" data-nav-id="combat" onclick="showPanel('combat',this)">🗡 Combat</button>
+  <button class="nav-btn" data-nav-id="world" onclick="showPanel('world',this)">🌍 World</button>
+  <button class="nav-btn" data-nav-id="pantheon" onclick="showPanel('pantheon',this)">📖 Lore</button>
+  <button class="nav-btn" data-nav-id="names" onclick="showPanel('names',this)">🎲 Names</button>
+  <button class="nav-btn" data-nav-id="handouts" onclick="showPanel('handouts',this);if(window.HandoutsUI){HandoutsUI.initDM('handouts-container');}">📜 Handouts</button>
+  <span class="nav-edit-tools">
+    <button class="nav-edit-btn" id="nav-edit-toggle" onclick="toggleNavEdit()" title="Reorder ribbon tabs">🔀 Edit layout</button>
+    <button class="nav-edit-btn" id="nav-edit-reset" onclick="resetNavOrder()" title="Restore default ribbon order" style="display:none">🔄 Reset</button>
+  </span>
 </nav>
 
 <!-- ============ SESSIONS (consolidated: Now · Prep · Calendar · Recaps) ============ -->
@@ -2447,6 +2490,86 @@ function showTab(id, btn) {
   const el = document.getElementById('tab-' + id);
   if(el) el.style.display = 'block';
   btn.classList.add('active');
+}
+
+// NAV RIBBON REORDER — DM can drag the main nav buttons to any order.
+// Order persists per-browser in localStorage. Edit-Layout toggle reveals
+// grip icons + enables drag-drop; Reset clears the saved order.
+const NAV_ORDER_KEY = 'eldoria-dm-nav-order';
+function _navBtns() {
+  return Array.from(document.querySelectorAll('#main-nav .nav-btn[data-nav-id]'));
+}
+function applySavedNavOrder() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY) || 'null'); } catch (_) {}
+  if (!Array.isArray(saved) || !saved.length) return;
+  const nav = document.getElementById('main-nav');
+  if (!nav) return;
+  const byId = {};
+  _navBtns().forEach(function(b) { byId[b.getAttribute('data-nav-id')] = b; });
+  // Move saved ones in order, then append any that aren't in saved (new tabs)
+  saved.forEach(function(id) { if (byId[id]) { nav.insertBefore(byId[id], nav.querySelector('.nav-edit-tools')); delete byId[id]; } });
+  Object.keys(byId).forEach(function(id) { nav.insertBefore(byId[id], nav.querySelector('.nav-edit-tools')); });
+}
+function saveCurrentNavOrder() {
+  const order = _navBtns().map(function(b) { return b.getAttribute('data-nav-id'); });
+  try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch (_) {}
+}
+function toggleNavEdit() {
+  const on = document.body.classList.toggle('nav-edit-on');
+  const btn = document.getElementById('nav-edit-toggle');
+  const reset = document.getElementById('nav-edit-reset');
+  if (btn) {
+    btn.textContent = on ? '✓ Editing layout' : '🔀 Edit layout';
+    btn.classList.toggle('active', on);
+  }
+  if (reset) reset.style.display = on ? 'inline-block' : 'none';
+  _navBtns().forEach(function(b) {
+    if (on) { b.setAttribute('draggable', 'true'); _wireNavDrag(b); }
+    else    { b.removeAttribute('draggable'); }
+  });
+}
+function resetNavOrder() {
+  if (!confirm('Reset the ribbon to the default order?')) return;
+  try { localStorage.removeItem(NAV_ORDER_KEY); } catch (_) {}
+  window.location.reload();
+}
+let _navDragging = null;
+function _wireNavDrag(btn) {
+  if (btn._navDragWired) return;
+  btn._navDragWired = true;
+  btn.addEventListener('dragstart', function(e) {
+    if (!document.body.classList.contains('nav-edit-on')) return;
+    _navDragging = btn;
+    btn.classList.add('nav-dragging');
+    try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', btn.getAttribute('data-nav-id')); } catch (_) {}
+  });
+  btn.addEventListener('dragover', function(e) {
+    if (!_navDragging || _navDragging === btn) return;
+    e.preventDefault();
+    btn.classList.add('nav-drop-target');
+  });
+  btn.addEventListener('dragleave', function() {
+    btn.classList.remove('nav-drop-target');
+  });
+  btn.addEventListener('drop', function(e) {
+    e.preventDefault();
+    btn.classList.remove('nav-drop-target');
+    if (!_navDragging || _navDragging === btn) return;
+    btn.parentNode.insertBefore(_navDragging, btn);
+    saveCurrentNavOrder();
+  });
+  btn.addEventListener('dragend', function() {
+    btn.classList.remove('nav-dragging');
+    document.querySelectorAll('#main-nav .nav-drop-target').forEach(function(b) { b.classList.remove('nav-drop-target'); });
+    _navDragging = null;
+  });
+}
+// Apply saved order as soon as the DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applySavedNavOrder);
+} else {
+  applySavedNavOrder();
 }
 
 // CURRENT SESSION — loads data/current-session.json (generated by
