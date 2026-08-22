@@ -1511,8 +1511,44 @@
     _openStatBlock: function(monsterId) {
       const m = MONSTERS_BY_ID[monsterId];
       if (!m) return;
-      const dlg = document.getElementById('ct-statblock-dialog');
-      if (!dlg) return;
+      // Build (or reuse) a <div> overlay instead of a nested native <dialog>.
+      // Rationale: works on standalone sheet.html and bestiary.html where the
+      // ct-statblock native <dialog> was never created (no combat-tracker
+      // container triggered _ensureDialogs). Also fixes the "parent modal
+      // freeze" bug when opened from inside sheet-dialog — reparenting the
+      // overlay INTO the open dialog puts them in the same top layer.
+      let overlay = document.getElementById('ct-statblock-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'ct-statblock-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:2147483647;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;font-family:\'Crimson Pro\',Georgia,serif';
+        overlay.innerHTML =
+          '<div style="max-width:600px;width:100%;background:#0d0a06;color:var(--parch1,#f2e8d0);border:1px solid var(--gold2,#c9a84c);border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,0.7);max-height:calc(100vh - 4rem);display:flex;flex-direction:column">' +
+            '<div style="padding:.5rem 1rem;border-bottom:1px solid var(--gold2,#c9a84c);display:flex;justify-content:flex-end;flex:0 0 auto">' +
+              '<button id="ct-statblock-close" style="background:transparent;border:1px solid var(--parch3,#d4c49a);color:var(--parch3,#d4c49a);padding:2px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
+            '</div>' +
+            '<div id="ct-statblock-body" style="padding:1rem 1.25rem;overflow-y:auto;flex:1 1 auto"></div>' +
+          '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) overlay.style.display = 'none';
+        });
+        overlay.querySelector('#ct-statblock-close').addEventListener('click', function() {
+          overlay.style.display = 'none';
+        });
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && overlay.style.display === 'flex') {
+            overlay.style.display = 'none';
+            e.stopPropagation();
+          }
+        }, true);
+      }
+      // Reparent into the currently-open sheet-dialog (if any) so the overlay
+      // shares the same top layer and isn't hidden behind the dialog backdrop.
+      // Same pattern used by openItemPicker.
+      const sheetDlg = document.getElementById('sheet-dialog');
+      const desiredParent = (sheetDlg && sheetDlg.open) ? sheetDlg : document.body;
+      if (overlay.parentNode !== desiredParent) desiredParent.appendChild(overlay);
       const body = document.getElementById('ct-statblock-body');
       const abils = ['str', 'dex', 'con', 'int', 'wis', 'cha'].map(function(a) {
         const v = m[a] || 10;
@@ -1542,8 +1578,7 @@
           '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')">⿻ Duplicate</button>' +
           (m.source ? '<div style="margin-left:auto;font-size:10px;color:var(--parch4);font-style:italic;align-self:center">' + escapeHtml(m.source) + '</div>' : '') +
         '</div>';
-      if (dlg.showModal) dlg.showModal();
-      else dlg.setAttribute('open', '');
+      overlay.style.display = 'flex';
     },
 
     _render: function() {
