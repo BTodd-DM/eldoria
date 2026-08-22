@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stat Block — The Wayward Company</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0a06;
+    --parch: #f2e8d0;
+    --parch1: #f2e8d0;
+    --parch2: #e8d9b8;
+    --parch3: #d4c49a;
+    --parch4: #c0aa7a;
+    --gold: #9a7a1a;
+    --gold2: #c9a84c;
+    --gold3: #e8c96a;
+    --red: #6a1010;
+    --red2: #a02020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #100a05;
+    color: var(--parch);
+    font-family: 'Crimson Pro', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+  .sb-card {
+    max-width: 560px;
+    width: 100%;
+    background: #0d0a06;
+    color: var(--parch1);
+    border: 1px solid var(--gold2);
+    border-radius: 6px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    padding: 1rem 1.25rem;
+  }
+  .sb-header {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid rgba(160,128,64,0.35);
+  }
+  .sb-title {
+    flex: 1 1 auto;
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    color: var(--gold2);
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .sb-btn {
+    background: transparent;
+    border: 1px solid var(--gold2);
+    color: var(--gold2);
+    padding: 3px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: .5px;
+    text-decoration: none;
+  }
+  .sb-btn:hover { background: var(--gold2); color: var(--ink); }
+  .sb-loading, .sb-error {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--parch3);
+    font-style: italic;
+  }
+  .sb-error { color: var(--red2); }
+  .action-btn {
+    background: rgba(154,122,26,0.15);
+    color: var(--gold2);
+    border: 1px solid var(--gold2);
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: .5px;
+    cursor: pointer;
+  }
+  .action-btn:hover { background: var(--gold2); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="sb-card">
+  <div class="sb-header">
+    <div class="sb-title" id="sb-title">📖 Stat Block</div>
+    <a class="sb-btn" href="index.html">← Dashboard</a>
+  </div>
+  <div id="sb-body" class="sb-loading">Loading…</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="monsters-2024.js"></script>
+<script src="combat-tracker.js"></script>
+<script>
+(function bootstrapStatBlock() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const body = document.getElementById('sb-body');
+  const titleEl = document.getElementById('sb-title');
+  if (!id) {
+    body.className = 'sb-error';
+    body.innerHTML = 'No monster specified. Add <code>?id=&lt;monster-id&gt;</code> to the URL.';
+    return;
+  }
+  function tryRender(attempt) {
+    const m = (typeof MONSTERS_BY_ID !== 'undefined') ? MONSTERS_BY_ID[id] : null;
+    if (!m) {
+      if (attempt < 40) { setTimeout(function() { tryRender(attempt + 1); }, 150); return; }
+      body.className = 'sb-error';
+      body.innerHTML = 'Monster not found: <code>' + id + '</code>';
+      return;
+    }
+    if (!window.CombatTracker || !window.CombatTracker._renderStatBlockBody) {
+      if (attempt < 40) { setTimeout(function() { tryRender(attempt + 1); }, 150); return; }
+      body.className = 'sb-error';
+      body.innerHTML = 'Render engine unavailable — try refreshing.';
+      return;
+    }
+    document.title = m.name + ' — Stat Block';
+    titleEl.textContent = '📖 ' + m.name;
+    body.className = '';
+    body.innerHTML = window.CombatTracker._renderStatBlockBody(m);
+  }
+  // First attempt after DOM + scripts settle; Firebase custom overrides will
+  // arrive within a second or two and re-render can be triggered manually via
+  // browser refresh if the user is editing the same monster in another tab.
+  tryRender(0);
+})();
+</script>
+
+</body>
+</html>

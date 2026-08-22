@@ -1508,48 +1508,12 @@
       else dlg.setAttribute('open', '');
     },
 
-    _openStatBlock: function(monsterId) {
-      const m = MONSTERS_BY_ID[monsterId];
-      if (!m) return;
-      // Build (or reuse) a <div> overlay instead of a nested native <dialog>.
-      // Rationale: works on standalone sheet.html and bestiary.html where the
-      // ct-statblock native <dialog> was never created (no combat-tracker
-      // container triggered _ensureDialogs). Also fixes the "parent modal
-      // freeze" bug when opened from inside sheet-dialog — reparenting the
-      // overlay INTO the open dialog puts them in the same top layer.
-      let overlay = document.getElementById('ct-statblock-overlay');
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'ct-statblock-overlay';
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,3,2,0.85);z-index:2147483647;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;font-family:\'Crimson Pro\',Georgia,serif';
-        overlay.innerHTML =
-          '<div style="max-width:600px;width:100%;background:#0d0a06;color:var(--parch1,#f2e8d0);border:1px solid var(--gold2,#c9a84c);border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,0.7);max-height:calc(100vh - 4rem);display:flex;flex-direction:column">' +
-            '<div style="padding:.5rem 1rem;border-bottom:1px solid var(--gold2,#c9a84c);display:flex;justify-content:flex-end;flex:0 0 auto">' +
-              '<button id="ct-statblock-close" style="background:transparent;border:1px solid var(--parch3,#d4c49a);color:var(--parch3,#d4c49a);padding:2px 10px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:11px">Close</button>' +
-            '</div>' +
-            '<div id="ct-statblock-body" style="padding:1rem 1.25rem;overflow-y:auto;flex:1 1 auto"></div>' +
-          '</div>';
-        document.body.appendChild(overlay);
-        overlay.addEventListener('click', function(e) {
-          if (e.target === overlay) overlay.style.display = 'none';
-        });
-        overlay.querySelector('#ct-statblock-close').addEventListener('click', function() {
-          overlay.style.display = 'none';
-        });
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape' && overlay.style.display === 'flex') {
-            overlay.style.display = 'none';
-            e.stopPropagation();
-          }
-        }, true);
-      }
-      // Reparent into the currently-open sheet-dialog (if any) so the overlay
-      // shares the same top layer and isn't hidden behind the dialog backdrop.
-      // Same pattern used by openItemPicker.
-      const sheetDlg = document.getElementById('sheet-dialog');
-      const desiredParent = (sheetDlg && sheetDlg.open) ? sheetDlg : document.body;
-      if (overlay.parentNode !== desiredParent) desiredParent.appendChild(overlay);
-      const body = document.getElementById('ct-statblock-body');
+    // Builds the stat block body HTML for a monster. Shared between the
+    // floating side-panel (_openStatBlock) and the standalone statblock.html
+    // pop-out page. Includes ✎ Edit / ⿻ Duplicate buttons at the bottom.
+    _renderStatBlockBody: function(m, opts) {
+      opts = opts || {};
+      const showActions = opts.showActions !== false;
       const abils = ['str', 'dex', 'con', 'int', 'wis', 'cha'].map(function(a) {
         const v = m[a] || 10;
         const mod = Math.floor((v - 10) / 2);
@@ -1558,7 +1522,7 @@
       const traits = (m.traits || []).map(function(t) { return '<div style="margin-bottom:.35rem"><strong style="color:var(--gold2)">' + escapeHtml(t.name) + '.</strong> ' + escapeHtml(t.desc) + '</div>'; }).join('');
       const actions = (m.actions || []).map(function(t) { return '<div style="margin-bottom:.35rem"><strong style="color:var(--gold2)">' + escapeHtml(t.name) + '.</strong> ' + escapeHtml(t.desc) + '</div>'; }).join('');
       const legendary = (m.legendaryActions || []).map(function(t) { return '<div style="margin-bottom:.35rem"><strong style="color:#e0a0e0">' + escapeHtml(t.name) + '.</strong> ' + escapeHtml(t.desc) + '</div>'; }).join('');
-      body.innerHTML =
+      return (
         '<h2 style="margin:0 0 .2rem;font-family:\'Cinzel\',serif;color:var(--gold2);font-size:18px">' + escapeHtml(m.name) + '</h2>' +
         '<div style="font-size:11px;font-style:italic;color:var(--parch3);margin-bottom:.5rem">' + escapeHtml(m.size + ' ' + m.type + ', ' + m.alignment) + '</div>' +
         '<div style="border-top:1px solid var(--gold2);border-bottom:1px solid var(--gold2);padding:.5rem 0;margin-bottom:.6rem;font-size:12.5px">' +
@@ -1573,12 +1537,118 @@
         (traits    ? '<div style="margin-bottom:.5rem;font-size:12.5px;line-height:1.55">' + traits + '</div>' : '') +
         (actions   ? '<h3 style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin:.5rem 0 .3rem;border-bottom:1px solid rgba(160,128,64,0.35)">Actions</h3><div style="font-size:12.5px;line-height:1.55">' + actions + '</div>' : '') +
         (legendary ? '<h3 style="font-family:\'Cinzel\',serif;color:#e0a0e0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin:.5rem 0 .3rem;border-bottom:1px solid rgba(200,160,200,0.35)">Legendary Actions</h3><div style="font-size:12.5px;line-height:1.55">' + legendary + '</div>' : '') +
-        '<div style="margin-top:.75rem;padding-top:.5rem;border-top:1px solid rgba(160,128,64,0.35);display:flex;gap:.4rem;flex-wrap:wrap">' +
-          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" title="' + ((m._custom || m._override) ? 'Edit this custom entry' : 'Fork this monster into a custom override — the base stays intact') + '">✎ Edit</button>' +
-          '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')">⿻ Duplicate</button>' +
-          (m.source ? '<div style="margin-left:auto;font-size:10px;color:var(--parch4);font-style:italic;align-self:center">' + escapeHtml(m.source) + '</div>' : '') +
-        '</div>';
-      overlay.style.display = 'flex';
+        (showActions
+          ? '<div style="margin-top:.75rem;padding-top:.5rem;border-top:1px solid rgba(160,128,64,0.35);display:flex;gap:.4rem;flex-wrap:wrap">' +
+              '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._openMonsterForm(\'' + escapeAttr(m.id) + '\')" title="' + ((m._custom || m._override) ? 'Edit this custom entry' : 'Fork this monster into a custom override — the base stays intact') + '">✎ Edit</button>' +
+              '<button class="action-btn" onclick="if(window.CombatTracker) CombatTracker._duplicateCustomMonster(\'' + escapeAttr(m.id) + '\')">⿻ Duplicate</button>' +
+              (m.source ? '<div style="margin-left:auto;font-size:10px;color:var(--parch4);font-style:italic;align-self:center">' + escapeHtml(m.source) + '</div>' : '') +
+            '</div>'
+          : '')
+      );
+    },
+
+    _openStatBlock: function(monsterId) {
+      const m = MONSTERS_BY_ID[monsterId];
+      if (!m) return;
+      // Floating draggable side-panel (NOT a modal). User can drag it out of
+      // the way and keep interacting with the sheet / bestiary / combat
+      // tracker underneath. Panel remembers position in localStorage. A
+      // "Pop out" button opens the stat block in a standalone tab.
+      let panel = document.getElementById('ct-statblock-panel');
+      if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'ct-statblock-panel';
+        // Restore saved position if any
+        let pos = null;
+        try { pos = JSON.parse(localStorage.getItem('ct-statblock-pos') || 'null'); } catch (_) {}
+        const posCss = (pos && typeof pos.left === 'number' && typeof pos.top === 'number')
+          ? 'top:' + pos.top + 'px;left:' + pos.left + 'px;'
+          : 'top:80px;right:24px;';
+        panel.style.cssText =
+          'position:fixed;' + posCss +
+          'width:380px;max-width:calc(100vw - 40px);' +
+          'max-height:calc(100vh - 100px);' +
+          'background:#0d0a06;color:var(--parch1,#f2e8d0);' +
+          'border:1px solid var(--gold2,#c9a84c);border-radius:6px;' +
+          'box-shadow:0 8px 32px rgba(0,0,0,0.7);' +
+          'z-index:2147483647;display:none;flex-direction:column;' +
+          "font-family:'Crimson Pro',Georgia,serif;";
+        panel.innerHTML =
+          '<div id="ct-statblock-header" style="padding:.4rem .6rem;border-bottom:1px solid var(--gold2,#c9a84c);display:flex;align-items:center;gap:.5rem;cursor:move;user-select:none;background:linear-gradient(180deg,rgba(20,14,6,0.9),rgba(10,7,3,0.9));flex:0 0 auto">' +
+            '<span style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:11px;letter-spacing:1.5px;flex:1 1 auto">📖 Stat Block</span>' +
+            '<button id="ct-statblock-popout" title="Open in a new tab" style="background:transparent;border:1px solid var(--gold2,#c9a84c);color:var(--gold2,#c9a84c);padding:2px 8px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:10px;letter-spacing:.5px">↗ Pop out</button>' +
+            '<button id="ct-statblock-close" title="Close (Esc)" style="background:transparent;border:1px solid var(--parch3,#d4c49a);color:var(--parch3,#d4c49a);padding:2px 8px;border-radius:2px;cursor:pointer;font-family:\'Cinzel\',serif;font-size:10px">✕</button>' +
+          '</div>' +
+          '<div id="ct-statblock-body" style="padding:.75rem 1rem;overflow-y:auto;flex:1 1 auto"></div>';
+        document.body.appendChild(panel);
+        panel.querySelector('#ct-statblock-close').addEventListener('click', function() {
+          panel.style.display = 'none';
+        });
+        panel.querySelector('#ct-statblock-popout').addEventListener('click', function() {
+          const mid = panel.getAttribute('data-mid');
+          if (mid) window.open('statblock.html?id=' + encodeURIComponent(mid), '_blank', 'noopener');
+        });
+        // Drag handling — pointer events cover mouse + touch
+        const header = panel.querySelector('#ct-statblock-header');
+        let dragging = false, offX = 0, offY = 0;
+        function startDrag(clientX, clientY) {
+          const rect = panel.getBoundingClientRect();
+          offX = clientX - rect.left;
+          offY = clientY - rect.top;
+          panel.style.right = 'auto';
+          panel.style.left = rect.left + 'px';
+          panel.style.top = rect.top + 'px';
+          dragging = true;
+        }
+        function moveDrag(clientX, clientY) {
+          if (!dragging) return;
+          let nx = clientX - offX;
+          let ny = clientY - offY;
+          nx = Math.max(0, Math.min(window.innerWidth  - 80, nx));
+          ny = Math.max(0, Math.min(window.innerHeight - 40, ny));
+          panel.style.left = nx + 'px';
+          panel.style.top  = ny + 'px';
+        }
+        function endDrag() {
+          if (!dragging) return;
+          dragging = false;
+          try {
+            const rect = panel.getBoundingClientRect();
+            localStorage.setItem('ct-statblock-pos', JSON.stringify({ top: rect.top, left: rect.left }));
+          } catch (_) {}
+        }
+        header.addEventListener('mousedown', function(e) {
+          if (e.target && e.target.tagName === 'BUTTON') return;
+          startDrag(e.clientX, e.clientY);
+          e.preventDefault();
+        });
+        document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
+        document.addEventListener('mouseup', endDrag);
+        header.addEventListener('touchstart', function(e) {
+          if (e.target && e.target.tagName === 'BUTTON') return;
+          const t = e.touches[0]; startDrag(t.clientX, t.clientY);
+        }, { passive: true });
+        document.addEventListener('touchmove', function(e) {
+          if (!dragging) return;
+          const t = e.touches[0]; moveDrag(t.clientX, t.clientY);
+        }, { passive: true });
+        document.addEventListener('touchend', endDrag);
+        // ESC to close
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && panel.style.display !== 'none') {
+            panel.style.display = 'none';
+          }
+        });
+      }
+      // Reparent into the currently-open sheet-dialog (native <dialog> in
+      // showModal state) so the panel appears on the same top layer as the
+      // sheet — otherwise `position:fixed` renders behind the dialog backdrop.
+      const sheetDlg = document.getElementById('sheet-dialog');
+      const desiredParent = (sheetDlg && sheetDlg.open) ? sheetDlg : document.body;
+      if (panel.parentNode !== desiredParent) desiredParent.appendChild(panel);
+      panel.setAttribute('data-mid', monsterId);
+      panel.querySelector('#ct-statblock-body').innerHTML = this._renderStatBlockBody(m);
+      panel.style.display = 'flex';
     },
 
     _render: function() {
