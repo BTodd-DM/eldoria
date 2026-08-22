@@ -1070,7 +1070,6 @@
         if (search && (m.name || '').toLowerCase().indexOf(search) === -1) return false;
         if (st.typeFilter && (m.type || '').toLowerCase().indexOf(st.typeFilter) === -1) return false;
         if (!crBandMatch(m.cr, st.crBand)) return false;
-        if (st.sourceFilter && sourceOf(m) !== st.sourceFilter) return false;
         if (st.envFilter) {
           const envs = Array.isArray(m.environment) ? m.environment.map(function(e){return String(e).toLowerCase();}) : [];
           if (envs.indexOf(st.envFilter) === -1) return false;
@@ -1124,7 +1123,6 @@
 
       const types = ['humanoid','beast','fiend','undead','dragon','fey','elemental','plant','ooze','construct','aberration','monstrosity','giant'];
       const crBands = ['0-1','2-4','5-9','10-14','15-20','21+'];
-      const sources = ['base','homebrew','custom','override'];
       const envs = ['urban','forest','marsh','underground','mountain','arctic','ruins','planar','any'];
       const roles = ['brute','skirmisher','ambusher','caster','controller','soldier','support','boss','other'];
 
@@ -1140,8 +1138,6 @@
           chip('All', !st.typeFilter, tf(null)) + types.map(function(t){ return chip(t, st.typeFilter===t, tf(t)); }).join('') + '</div>' +
         '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">CR</div><div>' +
           chip('All', !st.crBand, bf(null)) + crBands.map(function(b){ return chip(b, st.crBand===b, bf(b)); }).join('') + '</div>' +
-        '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">SOURCE</div><div>' +
-          chip('All', !st.sourceFilter, sf(null)) + sources.map(function(s){ return chip(s, st.sourceFilter===s, sf(s)); }).join('') + '</div>' +
         '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">ENVIRONMENT</div><div>' +
           chip('All', !st.envFilter, ef(null)) + envs.map(function(e){ return chip(e, st.envFilter===e, ef(e)); }).join('') + '</div>' +
         '<div style="font-size:10px;color:var(--parch4);margin:.25rem 0 .15rem;font-family:\'Cinzel\',serif;letter-spacing:1px">ROLE</div><div>' +
