@@ -186,15 +186,31 @@
   grid-template-columns: 280px 1fr;
   gap: .75rem;
 }
-/* Reorder zone: 2 auto-flowing columns. Sections push around each other on drag. */
+/* Reorder zone: two INDEPENDENT stacking columns, equal width. */
 .sheet-reorder-zone {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: .75rem;
-  grid-auto-flow: row dense;
-  align-content: start;
+  align-items: start;
 }
-.sheet-reorder-zone > details { margin: 0; align-self: start; }
+.sheet-reorder-col {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  min-height: 40px;
+}
+.sheet-reorder-col > details { margin: 0; }
+/* Empty-column drop hint in edit mode */
+.sheet-body[data-edit-layout="1"] .sheet-reorder-col {
+  outline: 1px dashed rgba(201,168,76,0.15);
+  outline-offset: -4px;
+  border-radius: 4px;
+  padding: 2px;
+}
+.sheet-body[data-edit-layout="1"] .sheet-reorder-col.col-drop-target {
+  outline: 2px dashed var(--gold3);
+  background: rgba(201,168,76,0.06);
+}
 @media (max-width: 1100px) {
   .sheet-header { grid-template-columns: 1fr 1fr; }
   .sheet-grid { grid-template-columns: 1fr; }

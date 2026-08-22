@@ -1163,18 +1163,41 @@ function _wrapCollapsible(charId, sectionId, label, contentHtml, defaultOpen, ed
     '</details>';
 }
 
-// ----- Section reorder helpers -----
-const _SHEET_DEFAULT_SECTION_ORDER = ['weapons','resources','features','conditions','spells','attunement','minions','inventory','currency','equipment','bio','extras'];
-function _getSheetSectionOrder(state, availableIds) {
+// ----- Section reorder helpers (two-column model, independent stacks) -----
+const _SHEET_DEFAULT_COLUMNS = {
+  left:  ['weapons','resources','features','conditions','spells','attunement'],
+  right: ['minions','inventory','currency','equipment','bio','extras']
+};
+function _getSheetSectionColumns(state, availableIds) {
   const availSet = {};
   availableIds.forEach(function(id) { availSet[id] = true; });
-  const stored = Array.isArray(state.sectionOrder) ? state.sectionOrder.filter(function(s) { return availSet[s]; }) : [];
-  _SHEET_DEFAULT_SECTION_ORDER.forEach(function(s) {
-    if (availSet[s] && stored.indexOf(s) === -1) stored.push(s);
-  });
-  return stored;
+  // New format
+  if (state.sectionColumns && typeof state.sectionColumns === 'object') {
+    const left  = (state.sectionColumns.left  || []).filter(function(s) { return availSet[s]; });
+    const right = (state.sectionColumns.right || []).filter(function(s) { return availSet[s]; });
+    const placed = {};
+    left.forEach(function(s)  { placed[s] = true; });
+    right.forEach(function(s) { placed[s] = true; });
+    _SHEET_DEFAULT_COLUMNS.left.forEach(function(s)  { if (availSet[s] && !placed[s]) { left.push(s);  placed[s] = true; } });
+    _SHEET_DEFAULT_COLUMNS.right.forEach(function(s) { if (availSet[s] && !placed[s]) { right.push(s); placed[s] = true; } });
+    return { left: left, right: right };
+  }
+  // v1 → v2 migration: split the old flat order in half
+  if (Array.isArray(state.sectionOrder) && state.sectionOrder.length) {
+    const flat = state.sectionOrder.filter(function(s) { return availSet[s]; });
+    _SHEET_DEFAULT_COLUMNS.left.concat(_SHEET_DEFAULT_COLUMNS.right).forEach(function(s) {
+      if (availSet[s] && flat.indexOf(s) === -1) flat.push(s);
+    });
+    const half = Math.ceil(flat.length / 2);
+    return { left: flat.slice(0, half), right: flat.slice(half) };
+  }
+  // Fresh default
+  return {
+    left:  _SHEET_DEFAULT_COLUMNS.left.filter(function(s)  { return availSet[s]; }),
+    right: _SHEET_DEFAULT_COLUMNS.right.filter(function(s) { return availSet[s]; })
+  };
 }
-function _computeSheetSectionOrderForChar(charId) {
+function _computeSheetSectionColumnsForChar(charId) {
   const char = CHARACTERS[charId];
   const state = getSheetState(charId);
   const avail = ['weapons','resources','features','conditions'];
@@ -1182,18 +1205,28 @@ function _computeSheetSectionOrderForChar(charId) {
   avail.push('attunement');
   if (charId === 'sylas') avail.push('minions');
   avail.push('inventory','currency','equipment','bio','extras');
-  return _getSheetSectionOrder(state, avail);
+  return _getSheetSectionColumns(state, avail);
+}
+function _findSectionColumn(cols, sectionId) {
+  if (cols.left.indexOf(sectionId)  !== -1) return 'left';
+  if (cols.right.indexOf(sectionId) !== -1) return 'right';
+  return null;
+}
+function _saveSheetSectionColumns(charId, cols) {
+  const state = getSheetState(charId);
+  state.sectionColumns = cols;
+  saveSheetState(charId, state);
 }
 function moveSheetSection(charId, sectionId, delta) {
-  const state = getSheetState(charId);
-  const order = _computeSheetSectionOrderForChar(charId);
-  const idx = order.indexOf(sectionId);
-  if (idx === -1) return;
+  const cols = _computeSheetSectionColumnsForChar(charId);
+  const which = _findSectionColumn(cols, sectionId);
+  if (!which) return;
+  const arr = cols[which];
+  const idx = arr.indexOf(sectionId);
   const to = idx + delta;
-  if (to < 0 || to >= order.length) return;
-  const tmp = order[to]; order[to] = order[idx]; order[idx] = tmp;
-  state.sectionOrder = order;
-  saveSheetState(charId, state);
+  if (to < 0 || to >= arr.length) return;
+  const tmp = arr[to]; arr[to] = arr[idx]; arr[idx] = tmp;
+  _saveSheetSectionColumns(charId, cols);
   refreshSheet(charId);
 }
 let _sheetDragging = null;
@@ -1205,6 +1238,7 @@ function _sheetDragStart(e, charId, sectionId) {
 function _sheetDragOver(e) {
   if (!_sheetDragging) return;
   e.preventDefault();
+  e.stopPropagation();
   try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
   if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.add('drop-target');
 }
@@ -1213,26 +1247,51 @@ function _sheetDragLeave(e) {
 }
 function _sheetDrop(e, charId, targetSectionId) {
   e.preventDefault();
+  e.stopPropagation();
   if (!_sheetDragging || _sheetDragging.charId !== charId) { _sheetDragging = null; return; }
   const fromId = _sheetDragging.sectionId;
   _sheetDragging = null;
   if (fromId === targetSectionId) { refreshSheet(charId); return; }
-  const state = getSheetState(charId);
-  const order = _computeSheetSectionOrderForChar(charId);
-  const fromIdx = order.indexOf(fromId);
-  if (fromIdx === -1) return;
-  order.splice(fromIdx, 1);
-  const insertAt = order.indexOf(targetSectionId);
-  if (insertAt === -1) return;
-  order.splice(insertAt, 0, fromId);
-  state.sectionOrder = order;
-  saveSheetState(charId, state);
+  const cols = _computeSheetSectionColumnsForChar(charId);
+  const fromCol = _findSectionColumn(cols, fromId);
+  const toCol   = _findSectionColumn(cols, targetSectionId);
+  if (!fromCol || !toCol) return;
+  const fromIdx = cols[fromCol].indexOf(fromId);
+  cols[fromCol].splice(fromIdx, 1);
+  const toIdx = cols[toCol].indexOf(targetSectionId);
+  cols[toCol].splice(toIdx, 0, fromId);
+  _saveSheetSectionColumns(charId, cols);
+  refreshSheet(charId);
+}
+// Column-level drop: append to end of the column (empty column or dropped below all sections)
+function _sheetColDragOver(e) {
+  if (!_sheetDragging) return;
+  e.preventDefault();
+  try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
+  if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.add('col-drop-target');
+}
+function _sheetColDragLeave(e) {
+  if (e.currentTarget && e.currentTarget.classList) e.currentTarget.classList.remove('col-drop-target');
+}
+function _sheetDropCol(e, charId, colName) {
+  e.preventDefault();
+  if (!_sheetDragging || _sheetDragging.charId !== charId) { _sheetDragging = null; return; }
+  const fromId = _sheetDragging.sectionId;
+  _sheetDragging = null;
+  const cols = _computeSheetSectionColumnsForChar(charId);
+  const fromCol = _findSectionColumn(cols, fromId);
+  if (!fromCol) return;
+  const fromIdx = cols[fromCol].indexOf(fromId);
+  cols[fromCol].splice(fromIdx, 1);
+  cols[colName].push(fromId);
+  _saveSheetSectionColumns(charId, cols);
   refreshSheet(charId);
 }
 function _sheetDragEnd(e) {
   _sheetDragging = null;
   document.querySelectorAll('#sheet-body .sheet-collapsible.dragging').forEach(function(d) { d.classList.remove('dragging'); });
   document.querySelectorAll('#sheet-body .sheet-collapsible.drop-target').forEach(function(d) { d.classList.remove('drop-target'); });
+  document.querySelectorAll('#sheet-body .sheet-reorder-col.col-drop-target').forEach(function(d) { d.classList.remove('col-drop-target'); });
 }
 function toggleSheetEditLayout(charId) {
   const state = getSheetState(charId);
@@ -1244,6 +1303,7 @@ function resetSheetLayout(charId) {
   if (typeof confirm === 'function' && !confirm('Reset section order to the default layout?')) return;
   const state = getSheetState(charId);
   state.sectionOrder = null;
+  state.sectionColumns = null;
   saveSheetState(charId, state);
   refreshSheet(charId);
 }
@@ -1461,9 +1521,17 @@ function renderSheet(charId) {
   sections.equipment  = _wrapCollapsible(charId, 'equipment',  '🛡 Equipment',         renderEquipmentSection(char),               false, em);
   sections.bio        = _wrapCollapsible(charId, 'bio',        '📖 Biography',         renderBioSection(charId, char, state),      false, em);
   sections.extras     = _wrapCollapsible(charId, 'extras',     '✧ Character Extras',   renderCharacterExtras(char),                false, em);
-  const order = _getSheetSectionOrder(state, Object.keys(sections));
+  const cols = _computeSheetSectionColumnsForChar(charId);
+  const colAttrs = em
+    ? ' ondragover="_sheetColDragOver(event)" ondragleave="_sheetColDragLeave(event)"'
+    : '';
   html += '<div class="sheet-reorder-zone">';
-  order.forEach(function(sid) { if (sections[sid]) html += sections[sid]; });
+  html += '<div class="sheet-reorder-col" data-col="left"' + colAttrs + (em ? ' ondrop="_sheetDropCol(event,\'' + charId + '\',\'left\')"' : '') + '>';
+  cols.left.forEach(function(sid)  { if (sections[sid]) html += sections[sid]; });
+  html += '</div>';
+  html += '<div class="sheet-reorder-col" data-col="right"' + colAttrs + (em ? ' ondrop="_sheetDropCol(event,\'' + charId + '\',\'right\')"' : '') + '>';
+  cols.right.forEach(function(sid) { if (sections[sid]) html += sections[sid]; });
+  html += '</div>';
   html += '</div>';
 
   html += '</div>';
