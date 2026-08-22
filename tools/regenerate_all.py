@@ -13,6 +13,7 @@ GENERATORS = [
     "generate_encounters.py",
     "generate_random_encounters.py",
     "generate_homebrew_monsters.py",
+    "generate_current_session.py",
     "backup_monsters_to_vault.py",
 ]
 
