@@ -603,6 +603,42 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 .spell-table tr:hover td { background: rgba(201,168,76,0.05); }
 .spell-domain { color: var(--gold2); font-weight: 600; }
 
+/* FACTIONS card grid + modal */
+.factions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: .75rem;
+}
+.faction-card {
+  background: rgba(20,15,8,0.6);
+  border: 1px solid rgba(160,128,64,0.35);
+  border-radius: 4px;
+  padding: .75rem .85rem;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.faction-card:hover { border-color: var(--gold2); background: rgba(30,20,10,0.75); transform: translateY(-1px); }
+.faction-card:focus { outline: 2px solid var(--gold3); outline-offset: 2px; }
+.faction-card-title {
+  font-family: 'Cinzel', serif;
+  color: var(--gold2);
+  font-size: 12.5px;
+  letter-spacing: 1px;
+}
+.faction-card-summary {
+  color: var(--parch2);
+  font-size: 12px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.faction-card-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: auto; }
+
 /* CURRENT SESSION rendered-markdown styling */
 .current-session-body {
   padding: .5rem 1rem 1.5rem;
@@ -818,61 +854,7 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
   <div class="alert alert-danger">⚠ URGENT — Lyssandra Vale is in Vaeloran's custody. Her memory has been wiped. She now serves him willingly. Every session that passes without the party finding her worsens her fate.</div>
   <div class="alert alert-warn">Current position: <strong>outside Ironhold's northern gates</strong> (evening of Day 11 · 24 Frostfall). <strong>Session 6 next — The Wayward Company enters Ironhold.</strong> Torren is bound to Vrass by dark bond (whisper coming Session 6, night 1). Coin Cipher chest still hidden in Sylas's Bag of Holding. See Arc 02 card below.</div>
 
-  <div class="sec-title">Threads in Play</div>
-  <div class="grid-2">
-    <div class="card red">
-      <div class="card-title"><span class="qdot qdot-urgent"></span>Lyssandra — memory wiped, in Vaeloran's service</div>
-      <div class="card-body">She is back as his loyal assistant. Vaeloran has always kept apprentices under subtle magical control — the shard disrupted this. Now restored. She genuinely believes she serves him willingly. She is the only witness who can expose everything.</div>
-      <div style="margin-top:.5rem"><span class="badge b-red">ticking clock</span><span class="badge b-grey">unknown to party</span></div>
-    </div>
-    <div class="card red">
-      <div class="card-title"><span class="qdot qdot-urgent"></span>Naturus network — rot spreading</div>
-      <div class="card-body">Sister Kaelith is operating freely. Gnoll den shrine confirmed. Writings point to Pig's Head Inn as meeting point. "K" note confirmed as Kaelith — connecting the Naturus cult and the Guilded Veil. Instability Clock at 2/8.</div>
-      <div style="margin-top:.5rem"><span class="badge b-red">active</span><span class="badge b-orange">Kaelith</span></div>
-    </div>
-    <div class="card gold">
-      <div class="card-title"><span class="qdot qdot-active"></span>Merric — Orin knows the truth</div>
-      <div class="card-body">Orin knows Rulden Marr is Merric Underbough — his adoptive father, former Luminar of Luminos, now Veilmaster of the Guilded Veil. Merric sent a cold warning letter but signed off "Keep to the light, Orin." He still cares. Seraphine told Orin: don't stop. Merric does NOT know Vaeloran is using him through the Aurek alias.</div>
-      <div style="margin-top:.5rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos</span></div>
-    </div>
-    <div class="card purple">
-      <div class="card-title"><span class="qdot qdot-active"></span>Sylas — Path of the Lich</div>
-      <div class="card-body">Sylas has taken Lich Initiate. He has a spirit jar. Soul Siphon is active — consuming souls permanently when he reduces Humanoids to 0 HP. Vaeloran has noticed. Their "spell study sessions" are not what Sylas thinks. Orin does not yet know what Sylas is doing. This will fracture the party when revealed.</div>
-      <div style="margin-top:.5rem"><span class="badge b-purple">Sylas personal</span><span class="badge b-red">soul consumption</span><span class="badge b-grey">party unaware</span></div>
-    </div>
-    <div class="card gold">
-      <div class="card-title"><span class="qdot qdot-pending"></span>Matilda — runaway horse</div>
-      <div class="card-body">Escaped from party's cart after being spooked by foxes. No sinister faction involved. Tracks lead north. Stablehands hired to search for 5gp. Light-hearted hook for Torren that could develop into Aurora Peaks connection.</div>
-      <div style="margin-top:.5rem"><span class="badge b-gold">Torren personal</span></div>
-    </div>
-    <div class="card gold">
-      <div class="card-title"><span class="qdot qdot-active"></span>🎲 Arc 02 — Caravan to Ironhold (Sessions 5–7)</div>
-      <div class="card-body" style="font-size:12.5px">
-        <strong>Session 5 ✅ COMPLETE:</strong> Party named themselves <strong>The Wayward Company</strong> at Kolt's Depot. Torren spotted the Coin Cipher seal on the chest. Stillbrook stop, Sera Vey joins hidden in the Wayward Company wagon. Vrass ambush — Torren swore lifetime servitude (nat 20 Persuasion), dark bond formed. Sylas quietly moved the sealed chest into his Bag of Holding while the negotiation dragged. Vrass took Wagon 2. Party pushed on, levelled to 6, camped outside Ironhold's northern gates.<br><br>
-        <strong>Session 6 (next, 3h):</strong> Optional Vrass lair detour (loot + Wizard scrolls). Day 3 encounter with Envoy Veris Caelthorn (flags Sylas's Aurora Peaks blood to Selene's file). Northern Gate arrival (Sergeant Gorren). Grey Kettle lodging (Mother Hessa). <strong>Vrass's first whisper lands late — the Heart of Ironhold ask, three-week deadline to the dark moon.</strong><br><br>
-        <strong>Session 7:</strong> Bryndis vs Drake political crisis. Halvor moral grey resolution. Coin Cipher chest delivered to warehouse #14 — black carriage rides <em>north</em>. Sera's reckoning. Return-hook to Aeloria (Davos / Lis).<br><br>
-        <strong>Trackers this arc:</strong> Instability Clock 2 → 3 (one off-screen Aeloria trade incident). Lich Progress: Stage 3 advances ~70%. Countdowns tick: Verdant Expanse 3→2, Stonemarked 5→4, Scarlet Wake 5→4. Eryn Feld goes missing in Aeloria off-screen.
-      </div>
-      <div style="margin-top:.5rem"><span class="badge b-gold">current arc</span><span class="badge b-orange">Session 5 next</span><span class="badge b-red">Vrass — CR 7</span><span class="badge b-grey">level up after S5</span></div>
-    </div>
-  </div>
-
-  <div class="sec-title">Vaeloran's Lich Progress — 10 Stages</div>
-  <div class="alert alert-warn">Stages 1 and 2 are already complete. The party inadvertently helped with both. Click segments to update progress.</div>
-  <div class="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.75rem 0"></div>
-  <div class="grid-2" style="gap:.6rem;margin-top:.75rem">
-    <div class="card red"><div class="card-title">✅ Stage 1 — Arcane Self-Severance</div><div class="card-sub">Auto-complete · Cannot be interrupted</div><div class="card-body" style="font-size:12px">Ritual that begins separating soul from mortality. Performed years ago in secret. Complete before the campaign began.</div></div>
-    <div class="card red"><div class="card-title">✅ Stage 2 — Phylactery Vessel Acquired</div><div class="card-sub">Auto-complete · Party delivered it</div><div class="card-body" style="font-size:12px">The meteor shard. Lyssandra was sent to retrieve it. The party found her and brought it back. They unknowingly retrieved his phylactery component.</div></div>
-    <div class="card gold"><div class="card-title">🔄 Stage 3/10 — Shard Attunement</div><div class="card-sub">IN PROGRESS · ~30% · Interruptible · 90-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely. **10 stages targeting Lich Ascension at party level 12** — slowed via extended durations and rate caps, not added stages.</div></div>
-    <div class="card"><div class="card-title">⏳ Stage 4 — Lyssandra's Memories Extracted</div><div class="card-sub">Pending · Auto-completes if party doesn't rescue her</div><div class="card-body" style="font-size:12px">Her full memories of Vaeloran's plans are extracted and sealed into a spellbook — his record of intent. If rescued before Stage 4, Lyssandra can remember fragments. After Stage 4, they're gone permanently.</div></div>
-    <div class="card"><div class="card-title">⏳ Stage 5 — Corrupt a Divine Gate Node</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">One of three hidden nodes that anchor the Divine Gate near Aeloria must be corrupted. This weakens divine interference during the final ritual. The party can find and protect these nodes.</div></div>
-    <div class="card"><div class="card-title">⏳ Stage 6 — 100 Souls Consumed</div><div class="card-sub">Pending · Partially interruptible via Instability Clock</div><div class="card-body" style="font-size:12px">The Aurek network's operations — guild violence, cult operations, engineered unrest — feed this count. Slowing the Instability Clock slows this. The party can never fully stop it without dismantling the entire network.</div></div>
-    <div class="card"><div class="card-title">⏳ Stage 7 — Valdris's Formula</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">Vaeloran needs the specific incantation Valdris used for his own transformation. He is trying to steal or trade for it. The Aurora Peaks sanctum is the only source. The party may reach it first.</div></div>
-    <div class="card red"><div class="card-title">⏳ Stage 8 — The Dark Rite</div><div class="card-sub">Pending · Interruptible · CLIMACTIC MOMENT</div><div class="card-body" style="font-size:12px">Performed at the Spire of the Silver Eclipse at a specific celestial conjunction. This is the party's last chance to stop him. If they arrive during this ritual, they face Vaeloran at full power with Foresight active and Globe of Invulnerability established.</div></div>
-    <div class="card red"><div class="card-title">⏳ Stage 9 — Willing Death</div><div class="card-sub">Auto-completes if Stage 8 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran destroys his mortal body willingly. The moment the party has failed if they haven't stopped him by Stage 8.</div></div>
-    <div class="card red"><div class="card-title">⏳ Stage 10 — Lich Ascension</div><div class="card-sub">Auto-completes if Stage 9 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran Duskwhisper becomes a lich. His phylactery (the meteor shard) is hidden. He is now immortal. The campaign has fundamentally changed.</div></div>
-  </div>
-  <div style="margin-top:.75rem;font-size:11.5px;color:var(--parch3);font-style:italic">Lich progress: <span class="lich-count">2</span> / 10 stages complete</div>
+  <div class="alert alert-info" style="font-size:12px">📌 Story hooks and quests live in the <strong>🗺 Quests</strong> ribbon tab. Vaeloran's Lich Progress lives under <strong>⏳ Clock</strong>. This tab is for right-now situational info and one-click session tools.</div>
 
   <div class="sec-title">Quick Session Tools</div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
@@ -1366,6 +1348,12 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 
 <!-- ============ NPCS ============ -->
 <div id="panel-npcs" class="panel">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('npcs-list',this)">👥 NPCs</button>
+    <button class="tab-btn" onclick="showTab('npc-factions',this);loadFactions()">🤝 Factions</button>
+  </div>
+
+  <div id="tab-npcs-list">
   <div class="alert alert-info" style="margin-bottom:.75rem;font-size:12px">
     📌 Pin any NPC to lift them into the top "Session Active" area — if they have a cue card (voice/opening/wants/secrets/exit), it appears expanded. Pins sync across your devices.
   </div>
@@ -1579,7 +1567,30 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
     </div>
 
   </div>
+  </div><!-- /tab-npcs-list -->
+
+  <div id="tab-npc-factions" style="display:none">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap">
+      <input type="text" id="faction-search" placeholder="🔍 Filter factions…" oninput="filterFactions(this.value)" style="flex:1;min-width:220px;padding:.5rem .7rem;background:rgba(20,15,8,0.7);border:1px solid rgba(160,128,64,0.4);border-radius:3px;color:var(--parch1);font-family:'Crimson Pro',serif;font-size:13px;outline:none">
+      <button class="action-btn" onclick="document.getElementById('faction-search').value='';filterFactions('')" title="Clear">✕ Clear</button>
+      <span id="faction-count" style="font-size:11px;color:var(--parch3);font-style:italic"></span>
+      <button class="action-btn" onclick="loadFactions(true)" title="Re-fetch factions.json (after regenerate_all.py)">🔄 Refresh</button>
+    </div>
+    <div id="factions-grid" class="factions-grid">
+      <div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--parch3);font-style:italic">Loading…</div>
+    </div>
+  </div>
 </div>
+
+<!-- Faction detail modal (native <dialog>) — populated by openFactionModal() -->
+<dialog id="faction-dialog" style="max-width:820px;width:92vw;max-height:90vh;padding:0;border:1px solid var(--gold2);background:#0d0a06;color:var(--parch);border-radius:6px">
+  <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-bottom:1px solid var(--gold2);position:sticky;top:0;background:linear-gradient(180deg,#100a05,#0d0a06)">
+    <div style="flex:1;font-family:'Cinzel',serif;color:var(--gold2);font-size:13px;letter-spacing:1.5px" id="faction-dialog-title">Faction</div>
+    <div id="faction-dialog-source" style="font-size:11px;color:var(--parch3);font-style:italic"></div>
+    <button class="action-btn" onclick="document.getElementById('faction-dialog').close()" style="padding:2px 10px">✕ Close</button>
+  </div>
+  <div id="faction-dialog-body" class="current-session-body" style="padding:1rem 1.25rem;max-height:calc(90vh - 55px);overflow-y:auto;background:transparent;border:none"></div>
+</dialog>
 
 <!-- ============ QUESTS ============ -->
 <div id="panel-quests" class="panel">
@@ -1617,6 +1628,27 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 
 <!-- ============ CLOCK ============ -->
 <div id="panel-clock" class="panel">
+  <div class="sec-title">Vaeloran's Lich Progress — 10 Stages</div>
+  <div class="alert alert-warn">Stages 1 and 2 are already complete. The party inadvertently helped with both. Click segments to update progress.</div>
+  <div class="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.75rem 0"></div>
+  <details style="margin-bottom:1.25rem">
+    <summary style="cursor:pointer;color:var(--gold2);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;padding:.4rem 0">Stage detail cards ▾</summary>
+    <div class="grid-2" style="gap:.6rem;margin-top:.5rem">
+      <div class="card red"><div class="card-title">✅ Stage 1 — Arcane Self-Severance</div><div class="card-sub">Auto-complete · Cannot be interrupted</div><div class="card-body" style="font-size:12px">Ritual that begins separating soul from mortality. Performed years ago in secret. Complete before the campaign began.</div></div>
+      <div class="card red"><div class="card-title">✅ Stage 2 — Phylactery Vessel Acquired</div><div class="card-sub">Auto-complete · Party delivered it</div><div class="card-body" style="font-size:12px">The meteor shard. Lyssandra was sent to retrieve it. The party found her and brought it back. They unknowingly retrieved his phylactery component.</div></div>
+      <div class="card gold"><div class="card-title">🔄 Stage 3/10 — Shard Attunement</div><div class="card-sub">IN PROGRESS · ~30% · Interruptible · 90-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely. **10 stages targeting Lich Ascension at party level 12** — slowed via extended durations and rate caps, not added stages.</div></div>
+      <div class="card"><div class="card-title">⏳ Stage 4 — Lyssandra's Memories Extracted</div><div class="card-sub">Pending · Auto-completes if party doesn't rescue her</div><div class="card-body" style="font-size:12px">Her full memories of Vaeloran's plans are extracted and sealed into a spellbook — his record of intent. If rescued before Stage 4, Lyssandra can remember fragments. After Stage 4, they're gone permanently.</div></div>
+      <div class="card"><div class="card-title">⏳ Stage 5 — Corrupt a Divine Gate Node</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">One of three hidden nodes that anchor the Divine Gate near Aeloria must be corrupted. This weakens divine interference during the final ritual. The party can find and protect these nodes.</div></div>
+      <div class="card"><div class="card-title">⏳ Stage 6 — 100 Souls Consumed</div><div class="card-sub">Pending · Partially interruptible via Instability Clock</div><div class="card-body" style="font-size:12px">The Aurek network's operations — guild violence, cult operations, engineered unrest — feed this count. Slowing the Instability Clock slows this. The party can never fully stop it without dismantling the entire network.</div></div>
+      <div class="card"><div class="card-title">⏳ Stage 7 — Valdris's Formula</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">Vaeloran needs the specific incantation Valdris used for his own transformation. He is trying to steal or trade for it. The Aurora Peaks sanctum is the only source. The party may reach it first.</div></div>
+      <div class="card red"><div class="card-title">⏳ Stage 8 — The Dark Rite</div><div class="card-sub">Pending · Interruptible · CLIMACTIC MOMENT</div><div class="card-body" style="font-size:12px">Performed at the Spire of the Silver Eclipse at a specific celestial conjunction. This is the party's last chance to stop him. If they arrive during this ritual, they face Vaeloran at full power with Foresight active and Globe of Invulnerability established.</div></div>
+      <div class="card red"><div class="card-title">⏳ Stage 9 — Willing Death</div><div class="card-sub">Auto-completes if Stage 8 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran destroys his mortal body willingly. The moment the party has failed if they haven't stopped him by Stage 8.</div></div>
+      <div class="card red"><div class="card-title">⏳ Stage 10 — Lich Ascension</div><div class="card-sub">Auto-completes if Stage 9 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran Duskwhisper becomes a lich. His phylactery (the meteor shard) is hidden. He is now immortal. The campaign has fundamentally changed.</div></div>
+    </div>
+  </details>
+  <div style="margin-bottom:1.25rem;font-size:11.5px;color:var(--parch3);font-style:italic">Lich progress: <span class="lich-count">2</span> / 10 stages complete</div>
+
+  <hr class="divider">
   <div class="sec-title">Instability Clock</div>
   <div class="alert alert-warn">When the clock reaches 8, emergency powers are declared and Vaeloran positions himself as the only stabilising force. He benefits either way — filled or unfilled.</div>
 
@@ -2571,6 +2603,72 @@ if (document.readyState === 'loading') {
 } else {
   applySavedNavOrder();
 }
+
+// FACTIONS — loads data/factions.json (generated by
+// tools/generate_factions.py from vault Factions/*.md). Renders as a card
+// grid; clicking a card opens the full vault file in the faction-dialog.
+let _factionsLoaded = false;
+let _factionsData = [];
+async function loadFactions(force) {
+  if (_factionsLoaded && !force) { renderFactions(document.getElementById('faction-search').value || ''); return; }
+  const grid = document.getElementById('factions-grid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--parch3);font-style:italic">Loading…</div>';
+  try {
+    const res = await fetch('data/factions.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    _factionsData = await res.json();
+    _factionsLoaded = true;
+    renderFactions(document.getElementById('faction-search').value || '');
+  } catch (e) {
+    grid.innerHTML = '<div class="alert alert-warn">Could not load <code>data/factions.json</code>. Run <code>python3 tools/regenerate_all.py</code>.<br><small>' + (e && e.message ? e.message : e) + '</small></div>';
+  }
+}
+function renderFactions(query) {
+  const grid = document.getElementById('factions-grid');
+  const countEl = document.getElementById('faction-count');
+  if (!grid) return;
+  const q = (query || '').toLowerCase().trim();
+  const filtered = _factionsData.filter(function(f) {
+    if (!q) return true;
+    const hay = (f.title + ' ' + (f.summary || '') + ' ' + (f.tags || []).join(' ')).toLowerCase();
+    return hay.indexOf(q) !== -1;
+  });
+  if (countEl) countEl.textContent = filtered.length + ' of ' + _factionsData.length;
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:1.5rem;text-align:center;color:var(--parch3);font-style:italic">No factions match “' + escapeHtmlText(q) + '”.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(function(f) {
+    const tagsHtml = (f.tags || []).slice(0, 4).map(function(t) {
+      return '<span class="badge b-grey">' + escapeHtmlText(String(t)) + '</span>';
+    }).join('');
+    return '<div class="faction-card" onclick="openFactionModal(\'' + f.id + '\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openFactionModal(\'' + f.id + '\')}">' +
+      '<div class="faction-card-title">' + escapeHtmlText(f.title) + '</div>' +
+      (f.summary ? '<div class="faction-card-summary">' + escapeHtmlText(f.summary) + '</div>' : '') +
+      (tagsHtml ? '<div class="faction-card-tags">' + tagsHtml + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+function filterFactions(q) { renderFactions(q); }
+function openFactionModal(id) {
+  const f = _factionsData.find(function(x) { return x.id === id; });
+  if (!f) return;
+  document.getElementById('faction-dialog-title').textContent = f.title;
+  document.getElementById('faction-dialog-source').textContent = f.sourceFile || '';
+  document.getElementById('faction-dialog-body').innerHTML = f.html || '';
+  const dlg = document.getElementById('faction-dialog');
+  if (dlg.showModal) dlg.showModal();
+  else dlg.setAttribute('open', '');
+}
+function escapeHtmlText(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// Backdrop click closes the faction dialog
+document.addEventListener('DOMContentLoaded', function() {
+  const dlg = document.getElementById('faction-dialog');
+  if (dlg) dlg.addEventListener('click', function(e) { if (e.target === dlg) dlg.close(); });
+});
 
 // CURRENT SESSION — loads data/current-session.json (generated by
 // tools/generate_current_session.py from the vault's lowest-numbered
