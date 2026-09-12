@@ -1738,11 +1738,19 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 <div id="panel-world" class="panel">
   <div class="tab-inner">
     <button class="tab-btn active" onclick="showTab('worldmap',this)">🗺 Interactive Map</button>
+    <button class="tab-btn" onclick="showTab('maps-catalog',this);if(window.MapKnowledge) MapKnowledge.renderDM('maps-catalog-container')">📚 Maps Catalog</button>
     <button class="tab-btn" onclick="showTab('aeloria',this)">🏛 Aeloria</button>
     <button class="tab-btn" onclick="showTab('worldstate',this)">🌍 World State</button>
     <button class="tab-btn" onclick="showTab('regions',this)">📍 Regions</button>
     <button class="tab-btn" onclick="showTab('factions',this)">🤝 Factions</button>
     <button class="tab-btn" onclick="showTab('feywild',this)">✨ Feywild</button>
+  </div>
+
+  <div id="tab-maps-catalog" style="display:none">
+    <div class="alert alert-info" style="font-size:12.5px">
+      📚 <strong>Maps Catalog</strong> — every map in the vault's <code>Maps/</code> folder. Toggle <strong>Unknown / Known</strong> per bucket to control what the party sees on their site. Click a map's title / view / ↗ button to open the underlying image or DM reference page. Regenerate <code>data/maps.json</code> (via <code>tools/regenerate_all.py</code>) after adding a new file to the vault.
+    </div>
+    <div id="maps-catalog-container"></div>
   </div>
 
   <!-- INTERACTIVE WORLD MAP — default sub-tab -->
@@ -2268,6 +2276,7 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 <script src="downtime-tracker.js"></script>
 <script src="pantheon-data.js"></script>
 <script src="pantheon-knowledge.js"></script>
+<script src="map-knowledge.js"></script>
 <script src="items-2024.js"></script>
 <script src="spells-2024.js"></script>
 <script src="sheet-data.js"></script>

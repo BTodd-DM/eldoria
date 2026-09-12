@@ -1,0 +1,71 @@
+[
+  {
+    "id": "ironhold",
+    "title": "Ironhold — Town Plan",
+    "sourceFile": "Ironhold.md",
+    "region": "Aelorian Territories",
+    "image": "",
+    "page": "ironhold_map.html",
+    "tags": [
+      "map",
+      "ironhold",
+      "arc-02",
+      "town"
+    ],
+    "order": 10,
+    "summary": "The forge-town at the foot of the Celestial Plateau. Two ceremonial gates (southern ↔ Plateau, northern ↔ Aeloria), three rings (inner civic core, middle working-professional, outer labour), eight districts. Smoke from Foundry Row stains the sky permanently; smelting fires glow orange from a full day out.",
+    "html": "<h1>Ironhold — Town Plan</h1>\n<p>The forge-town at the foot of the Celestial Plateau. Two ceremonial gates (southern ↔ Plateau, northern ↔ Aeloria), three rings (inner civic core, middle working-professional, outer labour), eight districts. Smoke from Foundry Row stains the sky permanently; smelting fires glow orange from a full day out.</p>\n<p>Full DM reference (streets, buildings, three inns, Warehouse #14, Halvor&rsquo;s compound, Council Ward, Envoy&rsquo;s Rest) opens in a new tab.</p>\n<h2>What the party knows</h2>\n<p>When the party enters Ironhold at midday in Session 6 they see the northern gate, the caravan yard just inside it, and — as they walk into the Merchants&rsquo; Quarter — the shape of the town from ground level. <strong>Tick this map to &ldquo;Known&rdquo; after Beat 3 (gate arrival) so it appears on the player site.</strong></p>\n<h2>Key locations</h2>\n<ul>\n<li><strong>Northern Gate</strong> — Sergeant Gorren, papers table, the party&rsquo;s arrival point.</li>\n<li><strong>Caravan yard</strong> — first left inside the gate, walled dirt yard against the inner wall.</li>\n<li><strong>Merchants&rsquo; Quarter</strong> — Grey Kettle (Mother Hessa), moneychangers, Halloran Cloth Emporium (Wesley&rsquo;s cover).</li>\n<li><strong>Council Ward</strong> — Forge Council Hall (contains the Heart of Ironhold reliquary), Envoy&rsquo;s Rest (Veris), Halvor&rsquo;s compound.</li>\n<li><strong>Foundry Row</strong> — Bryndis&rsquo;s Grand Foundry, Drake&rsquo;s Furnace.</li>\n<li><strong>Stonecut Ward</strong> — Ashfall inn (Grust, dwarven-only by introduction), Torvi&rsquo;s territory.</li>\n<li><strong>Rustpocket</strong> — Broken Anvil inn (Riven), tenements, Corporal Vasso Tuesdays and Fridays.</li>\n<li><strong>Anvilhome Ward</strong> — temple to Korvain, Elisara.</li>\n<li><strong>The Slag</strong> — Warehouse #14, back-alley network.</li>\n</ul>"
+  },
+  {
+    "id": "encounter_05_kolts_depot",
+    "title": "Kolt's Depot — Caravan Staging Town",
+    "sourceFile": "encounter_05_kolts_depot.md",
+    "region": "",
+    "image": "encounter_05_kolts_depot.png",
+    "page": "",
+    "tags": [
+      "map",
+      "town",
+      "session-5",
+      "opening"
+    ],
+    "order": 100,
+    "summary": "A small staging town along the southern road. Main road runs north–south through the centre (squares 13–17 × full height).",
+    "html": "<h1>Kolt&rsquo;s Depot — Caravan Staging Town</h1>\n<blockquote>\n<p><strong>Image:</strong> <code>encounter_05_kolts_depot.png</code>\n<strong>Scale:</strong> Each square = 5 ft. Map area: 150 ft × 110 ft (30 × 22 squares).\n<strong>When used:</strong> Opening scene of Session 5. Roleplay only — no combat anticipated.</p>\n</blockquote>\n<h2>Layout</h2>\n<p>A small staging town along the southern road. Main road runs north–south through the centre (squares 13–17 × full height).</p>\n<ul>\n<li><strong>Kolt&rsquo;s Trading Shed</strong> (east of road, squares 18–25 × 8–13). The trading hub. Kolt himself spends most of his time at the door or inside the shed. Has a manifest book on a counter.</li>\n<li><strong>Stables</strong> (west of road, squares 3–10 × 8–13). Horses, tack, farrier shed. Where the party would have stabled mounts if they have them.</li>\n<li><strong>The Hammered Anvil Inn</strong> (south-west, squares 2–9 × 16–20). Six rooms, common room with a small bar. Watered ale. Innkeeper&rsquo;s wife is the one Kolt warned about.</li>\n<li><strong>Caravan Staging Yard</strong> (south-east, squares 19–27 × 16–20). Where Brenna&rsquo;s two wagons are harnessed. The party meets her here.</li>\n<li><strong>General Store</strong> (north-east, squares 20–26 × 2–6). Travel supplies, dried foods, rope, lanterns. Sells at slight markup.</li>\n<li><strong>Smithy</strong> (north-west, squares 4–9 × 2–6). Basic repairs. Won&rsquo;t take custom orders for travellers.</li>\n<li><strong>Watch Post</strong> (south, squares 13–17 × 19–21). A small Watch outpost — two Watch on duty at any given time. Knows Brenna.</li>\n</ul>\n<h2>Tree clusters</h2>\n<p>A few trees on the edges of the town — atmospheric only.</p>\n<h2>Where the players move during the opening</h2>\n<ol>\n<li>They arrive at the staging yard (the south-east area), find Brenna.</li>\n<li>After the pitch, they walk to Kolt&rsquo;s Trading Shed for the name-the-company scene with Kolt.</li>\n<li>Optionally visit the general store for last supplies.</li>\n<li>Return to the wagons. Brenna inspects the cargo with them (where Torren spots the chest seal).</li>\n<li>Depart south on the main road.</li>\n</ol>\n<h2>Notes</h2>\n<ul>\n<li>No combat anticipated here. The map is for orientation only.</li>\n<li>If the party wants to stay overnight before departing, the Hammered Anvil charges 5 sp for a private room or 1 sp for a common-room cot.</li>\n<li>The Watch on duty at the post can be asked about southern-road conditions. They&rsquo;ll mention dead-grass patches but otherwise see no recent threats.</li>\n</ul>"
+  },
+  {
+    "id": "encounter_05_vrass_road",
+    "title": "Vrass Strikes — The Southern Road",
+    "sourceFile": "encounter_05_vrass_road.md",
+    "region": "",
+    "image": "encounter_05_vrass_road.png",
+    "page": "",
+    "tags": [
+      "map",
+      "encounter",
+      "session-5",
+      "combat"
+    ],
+    "order": 100,
+    "summary": "The road runs east-west across the middle of the map (rows 10–12). Two wagons sit on the road just east of centre:",
+    "html": "<h1>Vrass Strikes — The Southern Road</h1>\n<blockquote>\n<p><strong>Image:</strong> <code>encounter_05_vrass_road.png</code>\n<strong>Scale:</strong> Each square = 5 ft. Map area: 150 ft × 110 ft (30 × 22 squares).</p>\n</blockquote>\n<h2>Layout</h2>\n<p>The road runs east-west across the middle of the map (rows 10–12). Two wagons sit on the road just east of centre:\n- <strong>Wagon 1</strong> (Brenna&rsquo;s, lead): squares 12–14 × 10–12. 3×3, 15 ft × 15 ft.\n- <strong>Wagon 2</strong> (party&rsquo;s, holds the Coin Cipher chest): squares 17–19 × 10–12.</p>\n<p><strong>Sera</strong> is at square 11, 12 (just behind Wagon 1, west side, between the wagons).</p>\n<p><strong>Suggested party starting positions</strong> (around/near the wagons):\n- PC 1: square 13, 13 (south side of Wagon 1)\n- PC 2: square 15, 13 (between the wagons)\n- PC 3: square 18, 13 (south side of Wagon 2)</p>\n<p>Adjust based on who&rsquo;s driving (one PC is on Wagon 2&rsquo;s bench).</p>\n<h2>Terrain</h2>\n<ul>\n<li><strong>North side (rows 0–5):</strong> Woodland — light cover from trees (half cover; ranged attacks against creatures in the trees have disadvantage). Difficult terrain in dense patches.</li>\n<li><strong>The road (rows 10–12):</strong> Open ground. Normal movement.</li>\n<li><strong>South side (rows 17–21):</strong> Rocky scrub with scattered boulders. Each named boulder provides <strong>half cover</strong> for a single Medium creature behind it; the large ones provide <strong>three-quarters cover</strong>.</li>\n</ul>\n<h2>Vrass&rsquo;s entry</h2>\n<p><strong>He enters from the northwest, flying</strong> (square ~4, 3 — but he&rsquo;s airborne above the map). His first action is a strafing flyby breath weapon along the road, from west to east. Then he banks south and circles for a second pass, landing on Round 2.</p>\n<h2>Wagons in combat</h2>\n<ul>\n<li>Each wagon is treated as <strong>three-quarters cover</strong> for a Medium creature behind/inside it.</li>\n<li>Climbable — DC 10 Athletics from the side, DC 5 to climb onto the bench.</li>\n<li>Vrass&rsquo;s acid breath will severely damage the wagons if it hits them. Treat each wagon as AC 12, HP 30. Once destroyed, wagons no longer provide cover; treat the wreckage as difficult terrain.</li>\n</ul>\n<h2>Brenna and Sera</h2>\n<ul>\n<li><strong>Brenna</strong> is on Wagon 1&rsquo;s bench at start of combat. She&rsquo;ll drop the reins, leap down, draw her short sword, and try to keep the horses calm. She&rsquo;s not a threat to Vrass — treat her as background noise.</li>\n<li><strong>Sera</strong> is a non-combatant. She&rsquo;ll dive under Wagon 2 and hide. If a PC is downed within 30 ft of her, she&rsquo;ll crawl out and try to drag them to safety (no skill, no rolls — just narrative).</li>\n</ul>\n<h2>Notes</h2>\n<ul>\n<li>The map intentionally provides cover on both sides of the road to help survivability. Vrass is forced to land or hover at range — he can&rsquo;t dominate purely from the air without exposing himself.</li>\n<li>Boulders on the south side are good positions for ranged attackers (Sylas, Torren with crossbow).</li>\n<li>The woodland on the north side is excellent cover but harder to retreat into a defensive position from (difficult terrain slows you down once Vrass lands).</li>\n</ul>"
+  },
+  {
+    "id": "encounter_05_vrass_lair",
+    "title": "Vrass's Lair — Rocky Overhang",
+    "sourceFile": "encounter_05_vrass_lair.md",
+    "region": "",
+    "image": "encounter_05_vrass_lair.png",
+    "page": "",
+    "tags": [
+      "map",
+      "lair",
+      "session-5",
+      "session-6",
+      "optional-detour"
+    ],
+    "order": 100,
+    "summary": "In the back of the overhang (square ~21, 7). Vrass's stash. See Vrass for the full hoard list (DMG-canon items only).",
+    "html": "<h1>Vrass&rsquo;s Lair — Rocky Overhang</h1>\n<blockquote>\n<p><strong>Image:</strong> <code>encounter_05_vrass_lair.png</code>\n<strong>Scale:</strong> Each square = 5 ft. Map area: 125 ft × 110 ft (25 × 22 squares).\n<strong>When used:</strong> If the party tracks Vrass back to his lair (Survival DC 14 if killed, DC 16 if fled). Likely Session 6 detour.</p>\n</blockquote>\n<h2>Layout</h2>\n<ul>\n<li><strong>Rocky overhang</strong> in the upper right quadrant (squares 15–25 × 1–12). Provides <strong>full cover</strong> beneath. Acts as Vrass&rsquo;s roost.</li>\n<li><strong>Foul stream</strong> running south-west to north-east diagonally across the map. <strong>Difficult terrain</strong> to wade through. Mildly acidic — 1 hp acid damage per round to anything standing in it.</li>\n<li><strong>Foul pool</strong> in centre-left (~square 13, 11). About 50 ft across. <strong>1d6 acid damage per round</strong> to anything in it. Visually unmistakable — black, oily, dead-water surface.</li>\n<li><strong>Scattered trees</strong> around the edges. Half cover.</li>\n<li><strong>Acid-burned bones</strong> scattered south of the pool — past victims. <em>Investigation might reveal a Watch tabard fragment, a merchant&rsquo;s seal, a stable hand&rsquo;s apron — gives the party a sense of the body count.</em></li>\n</ul>\n<h2>The hoard</h2>\n<p>In the back of the overhang (square ~21, 7). Vrass&rsquo;s stash. See Vrass for the full hoard list (DMG-canon items only).</p>\n<h2>If Vrass is still alive</h2>\n<p>If the party tracks him here while he&rsquo;s still alive, he&rsquo;s lairing up — wounded if they hurt him, watching the approach. He&rsquo;d have a different combat plan in his own lair:\n- <strong>Advantage on Perception</strong> in his lair (knows the terrain).\n- Will lead the party past the foul pool if he can — draw them into the acid.\n- Will use the overhang for full cover between attacks.\n- Will flee through the dense trees north-east if pressed below half HP.</p>\n<h2>If the lair is undefended</h2>\n<p>Vrass is dead or fled. The party can enter freely. Bones and gear strewn around the entrance. The hoard is in the back of the overhang, partly hidden under blackened canvas.</p>\n<h2>Notes</h2>\n<ul>\n<li>Map intentionally smaller than the road map — lair combat is a tighter, more dangerous fight if Vrass is here.</li>\n<li>The acid pool is a real hazard. Tell the party they can see it clearly; don&rsquo;t gotcha them.</li>\n<li>The bones include a small clockwork dog (mundane, ~5 gp) and a cracked iron breastplate. Flavour pieces.</li>\n</ul>"
+  }
+]

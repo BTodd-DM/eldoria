@@ -776,6 +776,12 @@ body {
 
 <!-- ===== LOCATIONS ===== -->
 <div id="panel-locations" class="panel">
+  <div class="sec-title">Maps You've Studied</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Every map, plan, and layout the party has been shown or discovered in play. Click any to open.
+  </div>
+  <div id="maps-player-container" style="margin-bottom:1.5rem"></div>
+
   <div class="sec-title">World Map</div>
   <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
     Click any region or settlement below to learn about it. The Aelorian Territories panel and the Aeloria card both link to the Aeloria city map.
@@ -1017,6 +1023,9 @@ function show(id, btn) {
   if (id === 'handouts' && window.HandoutsUI && document.getElementById('handouts-container-player')) {
     HandoutsUI.initPlayer('handouts-container-player', window._currentIdentity);
   }
+  if (id === 'locations' && window.MapKnowledge && document.getElementById('maps-player-container')) {
+    MapKnowledge.renderPlayer('maps-player-container', window._currentIdentity);
+  }
 }
 
 function showLoreTab(id, btn) {
@@ -1185,6 +1194,7 @@ function updateSheetUI(charKey) {
 <script src="npc-directory.js"></script>
 <script src="pantheon-data.js"></script>
 <script src="pantheon-knowledge.js"></script>
+<script src="map-knowledge.js"></script>
 <script src="handouts.js"></script>
 <script src="handouts-ui.js"></script>
 <script src="players-auth.js"></script>

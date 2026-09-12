@@ -60,6 +60,10 @@
       ".read": true,
       ".write": true
     },
+    "map-knowledge": {
+      ".read": true,
+      ".write": true
+    },
     "handouts": {
       ".read": true,
       ".write": true

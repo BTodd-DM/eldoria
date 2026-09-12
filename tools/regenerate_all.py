@@ -15,6 +15,7 @@ GENERATORS = [
     "generate_homebrew_monsters.py",
     "generate_current_session.py",
     "generate_factions.py",
+    "generate_maps.py",
     "backup_monsters_to_vault.py",
 ]
 
