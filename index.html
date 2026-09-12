@@ -856,6 +856,11 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 
   <div class="alert alert-info" style="font-size:12px">📌 Story hooks and quests live in the <strong>🗺 Quests</strong> ribbon tab. Vaeloran's Lich Progress lives under <strong>⏳ Clock</strong>. This tab is for right-now situational info and one-click session tools.</div>
 
+  <div class="sec-title">Maps &amp; References</div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+    <a class="action-btn" href="ironhold_map.html" target="_blank" rel="noopener" style="background:rgba(160,128,64,0.2);color:var(--gold2);border-color:var(--gold2);text-decoration:none;padding:.55rem 1rem">🗺 Ironhold — DM Map &amp; Reference ↗</a>
+  </div>
+
   <div class="sec-title">Quick Session Tools</div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
     <button class="action-btn" onclick="if(window.DowntimeTracker) DowntimeTracker.open()" style="background:rgba(160,128,64,0.15);color:var(--gold2);border-color:var(--gold2)">⏳ Downtime Tracker</button>
@@ -1628,25 +1633,40 @@ details.deity-card > summary .deity-align { margin-bottom: 0 !important; }
 
 <!-- ============ CLOCK ============ -->
 <div id="panel-clock" class="panel">
-  <div class="sec-title">Vaeloran's Lich Progress — 10 Stages</div>
-  <div class="alert alert-warn">Stages 1 and 2 are already complete. The party inadvertently helped with both. Click segments to update progress.</div>
-  <div class="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.75rem 0"></div>
+  <div class="sec-title">Vaeloran — Path to Lichdom</div>
+  <div class="alert alert-warn"><strong>Canonical 5e lich rules.</strong> No homebrew stages. Vaeloran is preparing the standard ritual. The party's window is until he drinks the potion of transformation. After ascension he must be killed AND the phylactery destroyed.</div>
+
+  <div class="grid-2" style="gap:.6rem;margin-bottom:1.25rem">
+    <div class="card gold">
+      <div class="card-title">🔄 Ritual preparation — in progress</div>
+      <div class="card-sub">Phylactery bonding + potion ingredient gathering · Interruptible until he drinks</div>
+      <div class="card-body" style="font-size:12px">
+        <strong>Phylactery:</strong> the meteor shard (delivered unknowingly by the party). Currently being bonded in the Spire's deepest chamber.<br>
+        <strong>Assistant:</strong> Lyssandra Vale — memory reset, serving willingly. Her original memories are still recoverable in fragments if rescued before Vaeloran finishes.<br>
+        <strong>Potion of transformation:</strong> Vaeloran is still gathering the last ingredients, including souls of sentient beings — harvested indirectly via Kaelith's Naturus operations and Aurek network unrest (Instability Clock feeds this).<br>
+        <strong>Timing:</strong> DM discretion. Vaeloran drinks the potion at a celestially significant moment at the Spire of Silver Eclipse when he judges the vessel bonded and ingredients ready. Target: climax around <strong>party level 10–12</strong> (currently 6).
+      </div>
+    </div>
+    <div class="card red">
+      <div class="card-title">🏛 The Dark Rite — climactic scene (pending)</div>
+      <div class="card-sub">The moment he drinks the potion at the Spire</div>
+      <div class="card-body" style="font-size:12px">
+        Vaeloran at full archmage power. Foresight active. Globe of Invulnerability. Contingencies pre-cast. This is the party's LAST chance to interrupt before ascension. Once the potion is drunk and his soul enters the phylactery, he is a lich.
+      </div>
+    </div>
+  </div>
+
   <details style="margin-bottom:1.25rem">
-    <summary style="cursor:pointer;color:var(--gold2);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;padding:.4rem 0">Stage detail cards ▾</summary>
+    <summary style="cursor:pointer;color:var(--gold2);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;padding:.4rem 0">Party interruption points ▾</summary>
     <div class="grid-2" style="gap:.6rem;margin-top:.5rem">
-      <div class="card red"><div class="card-title">✅ Stage 1 — Arcane Self-Severance</div><div class="card-sub">Auto-complete · Cannot be interrupted</div><div class="card-body" style="font-size:12px">Ritual that begins separating soul from mortality. Performed years ago in secret. Complete before the campaign began.</div></div>
-      <div class="card red"><div class="card-title">✅ Stage 2 — Phylactery Vessel Acquired</div><div class="card-sub">Auto-complete · Party delivered it</div><div class="card-body" style="font-size:12px">The meteor shard. Lyssandra was sent to retrieve it. The party found her and brought it back. They unknowingly retrieved his phylactery component.</div></div>
-      <div class="card gold"><div class="card-title">🔄 Stage 3/10 — Shard Attunement</div><div class="card-sub">IN PROGRESS · ~30% · Interruptible · 90-day ritual</div><div class="card-body" style="font-size:12px">Continuous ritual in the Spire's deepest chamber. Lyssandra assists as ritual witness. If the party rescues Lyssandra, this resets. If they destroy the shard, Vaeloran needs a new phylactery vessel entirely. **10 stages targeting Lich Ascension at party level 12** — slowed via extended durations and rate caps, not added stages.</div></div>
-      <div class="card"><div class="card-title">⏳ Stage 4 — Lyssandra's Memories Extracted</div><div class="card-sub">Pending · Auto-completes if party doesn't rescue her</div><div class="card-body" style="font-size:12px">Her full memories of Vaeloran's plans are extracted and sealed into a spellbook — his record of intent. If rescued before Stage 4, Lyssandra can remember fragments. After Stage 4, they're gone permanently.</div></div>
-      <div class="card"><div class="card-title">⏳ Stage 5 — Corrupt a Divine Gate Node</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">One of three hidden nodes that anchor the Divine Gate near Aeloria must be corrupted. This weakens divine interference during the final ritual. The party can find and protect these nodes.</div></div>
-      <div class="card"><div class="card-title">⏳ Stage 6 — 100 Souls Consumed</div><div class="card-sub">Pending · Partially interruptible via Instability Clock</div><div class="card-body" style="font-size:12px">The Aurek network's operations — guild violence, cult operations, engineered unrest — feed this count. Slowing the Instability Clock slows this. The party can never fully stop it without dismantling the entire network.</div></div>
-      <div class="card"><div class="card-title">⏳ Stage 7 — Valdris's Formula</div><div class="card-sub">Pending · Interruptible</div><div class="card-body" style="font-size:12px">Vaeloran needs the specific incantation Valdris used for his own transformation. He is trying to steal or trade for it. The Aurora Peaks sanctum is the only source. The party may reach it first.</div></div>
-      <div class="card red"><div class="card-title">⏳ Stage 8 — The Dark Rite</div><div class="card-sub">Pending · Interruptible · CLIMACTIC MOMENT</div><div class="card-body" style="font-size:12px">Performed at the Spire of the Silver Eclipse at a specific celestial conjunction. This is the party's last chance to stop him. If they arrive during this ritual, they face Vaeloran at full power with Foresight active and Globe of Invulnerability established.</div></div>
-      <div class="card red"><div class="card-title">⏳ Stage 9 — Willing Death</div><div class="card-sub">Auto-completes if Stage 8 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran destroys his mortal body willingly. The moment the party has failed if they haven't stopped him by Stage 8.</div></div>
-      <div class="card red"><div class="card-title">⏳ Stage 10 — Lich Ascension</div><div class="card-sub">Auto-completes if Stage 9 succeeds</div><div class="card-body" style="font-size:12px">Vaeloran Duskwhisper becomes a lich. His phylactery (the meteor shard) is hidden. He is now immortal. The campaign has fundamentally changed.</div></div>
+      <div class="card"><div class="card-title">🎯 Destroy the phylactery vessel</div><div class="card-body" style="font-size:12px">The meteor shard, currently in the Spire. Most decisive interruption — without a phylactery Vaeloran cannot proceed. Months of setback; shard-tier arcane material is rare.</div></div>
+      <div class="card"><div class="card-title">🎯 Rescue Lyssandra before bonding completes</div><div class="card-body" style="font-size:12px">Slows the bonding rite (loses primary assistant) and her memory can be partially recovered — she held clues to his plans. If left too long her memories are extracted and sealed permanently.</div></div>
+      <div class="card"><div class="card-title">🎯 Kill Vaeloran before the potion</div><div class="card-body" style="font-size:12px">He dies as a mortal wizard. No phylactery destruction needed post-facto because he never became a lich. Hard — he is careful, well-guarded, publicly untouchable. Needs political coalition or a moment of exposure.</div></div>
+      <div class="card"><div class="card-title">🎯 Interrupt the ritual itself</div><div class="card-body" style="font-size:12px">The climactic scene. Party arrives at the Spire during the rite. Vaeloran at full power. Highest-drama version of stopping him.</div></div>
+      <div class="card gold"><div class="card-title">🔻 If he ascends</div><div class="card-body" style="font-size:12px">Killing his body returns him to the phylactery within days. Must be killed AND phylactery destroyed. The Mor'nyx tomb-keepers of the Ember Wastes hold phylactery-destruction knowledge.</div></div>
+      <div class="card"><div class="card-title">📖 Other Vaeloran plots (NOT lich gates)</div><div class="card-body" style="font-size:12px">Instability Clock, Divine Gate research, Valdris interest, mentorship of Sylas — these are Vaeloran's separate agendas (political power, arcane research, insurance) and are live threads on their own, but they are no longer lich-progression gates.</div></div>
     </div>
   </details>
-  <div style="margin-bottom:1.25rem;font-size:11.5px;color:var(--parch3);font-style:italic">Lich progress: <span class="lich-count">2</span> / 10 stages complete</div>
 
   <hr class="divider">
   <div class="sec-title">Instability Clock</div>

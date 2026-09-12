@@ -1408,10 +1408,15 @@ function renderCharacterExtras(char) {
 }
 function renderVaeloranExtras() {
   return '<div class="sheet-sub">' +
-    '<div class="sheet-sub-title">Lich Progress — 10 Stages</div>' +
-    '<div style="font-size:11px;color:var(--parch3);font-style:italic;margin-bottom:.4rem">Click a segment to set the stage. Live-synced with the Now tab.</div>' +
-    '<div class="lich-clock-display" style="display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0"></div>' +
-    '<div style="font-size:11.5px;color:var(--parch3);font-style:italic;margin-top:.3rem">Stages complete: <span class="lich-count">0</span> / 10 — see Now tab for stage details</div>' +
+    '<div class="sheet-sub-title">Ritual Preparation Status</div>' +
+    '<div style="font-size:11.5px;color:var(--parch3);font-style:italic;margin-bottom:.5rem">Canonical 5e lich rules — no homebrew stages. See <em>Clock</em> panel for full mechanics.</div>' +
+    '<ul style="margin:.35rem 0 .5rem 1.2rem;font-size:12.5px;line-height:1.55;color:var(--parch2)">' +
+      '<li><strong>Phylactery vessel:</strong> the meteor shard — obtained, bonding in progress in the Spire.</li>' +
+      '<li><strong>Assistant:</strong> Lyssandra Vale — memory reset, serving willingly.</li>' +
+      '<li><strong>Potion of transformation:</strong> gathering the last ingredients (sentient souls harvested indirectly via Aurek network / Naturus operations).</li>' +
+      '<li><strong>The ritual itself:</strong> not yet performed. Target moment: celestially significant date at the Spire of Silver Eclipse; DM discretion, ~party level 10–12.</li>' +
+    '</ul>' +
+    '<div style="font-size:11px;color:var(--parch3);font-style:italic;margin-top:.4rem">Party window: interrupt before he drinks the potion. Destroy the phylactery, rescue Lyssandra, kill him mortal, or interrupt the ritual itself.</div>' +
   '</div>';
 }
 function renderKaelithExtras() {
