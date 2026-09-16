@@ -125,16 +125,22 @@
       return this._catalog.find(function(m) { return m.id === mapId; });
     },
 
+    // Default open action. Prefers the image (visual) over the page (reference).
+    // Callers that specifically want the reference page use openMapPage().
     openMap: function(mapId) {
       const m = this.getMap(mapId);
       if (!m) return;
-      if (m.page) {
-        window.open(m.page, '_blank', 'noopener');
-      } else if (m.image) {
+      if (m.image) {
         _openImageOverlay(m);
+      } else if (m.page) {
+        window.open(m.page, '_blank', 'noopener');
       } else {
         _openInfoOverlay(m);
       }
+    },
+    openMapPage: function(mapId) {
+      const m = this.getMap(mapId);
+      if (m && m.page) window.open(m.page, '_blank', 'noopener');
     },
 
     // -------- DM view --------
@@ -193,18 +199,18 @@
                 ? '<div style="font-size:9px;color:var(--parch4);margin-top:1px">inherits Known from party</div>'
                 : '';
             const thumb = m.image
-              ? '<div style="width:100%;aspect-ratio:16/9;background:#000 url(\'' + _esc(m.image) + '\') center/cover no-repeat;border-radius:2px;margin-bottom:.35rem"></div>'
+              ? '<div style="width:100%;aspect-ratio:4/3;background:#000 url(\'' + _esc(m.image) + '\') center/contain no-repeat;border-radius:2px;margin-bottom:.35rem;cursor:zoom-in" onclick="if(window.MapKnowledge) MapKnowledge.openMap(\'' + m.id + '\')" title="Click to view full image"></div>'
               : '';
             html += '<div style="border:1px solid ' + (isKnown ? '#7fdb7f' : 'rgba(160,128,64,0.4)') + ';border-radius:3px;padding:.5rem .6rem;background:rgba(20,14,6,0.35);display:flex;flex-direction:column;gap:.25rem">' +
               thumb +
               '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.4rem">' +
                 '<div style="font-family:\'Cinzel\',serif;color:var(--gold2);font-size:12px;flex:1">' + _esc(m.title) + '</div>' +
-                (m.page ? '<a href="' + _esc(m.page) + '" target="_blank" rel="noopener" class="action-btn" style="padding:2px 6px;font-size:9px" title="Open DM reference page">↗</a>' : '') +
+                (m.page ? '<button class="action-btn" onclick="if(window.MapKnowledge) MapKnowledge.openMapPage(\'' + m.id + '\')" style="padding:2px 6px;font-size:9px" title="Open DM reference page in new tab">↗ Ref</button>' : '') +
               '</div>' +
               (m.summary ? '<div style="font-size:11.5px;color:var(--parch2);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">' + _esc(m.summary) + '</div>' : '') +
               '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:.35rem;gap:.4rem">' +
                 '<button class="action-btn" onclick="if(window.MapKnowledge) MapKnowledge.toggleBucketLevel(\'' + bucket + '\',\'' + m.id + '\')" style="padding:3px 8px;font-size:10px;background:' + stateColor + '22;border-color:' + stateColor + ';color:' + stateColor + '">● ' + stateLabel + '</button>' +
-                (m.image || (!m.image && !m.page) ? '<button class="action-btn" onclick="if(window.MapKnowledge) MapKnowledge.openMap(\'' + m.id + '\')" style="padding:3px 8px;font-size:10px">👁 View</button>' : '') +
+                (m.image ? '<button class="action-btn" onclick="if(window.MapKnowledge) MapKnowledge.openMap(\'' + m.id + '\')" style="padding:3px 8px;font-size:10px">👁 View</button>' : '') +
               '</div>' +
               overrideNote +
             '</div>';
