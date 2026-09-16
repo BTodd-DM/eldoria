@@ -22,6 +22,7 @@ Usage:
 import argparse
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -39,6 +40,49 @@ DEFAULT_VAULT = Path(
     "D_D/Discovery D_D/Eldoria 2.0/Maps"
 )
 DEFAULT_OUT = Path("/Users/Brad/Documents/GitHub/eldoria/data/maps.json")
+DEFAULT_IMG_DIR = Path("/Users/Brad/Documents/GitHub/eldoria/maps")
+
+IMG_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"}
+
+
+def _sanitise(name: str) -> str:
+    """URL-safe filename: keep letters, digits, dashes, dots. Spaces → dashes."""
+    stem = Path(name).stem
+    ext = Path(name).suffix.lower()
+    stem = re.sub(r"[^a-zA-Z0-9._-]+", "-", stem).strip("-.").lower()
+    return f"{stem or 'map'}{ext}"
+
+
+def copy_image(source_path: Path, vault_dir: Path, out_dir: Path) -> str | None:
+    """Resolve a frontmatter `image:` value against the vault, copy to the
+    site's maps/ folder, and return the site-relative path (e.g.
+    `maps/kolts-depot.png`). If the value is already an http(s):// URL or an
+    absolute site path (starting with `/`), it is returned as-is with no copy.
+    Returns None if the source file cannot be resolved.
+    """
+    raw = str(source_path)
+    if raw.startswith(("http://", "https://", "//", "data:")):
+        return raw
+    if raw.startswith("/"):
+        return raw.lstrip("/")
+    candidate = (vault_dir / raw).resolve()
+    if not candidate.is_file():
+        # Try matching by basename anywhere under vault_dir
+        for p in vault_dir.rglob(candidate.name):
+            if p.is_file():
+                candidate = p
+                break
+        else:
+            return None
+    if candidate.suffix.lower() not in IMG_EXTS:
+        return None
+    out_dir.mkdir(parents=True, exist_ok=True)
+    dest_name = _sanitise(candidate.name)
+    dest = out_dir / dest_name
+    # Only copy if source is newer or dest missing
+    if not dest.exists() or candidate.stat().st_mtime > dest.stat().st_mtime:
+        shutil.copy2(candidate, dest)
+    return f"maps/{dest_name}"
 
 FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
 WIKI_LINK_PIPE_RE = re.compile(r"\[\[([^\]|]+)\|([^\]]+)\]\]")
@@ -82,7 +126,7 @@ def extract_summary(body: str) -> str:
     return " ".join(para)[:320].strip()
 
 
-def process_file(path: Path) -> dict | None:
+def process_file(path: Path, vault_dir: Path, img_dir: Path) -> dict | None:
     text = path.read_text(encoding="utf-8")
     fm, body = parse_frontmatter(text)
     title = (fm.get("title") or "").strip()
@@ -99,12 +143,22 @@ def process_file(path: Path) -> dict | None:
     tags = fm.get("tags") or []
     if isinstance(tags, str):
         tags = [t.strip() for t in tags.split(",") if t.strip()]
+    # Copy referenced image into the site's maps/ folder and rewrite the path.
+    image_raw = fm.get("image") or ""
+    image_out = ""
+    if image_raw:
+        resolved = copy_image(Path(image_raw), vault_dir, img_dir)
+        if resolved:
+            image_out = resolved
+            print(f"     img: {image_raw} → {resolved}")
+        else:
+            print(f"     ! image not found for {path.name}: {image_raw}")
     return {
         "id": path.stem.lower().replace(" ", "-").replace("'", ""),
         "title": title,
         "sourceFile": path.name,
         "region": fm.get("region") or "",
-        "image": fm.get("image") or "",
+        "image": image_out,
         "page": fm.get("page") or "",
         "tags": tags,
         "order": fm.get("order") if isinstance(fm.get("order"), (int, float)) else 100,
@@ -117,6 +171,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--vault", type=Path, default=DEFAULT_VAULT)
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--img-dir", type=Path, default=DEFAULT_IMG_DIR)
     args = ap.parse_args()
 
     if not args.vault.is_dir():
@@ -132,7 +187,7 @@ def main() -> int:
         if path.name.startswith("_"):
             continue
         try:
-            e = process_file(path)
+            e = process_file(path, args.vault, args.img_dir)
         except Exception as ex:
             print(f"! Failed to process {path.name}: {ex}", file=sys.stderr)
             continue

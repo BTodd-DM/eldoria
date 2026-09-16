@@ -4,7 +4,7 @@
     "title": "Ironhold — Town Plan",
     "sourceFile": "Ironhold.md",
     "region": "Aelorian Territories",
-    "image": "",
+    "image": "maps/ironhold-option-2.png",
     "page": "ironhold_map.html",
     "tags": [
       "map",
@@ -21,7 +21,7 @@
     "title": "Kolt's Depot — Caravan Staging Town",
     "sourceFile": "encounter_05_kolts_depot.md",
     "region": "",
-    "image": "encounter_05_kolts_depot.png",
+    "image": "maps/encounter_05_kolts_depot.png",
     "page": "",
     "tags": [
       "map",
@@ -38,7 +38,7 @@
     "title": "Vrass Strikes — The Southern Road",
     "sourceFile": "encounter_05_vrass_road.md",
     "region": "",
-    "image": "encounter_05_vrass_road.png",
+    "image": "maps/encounter_05_vrass_road.png",
     "page": "",
     "tags": [
       "map",
@@ -55,7 +55,7 @@
     "title": "Vrass's Lair — Rocky Overhang",
     "sourceFile": "encounter_05_vrass_lair.md",
     "region": "",
-    "image": "encounter_05_vrass_lair.png",
+    "image": "maps/encounter_05_vrass_lair.png",
     "page": "",
     "tags": [
       "map",
