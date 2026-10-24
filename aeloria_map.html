@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aeloria Crossroads — Interactive Map</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2726%27%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0a06;--p1:#f4edd8;--p2:#ebe0c4;--p3:#d9ccaa;
+  --gold:#8a6a1a;--gold2:#c9a84c;--red:#7a1a1a;--teal:#0d3d30;
+  --bord:#b8a070;--mut:#5a4820;
+}
+body{background:#0a0805;font-family:'Crimson Pro',Georgia,serif;color:var(--p1);min-height:100vh;overflow-x:hidden}
+.page-header{background:linear-gradient(180deg,#0d0a06,#1a1208);border-bottom:2px solid var(--gold2);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-family:'Cinzel Decorative',serif;color:var(--gold2);font-size:16px;letter-spacing:2px}
+.back-btn{color:var(--gold2);text-decoration:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;border:1px solid var(--gold2);padding:4px 12px;border-radius:2px;transition:all .2s}
+.back-btn:hover{background:var(--gold2);color:var(--ink)}
+.dm-badge{background:var(--red);color:#f4c4c4;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px}
+
+/* MAP CONTAINER */
+.map-wrapper{position:relative;display:block;max-width:1000px;margin:1rem auto;border:2px solid var(--bord);border-radius:4px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.6)}
+.map-img{width:100%;display:block;filter:brightness(0.92)}
+
+/* HOTSPOT ZONES */
+.hotspot{position:absolute;border-radius:4px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.hotspot:hover{border-color:var(--gold2);background:rgba(201,168,76,0.12)}
+.hotspot.dm-only:hover{border-color:#f4c4c4;background:rgba(122,26,26,0.15)}
+.hotspot-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,0.6);text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap}
+
+/* INFO PANEL */
+.info-panel{max-width:1000px;margin:0 auto 2rem;padding:0 1rem}
+.panel-card{background:linear-gradient(135deg,rgba(26,18,8,0.95),rgba(13,10,6,0.98));border:1px solid var(--bord);border-radius:4px;padding:1.25rem 1.5rem;display:none}
+.panel-card.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;border-bottom:1px solid rgba(160,128,64,0.3);padding-bottom:.75rem}
+.panel-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold2);font-weight:700}
+.panel-sub{font-size:12px;color:var(--p3);font-style:italic;margin-top:2px}
+.close-btn{background:none;border:none;color:rgba(160,128,64,0.5);font-size:18px;cursor:pointer;padding:0 4px;transition:color .15s}
+.close-btn:hover{color:var(--gold2)}
+
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel-section{margin-bottom:.75rem}
+.section-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold2);text-transform:uppercase;margin-bottom:.4rem;opacity:.8}
+.section-body{font-size:13.5px;line-height:1.7;color:var(--p2)}
+.npc-row{display:flex;align-items:flex-start;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(160,128,64,0.1)}
+.npc-row:last-child{border-bottom:none}
+.npc-av{width:32px;height:32px;border-radius:50%;background:rgba(26,18,8,0.8);border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:10px;color:var(--gold2);font-weight:700;flex-shrink:0}
+.npc-name{font-family:'Cinzel',serif;font-size:12px;font-weight:600;margin-bottom:2px}
+.npc-body{font-size:12.5px;color:var(--p3)}
+.badge{display:inline-block;padding:2px 6px;border-radius:2px;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.3px;margin:2px 2px 2px 0;font-weight:700}
+.b-red{background:rgba(122,26,26,0.7);color:#f4c4c4;border:1px solid rgba(122,26,26,0.4)}
+.b-gold{background:rgba(122,96,26,0.7);color:#f4e4a0;border:1px solid rgba(122,96,26,0.4)}
+.b-teal{background:rgba(13,61,48,0.7);color:#a0d4c4;border:1px solid rgba(13,61,48,0.4)}
+.b-grey{background:rgba(40,30,15,0.7);color:var(--p3);border:1px solid rgba(80,60,30,0.4)}
+.b-purple{background:rgba(45,26,74,0.7);color:#c4a0f4;border:1px solid rgba(45,26,74,0.4)}
+.dm-note{background:rgba(122,26,26,0.1);border:1px solid rgba(122,26,26,0.3);border-radius:3px;padding:.5rem .75rem;font-size:12.5px;font-style:italic;color:#f4c4c4;margin-top:.5rem}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.shop-card{background:rgba(26,18,8,0.6);border:1px solid rgba(160,128,64,0.2);border-radius:3px;padding:.6rem .75rem}
+.shop-name{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--p1);margin-bottom:.2rem}
+.shop-keeper{font-size:11.5px;color:var(--p3);font-style:italic;margin-bottom:.3rem}
+.shop-flavour{font-size:11.5px;color:var(--p2);font-style:italic}
+.notes-area{background:rgba(20,15,8,0.5);border:1px solid rgba(160,128,64,0.2);border-radius:3px;padding:.5rem .75rem;font-family:'Crimson Pro',serif;font-size:13px;color:var(--p2);min-height:60px;width:100%;resize:vertical;outline:none;line-height:1.6;margin-top:.5rem}
+.notes-area:focus{border-color:var(--gold2)}
+
+/* DISTRICT LEGEND */
+.legend{max-width:1000px;margin:0 auto;padding:.75rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--p3);cursor:pointer;padding:4px 10px;border-radius:2px;border:1px solid rgba(160,128,64,0.2);transition:all .2s}
+.legend-item:hover{border-color:var(--gold2);color:var(--p1)}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* PLAYER / DM MODE TOGGLES */
+/* By default, dm-only content is shown (DM view).
+   When body has .player-mode, dm-only is hidden, player-only revealed. */
+.player-only{display:none}
+body.player-mode .dm-only{display:none !important}
+body.player-mode .player-only{display:block}
+body.player-mode .player-only.inline{display:inline}
+body.player-mode .player-only.npc-row{display:flex}
+
+@media(max-width:700px){.panel-grid{grid-template-columns:1fr}.shop-grid{grid-template-columns:1fr}}
+
+/* Polygon district hotspots: no rectangular border, hover shows inside the clipped shape */
+.hotspot.district{border:0 !important;background:transparent}
+.hotspot.district:hover{background:rgba(201,168,76,0.18)}
+
+/* Always-visible map labels (for hotspots that AREN'T pre-labelled on the map image) */
+.hotspot-label.always-on{color:rgba(255,255,255,0.9) !important;font-weight:600;letter-spacing:.8px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Aeloria Crossroads</div>
+    <div style="color:var(--p3);font-size:11px;font-style:italic;margin-top:2px">Interactive Aeloria City Map · Click any district or location</div>
+  </div>
+  <div style="display:flex;gap:.5rem;align-items:center">
+    <span class="dm-badge" id="mode-badge">DM VIEW</span>
+    <a href="index.html" class="back-btn" id="back-btn">← DM Site</a>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item" onclick="showLocation('merchants_rise')"><div class="legend-dot" style="background:#8a6a1a"></div>Merchants Rise</div>
+  <div class="legend-item" onclick="showLocation('high_spires')"><div class="legend-dot" style="background:#2d5a8a"></div>High Spires District</div>
+  <div class="legend-item" onclick="showLocation('ashgate_slums')"><div class="legend-dot" style="background:#5a2a0a"></div>Ashgate Slums</div>
+  <div class="legend-item" onclick="showLocation('copper_light')"><div class="legend-dot" style="background:#4a6a2a"></div>Copper Light Ward</div>
+  <div class="legend-item" onclick="showLocation('city_hall')"><div class="legend-dot" style="background:#6a3a6a"></div>City Hall</div>
+  <div class="legend-item" onclick="showLocation('grand_bazaar')"><div class="legend-dot" style="background:#8a5a0a"></div>Grand Bazaar</div>
+  <div class="legend-item" onclick="showLocation('wayfarers_rest')"><div class="legend-dot" style="background:#0a4a3a"></div>Wayfarer's Rest</div>
+  <div class="legend-item" onclick="showLocation('pigs_head')"><div class="legend-dot" style="background:#6a1a1a"></div>Pig's Head Inn</div>
+  <div class="legend-item" onclick="showLocation('vaelorans_tower')"><div class="legend-dot" style="background:#3a1a5a"></div>Spire of the Silver Eclipse</div>
+  <div class="legend-item" onclick="showLocation('scholars_circle')"><div class="legend-dot" style="background:#2a4a7a"></div>Scholars' Circle</div>
+  <div class="legend-item" onclick="showLocation('temple_luminos')"><div class="legend-dot" style="background:#0a3a5a"></div>Temple of Luminos</div>
+  <div class="legend-item" onclick="showLocation('oleary_stables')"><div class="legend-dot" style="background:#3a4a1a"></div>O'Leary's Stables</div>
+  <div class="legend-item" onclick="showLocation('kolts_depot')"><div class="legend-dot" style="background:#5a3a10"></div>Kolt's Depot</div>
+</div>
+
+<!-- MAP WITH HOTSPOTS -->
+<div class="map-wrapper" id="map-wrapper">
+  <img class="map-img" src="aeloria_map.jpg" alt="Aeloria Crossroads city map" id="map-img">
+
+  <!-- DISTRICT ZONES (percentage-based for responsiveness) -->
+  <!-- NW: Merchants Rise -->
+  <div class="hotspot district" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(18.2% 11.2%, 47.5% 11.7%, 47.8% 34.9%, 40.2% 39.8%, 34.7% 45%, 12.9% 45.4%, 12.4% 20.6%);-webkit-clip-path:polygon(18.2% 11.2%, 47.5% 11.7%, 47.8% 34.9%, 40.2% 39.8%, 34.7% 45%, 12.9% 45.4%, 12.4% 20.6%)" onclick="showLocation('merchants_rise')" title="Merchants Rise">
+  </div>
+
+  <!-- NE: High Spires District -->
+  <div class="hotspot district" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(50.8% 11.9%, 80.2% 11.5%, 86.2% 21.2%, 85.6% 46.3%, 62.9% 46.5%, 57.8% 40.1%, 49.9% 35.4%);-webkit-clip-path:polygon(50.8% 11.9%, 80.2% 11.5%, 86.2% 21.2%, 85.6% 46.3%, 62.9% 46.5%, 57.8% 40.1%, 49.9% 35.4%)" onclick="showLocation('high_spires')" title="High Spires District">
+  </div>
+
+  <!-- SW: Ashgate Slums -->
+  <div class="hotspot district" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(12.8% 47.5%, 35.4% 47%, 39.6% 55.4%, 47.5% 59.3%, 47.8% 86.8%, 19.4% 87.9%, 12.5% 79.1%);-webkit-clip-path:polygon(12.8% 47.5%, 35.4% 47%, 39.6% 55.4%, 47.5% 59.3%, 47.8% 86.8%, 19.4% 87.9%, 12.5% 79.1%)" onclick="showLocation('ashgate_slums')" title="Ashgate Slums">
+  </div>
+
+  <!-- SE: Copper Light Ward -->
+  <div class="hotspot district" style="left:0;top:0;width:100%;height:100%;clip-path:polygon(62.6% 47.8%, 86.2% 47.8%, 86.4% 78.6%, 78.5% 87.5%, 49.7% 87.1%, 49.8% 59.9%, 58.2% 56.1%);-webkit-clip-path:polygon(62.6% 47.8%, 86.2% 47.8%, 86.4% 78.6%, 78.5% 87.5%, 49.7% 87.1%, 49.8% 59.9%, 58.2% 56.1%)" onclick="showLocation('copper_light')" title="Copper Light Ward">
+  </div>
+
+  <!-- CENTRE: City Hall -->
+  <div class="hotspot building" style="left:45.6%;top:37.9%;width:11%;height:16.7%" onclick="showLocation('city_hall')" title="City Hall">
+  </div>
+
+  <!-- Grand Bazaar (inner NW) -->
+  <div class="hotspot building" style="left:39.5%;top:23.1%;width:6%;height:6.6%" onclick="showLocation('grand_bazaar')" title="Grand Bazaar">
+  </div>
+
+  <!-- Wayfarer's Rest (inner E) -->
+  <div class="hotspot building" style="left:72.3%;top:40.1%;width:6.4%;height:7.6%" onclick="showLocation('wayfarers_rest')" title="Wayfarer's Rest">
+  </div>
+
+  <!-- Pig's Head (SW, Ashgate) -->
+  <div class="hotspot building" style="left:30.4%;top:60.6%;width:6.7%;height:5.6%" onclick="showLocation('pigs_head')" title="Pig's Head Inn">
+  </div>
+
+  <!-- Spire of the Silver Eclipse (NE corner) -->
+  <div class="hotspot building" style="left:70%;top:11.2%;width:8.7%;height:11.7%" onclick="showLocation('vaelorans_tower')" title="Spire of the Silver Eclipse">
+  </div>
+
+  <!-- Scholars' Circle -->
+  <div class="hotspot building" style="left:60%;top:26%;width:6.5%;height:5%" onclick="showLocation('scholars_circle')" title="Scholars' Circle">
+    <div class="hotspot-label always-on" style="font-size:8px">Scholars' Circle</div>
+  </div>
+
+  <!-- O'Leary's Stables -->
+  <div class="hotspot building" style="left:46.3%;top:9.4%;width:5.5%;height:6.1%" onclick="showLocation('oleary_stables')" title="O'Leary's Stables">
+    <div class="hotspot-label always-on" style="font-size:8px">Stables</div>
+  </div>
+
+  <!-- Ironwell Forge (Merchants Rise) -->
+  <div class="hotspot building" style="left:30%;top:29%;width:5.5%;height:5%" onclick="showLocation('ironwell_forge')" title="Ironwell Forge">
+  </div>
+
+  <div class="hotspot building" style="left:73.4%;top:69.1%;width:5.2%;height:7.6%" onclick="showLocation('temple_luminos')" title="Temple of Luminos">
+    <div class="hotspot-label always-on" style="font-size:8px">Temple of Luminos</div>
+  </div>
+
+  <div class="hotspot building" style="left:39%;top:19.1%;width:3.9%;height:4.3%" onclick="showLocation('kolts_depot')" title="Kolt's Depot">
+    <div class="hotspot-label always-on" style="font-size:8px">Kolt's Depot</div>
+  </div>
+
+</div>
+
+<!-- INFO PANELS -->
+<div class="info-panel">
+
+  <!-- MERCHANTS RISE -->
+  <div class="panel-card" id="loc-merchants_rise">
+    <div class="panel-header">
+      <div><div class="panel-name">Merchants Rise</div><div class="panel-sub">Northwest District · Trade & Craft</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The commercial heart of Aeloria. Wide cobbled streets lined with workshops, storefronts, and trading houses. The smell of hot metal from the Ironwell Forge drifts through the quarter. Merchants from across Eldoria maintain offices here. During the day it is loud, bustling, and relentlessly mercantile.</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Energetic by day, quieter at night but never fully dark. The wealthy merchants here have private guards. Occasional guild disputes spill into the streets.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av">DI</div><div><div class="npc-name">Durnan Ironwell</div><div class="npc-body">Dwarf. Blacksmith. Ironwell Forge. Broad, soot-covered, calm but intense. "You want cheap? Go elsewhere."</div></div></div>
+        </div>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGH SPIRES DISTRICT -->
+  <div class="panel-card" id="loc-high_spires">
+    <div class="panel-header">
+      <div><div class="panel-name">High Spires District</div><div class="panel-sub">Northeast District · Wealth, Power & Arcana</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The most affluent quarter of Aeloria. Home to nobles, wealthy scholars, arcane practitioners, and the powerful. Streets are well-maintained and guarded. Towers of stone rise above the roofline — most notably the Spire of the Silver Eclipse, Vaeloran's iconic landmark. The air feels different here: cleaner, quieter, watched.</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Polished and reserved. Guards are private, professional, and observant. Not hostile to visitors, but scrutinising. Residents value discretion above all.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <!-- Vaeloran — public version -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a1a3a">VD</div><div><div class="npc-name">Vaeloran Duskwhisper</div><div class="npc-body">Archmage. The party's patron. Resides at the Spire of the Silver Eclipse. Calm, measured, eccentric — always seems to know more than he says.</div></div></div>
+          <!-- Vaeloran — DM version -->
+          
+
+          <!-- Taren — public version -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a2010">TM</div><div><div class="npc-name">Taren Myles</div><div class="npc-body">Vaeloran's researcher. Older, ink-stained hands. Often seen poring over runic charts in the Spire's library.</div></div></div>
+          <!-- Taren — DM version -->
+          
+
+          <!-- Lyssandra — public version -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#0f4a3a">LV</div><div><div class="npc-name">Lyssandra Vale</div><div class="npc-body">Vaeloran's apprentice. Returned to the Spire after the meteor incident. Seems well, by all accounts.</div></div></div>
+          <!-- Lyssandra — DM version -->
+          
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- ASHGATE SLUMS -->
+  <div class="panel-card" id="loc-ashgate_slums">
+    <div class="panel-header">
+      <div><div class="panel-name">Ashgate Slums</div><div class="panel-sub">Southwest District · The City's Underbelly</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The roughest district in Aeloria. Cramped buildings lean against each other for support. Alleys twist unpredictably. The smell of ash, old ale, and refuse. But there is a community here — people who know each other, who look out for their own, and who keep secrets as a matter of survival. Not dangerous if you know how to carry yourself. Very dangerous if you don't.</div></div>
+        <!-- Player-facing key locations -->
+        <div class="panel-section player-only"><div class="section-label">Key Locations</div><div class="section-body">Pig's Head Inn · Various tenements and tradesmen's halls · Old drainage tunnels run beneath the district (so the locals say)</div></div>
+        <!-- DM key locations -->
+        
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Watchful. Residents notice newcomers immediately. The city watch patrols here only in pairs.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <!-- Gerald — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a1a08">GR</div><div><div class="npc-name">Gerald</div><div class="npc-body">Owner of the Pig's Head Inn. Greying, sharp eyes behind a friendly smile. "Sarah doesn't send fools." Has work available if you're trustworthy.</div></div></div>
+          <!-- Gerald — DM -->
+          
+
+          <!-- Rulden — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#3a2010">RM</div><div><div class="npc-name">Rulden Marr</div><div class="npc-body">A figure of influence in the back rooms of the Pig's Head. Connections throughout Aeloria. Sent Orin a warning letter signed only "R."</div></div></div>
+          <!-- Rulden — DM -->
+          
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- COPPER LIGHT WARD -->
+  <div class="panel-card" id="loc-copper_light">
+    <div class="panel-header">
+      <div><div class="panel-name">Copper Light Ward</div><div class="panel-sub">Southeast District · Faith, Healing & Residence</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A quieter, more residential quarter. Moderate wealth — craftspeople, healers, clergy, and ordinary citizens. The Temple of Luminos is the district's most prominent landmark. Copper lanterns light the streets at night, giving the ward its name. There is a sense of genuine community here — neighbours who know each other, shared gardens between buildings.</div></div>
+        <!-- Atmosphere — public -->
+        <div class="panel-section player-only"><div class="section-label">Atmosphere</div><div class="section-body">Calm, warm, approachable. Children play in the streets. The temple bell rings at dawn and dusk. The most welcoming district in Aeloria.</div></div>
+        <!-- Atmosphere — DM -->
+        
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <!-- Alric — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#1a2a3a">AD</div><div><div class="npc-name">High Priest Alric Dawnveil</div><div class="npc-body">Lightbearer of Aeloria. Silver hair, calm authority. "Light does not blind… it reveals."</div></div></div>
+          <!-- Alric — DM -->
+          
+
+          <!-- Seraphine — public (party met her) -->
+          <div class="npc-row"><div class="npc-av" style="background:#1a3a2a">SV</div><div><div class="npc-name">Dawnwarden Seraphine Vale</div><div class="npc-body">Stern, disciplined. Guided Orin not to stop searching for Merric. "Faith is not comfort. It is commitment."</div></div></div>
+
+          <!-- Kaelen — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#1a2a2a">KB</div><div><div class="npc-name">Kaelen Brightmere</div><div class="npc-body">Scholar-historian among the temple clergy. Quiet, observant. "Truth leaves patterns… if you know where to look."</div></div></div>
+          <!-- Kaelen — DM -->
+          
+
+          <!-- Mira — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a1a3a">AS</div><div><div class="npc-name">Anwen Solwen</div><div class="npc-body">Confession keeper at the temple. Calm, composed, discreet. "What is said in light… remains in light."</div></div></div>
+          <!-- Mira — DM -->
+          
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- CITY HALL -->
+  <div class="panel-card" id="loc-city_hall">
+    <div class="panel-header">
+      <div><div class="panel-name">City Hall</div><div class="panel-sub">City Centre · The Seat of Aelorian Power</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The largest building in Aeloria, situated at the exact crossroads of the city's main thoroughfares. A grand stone structure with a tall central spire. Home to the Council of Five, administrative offices, public records, and the offices of the Townmaster. All roads in Aeloria lead here — literally and politically.</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Busy, bureaucratic, and carefully neutral. Everyone here represents something. Conversations are diplomatic by default. The building is impressive — designed to remind visitors of Aeloria's independence.</div></div>
+      </div>
+      <div>
+        <!-- Player view: generic council blurb only -->
+        <div class="panel-section player-only">
+          <div class="section-label">The Council of Five</div>
+          <div class="section-body">Aeloria is governed by a Council of Five seats — Merchant Consortium, Artisans &amp; Guilds, Citizens' Assembly, Scholars &amp; Arcane Assembly, and City Watch &amp; Defence. The party has not yet been formally introduced to its members.</div>
+        </div>
+        <div class="panel-section player-only">
+          <div class="section-label">Townmaster</div>
+          <div class="npc-row player-only"><div class="npc-av" style="background:#1a3a2a">OS</div><div><div class="npc-name">Oskar — Townmaster</div><div class="npc-body">Goliath. Battle axe across his back. Hired the party for the gnoll job. Direct, fair, protective of Aeloria.</div></div></div>
+        </div>
+        <!-- DM view: full council roster -->
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAND BAZAAR -->
+  <div class="panel-card" id="loc-grand_bazaar">
+    <div class="panel-header">
+      <div><div class="panel-name">Grand Bazaar</div><div class="panel-sub">Central District · If it exists, it's here</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-section" style="padding:0 0 .75rem"><div class="section-label">Read Aloud</div><div class="section-body" style="font-style:italic">"The Grand Bazaar sprawls across the central district in a riot of colour and sound. Canvas awnings stretch overhead, filtering sunlight into shifting patterns across cobbled streets. Merchants shout over one another, coins clink, fabrics ripple in the breeze, and the scent of spices, metal, and incense fills the air. If it can be bought, bartered, or stolen… it's here."</div></div>
+    <div class="shop-grid">
+      <div class="shop-card" style="border-left:3px solid var(--gold2)">
+        <div class="shop-name">🔨 Ironwell Forge</div>
+        <div class="shop-keeper">Durnan Ironwell — Dwarf male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Weapons, armour, shields, custom work. Quality over speed.</div>
+        <div class="shop-flavour">"You want cheap? Go elsewhere. You want it to last? Stay."</div>
+      </div>
+      <div class="shop-card" style="border-left:3px solid #6a3a8a">
+        <div class="shop-name">🔮 The Astral Relicarium</div>
+        <div class="shop-keeper">Velisra Thorne — Elf female · <span style="color:#f4c4c4;font-size:10px">Party has visited</span></div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Spell scrolls, arcane focuses, minor enchanted items, magical trinkets.</div>
+        <div class="shop-flavour">"Magic chooses its wielder… not the other way around."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧪 Bubblemint & Brass</div>
+        <div class="shop-keeper">Fizzwick Tumblegear — Gnome male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Healing potions, experimental brews, alchemical items (acid, fire vials).</div>
+        <div class="shop-flavour">"Safe? No. Effective? Absolutely!"</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧵 Silken Veil Outfitters</div>
+        <div class="shop-keeper">Marielle Voss — Human female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Fine clothing, cloaks with concealing pockets, noble attire, subtle disguises.</div>
+        <div class="shop-flavour">"Clothing is the first lie people believe."</div>
+      </div>
+      <!-- Edrin Vale shopkeeper line: split player vs DM -->
+      <div class="shop-card" style="border-left:3px solid var(--red)">
+        <div class="shop-name">🪶 The Gilded Quill</div>
+        <div class="shop-keeper player-only">Edrin Vale — Half-elf male</div>
+        
+        <!-- Description: split — players see standard shop, DM sees forged-docs hint -->
+        <div class="section-body player-only" style="font-size:12px;margin-bottom:.3rem">Maps, books, contracts, fine paperwork.</div>
+        
+        <div class="shop-flavour">"Ink can change the world… if used carefully."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🗡 Second Bite Armory</div>
+        <div class="shop-keeper">Krag — Half-Orc male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Used weapons, questionable-origin gear, hidden "off-menu" items.</div>
+        <div class="shop-flavour">"Everything here's got a story. Some better not told."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧂 Spicewind Traders</div>
+        <div class="shop-keeper">Suri al'Kesh — Human female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Rare spices, exotic food, trade curiosities from across Eldoria.</div>
+        <div class="shop-flavour">"Taste the world, my friend."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🐎 Tack & Trot Supplies</div>
+        <div class="shop-keeper">Berrin Holt — Halfling male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Saddles, travel packs, rope, torches, rations, animal equipment.</div>
+        <div class="shop-flavour">"If you're leavin' the city, you'll want this."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🕯 Ember & Ash Curios</div>
+        <div class="shop-keeper">Nalia Duskryn — Tiefling female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Bone charms, old relic fragments, "possibly magical" items.</div>
+        <div class="shop-flavour">"Everything here has a past… some still whisper."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🍞 Golden Crust Bakery</div>
+        <div class="shop-keeper">Tomas Feld — Human male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Fresh bread, meat pies, sweet pastries. Social hub and rumour exchange.</div>
+        <div class="shop-flavour">"Best bread in Aeloria — or your coin back!"</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">💍 The Silver Strand</div>
+        <div class="shop-keeper">Liora Fen — Half-elf female</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Jewellery, rings (some enchanted), decorative items.</div>
+        <div class="shop-flavour">"Beauty has power. Choose wisely."</div>
+      </div>
+      <div class="shop-card">
+        <div class="shop-name">🧰 Cog & Cask</div>
+        <div class="shop-keeper">Harkin Bale — Human male</div>
+        <div class="section-body" style="font-size:12px;margin-bottom:.3rem">Tools, lockpicks (quietly sold), thieves' kits, healer's kits.</div>
+        <div class="shop-flavour">"If it breaks, I've got what fixes it."</div>
+      </div>
+    </div>
+    
+    
+  </div>
+
+  <!-- WAYFARER'S REST -->
+  <div class="panel-card" id="loc-wayfarers_rest">
+    <div class="panel-header">
+      <div><div class="panel-name">Wayfarer's Rest</div><div class="panel-sub">Inner Trade Ward · Respectable · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Polished dark wood interior. Soft lighting, clean linens, private booths with sound-dampening curtains. Stable is guarded and well-run. Staff are professional, observant, and loyal. Upper-middle clientele — merchants, minor nobles, guild officials, scholars, well-paid adventurers. This is where people talk business without wanting trouble.</div></div>
+        <div class="panel-section"><div class="section-label">Atmosphere</div><div class="section-body">Calm, refined, comfortable. Not flashy but quality throughout. The kind of place where conversations stay quiet and deals get made. Violence here is unthinkable — Sarah ensures that absolutely.</div></div>
+        
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPC</div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a3a2a">SR</div><div><div class="npc-name">Sarah</div><div class="npc-body">Half-Orc. Early 40s. Broad-shouldered, tidy braid, dry humour. Trustworthy, no-nonsense, remembers every face. Keeps secrets. Never profits from crime. Directed Orin toward the Pig's Head when he needed more flexible answers.</div><div style="margin-top:4px"><span class="badge b-teal">trusted</span><span class="badge b-grey">information node</span></div></div></div>
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- PIG'S HEAD INN -->
+  <div class="panel-card" id="loc-pigs_head">
+    <div class="panel-header">
+      <div><div class="panel-name">The Pig's Head Inn</div><div class="panel-sub">Ashgate Slums · A working-class inn · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Outer trade ring, working-class district. Loud, crowded, cheap ale, good gossip. Clientele: caravan guards, labourers, messengers, off-duty city watch. The kind of place where nobody looks too closely at anyone else.</div></div>
+        <!-- Layout — public version -->
+        <div class="panel-section player-only"><div class="section-label">Layout</div><div class="section-body"><strong>Ground floor:</strong> Main taproom — loud, smoky, 20+ regulars at any given time.<br><strong>Back room:</strong> A private meeting space. Reached by Gerald's introduction or, occasionally, by a note signed with a single letter.<br><strong>Basement:</strong> The locals say there are old drainage tunnels running beneath the Slums. Whether the inn connects to them is a local rumour.</div></div>
+        <!-- Layout — DM version -->
+        
+        <!-- The K note — public version -->
+        <div class="panel-section player-only"><div class="section-label">The "K" Note</div><div class="section-body">A note signed only "K" was referenced in writings the party found in the gnoll den. It seems to grant access to the Pig's Head back rooms without Gerald's screening — whoever "K" is, their authority is recognised here. Identity unknown.</div></div>
+        <!-- The K note — DM version -->
+        
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <!-- Gerald — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a1808">GR</div><div><div class="npc-name">Gerald</div><div class="npc-body">Human. Around fifty. Greying, sharp eyes behind a friendly smile. Owns the Pig's Head and seems to know everyone passing through. "Sarah doesn't send fools." "Careful. Walls here listen."<br><strong>Available job:</strong> A missing acquaintance — still untouched by the party.</div></div></div>
+          <!-- Gerald — DM -->
+          
+
+          <!-- Rulden — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#3a2010">RM</div><div><div class="npc-name">Rulden Marr</div><div class="npc-body">A figure of influence accessible through the back rooms. Calm, calculating, well-connected. Sent Orin a warning letter after he started asking questions. Orin recognises something deeper about him.</div><div style="margin-top:4px"><span class="badge b-gold">Orin's lead</span></div></div></div>
+          <!-- Rulden — DM -->
+          
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- SPIRE OF THE SILVER ECLIPSE -->
+  <div class="panel-card" id="loc-vaelorans_tower">
+    <div class="panel-header">
+      <div>
+        <div class="panel-name">Spire of the Silver Eclipse</div>
+        <div class="panel-sub player-only">High Spires District · Vaeloran's tower · One of Aeloria's most recognisable landmarks</div>
+        
+      </div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">One of Aeloria's most recognisable landmarks. A spire of pale grey stone that catches moonlight in a way that makes it seem almost to glow. The interior feels larger than the exterior. Swirling orbs of light float between rows of stacked tomes. Mechanical quills jot notes on parchment without hands. Shelves slide quietly to make way as you pass. A faint scent of old paper and candlewax. In one corner, an hourglass drips not sand but shimmering dust that flows upward instead of down.</div></div>
+        <!-- Known Layout — public version -->
+        <div class="panel-section player-only"><div class="section-label">What the Party Has Seen</div><div class="section-body"><strong>Ground floor:</strong> Reception, waiting area, Taren Myles's workspace.<br><strong>Upper floors:</strong> Vaeloran's library and study (the party has been here).<br><strong>Lower levels:</strong> Closed to visitors.</div></div>
+        <!-- Known Layout — DM version -->
+        
+      </div>
+      <div>
+        <!-- Player view: nothing here beyond a generic note -->
+        <div class="panel-section player-only">
+          <div class="section-label">Notable Residents</div>
+          <div class="section-body">Vaeloran lives and works here. His apprentice Lyssandra has returned to him after the meteor incident. His researcher Taren Myles can usually be found in the library.</div>
+        </div>
+        <!-- DM view: full secret content -->
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHOLARS' CIRCLE -->
+  <div class="panel-card" id="loc-scholars_circle">
+    <div class="panel-header">
+      <div>
+        <div class="panel-name">The Scholars' Circle</div>
+        <div class="panel-sub player-only">High Spires District · Eldoria's most prestigious arcane institution · Sylas's alma mater</div>
+        
+      </div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Eldoria's most prestigious arcane institution — an independent society of scholars and practitioners of magic. The building itself is a modest stone hall by High Spires standards, its front doors flanked by two silver lanterns that never go out. Inside: reading rooms, lecture halls, the <em>Vellum Room</em> (senior members only), and workshops for the various sub-disciplines. Publicly collegial, privately competitive.</div></div>
+        <div class="panel-section"><div class="section-label">Character</div><div class="section-body">Fellows range from young scholarship students to elder mages who have not left the building in years. The Circle is fiercely proud of its independence — it holds no Council seat by choice, though the Aeloria Council has offered one repeatedly.</div></div>
+        <div class="panel-section player-only"><div class="section-label">Sylas's Connection</div><div class="section-body">Sylas earned his scholarship here and graduated top of his class. His mentor was Professor <strong>Vaelith Morgrave</strong> (Illusion). He remains an alumnus in good standing.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Notable Members</div><div class="section-body">
+          <div class="npc-row"><div class="npc-av" style="background:#2a2a4a">VM</div><div><div class="npc-name">Professor Vaelith Morgrave</div><div class="npc-body">Illusion. Sylas's former mentor. Quiet, meticulous, respected.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a1a5a">VD</div><div><div class="npc-name">Vaeloran Duskwhisper</div><div class="npc-body">Senior colleague. Has never accepted a Circle office. Modest presence, deep influence.</div></div></div>
+        </div></div>
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPLE OF LUMINOS -->
+  <div class="panel-card" id="loc-temple_luminos">
+    <div class="panel-header">
+      <div><div class="panel-name">Temple of Luminos</div><div class="panel-sub">Copper Light Ward · Faith & Truth</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description (Read Aloud)</div><div class="section-body" style="font-style:italic">"White stone rises above the surrounding streets, polished smooth and veined with faint gold. Tall, narrow windows catch the sunlight, casting warm beams across the interior. The air smells faintly of incense and clean linen. It is quiet here — not empty, but peaceful. A place where the noise of the city feels… distant."</div></div>
+        <div class="panel-section"><div class="section-label">Hierarchy</div><div class="section-body">Lightbearer (Alric Dawnveil) → Dawnwardens (Seraphine Vale, Halven Tor) → Luminars (Liora Sunfall, Tomas Eldrin, Kaelen Brightmere, Anwen Solwen) → Acolytes (Eryn Feld)</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key Clergy</div>
+          <!-- Alric — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#1a2a3a">AD</div><div><div class="npc-name">High Priest Alric Dawnveil</div><div class="npc-body">Late 60s. Silver hair. "Light does not blind… it reveals." Kind, discerning, careful with his words.</div></div></div>
+          <!-- Alric — DM -->
+          
+
+          <!-- Seraphine — same for both (party met her) -->
+          <div class="npc-row"><div class="npc-av" style="background:#1a1a2a">SE</div><div><div class="npc-name">Seraphine Vale</div><div class="npc-body">Stern, unwavering. Told Orin not to stop. "Faith is not comfort. It is commitment."</div></div></div>
+
+          <!-- Kaelen — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#1a2a2a">KB</div><div><div class="npc-name">Kaelen Brightmere</div><div class="npc-body">Quiet, observant scholar. "Truth leaves patterns… if you know where to look."</div></div></div>
+          <!-- Kaelen — DM -->
+          
+
+          <!-- Mira — public -->
+          <div class="npc-row player-only"><div class="npc-av" style="background:#2a2a1a">AS</div><div><div class="npc-name">Anwen Solwen</div><div class="npc-body">Calm, composed confession keeper. Discreet by both vocation and temperament.</div></div></div>
+          <!-- Mira — DM -->
+          
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- O'LEARY'S STABLES -->
+  <div class="panel-card" id="loc-oleary_stables">
+    <div class="panel-header">
+      <div><div class="panel-name">O'Leary's Horseshoe Stables</div><div class="panel-sub">North Gate · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">Located at the northern gate of Aeloria — the main entry and exit point for caravans and travellers heading north toward the Aurora Peaks. Busy, practical, smells of hay and horses. A good place to hear road news.</div></div>
+        <!-- Current status — public version (no Aurum Dominion connection) -->
+        <div class="panel-section player-only"><div class="section-label">Current Status</div><div class="section-body">Matilda (Torren's horse) was lost on the Lyssandra hunt. Torren paid the O'Learys 5gp to search, and they found her tracks leading north. No sign yet. The north road leads toward Aurora Peaks territory.</div></div>
+        <!-- Current status — DM version -->
+        
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPCs</div>
+          <div class="npc-row"><div class="npc-av" style="background:#2a3010">SO</div><div><div class="npc-name">Steve O'Leary</div><div class="npc-body">Owner. Practical, reliable. Knows everyone who passes through the north gate. Good source of road intelligence.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2010">JO</div><div><div class="npc-name">Jacob O'Leary</div><div class="npc-body">Steve's son. Stable boy. Eager, observant.</div></div></div>
+          <div class="npc-row"><div class="npc-av" style="background:#1a2010">HO</div><div><div class="npc-name">Harry O'Leary</div><div class="npc-body">Steve's son. Head trainer.</div></div></div>
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- IRONWELL FORGE -->
+  <div class="panel-card" id="loc-ironwell_forge">
+    <div class="panel-header">
+      <div><div class="panel-name">Ironwell Forge</div><div class="panel-sub">Merchants Rise · Smithy · Party has visited</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">The finest smithy in Aeloria. The sound and heat of the forge is apparent half a street away. Durnan's work is known across the Aelorian Territories — merchants travel specifically to commission from him. The shop floor is clean and well-organised; a dwarf who takes pride in craft cannot tolerate disorder.</div></div>
+        <div class="panel-section"><div class="section-label">Wares</div><div class="section-body">Weapons (martial + simple) · Armour (chain, scale, shields) · Custom work (higher price, better quality, 1-week lead time) · Weapon sharpening and armour repair</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Key NPC</div>
+          <div class="npc-row"><div class="npc-av" style="background:#3a2010">DI</div><div><div class="npc-name">Durnan Ironwell</div><div class="npc-body">Dwarf. Broad, soot-covered, calm but intense. Takes pride in quality over speed. Has no patience for haggling or rushed work. Absolutely trustworthy — he does not deal in stolen goods or guild politics.</div><div style="margin-top:4px"><span class="badge b-teal">honest dealer</span></div></div></div>
+        </div>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- KOLT'S DEPOT -->
+  <div class="panel-card" id="loc-kolts_depot">
+    <div class="panel-header">
+      <div><div class="panel-name">Kolt's Depot</div><div class="panel-sub">Caravan depot · Within Aeloria · Where the Wayward Company signed the Ironhold job</div></div>
+      <button class="close-btn" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-grid">
+      <div>
+        <div class="panel-section"><div class="section-label">Description</div><div class="section-body">A working caravan depot near the Grand Bazaar. Wagons line the yard, oxen and draft horses in the holding pens, traders shouting over each other to fix loads and prices. Run by old Kolt and his crew. The staging point for most caravans heading south to Ironhold or east toward the Crimson Outpost.</div></div>
+      </div>
+      <div>
+        <div class="panel-section"><div class="section-label">Status</div><div class="section-body"><span class="badge b-grey">Visited</span> The Wayward Company signed here for the Ironhold escort.</div></div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+</div><!-- end info-panel -->
+
+<script>
+// Detect mode from URL early so we never flash DM content to a player view.
+(function setMode(){
+  var isPlayer = true; // public copy is player-only (Update 65b)
+  if(isPlayer){
+    document.body.classList.add('player-mode');
+  }
+})();
+
+window.addEventListener('DOMContentLoaded', function(){
+  var isPlayer = document.body.classList.contains('player-mode');
+  var badge = document.getElementById('mode-badge');
+  var back = document.getElementById('back-btn');
+  if(isPlayer){
+    if(badge){ badge.textContent = 'PLAYER VIEW'; badge.style.background = '#0d3d30'; badge.style.color = '#a0d4c4'; }
+    if(back){ back.textContent = '← Players Site'; back.setAttribute('href', 'players.html'); }
+  }
+  // Hide the back link when this map is embedded in an iframe (DM dashboard
+  // or player site). Standalone viewers still see it.
+  if(window.self !== window.top && back){ back.style.display = 'none'; }
+});
+
+function showLocation(id) {
+  document.querySelectorAll('.panel-card').forEach(function(p){ p.classList.remove('active'); });
+  var panel = document.getElementById('loc-' + id);
+  if(panel) {
+    panel.classList.add('active');
+    setTimeout(function(){ panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
+  }
+}
+
+function closePanel() {
+  document.querySelectorAll('.panel-card').forEach(function(p){ p.classList.remove('active'); });
+}
+
+// Notes persistence
+function saveNote(key, val) { localStorage.setItem('eldoria-map-' + key, val); }
+window.addEventListener('load', function(){
+  document.querySelectorAll('.notes-area').forEach(function(el){
+    var saved = localStorage.getItem('eldoria-map-' + el.id.replace('note-',''));
+    if(saved) el.value = saved;
+  });
+});
+
+// ===================================================================
+// CALIBRATION MODE — Aeloria city map
+// Same model as world_map.html: districts = polygons, buildings = rectangles.
+// Activated by ?calibrate URL parameter; DM-only.
+// ===================================================================
+(function calibrationMode(){
+  var isCal = /[?&]calibrate(=|&|$)/.test(location.search);
+  var isPlayer = /[?&]player(=|&|$)/.test(location.search);
+  if (isCal && isPlayer) return;
+
+  var CAL_KEY = 'eldoria-aeloria-calibration';
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function loadSaved(){
+    try { var raw = localStorage.getItem(CAL_KEY); return raw ? JSON.parse(raw) : {}; }
+    catch(e){ return {}; }
+  }
+  function saveAll(data){ try { localStorage.setItem(CAL_KEY, JSON.stringify(data)); } catch(e){} }
+
+  function extractHotspotKey(h){
+    var oc = h.getAttribute('onclick') || '';
+    var m = oc.match(/showLocation\('([^']+)'\)/);
+    return m ? m[1] : null;
+  }
+
+  function parseClipPathPolygon(cp){
+    if (!cp) return null;
+    var m = cp.match(/polygon\(([^)]+)\)/);
+    if (!m) return null;
+    var pts = m[1].split(',').map(function(pair){
+      var pm = pair.trim().match(/(-?[\d.]+)%\s+(-?[\d.]+)%/);
+      return pm ? [parseFloat(pm[1]), parseFloat(pm[2])] : null;
+    }).filter(Boolean);
+    return pts.length >= 3 ? pts : null;
+  }
+
+  function getDistrictPoints(div){
+    var key = extractHotspotKey(div);
+    if (key && saved[key] && Array.isArray(saved[key].points)) {
+      return saved[key].points.map(function(p){ return p.slice(); });
+    }
+    if (key && saved[key] && saved[key].left !== undefined) {
+      var s = saved[key];
+      var l = s.left, t = s.top, w = s.width, h = s.height;
+      return [[l,t],[l+w,t],[l+w,t+h],[l,t+h]];
+    }
+    // No saved data — try the source clip-path first (regions using
+    // left:0;top:0;width:100%;height:100% otherwise fall back to a full-cover
+    // rectangle, which makes every district into a full-map click zone).
+    var sourceClip = div.style.clipPath || div.style.webkitClipPath || '';
+    var sourcePts = parseClipPathPolygon(sourceClip);
+    if (sourcePts) return sourcePts;
+    var dl = parseFloat(div.style.left) || 0;
+    var dt = parseFloat(div.style.top)  || 0;
+    var dw = parseFloat(div.style.width) || 10;
+    var dh = parseFloat(div.style.height) || 10;
+    return [[dl,dt],[dl+dw,dt],[dl+dw,dt+dh],[dl,dt+dh]];
+  }
+
+  function applyDistrictPolygon(div, points){
+    div.style.left='0%'; div.style.top='0%'; div.style.width='100%'; div.style.height='100%';
+    var pathStr = 'polygon(' + points.map(function(p){ return p[0]+'% '+p[1]+'%'; }).join(', ') + ')';
+    div.style.clipPath = pathStr; div.style.webkitClipPath = pathStr;
+    div._districtPoints = points;
+  }
+
+  var saved = loadSaved();
+  var noCal = /[?&]nocal(=|&|$)/.test(location.search);
+
+  if (!noCal) {
+    // BUILDINGS — apply saved rect positions
+    document.querySelectorAll('.hotspot.building').forEach(function(h){
+      var key = extractHotspotKey(h);
+      if (key && saved[key]){
+        var p = saved[key];
+        if (p.left   !== undefined) h.style.left   = p.left   + '%';
+        if (p.top    !== undefined) h.style.top    = p.top    + '%';
+        if (p.width  !== undefined) h.style.width  = p.width  + '%';
+        if (p.height !== undefined) h.style.height = p.height + '%';
+      }
+    });
+    // DISTRICTS — apply saved polygon (clip-path) ONLY if there is saved
+    // calibration data. If nothing is saved, the source inline clip-path is
+    // correct and should not be touched. (Same fragility issue as world_map.html.)
+    document.querySelectorAll('.hotspot.district').forEach(function(div){
+      var key = extractHotspotKey(div);
+      var hasSaved = key && saved[key] && (Array.isArray(saved[key].points) || saved[key].left !== undefined);
+      if (hasSaved) {
+        applyDistrictPolygon(div, getDistrictPoints(div));
+      }
+      // else: keep source inline clip-path as-is
+    });
+  }
+
+  if (!isCal) return; // not in calibration mode — just apply saved positions
+
+  // === CALIBRATION UI BEGINS ===
+  document.documentElement.classList.add('calibrate-mode');
+  var style = document.createElement('style');
+  style.textContent = [
+    '.calibrate-mode .hotspot{border:2px dashed rgba(255,200,0,0.85) !important;background:rgba(255,200,0,0.18) !important;cursor:move !important;z-index:10}',
+    '.calibrate-mode .hotspot.district{border:0 !important;background:transparent !important}',
+    '.calibrate-mode .hotspot.dragging{outline:3px solid #fff !important;z-index:1000}',
+    '.calibrate-mode .hotspot.resizing{outline:3px solid #fff !important;outline-style:dotted !important;z-index:1000}',
+    '.calibrate-mode .hotspot-label{color:rgba(255,255,255,0.95) !important;font-size:10px !important;text-shadow:0 1px 3px rgba(0,0,0,0.95) !important}',
+    '.calibrate-mode .cal-coord-tag{position:absolute;top:-22px;left:0;background:rgba(0,0,0,0.85);color:#ffd060;font-size:10px;font-family:monospace;padding:1px 5px;border-radius:2px;white-space:nowrap;pointer-events:none;z-index:11}',
+    '.calibrate-mode .cal-resize-handle{position:absolute;right:-6px;bottom:-6px;width:12px;height:12px;background:#ffd060;border:2px solid #1a1208;border-radius:2px;cursor:nwse-resize;z-index:12;box-shadow:0 1px 3px rgba(0,0,0,0.6)}',
+    '.calibrate-mode .cal-resize-handle:hover{background:#fff;transform:scale(1.3)}',
+    '#cal-svg-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex{cursor:move;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-vertex:hover{fill:#fff !important}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add{cursor:crosshair;pointer-events:auto}',
+    '.calibrate-mode #cal-svg-overlay .cal-edge-add:hover{fill:rgba(255,255,255,0.95) !important}',
+    '#cal-toolbar{position:fixed;bottom:18px;right:18px;background:rgba(20,15,8,0.97);border:2px solid #ffd060;border-radius:6px;padding:12px;color:#f4edd8;font-family:Cinzel,serif;font-size:11px;z-index:9999;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.6)}',
+    '#cal-toolbar h3{color:#ffd060;font-size:13px;margin-bottom:6px;letter-spacing:1.5px}',
+    '#cal-toolbar .cal-row{margin:6px 0}',
+    '#cal-toolbar button{background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;font-size:10px;letter-spacing:.8px;cursor:pointer;margin:2px 2px 2px 0}',
+    '#cal-toolbar button:hover{background:#ffd060;color:#1a1208}',
+    '#cal-export-pane{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:80vw;max-width:720px;height:70vh;background:#1a1208;border:2px solid #ffd060;border-radius:6px;z-index:10000;padding:20px;color:#f4edd8;font-family:monospace;flex-direction:column}',
+    '#cal-export-pane.open{display:flex}',
+    '#cal-export-pane textarea{flex:1;background:#0a0805;color:#a0d4c4;border:1px solid #5a4820;padding:10px;font-family:Consolas,monospace;font-size:11px;line-height:1.5;border-radius:3px;resize:none;margin-top:10px}',
+    '#cal-status{font-family:Cinzel,serif;font-size:10px;color:#a0d4c4;margin-top:6px}'
+  ].join('\n');
+  document.head.appendChild(style);
+
+  var toolbar = document.createElement('div');
+  toolbar.id = 'cal-toolbar';
+  toolbar.innerHTML =
+    '<h3>🛠 AELORIA CALIBRATION</h3>' +
+    '<div class="cal-row" style="font-size:10px;color:#c0a870;line-height:1.5">Buildings: drag body to move · drag corner to resize.<br>Districts: drag yellow vertex · click white dot on edge to add vertex · right-click vertex to remove.</div>' +
+    '<div class="cal-row">' +
+      '<label><input type="checkbox" id="cal-show-districts" checked> Districts</label> &nbsp; ' +
+      '<label><input type="checkbox" id="cal-show-buildings" checked> Buildings</label>' +
+    '</div>' +
+    '<div class="cal-row">' +
+      '<button onclick="calExport()">📋 Export</button>' +
+      '<button onclick="calReset()">↺ Reset all</button>' +
+      '<button onclick="window.location.href=location.pathname">Exit</button>' +
+    '</div>' +
+    '<div id="cal-status">Ready. <span id="cal-saved-count">' + Object.keys(saved).length + '</span> hotspots calibrated.</div>';
+  document.body.appendChild(toolbar);
+
+  var pane = document.createElement('div');
+  pane.id = 'cal-export-pane';
+  pane.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:#ffd060;font-family:Cinzel,serif;font-size:14px;letter-spacing:1.5px">CALIBRATED POSITIONS — paste back to Claude</h3><button onclick="document.getElementById(\'cal-export-pane\').classList.remove(\'open\')" style="background:#3a2a10;color:#ffd060;border:1px solid #ffd060;padding:5px 9px;border-radius:3px;font-family:Cinzel,serif;cursor:pointer">✕ Close</button></div>' +
+    '<textarea id="cal-export-text" readonly></textarea>' +
+    '<div style="font-size:11px;color:#c0a870;margin-top:8px">Triple-click in the text area to select all, then copy.</div>';
+  document.body.appendChild(pane);
+
+  document.getElementById('cal-show-districts').addEventListener('change', applyVisibility);
+  document.getElementById('cal-show-buildings').addEventListener('change', applyVisibility);
+  function applyVisibility(){
+    var showD = document.getElementById('cal-show-districts').checked;
+    var showB = document.getElementById('cal-show-buildings').checked;
+    document.querySelectorAll('.hotspot').forEach(function(h){
+      var isDistrict = h.classList.contains('district');
+      h.style.display = ((isDistrict && showD) || (!isDistrict && showB)) ? '' : 'none';
+    });
+    document.querySelectorAll('#cal-svg-overlay g').forEach(function(g){
+      g.style.display = showD ? '' : 'none';
+    });
+  }
+
+  var wrapper = document.getElementById('map-wrapper');
+  var svgOverlay = document.createElementNS(SVG_NS, 'svg');
+  svgOverlay.id = 'cal-svg-overlay';
+  svgOverlay.setAttribute('viewBox', '0 0 100 100');
+  svgOverlay.setAttribute('preserveAspectRatio', 'none');
+  wrapper.appendChild(svgOverlay);
+
+  // === DISTRICTS: polygon vertex editing ===
+  document.querySelectorAll('.hotspot.district').forEach(function(div){
+    var key = extractHotspotKey(div);
+    if (!key) return;
+    div.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    div.onclick = null;
+    var points = div._districtPoints || getDistrictPoints(div);
+    applyDistrictPolygon(div, points);
+
+    var g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('data-key', key);
+    svgOverlay.appendChild(g);
+
+    function rebuild(){
+      g.innerHTML = '';
+      var poly = document.createElementNS(SVG_NS, 'polygon');
+      poly.setAttribute('points', points.map(function(p){ return p[0]+','+p[1]; }).join(' '));
+      poly.setAttribute('fill', 'rgba(100,200,255,0.15)');
+      poly.setAttribute('stroke', 'rgba(100,200,255,0.85)');
+      poly.setAttribute('stroke-width', '0.25');
+      poly.setAttribute('stroke-dasharray', '0.5,0.3');
+      poly.setAttribute('vector-effect', 'non-scaling-stroke');
+      poly.style.pointerEvents = 'none';
+      g.appendChild(poly);
+
+      var cx = points.reduce(function(s,p){return s+p[0];}, 0) / points.length;
+      var cy = points.reduce(function(s,p){return s+p[1];}, 0) / points.length;
+      var label = document.createElementNS(SVG_NS, 'text');
+      label.setAttribute('x', cx); label.setAttribute('y', cy);
+      label.setAttribute('fill', '#fff');
+      label.setAttribute('font-family', 'Cinzel,serif');
+      label.setAttribute('font-size', '1.4');
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('paint-order', 'stroke');
+      label.setAttribute('stroke', '#000');
+      label.setAttribute('stroke-width', '0.3');
+      label.style.pointerEvents = 'none';
+      label.textContent = key;
+      g.appendChild(label);
+
+      points.forEach(function(pt, i){
+        var c = document.createElementNS(SVG_NS, 'circle');
+        c.setAttribute('cx', pt[0]); c.setAttribute('cy', pt[1]); c.setAttribute('r', '0.9');
+        c.setAttribute('fill', '#ffd060');
+        c.setAttribute('stroke', '#1a1208');
+        c.setAttribute('stroke-width', '0.25');
+        c.setAttribute('vector-effect', 'non-scaling-stroke');
+        c.setAttribute('class', 'cal-vertex');
+        c.addEventListener('mousedown', function(e){
+          e.preventDefault(); e.stopPropagation();
+          var wr = wrapper.getBoundingClientRect();
+          function onMove(ev){
+            var x = ((ev.clientX - wr.left)/wr.width)*100;
+            var y = ((ev.clientY - wr.top)/wr.height)*100;
+            x = Math.max(0,Math.min(100,x)); y = Math.max(0,Math.min(100,y));
+            points[i] = [Math.round(x*10)/10, Math.round(y*10)/10];
+            applyDistrictPolygon(div, points);
+            rebuild();
+          }
+          function onUp(){
+            document.removeEventListener('mousemove',onMove);
+            document.removeEventListener('mouseup',onUp);
+            saveDistrict(key, points);
+          }
+          document.addEventListener('mousemove',onMove);
+          document.addEventListener('mouseup',onUp);
+        });
+        c.addEventListener('contextmenu', function(e){
+          e.preventDefault();
+          if (points.length <= 3){ alert('A polygon needs at least 3 vertices.'); return; }
+          points.splice(i,1);
+          applyDistrictPolygon(div, points);
+          rebuild();
+          saveDistrict(key, points);
+        });
+        g.appendChild(c);
+      });
+
+      for (var i=0; i<points.length; i++){
+        var p1=points[i], p2=points[(i+1)%points.length];
+        var mid=[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+        var midC = document.createElementNS(SVG_NS, 'circle');
+        midC.setAttribute('cx', mid[0]); midC.setAttribute('cy', mid[1]); midC.setAttribute('r', '0.5');
+        midC.setAttribute('fill', 'rgba(255,255,255,0.7)');
+        midC.setAttribute('stroke', '#1a1208');
+        midC.setAttribute('stroke-width', '0.15');
+        midC.setAttribute('vector-effect', 'non-scaling-stroke');
+        midC.setAttribute('class', 'cal-edge-add');
+        (function(idx, mp){
+          midC.addEventListener('click', function(e){
+            e.preventDefault(); e.stopPropagation();
+            points.splice(idx+1, 0, [mp[0], mp[1]]);
+            applyDistrictPolygon(div, points);
+            rebuild();
+            saveDistrict(key, points);
+          });
+        })(i, mid);
+        g.appendChild(midC);
+      }
+    }
+    rebuild();
+  });
+
+  function saveDistrict(key, points){
+    var data = loadSaved();
+    data[key] = { type:'polygon', points: points.map(function(p){return p.slice();}) };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+
+  // === BUILDINGS: move + resize ===
+  document.querySelectorAll('.hotspot.building').forEach(function(h){
+    var key = extractHotspotKey(h);
+    if (!key) return;
+    h.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); }, true);
+    h.onclick = null;
+
+    var tag = document.createElement('div'); tag.className = 'cal-coord-tag'; h.appendChild(tag);
+    var handle = document.createElement('div'); handle.className = 'cal-resize-handle';
+    handle.title = 'Drag to resize'; h.appendChild(handle);
+    updateTag(h, tag);
+
+    h.addEventListener('mousedown', function(e){
+      if (e.target === handle) return;
+      if (e.target !== h && e.target.classList && !e.target.classList.contains('cal-coord-tag') && !e.target.classList.contains('hotspot-label')) return;
+      e.preventDefault();
+      var wr = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      var grabX = e.clientX - hRect.left, grabY = e.clientY - hRect.top;
+      h.classList.add('dragging');
+      function onMove(ev){
+        var x = ev.clientX - wr.left - grabX;
+        var y = ev.clientY - wr.top  - grabY;
+        var lp = (x/wr.width)*100, tp = (y/wr.height)*100;
+        lp = Math.max(0,Math.min(99,lp)); tp = Math.max(0,Math.min(99,tp));
+        h.style.left = lp.toFixed(1)+'%'; h.style.top = tp.toFixed(1)+'%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+        h.classList.remove('dragging');
+        saveBuilding(key, h);
+      }
+      document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    });
+
+    handle.addEventListener('mousedown', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var wr = wrapper.getBoundingClientRect();
+      var hRect = h.getBoundingClientRect();
+      var leftPx = hRect.left - wr.left, topPx = hRect.top - wr.top;
+      h.classList.add('resizing');
+      function onMove(ev){
+        var nrx = ev.clientX - wr.left, nby = ev.clientY - wr.top;
+        var wp = ((nrx-leftPx)/wr.width)*100, hp = ((nby-topPx)/wr.height)*100;
+        wp = Math.max(1,Math.min(100,wp)); hp = Math.max(1,Math.min(100,hp));
+        h.style.width = wp.toFixed(1)+'%'; h.style.height = hp.toFixed(1)+'%';
+        updateTag(h, tag);
+      }
+      function onUp(){
+        document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+        h.classList.remove('resizing');
+        saveBuilding(key, h);
+      }
+      document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    });
+  });
+
+  function updateTag(h, tag){
+    var key = extractHotspotKey(h);
+    tag.textContent = (key||'?') + ' · L:'+h.style.left+' T:'+h.style.top+' W:'+h.style.width+' H:'+h.style.height;
+  }
+
+  function saveBuilding(key, h){
+    var data = loadSaved();
+    data[key] = {
+      type: 'rect',
+      left:   parseFloat(h.style.left),
+      top:    parseFloat(h.style.top),
+      width:  parseFloat(h.style.width),
+      height: parseFloat(h.style.height)
+    };
+    saveAll(data);
+    document.getElementById('cal-saved-count').textContent = Object.keys(data).length;
+  }
+
+  window.calExport = function(){
+    var data = loadSaved();
+    var lines = [];
+    lines.push('// Aeloria City Map — calibrated positions — paste back to Claude');
+    lines.push('// BUILDING format: building  KEY  left%  top%  width%  height%');
+    lines.push('// DISTRICT format: district  KEY  polygon(x1,y1; x2,y2; ...)  [percentages]');
+    lines.push('');
+    Object.keys(data).sort().forEach(function(k){
+      var p = data[k];
+      if (p.type === 'polygon' && Array.isArray(p.points)){
+        var pts = p.points.map(function(pt){ return pt[0]+','+pt[1]; }).join('; ');
+        lines.push('district  ' + k + '  polygon(' + pts + ')');
+      } else if (p.left !== undefined) {
+        lines.push('building  ' + k + '  ' + p.left + '%  ' + p.top + '%  ' + p.width + '%  ' + p.height + '%');
+      }
+    });
+    document.getElementById('cal-export-text').value = lines.join('\n');
+    document.getElementById('cal-export-pane').classList.add('open');
+    setTimeout(function(){ var t = document.getElementById('cal-export-text'); t.focus(); t.select(); }, 50);
+  };
+
+  window.calReset = function(){
+    if (!confirm('Wipe all saved calibration positions? This cannot be undone.')) return;
+    localStorage.removeItem(CAL_KEY);
+    location.reload();
+  };
+})();
+</script>
+</body>
+</html>

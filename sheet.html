@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Character Sheet — The Wayward Company</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2726%27%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0a06;
+  --parch: #f2e8d0;
+  --parch2: #e8d9b8;
+  --parch3: #d4c49a;
+  --parch4: #c0aa7a;
+  --gold: #9a7a1a;
+  --gold2: #c9a84c;
+  --gold3: #e8c96a;
+  --red: #7a1a1a;
+  --red2: #a02020;
+  --teal: #0d3d30;
+  --teal2: #1a6050;
+  --purple: #2d1a4a;
+  --purple2: #4a2d7a;
+  --border: #a08040;
+  --muted: #5a4820;
+  --danger: #8b1a1a;
+  --warn: #7a5a10;
+  --safe: #0d4a2a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0805;
+  color: var(--parch);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.sheet-empty {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--parch3);
+}
+.sheet-empty code {
+  background: rgba(20,15,8,0.7);
+  border: 1px solid rgba(160,128,64,0.3);
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-family: 'Cinzel', monospace;
+  color: var(--gold2);
+}
+#sheet-auth-screen {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  background: #0a0805;
+  z-index: 100;
+}
+#sheet-auth-screen.on { display: flex; }
+.sheet-auth-box {
+  background: rgba(20,15,8,0.9);
+  border: 1px solid rgba(160,128,64,0.4);
+  border-radius: 4px;
+  padding: 2rem 2.5rem;
+  max-width: 380px;
+  width: 92%;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(154,122,26,0.15);
+}
+.sheet-auth-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 22px;
+  color: var(--gold3);
+  letter-spacing: 2px;
+  margin-bottom: .35rem;
+}
+.sheet-auth-sub {
+  color: var(--parch3);
+  font-size: 13px;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.sheet-auth-input {
+  width: 100%;
+  background: rgba(10,8,5,0.8);
+  border: 1px solid rgba(160,128,64,0.5);
+  border-radius: 2px;
+  padding: .55rem .75rem;
+  color: var(--parch);
+  font-family: 'Cinzel', monospace;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  outline: none;
+}
+.sheet-auth-input:focus {
+  border-color: var(--gold2);
+  box-shadow: 0 0 10px rgba(201,168,76,0.2);
+}
+.sheet-auth-btn {
+  margin-top: .75rem;
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 2px;
+  padding: .55rem;
+  color: #0d0a06;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.sheet-auth-btn:hover { background: var(--gold2); }
+.sheet-auth-err {
+  color: var(--red2);
+  font-size: 13px;
+  margin-top: .6rem;
+  display: none;
+}
+.sheet-auth-err.on { display: block; }
+</style>
+<link rel="stylesheet" href="sheet-styles.css">
+</head>
+<body>
+
+<div class="sheet-page-header">
+  <a href="index.html" class="sheet-back-btn" id="sheet-back-btn">← BACK TO DASHBOARD</a>
+  <div class="sheet-page-title" id="sheet-page-title">Character Sheet</div>
+  <span class="sheet-dm-badge" id="sheet-dm-badge">DM</span>
+</div>
+<script>
+  // If opened from the player site, redirect the back button there instead.
+  (function() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('from') === 'player') {
+        const btn = document.getElementById('sheet-back-btn');
+        if (btn) {
+          btn.setAttribute('href', 'players.html');
+          btn.textContent = '← BACK TO PLAYER SITE';
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<div class="sheet-standalone-body">
+  <div id="sheet-body" class="sheet-body">
+    <div class="sheet-empty">Loading…</div>
+  </div>
+</div>
+
+<div id="sheet-auth-screen">
+  <div class="sheet-auth-box">
+    <div class="sheet-auth-title" id="sheet-auth-title">Character Sheet</div>
+    <div class="sheet-auth-sub" id="sheet-auth-sub">Enter passphrase to view this sheet</div>
+    <input type="password" class="sheet-auth-input" id="sheet-auth-input" placeholder="PASSPHRASE" autocomplete="off">
+    <button class="sheet-auth-btn" id="sheet-auth-btn">Unlock</button>
+    <div class="sheet-auth-err" id="sheet-auth-err">Incorrect passphrase. Try again.</div>
+  </div>
+</div>
+
+<div class="sheet-roll-toast" id="sheet-roll-toast"></div>
+
+<!-- Firebase compat SDK (loaded before sheet-engine so CharacterSync can hook in) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="items-2024.js"></script>
+<script src="spells-2024.js"></script>
+<script src="sheet-data.js"></script>
+<script src="dm-crypt.js"></script>
+<script src="party-roster.js"></script>
+<script src="monsters-2024.js"></script>
+<script src="sheet-engine.js"></script>
+<script src="spell-text-sync.js"></script>
+<script src="combat-tracker.js"></script>
+<script src="sheet-auth.js"></script>
+<script src="players-auth.js"></script>
+<script>
+// Read ?id=<charId> from URL and render that character.
+// Character IDs listed in SHEET_PASSWORDS require a passphrase; others render directly.
+function bootstrapStandaloneSheet() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || params.get('sheet');
+  if (!id) {
+    document.getElementById('sheet-body').innerHTML =
+      '<div class="sheet-empty">' +
+      '<p style="font-family:\'Cinzel Decorative\',serif;color:var(--gold2);font-size:18px;margin-bottom:1rem">No character specified</p>' +
+      '<p>Add <code>?id=&lt;charId&gt;</code> to the URL. Example: <code>sheet.html?id=vaeloran</code></p>' +
+      '<p style="margin-top:1rem"><a href="index.html" class="sheet-back-btn" style="display:inline-block">← Back to Dashboard</a></p>' +
+      '</div>';
+    return;
+  }
+  // Builder-made PCs (Update 61) live in Firebase — fetch, then re-run this bootstrap.
+  if (!CHARACTERS[id] && window.PartyRoster && PartyRoster.isBuilt(id) && !window.__rosterTried) {
+    window.__rosterTried = true;
+    document.getElementById('sheet-body').innerHTML = '<div class="sheet-empty">Loading…</div>';
+    PartyRoster.loadBuiltCharacters().then(bootstrapStandaloneSheet);
+    return;
+  }
+  if (!CHARACTERS[id] && window.PartyRoster && PartyRoster.isBuilt(id)) {
+    const dmBadge = document.getElementById('sheet-dm-badge');
+    if (dmBadge && sheetIsGated(id)) dmBadge.style.display = 'none';
+    document.getElementById('sheet-body').innerHTML =
+      '<div class="sheet-empty">' +
+      '<p style="font-family:\'Cinzel Decorative\',serif;color:var(--gold2);font-size:18px;margin-bottom:1rem">' + PartyRoster.label(id) + ' has no character yet</p>' +
+      '<p>Build one in the character builder — it becomes this sheet when you click Finish.</p>' +
+      '<p style="margin-top:1rem"><a href="char-builder.html' + (sheetIsGated(id) ? '' : '?id=' + encodeURIComponent(id)) + '" class="sheet-back-btn" style="display:inline-block">🛠 Open the Character Builder</a> ' +
+      '<a href="players.html" class="sheet-back-btn" style="display:inline-block">← Player site</a></p>' +
+      '</div>';
+    return;
+  }
+  if (!CHARACTERS[id]) {
+    document.getElementById('sheet-body').innerHTML =
+      '<div class="sheet-empty">' +
+      '<p style="font-family:\'Cinzel Decorative\',serif;color:var(--red2);font-size:18px;margin-bottom:1rem">Character not found: <code>' + id + '</code></p>' +
+      '<p>Available characters: ' + Object.keys(CHARACTERS).map(function(k) { return '<code>' + k + '</code>'; }).join(', ') + '</p>' +
+      '<p style="margin-top:1rem"><a href="index.html" class="sheet-back-btn" style="display:inline-block">← Back to Dashboard</a></p>' +
+      '</div>';
+    return;
+  }
+  const char = CHARACTERS[id];
+  document.title = char.name + ' — Character Sheet';
+  document.getElementById('sheet-page-title').textContent = char.name;
+
+  // Player-view flag: any character reachable through the password gate is a
+  // player-facing sheet. Hide the DM badge and expose the flag for future
+  // render-time checks (e.g. hiding DM-only fields on player sheets).
+  if (sheetIsGated(id)) {
+    window.__SHEET_IS_PLAYER_VIEW = true;
+    const badge = document.getElementById('sheet-dm-badge');
+    if (badge) badge.style.display = 'none';
+  }
+
+  function renderNow() { renderSheet(id); }
+
+  // Phase 5 — auto-unlock via player-site identity:
+  // If the visitor is logged in on the player site as this character (or as
+  // DM), skip the per-sheet password gate. DM identity unlocks any sheet.
+  // Other player identities only unlock their own sheet.
+  const currentIdentity = (typeof getCurrentIdentity === 'function') ? getCurrentIdentity() : null;
+  if (currentIdentity && (currentIdentity.role === 'dm' || currentIdentity.sheetId === id)) {
+    sheetMarkUnlocked(id); // persist so a refresh doesn't re-prompt
+    renderNow();
+    return;
+  }
+
+  // Gate if this character has a password entry AND is not already unlocked
+  if (sheetIsGated(id) && !sheetIsUnlocked(id)) {
+    const authScreen = document.getElementById('sheet-auth-screen');
+    const input = document.getElementById('sheet-auth-input');
+    const btn = document.getElementById('sheet-auth-btn');
+    const err = document.getElementById('sheet-auth-err');
+    document.getElementById('sheet-auth-title').textContent = char.name;
+    document.getElementById('sheet-auth-sub').textContent = 'Enter passphrase to view this sheet';
+    document.getElementById('sheet-body').innerHTML = '<div class="sheet-empty">🔒 Locked</div>';
+    authScreen.classList.add('on');
+    setTimeout(function() { input.focus(); }, 50);
+
+    async function attempt() {
+      const pw = input.value;
+      if (!pw) return;
+      btn.disabled = true;
+      const ok = await sheetCheckPassword(id, pw);
+      btn.disabled = false;
+      if (ok) {
+        sheetMarkUnlocked(id);
+        authScreen.classList.remove('on');
+        document.getElementById('sheet-body').innerHTML = '';
+        renderNow();
+      } else {
+        err.classList.add('on');
+        input.value = '';
+        input.focus();
+      }
+    }
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keypress', function(e) { if (e.key === 'Enter') attempt(); });
+    input.addEventListener('input', function() { err.classList.remove('on'); });
+    return;
+  }
+
+  renderNow();
+}
+// Update 65b — DM-only sheets (Vaeloran, Kaelith) and DM notes load only on a
+// device unlocked with the DM passphrase; players never receive them.
+(window.DMCrypt ? DMCrypt.loadScript('sheet-data-dm.js') : Promise.resolve(false))
+  .then(bootstrapStandaloneSheet, bootstrapStandaloneSheet);
+</script>
+</body>
+</html>

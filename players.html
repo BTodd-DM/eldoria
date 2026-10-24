@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wayward Company — Adventurer's Compendium</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2726%27%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5edd5;
+  --bg2: #ece0c0;
+  --bg3: #e0d0a8;
+  --ink: #1a1208;
+  --ink2: #3a2a10;
+  --ink3: #5a4020;
+  --gold: #8a6a10;
+  --gold2: #c09030;
+  --red: #7a1818;
+  --teal: #0d3d30;
+  --border: #b09050;
+  --border2: #d0b070;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(200,160,80,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(160,100,40,0.06) 0%, transparent 50%);
+}
+
+/* HEADER */
+.site-header {
+  background: linear-gradient(180deg, var(--ink) 0%, #2a1a08 100%);
+  border-bottom: 3px solid var(--gold2);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 3px;
+  background: var(--gold2);
+  border-radius: 2px;
+}
+.header-ornament { color: var(--gold2); font-size: 20px; letter-spacing: 8px; margin-bottom: .5rem; }
+.site-title {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold2);
+  font-size: clamp(20px, 5vw, 32px);
+  letter-spacing: 3px;
+  margin-bottom: .4rem;
+}
+.site-sub {
+  color: #c0a870;
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+.header-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--red);
+  color: #f4edd8;
+  text-decoration: none;
+  padding: 7px 18px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  transition: all .2s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-primary:hover { background: #9a2020; }
+.btn-secondary {
+  background: transparent;
+  color: var(--gold2);
+  text-decoration: none;
+  padding: 7px 18px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  border: 1px solid var(--gold2);
+  transition: all .2s;
+  cursor: pointer;
+}
+.btn-secondary:hover { background: rgba(192,144,48,0.1); }
+
+/* NAVIGATION */
+.main-nav {
+  background: var(--ink2);
+  border-bottom: 2px solid var(--border);
+  display: flex; justify-content: center; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-btn {
+  padding: .75rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #c0a870;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: var(--gold2); }
+.nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+
+/* PANELS */
+.panel { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* SECTION TITLES */
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: .4rem;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+.sec-title:first-child { margin-top: 0; }
+
+/* CARDS */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  margin-bottom: .875rem;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--border);
+  border-radius: 3px 0 0 3px;
+}
+.card.red::before { background: var(--red); }
+.card.gold::before { background: var(--gold2); }
+.card.teal::before { background: var(--teal); }
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: .3rem;
+}
+.card-sub { font-size: 12px; color: var(--ink3); font-style: italic; margin-bottom: .4rem; }
+.card-body { font-size: 14px; line-height: 1.8; color: var(--ink2); }
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .4px;
+  margin: 2px 2px 2px 0;
+  font-weight: 700;
+}
+.b-red { background: rgba(122,24,24,0.15); color: var(--red); border: 1px solid rgba(122,24,24,0.3); }
+.b-gold { background: rgba(138,106,16,0.15); color: var(--gold); border: 1px solid rgba(138,106,16,0.3); }
+.b-teal { background: rgba(13,61,48,0.15); color: var(--teal); border: 1px solid rgba(13,61,48,0.3); }
+.b-grey { background: rgba(90,64,32,0.15); color: var(--ink3); border: 1px solid rgba(90,64,32,0.3); }
+
+/* QUEST DOTS */
+.qdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+.qa { background: #2d9a5a; }
+.qp { background: var(--gold2); }
+.qd { background: #888; }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border2);
+  margin: 1.25rem 0;
+  position: relative;
+}
+.divider::after {
+  content: '✦';
+  position: absolute;
+  top: -9px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 8px;
+  color: var(--border);
+  font-size: 12px;
+}
+
+/* NPC CARDS */
+.npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; }
+.npc-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--ink2);
+  border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold2);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.npc-header { display: flex; align-items: center; gap: 10px; margin-bottom: .5rem; }
+
+/* NOTES AREA */
+.notes-area {
+  background: #fff8e8;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: .875rem;
+  width: 100%;
+  min-height: 200px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  line-height: 1.8;
+  background-image: repeating-linear-gradient(transparent, transparent 28px, rgba(176,144,80,0.15) 28px, rgba(176,144,80,0.15) 29px);
+}
+.notes-area:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(138,106,16,0.1); }
+.note-saved { font-size: 12px; color: var(--teal); font-style: italic; margin-top: .25rem; display: none; }
+
+/* WORLD MAP REGIONS */
+.region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
+.region {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: .875rem;
+  text-align: center;
+  display: flex; flex-direction: column;
+}
+.region-name { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; margin-bottom: .25rem; }
+.region-tag { font-size: 11px; color: var(--ink3); font-style: italic; margin-bottom: .5rem; }
+.region-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .5px;
+  font-weight: 700;
+  align-self: center;
+}
+.status-visited { background: rgba(13,61,48,0.15); color: var(--teal); border: 1px solid rgba(13,61,48,0.3); }
+.status-known { background: rgba(138,106,16,0.15); color: var(--gold); border: 1px solid rgba(138,106,16,0.3); }
+.status-unknown { background: rgba(90,64,32,0.1); color: var(--ink3); border: 1px solid rgba(90,64,32,0.2); }
+
+/* AELORIA HIGHLIGHT REGION CARD */
+.region.featured {
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  border: 2px solid var(--gold2);
+  box-shadow: 0 0 18px rgba(192,144,48,0.15);
+}
+.region-action {
+  margin-top: .65rem;
+  display: inline-block;
+  background: var(--ink);
+  color: var(--gold2);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  font-weight: 700;
+  border: 1px solid var(--gold2);
+  transition: all .2s;
+  align-self: center;
+}
+.region-action:hover { background: var(--gold2); color: var(--ink); }
+
+/* CHARACTER CARDS */
+#panel-characters { max-width: 1200px; }
+/* Widen NPC panel so we can show 4+ columns of cards */
+#panel-npcs { max-width: 1300px; }
+.char-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: .5rem; }
+@media (max-width: 800px) { .char-grid { grid-template-columns: 1fr; } }
+.char-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 1.1rem 1.25rem;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.char-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--gold2);
+  border-radius: 4px 0 0 4px;
+}
+.char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: .15rem;
+}
+.char-sub {
+  font-size: 12.5px;
+  color: var(--ink3);
+  font-style: italic;
+  margin-bottom: .6rem;
+}
+.char-body {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink2);
+  margin-bottom: .85rem;
+}
+.char-actions {
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  margin-top: auto;
+}
+.char-btn {
+  flex: 1 1 auto;
+  text-align: center;
+  background: var(--ink);
+  color: var(--gold2);
+  text-decoration: none;
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: .8px;
+  font-weight: 700;
+  border: 1px solid var(--gold2);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.char-btn:hover { background: var(--gold2); color: var(--ink); }
+.char-btn.subtle { background: transparent; color: var(--ink3); border-color: var(--border); }
+.char-btn.subtle:hover { background: rgba(176,144,80,0.15); color: var(--ink2); }
+.char-btn.danger { color: var(--red); border-color: var(--red); }
+.char-btn.danger:hover { background: var(--red); color: #f4edd8; }
+.char-file-label {
+  flex: 1 1 auto;
+  text-align: center;
+  background: transparent;
+  color: var(--gold);
+  text-decoration: none;
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: .8px;
+  font-weight: 700;
+  border: 1px dashed var(--gold);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.char-file-label:hover { background: rgba(138,106,16,0.1); }
+.char-file-label input[type="file"] { display: none; }
+.char-saved-info {
+  font-size: 11.5px;
+  color: var(--teal);
+  font-style: italic;
+  margin-top: .5rem;
+  text-align: center;
+}
+.char-privacy {
+  font-size: 11px;
+  color: var(--ink3);
+  font-style: italic;
+  margin-top: .65rem;
+  padding-top: .55rem;
+  border-top: 1px dashed var(--border2);
+  line-height: 1.5;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* DECORATIVE */
+.ornament { text-align: center; color: var(--border); font-size: 16px; letter-spacing: 8px; margin: 1.5rem 0; }
+.quote {
+  font-style: italic;
+  color: var(--ink3);
+  font-size: 15px;
+  line-height: 1.7;
+  border-left: 3px solid var(--border2);
+  padding: .5rem 1rem;
+  margin: .75rem 0;
+}
+.quote cite { font-size: 12px; font-style: normal; color: var(--ink3); display: block; margin-top: .25rem; }
+
+@media (max-width: 600px) {
+  .panel { padding: 1rem; }
+  .npc-grid, .region-grid, .char-grid { grid-template-columns: 1fr; }
+  .site-title { font-size: 22px; }
+}
+
+/* =====================================================================
+   PLAYER IDENTITY GATE (Phase 5)
+   ===================================================================== */
+#wayward-login-screen {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  background: var(--parch);
+  background-image: radial-gradient(circle at center, #f5eed5 0%, var(--parch) 60%, #d9ceb0 100%);
+  z-index: 500;
+  padding: 1rem;
+}
+#wayward-login-screen.on { display: flex; }
+.wayward-login-box {
+  background: rgba(20,15,8,0.03);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 2rem 2.5rem;
+  max-width: 480px; width: 92%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(138,106,16,0.15);
+}
+.wayward-login-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 26px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: .25rem;
+}
+.wayward-login-sub {
+  color: var(--ink3);
+  font-size: 13px;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+.wayward-identity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .6rem;
+  margin-bottom: 1rem;
+}
+.wayward-identity-btn {
+  background: rgba(138,106,16,0.05);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  padding: .8rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.wayward-identity-btn:hover, .wayward-identity-btn.active {
+  background: var(--gold);
+  color: #fff;
+}
+.wayward-password-row {
+  display: none;
+  margin-top: .75rem;
+}
+.wayward-password-row.on { display: block; }
+.wayward-password-input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: .55rem .75rem;
+  color: var(--ink);
+  font-family: 'Cinzel', monospace;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  outline: none;
+  margin-bottom: .5rem;
+}
+.wayward-password-input:focus { border-color: #6a4d10; box-shadow: 0 0 0 3px rgba(138,106,16,0.15); }
+.wayward-unlock-btn {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 2px;
+  padding: .55rem;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+.wayward-unlock-btn:hover { background: #6a4d10; }
+.wayward-login-err {
+  color: #a02020;
+  font-size: 12px;
+  margin-top: .5rem;
+  display: none;
+  font-style: italic;
+}
+.wayward-login-err.on { display: block; }
+
+/* Header chip — logged in as X · log out */
+.wayward-chip {
+  display: none;
+  align-items: center; gap: .5rem;
+  background: rgba(138,106,16,0.08);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: .35rem .8rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  position: fixed;
+  top: .6rem; right: .8rem;
+  z-index: 100;
+}
+.wayward-chip.on { display: inline-flex; }
+.wayward-chip .logout-link {
+  color: #a02020;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* Hide the main app until identity is set */
+#wayward-app {
+  display: none;
+}
+#wayward-app.ready {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     PHASE 5 — LOGIN GATE
+     ===================================================================== -->
+<div id="wayward-login-screen">
+  <div class="wayward-login-box">
+    <div class="wayward-login-title">The Wayward Company</div>
+    <div class="wayward-login-sub">Who are you?</div>
+    <div class="wayward-identity-grid">
+      <button class="wayward-identity-btn" data-identity="torren">Torren</button>
+      <button class="wayward-identity-btn" data-identity="sylas">Sylas</button>
+      <button class="wayward-identity-btn" data-identity="orin">Orin</button>
+      <button class="wayward-identity-btn" data-identity="tristan">Tristan</button>
+      <button class="wayward-identity-btn" data-identity="dm">DM</button>
+    </div>
+    <div class="wayward-password-row" id="wayward-pw-row">
+      <input type="password" class="wayward-password-input" id="wayward-pw-input" placeholder="PASSPHRASE" autocomplete="off">
+      <button class="wayward-unlock-btn" id="wayward-pw-btn">Unlock</button>
+      <div class="wayward-login-err" id="wayward-pw-err">Incorrect passphrase. Try again.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Logged-in chip (top right) -->
+<div class="wayward-chip" id="wayward-chip">
+  <span>Logged in as <strong id="wayward-chip-name">—</strong></span>
+  <span class="logout-link" id="wayward-logout-link">Log out</span>
+</div>
+
+<!-- Main app content — hidden until identity is set -->
+<div id="wayward-app">
+
+<header class="site-header">
+  <div class="header-ornament">⸻ ✦ ⸻</div>
+  <div class="site-title">The Wayward Company</div>
+  <div class="site-sub">Adventurer's Compendium &nbsp;·&nbsp; Aeloria Crossroads &nbsp;·&nbsp; Level 5</div>
+  <div class="header-actions">
+    <a href="https://app.roll20.net/campaigns/details/20347945/eldoria-2-dot-0" target="_blank" class="btn-primary">Open Roll20 ↗</a>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-btn active" onclick="show('recaps',this)">Session Recaps</button>
+  <button class="nav-btn" onclick="show('quests',this)">Quests</button>
+  <button class="nav-btn" onclick="show('characters',this)">Characters</button>
+  <button class="nav-btn" onclick="show('npcs',this)">People Met</button>
+  <button class="nav-btn" onclick="show('locations',this)">🌍 World Map</button>
+  <button class="nav-btn" onclick="show('lore',this)">📖 Lore</button>
+  <button class="nav-btn" data-nav-handouts onclick="show('handouts',this)">📜 Handouts</button>
+  <button class="nav-btn" onclick="show('notes',this)">💬 Messages</button>
+</nav>
+
+<!-- ===== RECAPS ===== -->
+<div id="panel-recaps" class="panel active">
+  <!-- Session Synopsis card — "Where you are, what just happened". Auto-expands
+       whenever the underlying data/synopsis.json version bumps; per-device
+       dismiss via localStorage. -->
+  <div id="synopsis-card" style="display:none"></div>
+
+  <div class="ornament">✦ ✦ ✦</div>
+  <div class="sec-title">The Story So Far <span style="font-size:11px;color:var(--parch3);font-weight:400">— most recent first</span></div>
+
+  <div class="card gold">
+    <div class="card-sub">Session 6 &nbsp;·&nbsp; Most recent</div>
+    <div class="card-title">Approach to Ironhold</div>
+    <div class="card-body">You rode in with Brenna at dawn. On the way you saw farms rotting on one side of the road and healthy on the other, a dead sheep the flies wouldn't touch, and two carts of refugees leaving the city. A woman told you a smith had refused Aurum gold and lost his son's apprenticeship — sixteen years old, twelve years to make master. On her way out she warned: <em>"The Dominion has eyes everywhere."</em><br><br>Sergeant Gorren processed the caravan at the northern gate. He took the dragon story without drama and pointed you at three inns and the Merchants' Quarter for a man called Halvor. Sera walked in with you without a fuss.<br><br>In the caravan yard Brenna paid you twenty-five gold each and told the waiting merchants what had happened on the road. Torren clocked a plain man in a grey coat quietly talking to her and glancing at you — he took a mental note and walked south without a word. You said nothing about the chest.<br><br>At the stables you met <strong>Oman</strong>, a tiefling boy from a Rustpocket family. Sylas set an Alarm spell on the wagon in front of him, deliberately visible, and told him: <em>"Don't get too close. I'll know."</em><br><br>At the Grey Kettle, Mother Hessa gave you the master suite plus two doubles for the price of three doubles. <strong>Orin persuaded her into bed</strong> and secured a dinner date for tomorrow at five. <strong>Torren showed her his Veil mark in private.</strong> She recognised it and told him: <em>"You're the second name from the Veil to cross my ears in the last hour."</em> She wouldn't say the first. From Hessa, over the evening, you also heard: the Blades and Ingots almost brawled last week; a Watch corporal called Vasso got passed over for a promotion; the Aurum envoy paid a Watch corporal for a private conversation; and a black carriage went north out of Ironhold at dawn yesterday. The two big foundries are the <strong>Grand Foundry</strong> (Bryndis) and <strong>Drake's Furnace</strong> (Drake).<br><br>You didn't wait for morning. Sylas scouted Halvor's compound alone — townhouse with curtains drawn, back yard with a padlocked alley gate, warehouse with a chained-and-padlocked door. Nobody visible. You crossed the city together at night. Sera insisted on coming. On the last stretch, Sylas cast Summon Fey — a spectral, monkey-sized thing that pulled itself out of his chest.<br><br>You are standing in front of Halvor's back warehouse door. Somewhere inside is Mira, her two children, and a man called Cor Brackin. It's just before ten o'clock.</div>
+    <div style="margin-top:.6rem"><span class="badge b-gold">Ironhold</span><span class="badge b-teal">paid 25gp each</span><span class="badge b-grey">Hessa saw the Veil mark</span><span class="badge b-red">night raid</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-sub">Session 5</div>
+    <div class="card-title">The Caravan Out</div>
+    <div class="card-body">At Kolt's Depot you signed on with Kolt for a caravan escort south to Ironhold. You named yourselves <strong>The Wayward Company</strong> — three of you, one wagon of your own driven by Orin, hauling Sylas's two undead labourers and a fresh draft horse from O'Leary's that Orin christened Valor. Matilda was still missing, her tracks still leading north. Brenna Hartwell, the caravan master, walked you through the manifest — twelve crates of mixed cargo split across her lead wagon and a contract wagon — and one of those crates was a sealed iron-bound chest bearing an eclipse seal, sun half-eaten by shadow. Brenna would not say who it was for; she said only that sealed crates paid extra and that she did not ask what was inside.<br><br>Torren looked at the seal and knew it. Coin Cipher. The network's mark. He said only enough for Sylas and Orin to understand what that meant — do not interfere, the client is rich, nobody asks what's inside. Sylas cast Detect Magic on the chest later that evening and picked up a necromantic aura, which confirmed nothing anyone wanted to discuss aloud.<br><br>You rode out on Day 1 with Brenna's lead wagon at the front, the contract wagon in the middle, and your own Wayward Company wagon in the tail. The daytime was uneventful in the way that made you uneasy — a scorched circle in a field, a Watch rider heading north with news, the sense that the road was quieter than it should be. You made camp in a stone-ring the road obviously uses for that purpose. Sylas cast Detect Magic again on watch and picked up a soft healing-and-enchantment aura from Brenna's kit — quiet confirmation she came prepared, with a Potion of Superior Healing and a Smoke Brick in her belongings. Orin's watch was reflective — Merric, Seraphine, and the light. Torren's watch was quiet apart from an owl in a nearby tree that watched him back. Late that night Sylas and Torren spoke privately about the chest. Torren wanted to open it; Sylas argued for the long game — let it be delivered, use Locate Object to track it after. You agreed to wait.<br><br>Day 2 brought Stillbrook. You stopped briefly at the village well and Orin looked at the brook, which was visibly wrong — dark, sluggish, oily on the surface. He concluded it wasn't spoiled, that something was contaminating it upstream, and that whatever it was, it was acidic and natural rather than spilled or magical. It was at the well that <strong>Sera Vey</strong> approached you — wounded, no coin, desperate. Her sister Mira and Mira's two children had been taken three days ago by a man called Halvor of Ironhold over a farming debt. Sera had tried to intervene when they were taken and been knocked down. She needed to reach Ironhold to find Mira. Torren rolled Insight with Expertise and hit a natural 20 — a 35. She was honest, in over her head, and had nothing else. You accepted her. She rode hidden in the Wayward Company wagon with Orin and the zombies and did not sleep well. An hour further down the road you passed a dead cow with acid burns on its hide. Sylas confirmed the burns came from a creature, not a chemical, and the threads began to connect.<br><br>Then a shadow crossed the road. Then a second time. <strong>Vrass</strong> — a young black dragon, sleek black scales still slick with old marsh water — landed in front of the caravan and demanded you abandon the wagons and run. There was no way through this by force. Torren dismounted, walked forward, and knelt. He praised the dragon, asked its name, offered the caravan. Sylas produced a healing potion as tribute. Vrass wanted more — he wanted a servant. And Torren agreed. A lifetime of servitude — his own — to Vrass, in exchange for the party's lives and safe passage. Persuasion natural 20. Torren did not try to be clever with the wording. Vrass accepted, called Torren <em>"mine,"</em> and took the contract wagon, lifting it away toward his lair somewhere upstream of Stillbrook. While the negotiation dragged, Sylas quietly moved the sealed Coin Cipher chest out of the wagon and into his Bag of Holding. Vrass did not see it happen. Brenna did not see it happen. Vrass took the crates and flew off believing he had everything, but he did not have the chest. His parting words were, <em>"We will speak soon."</em><br><br>Losses: the contract wagon and half the caravan cargo — foodstuffs, cloth, finished metal goods. Retained: Brenna's lead wagon, your Wayward Company wagon (Orin, Sera, the zombies), and the Coin Cipher chest now hidden in Sylas's Bag of Holding. Brenna was shaken but respected what she had seen. She could not force the merchants to pay for what Vrass took, but the twenty-five gold pieces she personally promised for the escort still stood, and she would tell the merchants what happened when you reached Ironhold. You pushed on through the afternoon and Ironhold's smelting fires appeared on the horizon at last light — a dull orange glow visible from a full day out. You camped just outside the town's northern gates and ate mostly in silence.<br><br>Late that night, Sylas and Torren spoke privately again. The chest was safe in the Bag of Holding. What comes next was harder to answer — whether Ironhold has someone willing to fund an expedition against a dragon, whether Torren's servant role becomes a way to get inside Vrass's operation, whether there's a way through this that does not end with Torren's life belonging to a black dragon forever. Brenna had a name in mind for a possible funder in Ironhold, though she wouldn't say more until you arrived. Nothing was settled. It's all still open.<br><br>Long rest. <strong>Level up to 6.</strong> You're camped outside Ironhold's northern gates on the evening of Day 11 — 24 Frostfall — awaiting dawn and the gate opening. The Wayward Company is Torren, Sylas, and Orin, level 6, camped at Ironhold's northern gate. Travelling with you are Brenna (parting ways at the gate), Sera (finding her sister at dawn), two zombies, and Valor. You are carrying the sealed Coin Cipher chest, hidden in Sylas's Bag of Holding. And on Torren, a lifetime oath sworn to a young black dragon called Vrass — what that means in practice, you do not yet know.</div>
+    <div style="margin-top:.6rem"><span class="badge b-gold">The Wayward Company</span><span class="badge b-red">Torren dark-bound to Vrass</span><span class="badge b-grey">Coin Cipher chest hidden</span><span class="badge b-teal">level 6</span><span class="badge b-teal">Sera Vey travelling</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-sub">Sessions 3–4</div>
+    <div class="card-title">The Gnoll Den and What Lay Beneath</div>
+    <div class="card-body">Hired by Oskar, the Goliath Townmaster of Aeloria, you were sent to deal with gnolls threatening the southeastern farmlands. You tracked them to their den and put an end to the pack.<br><br>But what you found inside changed everything.<br><br>A shrine — not to a gnoll deity, but to Naturus, the Betrayer God of rot and decay. The pack leader had been charmed and marked by an outside hand. And writings on the walls spoke of a larger plan: rot spreading through the Aelorian territories, guided by unseen hands. One note pointed to a location you already knew well: <strong>The Pig's Head Inn</strong>.<br><br>Back in Aeloria, the party split. Torren went to O'Leary's Stables and paid the family to search for Matilda, lost on the Lyssandra hunt. They found only her tracks, heading north.<br><br>At the Pig's Head, Orin pressed patrons for information about a name: Merric. A missing friend. A past not yet buried. Through connections to a figure called Rulden, Torren gained access to a private meeting — and the truth turned out to be deeply personal. Rulden is Merric.<br><br>The next morning, a message arrived for Orin. Cold. Careful. Signed only "R." It ended:<br><br><em>"Keep to the light, Orin. It suits you better."</em><br><br>Orin sought guidance at the Temple of Luminos. Dawnwarden Seraphine listened — and gave her counsel: if Merric once walked in the light, and if you feel called to him still, then you should not stop.<br><br>The party now stands at Kolt's Depot. A caravan to Ironhold awaits. But behind you, threads remain unresolved — and a hidden network continues to spread rot through the land.</div>
+    <div style="margin-top:.6rem"><span class="badge b-red">naturus cult</span><span class="badge b-red">gnolls cleared</span><span class="badge b-gold">merric revealed</span><span class="badge b-teal">milestone</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-sub">Sessions 1–2 &nbsp;·&nbsp; Oct 2025</div>
+    <div class="card-title">The Shard and the Letters</div>
+    <div class="card-body">You were brought together by Vaeloran Duskwhisper, the archmage of Aeloria — a respected scholar-mage known for his charitable works and civic dedication. He set you two tasks: recover his missing apprentice, Lyssandra Vale, and deliver a set of sealed letters to members of Aeloria's ruling council on his behalf.<br><br>You rode north out of Aeloria on the trail of the meteor — about a day's travel into the wooded territories where the rock had struck. The clearing felt wrong: strange energies in the air, wildlife behaving oddly. You fought through corruption-warped spiders to reach a lonely barn nearby, where Lyssandra had been hiding.<br><br>She was afraid. She tried to burn the barn and flee rather than be brought back. Before disappearing into the night, she warned you:<br><br><em>"He'll twist your good intentions… like he did mine."</em><br><em>"That shard… it's not just a rock. He's been studying fragments like it for years."</em><br><br>You tracked her north through the wilds for five days, catching her on the road before she could reach Stonegate. She was brought back to Vaeloran, who thanked you warmly and said the shard had corrupted her mind — and that he would see to her recovery. The letters were delivered separately in the chaos.</div>
+    <div style="margin-top:.6rem"><span class="badge b-red">combat</span><span class="badge b-gold">mystery</span><span class="badge b-grey">lyssandra returned</span></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="ornament">⸻ ✦ ⸻</div>
+</div>
+
+<!-- ===== QUESTS ===== -->
+<div id="panel-quests" class="panel">
+  <div class="sec-title">Active Quests</div>
+
+  <div class="card red">
+    <div class="card-title"><span class="qdot qa"></span>The Rot Beneath — Naturus cult investigation</div>
+    <div class="card-sub">Main threat · Ongoing</div>
+    <div class="card-body">The gnoll den revealed a larger coordinated operation — a shrine to Naturus, a charmed pack leader, and writings about rot spreading through the Aelorian territories guided by unseen hands. The Pig's Head Inn was named as a meeting point. Someone signed "K" appears to be behind it. This is bigger than one den.</div>
+    <div style="margin-top:.5rem"><span class="badge b-red">active</span><span class="badge b-grey">Pig's Head leads</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qa"></span>Merric — a reckoning deferred</div>
+    <div class="card-sub">Personal · Orin · Ongoing</div>
+    <div class="card-body">Orin's adoptive father, thought lost, has been found — but not as the man Orin remembers. He sent a warning. He signed it with warmth he clearly tried to suppress. Seraphine's guidance was clear: don't stop. Whatever Merric has become, the light has not entirely left him.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">Orin personal</span><span class="badge b-teal">Luminos faith</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qa"></span>Kolt's Depot — caravan escort to Ironhold</div>
+    <div class="card-sub">Immediate · Decision point</div>
+    <div class="card-body">An escort job is available heading south to Ironhold, a city renowned for its master blacksmiths. Coin, distance, and a direction. The road offers its own dangers.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">next session</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qp"></span>Matilda — a horse on the loose</div>
+    <div class="card-sub">Personal · Torren · Simmering</div>
+    <div class="card-body">Matilda bolted during the Lyssandra hunt — tied to a tree while you followed a path on foot, she broke loose with wolves on her heels. The O'Learys searched for 5gp and found her tracks heading north. She can't have gone far. Probably.</div>
+    <div style="margin-top:.5rem"><span class="badge b-gold">Torren personal</span></div>
+  </div>
+
+  <div class="card gold">
+    <div class="card-title"><span class="qdot qp"></span>Gerald's offer — a missing guild member</div>
+    <div class="card-sub">Available · Pig's Head</div>
+    <div class="card-body">Gerald at the Pig's Head offered work — someone's gone missing who shouldn't have. The party left it untouched. It's still there if you want it.</div>
+    <div style="margin-top:.5rem"><span class="badge b-grey">available</span></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-title">Completed</div>
+
+  <div class="card">
+    <div class="card-title"><span class="qdot qd"></span>The gnoll threat</div>
+    <div class="card-body">Gnoll pack eliminated. Den destroyed. Hired by Oskar the Townmaster. What was found inside opened new questions.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="qdot qd"></span>Find Lyssandra Vale</div>
+    <div class="card-body">Found at the meteor crash site north of Aeloria and pursued through the wilds for five days. Caught before she could reach Stonegate. Returned to Vaeloran. Her warning still echoes.</div>
+  </div>
+</div>
+
+<!-- ===== CHARACTERS ===== -->
+<div id="panel-characters" class="panel">
+  <div class="sec-title">Your Characters</div>
+  <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Open your D&amp;D Beyond character sheet, or upload a copy of your sheet to keep on hand. Uploaded sheets are saved on your device only — they are not shared with the DM or other players.
+  </div>
+
+  <div class="char-grid">
+
+    <!-- TORREN -->
+    <div class="char-card" data-char="torren">
+      <div class="char-name">Torren</div>
+      <div class="char-sub">Halfling · Rogue (Assassin) · Level 6</div>
+      <div class="char-body">A halfling rogue with a sharp eye and quieter footsteps. Sneak Attack, Assassinate, Cunning Action. Adventurous heart, wary mind.</div>
+      <div class="char-actions">
+        <a href="sheet.html?id=torren&from=player" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
+        <a href="https://www.dndbeyond.com/characters/152415680" target="_blank" class="char-btn" data-dndb="torren">🔗 D&amp;D Beyond</a>
+      </div>
+      <div class="char-saved" id="saved-torren" style="display:none">
+        <div class="char-saved-info" id="saved-info-torren"></div>
+        <div class="char-actions" style="margin-top:.4rem">
+          <button class="char-btn subtle" onclick="viewSheet('torren')">👁 View Saved Sheet</button>
+          <button class="char-btn danger" onclick="removeSheet('torren')">🗑 Remove</button>
+        </div>
+      </div>
+      <div class="char-privacy">Saved on this device only. Not shared with the DM or other players.</div>
+    </div>
+
+    <!-- SYLAS -->
+    <div class="char-card" data-char="sylas">
+      <div class="char-name">Sylas</div>
+      <div class="char-sub">Tiefling (Chthonic) · Wizard (Illusionist) · Level 6</div>
+      <div class="char-body">A scholar from the Aurora Peaks who found his place at Aeloria's Scholars' Circle. Illusionist's mind, careful hands. Quietly gifted, quietly haunted.</div>
+      <div class="char-actions">
+        <a href="sheet.html?id=sylas&from=player" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
+        <a href="https://www.dndbeyond.com/characters/148269774" target="_blank" class="char-btn" data-dndb="sylas">🔗 D&amp;D Beyond</a>
+      </div>
+      <div class="char-saved" id="saved-sylas" style="display:none">
+        <div class="char-saved-info" id="saved-info-sylas"></div>
+        <div class="char-actions" style="margin-top:.4rem">
+          <button class="char-btn subtle" onclick="viewSheet('sylas')">👁 View Saved Sheet</button>
+          <button class="char-btn danger" onclick="removeSheet('sylas')">🗑 Remove</button>
+        </div>
+      </div>
+      <div class="char-privacy">Saved on this device only. Not shared with the DM or other players.</div>
+    </div>
+
+    <!-- ORIN -->
+    <div class="char-card" data-char="orin">
+      <div class="char-name">Orin</div>
+      <div class="char-sub">Goliath · Cleric of Luminos · Level 6</div>
+      <div class="char-body">A goliath cleric who serves the light of Luminos. Found and raised by Merric. Mercy is his strength — even when it costs him.</div>
+      <div class="char-actions">
+        <a href="sheet.html?id=orin&from=player" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
+        <a href="https://www.dndbeyond.com/characters/152414211" target="_blank" class="char-btn" data-dndb="orin">🔗 D&amp;D Beyond</a>
+      </div>
+      <div class="char-saved" id="saved-orin" style="display:none">
+        <div class="char-saved-info" id="saved-info-orin"></div>
+        <div class="char-actions" style="margin-top:.4rem">
+          <button class="char-btn subtle" onclick="viewSheet('orin')">👁 View Saved Sheet</button>
+          <button class="char-btn danger" onclick="removeSheet('orin')">🗑 Remove</button>
+        </div>
+      </div>
+      <div class="char-privacy">Saved on this device only. Not shared with the DM or other players.</div>
+    </div>
+
+    <!-- TRISTAN (built in the character builder — Update 61) -->
+    <div class="char-card" data-char="tristan">
+      <div class="char-name">Tristan</div>
+      <div class="char-sub">Druid · Level 6</div>
+      <div class="char-body">The newest member of the Wayward Company. Build your character step by step, and it becomes your sheet when you finish.</div>
+      <div class="char-actions">
+        <a href="char-builder.html" target="_blank" class="char-btn">🛠 Character Builder</a>
+        <a href="sheet.html?id=tristan&from=player" target="_blank" class="char-btn">📜 Open Interactive Sheet</a>
+      </div>
+      <div class="char-saved" id="saved-tristan" style="display:none">
+        <div class="char-saved-info" id="saved-info-tristan"></div>
+        <div class="char-actions" style="margin-top:.4rem">
+          <button class="char-btn subtle" onclick="viewSheet('tristan')">👁 View Saved Sheet</button>
+          <button class="char-btn danger" onclick="removeSheet('tristan')">🗑 Remove</button>
+        </div>
+      </div>
+      <div class="char-privacy">Saved on this device only. Not shared with the DM or other players.</div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+  <div class="card-body" style="font-size:12.5px;color:var(--ink3);font-style:italic">
+    The D&amp;D Beyond buttons currently link to the D&amp;D Beyond home page. Once each player's character sheet URL is added, those buttons will go straight to your sheet.
+  </div>
+</div>
+
+<!-- ===== NPCS ===== -->
+<div id="panel-npcs" class="panel">
+  <div class="sec-title">People You Have Met</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:12.5px;color:var(--ink3);font-style:italic">
+    Each entry has a private notes area — only you see your notes.
+  </div>
+  <div id="npc-grid-container">
+    <div class="npc-empty">Loading NPCs…</div>
+  </div>
+</div>
+
+<!-- ===== LOCATIONS ===== -->
+<div id="panel-locations" class="panel">
+  <div class="sec-title">Maps You've Studied</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Every map, plan, and layout the party has been shown or discovered in play. Click any to open.
+  </div>
+  <div id="maps-player-container" style="margin-bottom:1.5rem"></div>
+
+  <div class="sec-title">World Map</div>
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Click any region or settlement below to learn about it. The Aelorian Territories panel and the Aeloria card both link to the Aeloria city map.
+  </div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+    <a href="world_map.html?player" target="_blank" class="region-action" style="margin:0">Open world map in new tab ↗</a>
+  </div>
+  <div style="position:relative;width:100%;height:75vh;min-height:550px;border:2px solid var(--border);border-radius:4px;overflow:hidden;background:#0a0805">
+    <iframe id="iframe-player-world-map" src="world_map.html?player" style="border:0;width:100%;height:100%;display:block" title="Eldoria World Map"></iframe>
+  </div>
+  <div style="height:1.5rem"></div>
+  <details style="margin-bottom:1rem;background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:.5rem .75rem">
+    <summary style="cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase">Region cards (quick reference)</summary>
+    <div style="margin-top:.75rem">
+  <div class="region-grid">
+    <div class="region featured">
+      <div class="region-name">Aeloria Crossroads</div>
+      <div class="region-tag">Free city-state · Your home base</div>
+      <div class="region-status status-visited">Visited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Independent city-state at the crossroads of Eldoria. Governed by a council of guilds and representatives. Trade hub, cultural melting pot, politically complex.</div>
+      <a href="aeloria_map.html?player" target="_blank" class="region-action">🗺 Open Aeloria City Map ↗</a>
+    </div>
+    <div class="region">
+      <div class="region-name">Frostwood Marsh</div>
+      <div class="region-tag">Northern wilderness · Lethraliri ruins</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Fog-shrouded, desolate marshland. Ancient Lethraliri ruins beneath the surface. Notice boards in Aeloria warn travellers away — old dangers stir in its depths.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Aurora Peaks</div>
+      <div class="region-tag">Mountain range · Aurum Dominion</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Majestic mountain range. Home of the Aurum Dominion — a powerful empire known for crystal magic. Famous for the aurora borealis that lights the night sky.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Verdant Expanse</div>
+      <div class="region-tag">Forest region · Sylvarian Enclaves</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Ancient forests home to the Sylvarian Enclaves — elven tree cities. Druidic and multicultural. Deep nature magic. Connected to the Frostwood Marsh at its border.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Serpent Isles</div>
+      <div class="region-tag">Island chain · Lizardfolk &amp; Pirates</div>
+      <div class="region-status status-known">Known</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">Home to lizardfolk tribes and the Pirate Confederacy. Free ports where law is personal and alliances shift daily. The seas surrounding it are treacherous.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Ember Wastes</div>
+      <div class="region-tag">Desert region · Nomadic tribes</div>
+      <div class="region-status status-unknown">Unvisited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">A vast, harsh desert of red dunes and ancient ruins. Home to nomadic tribes who travel in great sandship caravans. Said to hold forgotten civilisations beneath the sands.</div>
+    </div>
+    <div class="region">
+      <div class="region-name">Celestial Plateau</div>
+      <div class="region-tag">Elevated realm · Celestium Clans</div>
+      <div class="region-status status-unknown">Unvisited</div>
+      <div class="card-body" style="font-size:12.5px;margin-top:.5rem;text-align:left">A high plateau with cosmic phenomena in its skies. Home to the Celestium Clans — dwarves who blend their craft with celestial magic. Deeply spiritual.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-title">Key Locations in Aeloria</div>
+
+  <div class="card teal">
+    <div class="card-title">Spire of the Silver Eclipse</div>
+    <div class="card-sub">Vaeloran's tower · High Spires District</div>
+    <div class="card-body">An iconic tower in the heart of Aeloria. Its interior feels larger than it looks from outside. Swirling orbs of light, mechanical quills that write on their own, shelves that slide to make way as you pass. A faint scent of old paper and candlewax.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">The Wayfarer's Rest</div>
+    <div class="card-sub">Inner trade ward · Respectable inn</div>
+    <div class="card-body">Polished dark wood, soft lighting, private booths. The kind of place where merchants close deals and scholars draft letters. Sarah runs it with firm, quiet efficiency. A safe place to think.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">The Pig's Head Inn</div>
+    <div class="card-sub">Outer trade ring · Working-class</div>
+    <div class="card-body">Loud, crowded, cheap ale, good gossip. The kind of place where caravan guards, off-duty watchmen, and people with questions no one else will answer tend to end up. Gerald knows everyone and everything — at a price.</div>
+  </div>
+  <div class="card teal">
+    <div class="card-title">Temple of Luminos</div>
+    <div class="card-sub">White stone · Copper Light Ward</div>
+    <div class="card-body">White stone with veins of faint gold. Tall windows catch the light. The air smells of incense and clean linen. Peaceful, orderly, and quietly watchful. Seraphine and the Lightbearer serve here.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Grand Bazaar</div>
+    <div class="card-sub">Central district · Market</div>
+    <div class="card-body">Canvas awnings, shouting merchants, the smell of spice, metal, and baked bread. If it exists in Eldoria, someone here is selling it. Twelve established shops and stalls spread across the central district.</div>
+  </div>
+    </div><!-- end details body -->
+  </details>
+</div>
+
+<!-- ===== LORE (player-facing — simplified pantheon + history) ===== -->
+<div id="panel-lore" class="panel">
+  <div class="tab-inner" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;border-bottom:1px solid var(--border2);padding-bottom:.5rem">
+    <button class="tab-btn active" onclick="showLoreTab('pantheon',this)" style="background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.35rem 1rem;border-radius:3px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">✨ Pantheon</button>
+    <button class="tab-btn" onclick="showLoreTab('history',this)" style="background:transparent;border:1px solid var(--border);color:var(--ink3);padding:.35rem 1rem;border-radius:3px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer">🏛 History</button>
+  </div>
+
+  <!-- ---------- PANTHEON ---------- -->
+  <div id="lore-tab-pantheon">
+    <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+      What every literate Eldorian would know about the gods. Temple lessons, common folklore, priestly instruction. Names, domains, symbols.
+    </div>
+
+    <div id="pantheon-player-container"></div>
+  </div>
+
+  <!-- ---------- HISTORY ---------- -->
+  <div id="lore-tab-history" style="display:none">
+    <div class="card-body" style="margin-bottom:1rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+      The four ages of Eldoria as taught in temples and told at hearths. Click any age to read.
+    </div>
+
+    <details class="card gold" style="margin-bottom:.75rem" open>
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold);font-weight:700;font-size:13px">1st Age — Creation and Harmony</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The Creator Gods shaped Eldoria together — bringing light, order, and the celestial realms, and infusing the world with life, forests, rivers, and the balance of the natural world.</p>
+        <p>They gave rise to the Children — ten lesser gods, each holding a domain. For a long age, the Pantheon lived in harmony.</p>
+        <p>But two of the Children grew restless. One coveted the power of secrets; the other hungered to spread decay. Slowly, through whispers and cunning, they turned others against the Creators.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--red);font-weight:700;font-size:13px">The Usurpation — End of the 1st Age</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The Betrayer Gods rose against the Creators. The battle scarred the world. The Creators were driven into hiding; their power was diminished but not destroyed.</p>
+        <p>In the shadow of that war, the Dwarven clans of the Underpeak were shattered by pressure from the Aurum Dominion. Those who refused submission began the great exodus — the ancestors of what would become the <strong>Celestium Clans</strong> beneath the Celestial Plateau.</p>
+      </div>
+    </details>
+
+    <details class="card red" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--red);font-weight:700;font-size:13px">2nd Age — The Dark Reign</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The Betrayers ruled openly. The sun's light was dimmed and a long twilight settled across Eldoria. Forests twisted into thorn-mazes; rivers ran foul; predator and prey lost their balance.</p>
+        <p>Fear spread. Dark cults flourished. Loyalty was demanded and dissent punished.</p>
+        <p>In the marshes to the west, the <strong>Lethraliri</strong> civilisation endured — a people of ice and water, builders of stilt-cities and communers with elemental spirits. Their role in the Age's end became legend.</p>
+        <p>In hidden places, followers of the Creators whispered to one another through dreams. Heroes rose beneath the banner of the returning light.</p>
+      </div>
+    </details>
+
+    <details class="card gold" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--gold);font-weight:700;font-size:13px">The Reclamation — End of the 2nd Age</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The Creators returned. With the Children who had remained loyal, and with mortal heroes who had never given up hope, they cast the Betrayers down. The Betrayers were bound — the priests say — beyond the reach of mortals, and the sun rose over Eldoria for the first time in seven centuries.</p>
+        <p>Much was lost. Much was rebuilt. The current age began.</p>
+      </div>
+    </details>
+
+    <details class="card" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;font-family:'Cinzel',serif;color:var(--ink);font-weight:700;font-size:13px">3rd Age — Reclamation and Reforging (present day)</summary>
+      <div class="card-body" style="margin-top:.5rem;line-height:1.7">
+        <p>The age you live in. Civilisations have rebuilt. The <strong>Aelorian Territories</strong>, the <strong>Aurum Dominion</strong>, the <strong>Celestium Clans</strong>, the <strong>Sylvarian Enclaves</strong>, the Ember Wastes nomads, the Reptilian Tribes and the Pirate Confederacy all hold their own patches of the world.</p>
+        <p>Trade routes have reopened. Temples of the Creators have been raised again in most cities — though not all: in the Aurum Dominion, the faith of the light is quietly suppressed by the state.</p>
+        <p>But the corruption the Betrayers left in the world was never fully cleansed. In the deep places, in the marshes, in the wild forests — something still stirs.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===== HANDOUTS ===== -->
+<div id="panel-handouts" class="panel">
+  <div class="sec-title">📜 Handouts</div>
+  <div id="handouts-container-player"></div>
+</div>
+
+<!-- ===== NOTES ===== -->
+<div id="panel-notes" class="panel">
+  <div class="card-body" style="margin-bottom:.75rem;font-size:13.5px;color:var(--ink3);font-style:italic">
+    Four scopes: <strong>Private</strong> (only you), <strong>DM-only</strong> (you + DM), <strong>DM + Party</strong> (everyone), <strong>Party-only</strong> (players, hidden from DM). Messages sync live across all your devices.
+  </div>
+
+  <!-- Phase 6 notes widget — populated after login by initNotesWidget() -->
+  <div id="notes-widget-container"></div>
+
+  <details style="margin-top:1.5rem;color:var(--ink3);font-size:12px">
+    <summary style="cursor:pointer;font-style:italic">Legacy scratchpad (this browser only — pre-sync)</summary>
+    <div style="margin-top:.5rem">
+      <textarea class="notes-area" id="player-notes" placeholder="Old local-only notes are stored here. To sync across devices, copy into a Private note above." onkeyup="savePlayerNotes()"></textarea>
+      <div class="note-saved" id="note-saved">✓ Saved</div>
+    </div>
+  </details>
+
+  <div class="divider"></div>
+  <div class="sec-title">Quick Reference — Lyssandra's Warning</div>
+  <blockquote class="quote">
+    "He'll twist your good intentions… like he did mine."
+    <cite>— Lyssandra Vale, before fleeing into the night</cite>
+  </blockquote>
+  <blockquote class="quote">
+    "That shard… it's not just a rock. He's been studying fragments like it for years."
+    <cite>— Lyssandra Vale</cite>
+  </blockquote>
+  <blockquote class="quote">
+    "Keep to the light, Orin. It suits you better."
+    <cite>— R (the warning letter)</cite>
+  </blockquote>
+
+  <div class="divider"></div>
+  <div class="sec-title">Notice Board — Aeloria</div>
+  <div class="card">
+    <div class="card-body" style="font-size:13.5px">
+      ✦ <strong>Danger in Frostwood Marsh</strong> — travellers warned to avoid the northern marsh roads<br>
+      ✦ <strong>Join the City Watch</strong> — Aeloria's guard is recruiting<br>
+      ✦ <strong>Missing Halfling — Merric</strong> — if you have information, speak to Sarah at the Wayfarer's Rest <em>(posted by Orin)</em><br>
+      ✦ <strong>Mercenaries needed — Caravan delivery</strong> — enquire at Kolt's Depot
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// CHARACTER SHEET URLs — edit these when each player provides a URL
+// (D&D Beyond: open the character → "..." menu → "Share" → copy link).
+// The DM dashboard (index.html) has the SAME block — keep them in sync.
+// =====================================================================
+const CHARACTER_URLS = {
+  torren: 'https://www.dndbeyond.com/characters/152415680',
+  sylas:  'https://www.dndbeyond.com/characters/148269774',
+  orin:   'https://www.dndbeyond.com/characters/152414211'
+};
+function applyCharacterUrls() {
+  document.querySelectorAll('[data-dndb]').forEach(el => {
+    const key = el.getAttribute('data-dndb');
+    if (CHARACTER_URLS[key]) el.setAttribute('href', CHARACTER_URLS[key]);
+  });
+}
+
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+  // Lazy-render dynamic panels when they become visible.
+  if (id === 'lore' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
+    PantheonKnowledge.renderPlayer('pantheon-player-container', window._currentIdentity);
+  }
+  if (id === 'handouts' && window.HandoutsUI && document.getElementById('handouts-container-player')) {
+    HandoutsUI.initPlayer('handouts-container-player', window._currentIdentity);
+  }
+  if (id === 'locations' && window.MapKnowledge && document.getElementById('maps-player-container')) {
+    MapKnowledge.renderPlayer('maps-player-container', window._currentIdentity);
+  }
+}
+
+function showLoreTab(id, btn) {
+  ['pantheon','history'].forEach(function(t) {
+    const el = document.getElementById('lore-tab-' + t);
+    if (el) el.style.display = (t === id) ? '' : 'none';
+  });
+  document.querySelectorAll('#panel-lore .tab-btn').forEach(function(b) {
+    b.style.background = 'transparent';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--ink3)';
+  });
+  if (btn) {
+    btn.style.borderColor = 'var(--gold)';
+    btn.style.color = 'var(--gold)';
+  }
+  // Render pantheon into the dynamic container when the tab becomes visible.
+  if (id === 'pantheon' && window.PantheonKnowledge && document.getElementById('pantheon-player-container')) {
+    PantheonKnowledge.renderPlayer('pantheon-player-container', window._currentIdentity);
+  }
+}
+
+// Player Notes — saved to localStorage
+function savePlayerNotes() {
+  const val = document.getElementById('player-notes').value;
+  localStorage.setItem('eldoria-player-notes', val);
+  const saved = document.getElementById('note-saved');
+  saved.style.display = 'block';
+  clearTimeout(window.noteSaveTimer);
+  window.noteSaveTimer = setTimeout(() => { saved.style.display = 'none'; }, 2000);
+}
+
+window.addEventListener('load', () => {
+  applyCharacterUrls();
+  const saved = localStorage.getItem('eldoria-player-notes');
+  if(saved) document.getElementById('player-notes').value = saved;
+  (window.PartyRoster ? PartyRoster.ids() : ['torren','sylas','orin']).forEach(updateSheetUI);
+  loadSynopsis();
+});
+
+// Update 35 — Session Synopsis card
+// Data lives at data/synopsis.json with a `version` int and body text.
+// Per-device dismiss via localStorage. When the version bumps (new
+// session), previously-dismissed users see the new synopsis auto-open.
+function loadSynopsis() {
+  fetch('data/synopsis.json?_=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data) return;
+      const dismissedVersion = parseInt(localStorage.getItem('eldoria-synopsis-dismissed-version') || '-1', 10);
+      const shouldShow = data.version > dismissedVersion;
+      const card = document.getElementById('synopsis-card');
+      if (!card) return;
+      card.innerHTML =
+        '<div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid var(--gold2);border-left:5px solid var(--gold2);border-radius:4px;padding:1.1rem 1.35rem;margin-bottom:1.25rem;box-shadow:0 4px 18px rgba(138,106,16,0.15);position:relative">' +
+          '<button aria-label="Dismiss" onclick="dismissSynopsis()" style="position:absolute;top:8px;right:12px;background:transparent;border:none;color:var(--ink3);font-size:18px;cursor:pointer;line-height:1">×</button>' +
+          '<div style="font-family:\'Cinzel Decorative\',serif;font-size:14px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:.15rem">Where you are</div>' +
+          '<div style="font-family:\'Cinzel\',serif;font-size:11.5px;letter-spacing:1px;color:var(--ink3);margin-bottom:.5rem">' + escSyn(data.sessionLabel || '') + (data.date ? ' &nbsp;·&nbsp; ' + escSyn(data.date) : '') + '</div>' +
+          (data.location ? '<div style="font-size:13px;font-style:italic;color:var(--ink2);margin-bottom:.55rem">📍 ' + escSyn(data.location) + '</div>' : '') +
+          '<div style="font-size:14.5px;line-height:1.65;color:var(--ink)">' + escSyn(data.body || '') + '</div>' +
+        '</div>';
+      card.style.display = shouldShow ? '' : 'none';
+      window._synopsisVersion = data.version;
+    })
+    .catch(err => console.warn('[Synopsis] Load failed:', err));
+}
+function dismissSynopsis() {
+  if (typeof window._synopsisVersion !== 'undefined') {
+    localStorage.setItem('eldoria-synopsis-dismissed-version', String(window._synopsisVersion));
+  }
+  const card = document.getElementById('synopsis-card');
+  if (card) card.style.display = 'none';
+}
+function escSyn(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Character sheet uploads — stored in localStorage as a data URL.
+// 4 MB cap (localStorage commonly tops out around 5 MB per origin).
+function uploadSheet(charKey, fileInput) {
+  const file = fileInput.files && fileInput.files[0];
+  if (!file) return;
+  if (file.size > 4 * 1024 * 1024) {
+    alert('That file is too large to save here (max 4 MB). Please use a smaller copy.');
+    fileInput.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      localStorage.setItem('eldoria-sheet-' + charKey, e.target.result);
+      localStorage.setItem('eldoria-sheet-name-' + charKey, file.name);
+      localStorage.setItem('eldoria-sheet-type-' + charKey, file.type || '');
+      localStorage.setItem('eldoria-sheet-saved-' + charKey, new Date().toISOString());
+      updateSheetUI(charKey);
+    } catch (err) {
+      alert('Could not save the file (your browser storage is full). Try a smaller copy or remove other saved sheets first.');
+    }
+    fileInput.value = '';
+  };
+  reader.onerror = function() {
+    alert('Could not read that file. Please try a different one.');
+    fileInput.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function viewSheet(charKey) {
+  const data = localStorage.getItem('eldoria-sheet-' + charKey);
+  if (!data) { alert('No saved sheet for this character.'); return; }
+  const name = localStorage.getItem('eldoria-sheet-name-' + charKey) || 'Character Sheet';
+  const type = localStorage.getItem('eldoria-sheet-type-' + charKey) || '';
+  const win = window.open('', '_blank');
+  if (!win) { alert('Pop-ups are blocked. Allow pop-ups for this site to view your sheet.'); return; }
+  if (type.indexOf('image/') === 0) {
+    win.document.title = name;
+    win.document.body.style.margin = '0';
+    win.document.body.style.background = '#1a1208';
+    win.document.body.style.textAlign = 'center';
+    const img = win.document.createElement('img');
+    img.src = data;
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '100vh';
+    win.document.body.appendChild(img);
+  } else {
+    // PDF or other — let the browser handle it.
+    win.location.href = data;
+  }
+}
+
+function removeSheet(charKey) {
+  if (!confirm('Remove your saved sheet for this character? This only affects this device.')) return;
+  ['', 'name-', 'type-', 'saved-'].forEach(prefix => {
+    localStorage.removeItem('eldoria-sheet-' + prefix + charKey);
+  });
+  updateSheetUI(charKey);
+}
+
+function updateSheetUI(charKey) {
+  const data = localStorage.getItem('eldoria-sheet-' + charKey);
+  const wrap = document.getElementById('saved-' + charKey);
+  const info = document.getElementById('saved-info-' + charKey);
+  if (!wrap || !info) return;
+  if (data) {
+    const name = localStorage.getItem('eldoria-sheet-name-' + charKey) || 'sheet';
+    const savedAt = localStorage.getItem('eldoria-sheet-saved-' + charKey);
+    let when = '';
+    if (savedAt) {
+      const d = new Date(savedAt);
+      if (!isNaN(d)) when = ' · saved ' + d.toLocaleDateString();
+    }
+    info.textContent = '✓ ' + name + when;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+</script>
+
+</div><!-- /#wayward-app -->
+
+<!-- Phase 5 identity module + Phase 6 notes system + bootstrap -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="party-roster.js"></script>
+<script src="notes-sync.js"></script>
+<script src="notes-ui.js"></script>
+<script src="npc-directory.js"></script>
+<script src="pantheon-data.js"></script>
+<script src="pantheon-knowledge.js"></script>
+<script src="map-knowledge.js"></script>
+<script src="handouts.js"></script>
+<script src="handouts-ui.js"></script>
+<script src="players-auth.js"></script>
+<script>
+(function bootstrapPlayerIdentity() {
+  const loginScreen = document.getElementById('wayward-login-screen');
+  const pwRow = document.getElementById('wayward-pw-row');
+  const pwInput = document.getElementById('wayward-pw-input');
+  const pwBtn = document.getElementById('wayward-pw-btn');
+  const pwErr = document.getElementById('wayward-pw-err');
+  const chip = document.getElementById('wayward-chip');
+  const chipName = document.getElementById('wayward-chip-name');
+  const logoutLink = document.getElementById('wayward-logout-link');
+  const app = document.getElementById('wayward-app');
+  let selectedId = null;
+
+  function showApp(identity) {
+    // Store identity globally so panel-render helpers (Lore, etc.) can filter by it.
+    window._currentIdentity = identity;
+    loginScreen.classList.remove('on');
+    app.classList.add('ready');
+    chip.classList.add('on');
+    chipName.textContent = identity.label;
+    // Rewrite the "open my sheet" link (if any) to point at the identity's sheet.
+    if (identity.sheetId) {
+      document.querySelectorAll('[data-my-sheet]').forEach(function(a) {
+        a.setAttribute('href', 'sheet.html?id=' + encodeURIComponent(identity.sheetId) + '&from=player');
+      });
+    }
+    // DM-only reveal (mirror of index.html dm-only pattern): unhide any .dm-only nodes.
+    if (identity.role === 'dm') {
+      document.body.classList.add('dm-viewing');
+    }
+    // Phase 6 — bootstrap the notes widget for this identity.
+    if (typeof initNotesWidget === 'function') {
+      initNotesWidget('notes-widget-container', identity);
+    }
+    // Update 2 — bootstrap the NPC directory for this identity.
+    if (window.NPCDirectory && typeof NPCDirectory.init === 'function') {
+      try { NPCDirectory.init('npc-grid-container', identity); }
+      catch (e) { console.warn('NPCDirectory init failed:', e); }
+    }
+    // Update 24 — Bootstrap handouts UI eagerly so arrival toasts fire even
+    // when the player is on a different tab.
+    if (window.HandoutsUI && document.getElementById('handouts-container-player')) {
+      try { HandoutsUI.initPlayer('handouts-container-player', identity); }
+      catch (e) { console.warn('HandoutsUI init failed:', e); }
+    }
+  }
+
+  function showLogin() {
+    app.classList.remove('ready');
+    chip.classList.remove('on');
+    loginScreen.classList.add('on');
+    document.querySelectorAll('.wayward-identity-btn').forEach(function(b) { b.classList.remove('active'); });
+    pwRow.classList.remove('on');
+    pwErr.classList.remove('on');
+    pwInput.value = '';
+    selectedId = null;
+  }
+
+  // Identity button clicks — reveal password row for that identity.
+  document.querySelectorAll('.wayward-identity-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      selectedId = btn.getAttribute('data-identity');
+      document.querySelectorAll('.wayward-identity-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      pwErr.classList.remove('on');
+      pwRow.classList.add('on');
+      pwInput.value = '';
+      setTimeout(function() { pwInput.focus(); }, 40);
+    });
+  });
+
+  async function attemptLogin() {
+    if (!selectedId) return;
+    const pw = pwInput.value;
+    if (!pw) return;
+    pwBtn.disabled = true;
+    const ok = await checkPlayerPassword(selectedId, pw);
+    pwBtn.disabled = false;
+    if (ok) {
+      setPlayerIdentity(selectedId);
+      showApp(WAYWARD_IDENTITIES[selectedId]);
+    } else {
+      pwErr.classList.add('on');
+      pwInput.value = '';
+      pwInput.focus();
+    }
+  }
+  pwBtn.addEventListener('click', attemptLogin);
+  pwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') attemptLogin(); });
+  pwInput.addEventListener('input', function() { pwErr.classList.remove('on'); });
+
+  logoutLink.addEventListener('click', function() {
+    clearPlayerIdentity();
+    document.body.classList.remove('dm-viewing');
+    showLogin();
+  });
+
+  // On first paint: identity or login?
+  const existing = getCurrentIdentity();
+  if (existing) {
+    showApp(existing);
+  } else {
+    showLogin();
+  }
+})();
+</script>
+
+</body>
+</html>
