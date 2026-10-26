@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Character Builder — The Wayward Company</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2726%27%3E%F0%9F%93%9C%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0a06;
+  --parch: #f2e8d0;
+  --parch2: #e8d9b8;
+  --parch3: #d4c49a;
+  --parch4: #c0aa7a;
+  --gold: #9a7a1a;
+  --gold2: #c9a84c;
+  --gold3: #e8c96a;
+  --red2: #d05050;
+  --green: #7fbf7f;
+  --panel: rgba(30,22,10,0.6);
+  --line: rgba(160,128,64,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0805; color: var(--parch); font-family: 'Crimson Pro', Georgia, serif; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+a { color: var(--gold3); }
+.wrap { max-width: 920px; margin: 0 auto; padding: 1rem 16px 4rem; }
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: .6rem; margin-bottom: 1rem; }
+.top h1 { font-family: 'Cinzel Decorative', serif; color: var(--gold2); font-size: 22px; font-weight: 400; }
+.top .who { font-family: 'Cinzel', serif; font-size: 12px; color: var(--parch4); letter-spacing: 1px; }
+.steps { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: 1rem; }
+.steps button { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: .5px; background: transparent; color: var(--parch4); border: 1px solid var(--line); border-radius: 3px; padding: .3rem .55rem; cursor: pointer; }
+.steps button.on { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.steps button.done { color: var(--green); border-color: rgba(127,191,127,0.5); }
+.steps button:disabled { opacity: .4; cursor: default; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+h2 { font-family: 'Cinzel', serif; color: var(--gold3); font-size: 18px; font-weight: 600; margin-bottom: .4rem; letter-spacing: .5px; }
+h3 { font-family: 'Cinzel', serif; color: var(--gold2); font-size: 13px; font-weight: 600; margin: 1rem 0 .4rem; letter-spacing: 1px; text-transform: uppercase; }
+p.help { color: var(--parch3); font-size: 14.5px; line-height: 1.5; margin-bottom: .6rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .5rem; }
+.card { border: 1px solid var(--line); border-radius: 4px; padding: .55rem .7rem; cursor: pointer; background: rgba(10,8,5,0.4); }
+.card:hover { border-color: var(--gold2); }
+.card.on { border-color: var(--gold3); background: rgba(154,122,26,0.18); }
+.card.off { opacity: .4; cursor: default; }
+.card .t { font-family: 'Cinzel', serif; font-size: 14px; color: var(--parch); }
+.card .s { font-size: 13px; color: var(--parch4); line-height: 1.35; margin-top: .2rem; }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .35rem 0; }
+label.lbl { font-family: 'Cinzel', serif; font-size: 11px; color: var(--parch4); letter-spacing: 1px; text-transform: uppercase; }
+select, input[type=text], input[type=number], textarea {
+  background: rgba(10,8,5,0.7); color: var(--parch); border: 1px solid rgba(160,128,64,0.5); border-radius: 3px; padding: .35rem .5rem; font-family: inherit; font-size: 15px; max-width: 100%;
+}
+input[type=number] { width: 4.2rem; }
+textarea { width: 100%; min-height: 110px; }
+.chk { display: inline-flex; align-items: center; gap: .3rem; font-size: 14.5px; padding: .2rem .45rem; border: 1px solid var(--line); border-radius: 3px; cursor: pointer; }
+.chk.on { border-color: var(--gold3); background: rgba(154,122,26,0.18); }
+.chk.dis { opacity: .4; cursor: default; }
+.feature { border-left: 2px solid var(--gold); padding: .25rem .6rem; margin: .4rem 0; }
+.feature .n { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold3); }
+.feature .d { font-size: 14px; color: var(--parch2); line-height: 1.45; }
+.scores { display: grid; grid-template-columns: repeat(6, 1fr); gap: .4rem; }
+.score { text-align: center; border: 1px solid var(--line); border-radius: 4px; padding: .4rem .2rem; }
+.score .a { font-family: 'Cinzel', serif; font-size: 11px; color: var(--parch4); }
+.score .v { font-size: 22px; color: var(--parch); }
+.score .m { font-size: 13px; color: var(--gold3); }
+.nav { display: flex; justify-content: space-between; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.btn { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; border-radius: 3px; padding: .5rem 1.1rem; cursor: pointer; border: 1px solid var(--gold2); background: transparent; color: var(--gold2); }
+.btn.primary { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.btn:disabled { opacity: .4; cursor: default; }
+.todo { color: var(--red2); font-size: 14px; }
+.ok { color: var(--green); font-size: 14px; }
+.spell { display: inline-flex; align-items: center; gap: .3rem; font-size: 14px; padding: .2rem .45rem; border: 1px solid var(--line); border-radius: 3px; cursor: pointer; margin: .15rem; }
+.spell.on { border-color: var(--gold3); background: rgba(154,122,26,0.2); }
+.spell.dis { opacity: .35; cursor: default; }
+.spell small { color: var(--parch4); }
+.tip { font-size: 13px; color: var(--parch4); }
+.banner { border: 1px solid var(--red2); background: rgba(160,32,32,0.15); padding: .6rem .8rem; border-radius: 4px; margin-bottom: 1rem; font-size: 14.5px; }
+.review td { padding: .2rem .5rem; vertical-align: top; font-size: 14.5px; border-bottom: 1px solid rgba(160,128,64,0.15); }
+.review td:first-child { font-family: 'Cinzel', serif; font-size: 11px; color: var(--parch4); white-space: nowrap; letter-spacing: 1px; }
+.pop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+.pop .box { background: #1a140a; border: 1px solid var(--gold2); border-radius: 4px; padding: 1rem 1.1rem; width: 100%; max-width: 380px; }
+.pop .box h3 { margin-top: 0; }
+.pop .box input { width: 100%; margin: .3rem 0 .6rem; }
+@media (max-width: 600px) {
+  .scores { grid-template-columns: repeat(3, 1fr); }
+  .top h1 { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Character Builder</h1>
+    <div class="who" id="who"></div>
+  </div>
+  <div id="app"><div class="panel">Loading…</div></div>
+</div>
+
+<script>const CHARACTERS = {};</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="party-roster.js"></script>
+<script src="players-auth.js"></script>
+<script src="items-2024.js"></script>
+<script src="spells-2024.js"></script>
+<script src="classes-2024.js"></script>
+<script src="origins-2024.js"></script>
+<script src="beasts-2024.js"></script>
+<script src="sheet-engine.js"></script>
+<script src="spell-text-sync.js"></script>
+<script src="char-builder.js"></script>
+</body>
+</html>

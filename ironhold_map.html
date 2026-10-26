@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironhold — DM Reference (Wayward Company) — DM only</title>
+<style>
+:root{--bg:#0a0805;--fg:#f2e8d0;--muted:#c0aa7a;--gold:#c9a84c;--line:rgba(160,128,64,0.45)}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;padding:16px}
+#dm-lock{display:none;max-width:380px;width:100%;border:1px solid var(--line);border-radius:6px;padding:1.4rem 1.3rem;background:rgba(30,22,10,0.7);text-align:center}
+h1{font-size:18px;letter-spacing:2px;color:var(--gold);margin:0 0 .4rem;font-weight:normal} p{color:var(--muted);font-size:14px;margin:0 0 1rem}
+input{width:100%;padding:.6rem .7rem;font-size:16px;background:#14100a;color:var(--fg);border:1px solid var(--line);border-radius:4px}
+button{margin-top:.7rem;width:100%;padding:.6rem;font-size:14px;letter-spacing:1px;background:#9a7a1a;color:#0d0a06;border:none;border-radius:4px;cursor:pointer}
+button:disabled{opacity:.5} #dm-lock-msg{min-height:1.2em;margin-top:.6rem;font-size:13px}
+</style></head>
+<body>
+<div id="dm-lock">
+  <h1>🔒 Ironhold — DM Reference (Wayward Company)</h1>
+  <p>DM only. Enter the DM passphrase to open this page.</p>
+  <form id="dm-lock-form" autocomplete="off">
+    <input id="dm-lock-pass" type="password" placeholder="DM passphrase" aria-label="DM passphrase">
+    <button id="dm-lock-btn" type="submit">Unlock</button>
+  </form>
+  <div id="dm-lock-msg"></div>
+</div>
+<script src="dm-crypt.js"></script>
+<script>DMCrypt.openLockedPage("ironhold_map.html.enc");</script>
+<noscript>This page needs JavaScript.</noscript>
+</body></html>
